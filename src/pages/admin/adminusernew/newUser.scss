@@ -1,0 +1,63 @@
+.new-user-container{
+    display: flex;
+    flex-flow: column;
+    height: 100vh;
+    overflow: hidden;
+    .new-user-bottom{
+        display: flex;  
+        .bottom-right{
+            margin-top:20px;
+            flex:4;
+            display: flex;
+            flex-flow: column;
+            gap: 30px;
+            overflow: auto;
+            height: calc(100vh - 50px);
+            margin-left: 10px;
+            padding: 20px;
+            // .new-user-title{
+            // }
+            .new-user-form{
+                display: flex;
+                gap: 20px;
+                .new-user-left, .new-user-right{
+                    flex:1;
+                    display: flex;
+                    flex-flow: column;
+                    gap: 20px;
+                }
+                .new-user-item{
+                    display: flex;
+                    flex-flow: column;
+                    gap: 10px;
+                    .new-user-gender{
+                        display: flex;
+                        gap: 15px;
+                    }
+                }
+                .create-btn{
+                    width: 200px;
+                    border-radius: 8px;
+                    padding: 10px;
+                    border: none;
+                    background-color: darkblue;
+                    color:#fff;
+                    font-weight: 700;
+                    font-size: 16px;
+                    margin-top:20px;
+                    cursor: pointer;
+                }
+                .new-user-item>label{
+                    color: gray;
+                    font-weight: 600;
+                }
+                .new-user-item>input, .new-user-item>select{
+                    padding: 10px;
+                    border-radius: 5px;
+                    border: none;
+                    border: 1px solid #ccc;
+                }
+            }
+        }
+    }
+}

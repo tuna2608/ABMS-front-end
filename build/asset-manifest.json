@@ -1,0 +1,15 @@
+{
+  "files": {
+    "main.css": "/static/css/main.89b2dcf7.css",
+    "main.js": "/static/js/main.e0310708.js",
+    "static/media/image5.png": "/static/media/image5.e0d2a5e818b6b839f7c3.png",
+    "static/media/icon-glowing-star.png": "/static/media/icon-glowing-star.7dccce85f7976ab3415c.png",
+    "index.html": "/index.html",
+    "main.89b2dcf7.css.map": "/static/css/main.89b2dcf7.css.map",
+    "main.e0310708.js.map": "/static/js/main.e0310708.js.map"
+  },
+  "entrypoints": [
+    "static/css/main.89b2dcf7.css",
+    "static/js/main.e0310708.js"
+  ]
+}

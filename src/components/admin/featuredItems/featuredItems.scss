@@ -1,0 +1,40 @@
+.featured-container{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;  
+    .featured-item{
+    border-radius: 5px;
+    flex:1;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;    
+    padding: 20px;
+        .featured-title{
+            font-size: 18px;
+            font-weight: 600;
+        }
+        .featured-money-container{
+            display: flex;
+            gap: 20px;
+            margin: 20px 0;
+            align-items: center;
+            .featured-money{
+                font-weight: 700;
+                font-size: 18px;
+            }
+            .featured-money-rate{
+                font-weight: 600;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                .arrow-icons{
+                    color: red;
+                    font-size: 14px;
+                }
+            }
+        }
+        .featured-sub{
+            font-weight: 600;   
+            color:gray;
+        }
+}
+}

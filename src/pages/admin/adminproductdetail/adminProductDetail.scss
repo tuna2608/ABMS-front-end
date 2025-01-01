@@ -1,0 +1,100 @@
+.product-top{
+    display: flex;
+    .product-top-left{
+        flex:1;
+        padding: 20px;
+    }
+    .product-top-right{
+        margin: 20px;
+        padding: 20px;
+        flex:1;
+        box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;    
+        .product-info-top{
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            .product-info-img{
+                width: 50px;
+                height: 50px;
+                object-fit: cover;
+                border-radius: 50%;
+            }
+            .product-name{
+                font-weight: 600;
+                font-size: 18px;
+            }
+        }
+        .product-info-bottom{
+            margin: 10px 0 0 10px;
+            display: flex;
+            flex-flow: column;
+            gap: 10px;
+            .product-info-item{ 
+                width: 150px;
+                display: flex;
+                justify-content: space-between;
+
+                .product-info-value{
+                    font-weight: 300;
+                }
+            }
+        }
+    }
+}
+.product-bottom{
+    margin: 0 20px;
+    margin-bottom: 80px;
+    padding: 10px;
+    flex:1;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;  
+    .product-form{
+        display: flex;
+        justify-content: space-between;
+        height: 90%;
+        .product-form-left{
+            display: flex;
+            flex-direction: column;
+        }
+        .product-form-left>label{
+            margin-bottom: 10px;
+            color:gray
+        }
+        .product-form-left>input{
+            margin-bottom: 10px;
+            border: none;
+            padding: 5px;
+            outline: none;
+            border-bottom: 1px solid gray;
+        }
+        .product-form-left>select{
+            margin-bottom: 10px;
+        }
+        .product-form-right{
+            display: flex;
+            flex-direction: column;
+            justify-content: space-around;
+            .product-upload{
+                display: flex;
+                align-items: center;
+                .product-upload-img{
+                    width: 120px;
+                    height: 120px;
+                    border-radius: 10px;
+                    object-fit: cover;
+                    margin-right: 20px;
+                }
+            }
+            .product-btn{
+                background-color: darkblue;
+                border: none;
+                width: 150px;
+                color: #fff;
+                font-weight: 600;
+                padding:8px 6px;
+                border-radius: 10px;
+                cursor: pointer;
+            }
+           
+        }
+    }
+}

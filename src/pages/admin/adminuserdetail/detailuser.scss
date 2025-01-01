@@ -1,0 +1,141 @@
+.detail-user-container{
+    display: flex;
+    flex-flow: column;
+    height: 100vh;
+    overflow: hidden;
+    .detail-user-bottom{
+        display: flex;  
+        .bottom-right{
+            margin-top:20px;
+            flex:4;
+            display: flex;
+            flex-flow: column;
+            gap: 30px;
+            overflow: auto;
+            height: calc(100vh - 50px);
+            margin-left: 10px;
+            padding: 20px;
+          
+            .user-title-container{
+                display: flex;
+                align-items: center;
+                justify-content: space-between;
+
+                .user-add-btn{
+                    width: 80px;
+                    border: none;
+                    color:#fff;
+                    border-radius: 5px;
+                    background-color: teal;
+                    cursor: pointer;
+                    padding: 10px;
+                    font-size: 16px;
+                }
+            }
+            .user-container{
+                display: flex;
+                gap: 20px;
+                .user-show{
+                    flex: 1;
+                    padding: 20px;
+                    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;    
+                    .user-show-top{
+                        display: flex;
+                        align-items: center;
+                        gap: 20px;
+                        .user-show-img{
+                            width: 40px;
+                            height: 40px;border-radius: 50%;
+                            object-fit: cover;
+                        }
+                        .user-show-title{
+                            display: flex;
+                            flex-flow: column;
+                            .user-show-username{
+                                font-weight: 600;
+                            }
+                            .user-show-usertitle{
+                                font-weight: 300;
+                                color: gray;
+                            }
+                        }
+                    }
+                    .user-show-bottom{
+                        padding: 20px;
+                        .account-details-title{
+                            font-weight: 700;
+                            color: gray;
+                        }
+                        .account-details{
+                            margin: 30px 0;
+                            .detail{
+                                display: flex;
+                                align-items: center;
+                                gap: 5px;
+                                margin-top: px;
+                                margin: 20px 0;
+                            }
+                        }
+                    }
+                }
+                .user-update{
+                    flex: 2;
+                    padding: 20px;
+                    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;    
+                    .user-update-title{
+                        font-size: 24px;
+                        font-weight: 600;
+                    }
+                    .user-update-form{
+                        display: flex;
+                        justify-content: space-between;
+                        margin-top:20px;
+                        .user-update-left{
+                            .user-update-item{
+                                display: flex;
+                                flex-direction: column;
+                                margin-top: 15px;
+                            }
+                            .user-update-item>label{
+                                margin-bottom: 5px;
+                                font-size: 14px;
+                            }
+                            .user-update-item>input{
+                                border:none;
+                                outline: none;
+                                width: 250px;
+                                border-bottom: 1px solid gray;
+                                height: 30px;
+                            }
+                        }
+                        .user-update-right{
+                            display: flex;
+                            flex-direction: column;
+                            justify-content: space-between;
+                            .user-update-upload{
+                                display: flex;
+                                align-items: center;
+                                .user-update-img{
+                                    width: 100px;
+                                    height: 100px;
+                                    border-radius: 10px;
+                                    object-fit: cover;
+                                    margin-right: 20px;
+                                }
+                            }
+                            .user-update-btn{
+                                border: none;
+                                border-radius: 5px;
+                                padding: 10px;
+                                cursor: pointer;
+                                background-color: darkblue;
+                                color:#fff;
+                                font-weight: bold;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}

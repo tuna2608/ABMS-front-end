@@ -1,0 +1,37 @@
+.new-members-container{
+    flex:3.5;
+    padding: 20px;
+    box-shadow: rgba(100, 100, 111, 0.2) 0px 7px 29px 0px;    
+    .member-card{
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-top: 20px;
+        img{
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            object-fit: cover;
+        }
+        .member-info{
+            .member-name{
+                font-weight: 700;
+                margin-bottom: 5px;
+
+            }
+            .member-title{
+                font-weight: 300;
+            }
+        }
+        .display-btn{
+            display: flex;
+            gap: 8px;
+            align-items: center;
+            padding: 4px 8px;
+            font-size: 12px;
+            background-color: rgb(198, 225, 225);
+            border-radius: 10px;
+            cursor: pointer;
+        }
+    }
+}

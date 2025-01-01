@@ -1,0 +1,23 @@
+.admin-home-container{
+    display: flex;
+    flex-flow: column;
+    height: 100vh;
+    overflow: hidden;
+    .bottom{
+        display: flex;  
+        .bottom-right{
+            margin-top:20px;
+            flex:4;
+            display: flex;
+            flex-flow: column;
+            gap: 30px;
+            overflow: auto;
+            height: calc(100vh - 50px);
+            margin-left: 10px;
+            .data{
+                display: flex;
+                gap: 10px;
+            }
+        }
+    }
+}

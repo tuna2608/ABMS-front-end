@@ -1,0 +1,45 @@
+.order-list-container{
+    height: 100vh;
+    overflow: hidden;
+    .order-list-bottom{
+        display: flex;  
+        .bottom-right{
+            flex:4;
+            display: flex;
+            flex-flow: column;
+            gap: 30px;
+            overflow: auto;
+            height: calc(100vh - 50px);
+            .orders-container{
+                margin:20px;
+            }
+
+        }
+    }
+    .status {
+        padding: 6px 8px;
+        border-radius: 10px;
+        border: none;
+      }
+      .status.Delivered {
+        background-color: #f3fbf7;
+        color: #9fe4a8;
+      }
+      .status.Declined {
+        background-color: #fff5f8;
+        color: #ff94aa;
+      }
+      .status.Pending {
+        background-color: #f4eaed;
+        color: #ff6e8f;
+      }
+      .status.Accept {
+        background-color: #8ab1ef;
+        color: rgb(246, 242, 250);
+      }
+      .status.Cancel {
+        background-color: rgb(191, 89, 89);
+        color: #fff;
+        cursor: none;
+      }
+}
