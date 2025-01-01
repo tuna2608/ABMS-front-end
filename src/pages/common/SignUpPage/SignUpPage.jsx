@@ -23,6 +23,7 @@ const SignUpPage = () => {
           <p>Tao tai khoan</p>
           <InputForm placeholder={"abc@gmail.com"} type="email" />
           <InputForm placeholder={"Password"} type="password" />
+          <InputForm placeholder={"Confirm password"} type="password" />
           <ButtonComponent
             size={40}
             styleButton={{
