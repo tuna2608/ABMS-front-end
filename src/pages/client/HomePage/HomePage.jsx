@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import styled, { css } from "styled-components";
+import styled from "styled-components";
 import { FaSearch } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
 
@@ -16,67 +16,67 @@ const Wrapper = styled.div`
   padding: 0 16px;
 `;
 
-const TopBar = styled.div`
-  display: flex;
-  gap: 24px;
-  align-items: center;
-  background: white;
-  color: #dc2626;
-  padding: 8px 16px;
-  font-size: 14px;
-  font-weight: 500;
-`;
+// const TopBar = styled.div`
+//   display: flex;
+//   gap: 24px;
+//   align-items: center;
+//   background: white;
+//   color: #dc2626;
+//   padding: 8px 16px;
+//   font-size: 14px;
+//   font-weight: 500;
+// `;
 
-const MainNav = styled.div`
-  display: flex;
-  align-items: center;
-  background: white;
-  padding: 8px 16px;
-`;
+// const MainNav = styled.div`
+//   display: flex;
+//   align-items: center;
+//   background: white;
+//   padding: 8px 16px;
+// `;
 
-const Logo = styled.h1`
-  margin: 0;
-  font-size: 24px;
-  color: #111827;
-`;
+// const Logo = styled.h1`
+//   margin: 0;
+//   font-size: 24px;
+//   color: #111827;
+// `;
 
-const NavLinks = styled.div`
-  display: flex;
-  align-items: center;
-  margin-left: 24px; 
-  gap: 16px;
-  flex: 1;
-`;
+// const NavLinks = styled.div`
+//   display: flex;
+//   align-items: center;
+//   margin-left: 24px; 
+//   gap: 16px;
+//   flex: 1;
+// `;
 
-const Spacer = styled.div`
-  flex: 1;
-`;
+// const Spacer = styled.div`
+//   flex: 1;
+// `;
 
-const MenuButton = styled.button`
-  background: #fff;
-  border: none;
-  font-weight: 500;
-  cursor: pointer;
-  padding: 8px 16px;
-  border-radius: 4px;
-  color: #111827;
+// const MenuButton = styled.button`
+//   background: #fff;
+//   border: none;
+//   font-weight: 500;
+//   cursor: pointer;
+//   padding: 8px 16px;
+//   border-radius: 4px;
+//   color: #111827;
 
-  &:hover {
-    background-color: #166534;
-    color: #fff;
-  }
+//   &:hover {
+//     background-color: #166534;
+//     color: #fff;
+//   }
 
-  /* Nếu đang active => màu xanh lá */
-  ${(props) =>
-    props.$active &&
-    css`
-      background-color: #15803d;
-      color: #fff;
-      &:hover {
-        background-color: #15803d;
-      }
-    `}
-`;
+//   /* Nếu đang active => màu xanh lá */
+//   ${(props) =>
+//     props.$active &&
+//     css`
+//       background-color: #15803d;
+//       color: #fff;
+//       &:hover {
+//         background-color: #15803d;
+//       }
+//     `}
+// `;
 
 /* Hero (màu cam) + SearchBox (màu vàng) */
 const HeroSection = styled.div`
@@ -221,7 +221,7 @@ const ListItem = styled.div`
 
 /* --------------------- Component chính --------------------- */
 export default function HomePage() {
-  const [activeMenu, setActiveMenu] = useState("");
+  // const [activeMenu, setActiveMenu] = useState("");
 
   // Các trường search
   const [searchText, setSearchText] = useState("");
@@ -291,13 +291,13 @@ export default function HomePage() {
     <Container>
       <Wrapper>
         {/* Top bar */}
-        <TopBar>
+        {/* <TopBar>
           <span>Kênh chủ căn hộ</span>
           <span>Kênh người thuê căn hộ</span>
-        </TopBar>
+        </TopBar> */}
 
         {/* Nav bar */}
-        <MainNav>
+        {/* <MainNav>
           <Logo>ABMS</Logo>
           <NavLinks>
             <MenuButton
@@ -332,7 +332,7 @@ export default function HomePage() {
               Đăng ký
             </MenuButton>
           </NavLinks>
-        </MainNav>
+        </MainNav> */}
 
         {/* Hero + Search */}
         <HeroSection>

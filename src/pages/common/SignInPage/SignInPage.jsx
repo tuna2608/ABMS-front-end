@@ -18,8 +18,8 @@ const SignInPage = () => {
         }}
       >
         <WrapperContainerLeft>
-          <h4>Xin chao</h4>
-          <p>Dang nhap, tao tai khoan</p>
+          <h4>Xin chào</h4>
+          <p>Đăng nhập</p>
           <InputForm placeholder={"abc@gmail.com"} type="email" />
           <InputForm placeholder={"Password"} type="password" />
           <ButtonComponent
@@ -37,10 +37,10 @@ const SignInPage = () => {
               fontSize: "16px",
               fontWeight: "700",
             }}
-            textButton={"Dang nhap"}
+            textButton={"Đăng nhập"}
           />
-          <p ><WrapperTextLight>Quen mat khau</WrapperTextLight></p>
-          <p>Chua co tai khoan <WrapperTextLight>Dang ky tai khoan</WrapperTextLight></p>
+          <p ><WrapperTextLight>Quên mật khẩu</WrapperTextLight></p>
+          <p>Chưa có tài khoản <WrapperTextLight>Đăng ký tài khoản</WrapperTextLight></p>
         </WrapperContainerLeft>
         <WrapperContainerRight>
             <Image src={imgLogin} width={203} height={203}/>
