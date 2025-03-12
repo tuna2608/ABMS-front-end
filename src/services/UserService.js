@@ -1,16 +1,19 @@
 
 
-export async function loginUser({body}){
-    console.log(body);
+export async function loginUser({usernameOrEmail,password}){
+    console.log(usernameOrEmail+password);
 
-    // console.log(JSON.stringify(body));
-
+    const body = {
+        usernameOrEmail,
+        password,
+    }
+    console.log(JSON.stringify(body));
     
     const response = await fetch(`http://localhost:8080/api/login`,{
         method: 'POST',
         body: JSON.stringify(body),
         headers: {
-            'Content-Type': 'application/application/json',
+            'Content-Type': 'application/json',
         }
     })
 
@@ -21,6 +24,8 @@ export async function loginUser({body}){
         throw error;
     }
 
-    const { user } = await response.json();
-    return user;
+    const { data } = await response.json();
+    console.log(data);
+    
+    return data;
 }

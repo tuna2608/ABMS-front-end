@@ -32,7 +32,7 @@ const SignInPage = () => {
   const [password, setPassword] = useState("");
 
   const { mutate, isPending, isError, error } = useMutation({
-    mutationFn: ({ body }) => loginUser({ body }),
+    mutationFn: ({ usernameOrEmail,password }) => loginUser({ usernameOrEmail,password }),
     onSuccess: () => {
       console.log("login success");
     },
@@ -40,7 +40,8 @@ const SignInPage = () => {
 
   const handleLogin = (values) => {
     mutate({
-      body: values,
+      usernameOrEmail: values.usernameOrEmail,
+      password: values.password,
     });
   };
 
@@ -112,7 +113,7 @@ const SignInPage = () => {
             autoComplete="off"
           >
             <Form.Item
-              name="userName"
+              name="usernameOrEmail"
               rules={[
                 {
                   required: true,
