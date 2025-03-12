@@ -8,7 +8,7 @@ import FeaturedItem from "../../../components/admin/featuredItems/FeaturedItem";
 import Chart from "../../../components/admin/chart/Chart";
 import { userRequest } from "../../../utilities/requestMethod";
 
-function AdminHome() {
+function AdminHome(){
   const [userStats, setUserStats] = useState([]);
 
   const MONTHS = useMemo(

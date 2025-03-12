@@ -1,14 +1,27 @@
 @import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
 
 :root {
-    --orange: #ff9f0e;
+    --forange: #f26f23;
+    --fgreen: #0daf4b;
+    --fblue: #0d66b1;
     --grey: #ececec;
     --brown: #5F5B5B;
     --light-grey: #DCDBDB;
-    --blue: #23A6F0;
+    
     --yellow: #f3cd04;
     --red: #FF4343;
-    --dark-grey: #B8B8B8;
+
+
+    --blue: #3da9fc21;
+    --cbg: #B8B8B8;
+    --cheadline: #094067;
+    --cparagraph: #5f6c7b;
+    --cbutton: #3da9fc;
+    --cbuttontext: #fffffe;
+    --cstroke: #094067;
+    --cmain: #fffffe;
+    --chightlight: #3da9fc;
+    --csecondary: #90b4ce
 }
 
 
@@ -22,6 +35,7 @@ html,body{
     box-sizing: border-box;
     padding: 0;
     margin: 0;
+    font-size: 20px;
 }
 
 a{

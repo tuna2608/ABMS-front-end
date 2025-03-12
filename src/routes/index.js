@@ -2,8 +2,9 @@ import ApartmentDetail from "../pages/client/ApartmentDetail/ApartmentDetail";
 import ApartmentList from "../pages/client/ApartmentList/ApartmentList";
 import HomePage from "../pages/client/HomePage/HomePage";
 import NotFoundPage from "../pages/common/NotFoundPage/NotFoundPage";
-import SignInPage from "../pages/common/SignInPage/SignInPage";
-import SignUpPage from "../pages/common/SignUpPage/SignUpPage";
+import LoginPage from "../pages/common/LoginPage/LoginPage";
+
+
 
 export const routes = [
     {
@@ -22,15 +23,15 @@ export const routes = [
         isShowHeader: true
     },
     {
-        path: '/signIn',
-        page: SignInPage,
+        path: '/login',
+        page: LoginPage,
         isShowHeader: false
     },
-    {
-        path: '/signUp',
-        page: SignUpPage,
-        isShowHeader: false
-    },
+    // {
+    //     path: '/adminHome',
+    //     page: AdminHome,
+    //     isShowHeader: false
+    // },
     {
         path: '*',
         page: NotFoundPage,
