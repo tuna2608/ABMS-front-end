@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
+import { useNavigate } from "react-router-dom";
 import {
   WrapperContainer,
   WrapperContainerLeft,
@@ -7,7 +8,6 @@ import {
   WrapperTextLight,
 } from "./style";
 import { EyeTwoTone, EyeInvisibleOutlined } from "@ant-design/icons";
-
 import { Checkbox, Form, Image } from "antd";
 import imgLogin from "./../../../assets/common/images/logo-login.png";
 import styled from "styled-components";
@@ -27,12 +27,13 @@ const TitlePage = styled.h2`
 `;
 
 const SignInPage = () => {
+  const navigate = useNavigate();
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const { mutate, isPending, isError, error } = useMutation({
-    mutationFn: ({ usernameOrEmail,password }) => loginUser({ usernameOrEmail,password }),
+    mutationFn: ({ usernameOrEmail, password }) => loginUser({ usernameOrEmail, password }),
     onSuccess: () => {
       console.log("login success");
     },
@@ -77,7 +78,7 @@ const SignInPage = () => {
             left: "0",
             width: "100%",
             height: "100%",
-            backgroundColor: "rgba(0, 0, 0, 0.2)", // Semi-transparent overlay
+            backgroundColor: "rgba(0, 0, 0, 0.2)",
           }}
         />
       </div>
@@ -96,30 +97,17 @@ const SignInPage = () => {
           <TextContent>Mời bạn đăng nhập tài khoản</TextContent>
           <Form
             name="basic"
-            labelCol={{
-              span: 8,
-            }}
-            wrapperCol={{
-              span: 24,
-            }}
-            style={{
-              maxWidth: 600,
-            }}
-            initialValues={{
-              remember: true,
-            }}
+            labelCol={{ span: 8 }}
+            wrapperCol={{ span: 24 }}
+            style={{ maxWidth: 600 }}
+            initialValues={{ remember: true }}
             onFinish={handleLogin}
             onFinishFailed={onFinishFailed}
             autoComplete="off"
           >
             <Form.Item
               name="usernameOrEmail"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input your username!",
-                },
-              ]}
+              rules={[{ required: true, message: "Please input your username!" }]}
             >
               <InputForm
                 placeholder={"Email hoặc tài khoản"}
@@ -131,22 +119,12 @@ const SignInPage = () => {
 
             <Form.Item
               name="password"
-              rules={[
-                {
-                  required: true,
-                  message: "Please input your password!",
-                },
-              ]}
+              rules={[{ required: true, message: "Please input your password!" }]}
             >
               <div style={{ position: "relative" }}>
                 <span
                   onClick={() => setIsShowPassword(!isShowPassword)}
-                  style={{
-                    zIndex: 10,
-                    position: "absolute",
-                    top: "4px",
-                    right: "8px",
-                  }}
+                  style={{ zIndex: 10, position: "absolute", top: "4px", right: "8px" }}
                 >
                   {isShowPassword ? <EyeTwoTone /> : <EyeInvisibleOutlined />}
                 </span>
@@ -188,14 +166,13 @@ const SignInPage = () => {
                 <ErrorBoundary
                   description="Failed to login"
                   message={
-                    error.info?.message ||
-                    "username or password wrong, try a again !"
+                    error.info?.message || "username or password wrong, try again!"
                   }
                 />
               )}
             </Form.Item>
           </Form>
-          <Link>
+          <Link onClick={() => navigate("/forgot")}> 
             <WrapperTextLight>Quên mật khẩu</WrapperTextLight>
           </Link>
         </WrapperContainerLeft>
