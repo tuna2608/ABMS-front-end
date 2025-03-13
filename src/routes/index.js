@@ -1,3 +1,4 @@
+import AdminHome from "../pages/admin/adminHome/AdminHome";
 import ApartmentDetail from "../pages/client/ApartmentDetail/ApartmentDetail";
 import ApartmentList from "../pages/client/ApartmentList/ApartmentList";
 import HomePage from "../pages/client/HomePage/HomePage";
@@ -30,6 +31,11 @@ export const routes = [
         path: '/signUp',
         page: SignUpPage,
         isShowHeader: false
+    },
+    {
+        path: '/admin',
+        page: AdminHome,
+        isShowHeader: true
     },
     {
         path: '*',

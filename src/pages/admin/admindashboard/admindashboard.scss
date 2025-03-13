@@ -1,7 +1,7 @@
-.product-list-container{
+.admin-dashboard-container{
     height: 100vh;
     overflow: hidden;
-    .product-list-bottom{
+    .user-list-bottom{
         display: flex;  
         .bottom-right{
             margin-top:20px;
@@ -13,6 +13,7 @@
             height: calc(100vh - 50px);
             margin-left: 10px;
             padding: 20px;
+
         }
     }
 }
