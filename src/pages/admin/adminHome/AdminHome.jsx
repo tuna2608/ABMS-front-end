@@ -1,70 +1,190 @@
-import React, { useEffect, useState, useMemo } from "react";
-import AdminNavBar from "../../../components/admin/adminNavbar/AdminNavBar";
-import AdminLeftBar from "../../../components/admin/adminLeftBar/AdminLeftBar";
-import "./adminHome.scss";
-import NewMembers from "../../../components/admin/newMembers/NewMembers";
-import LatestTransactions from "../../../components/admin/latestTransactions/LatestTransactions";
-import FeaturedItem from "../../../components/admin/featuredItems/FeaturedItem";
-import Chart from "../../../components/admin/chart/Chart";
-import { userRequest } from "../../../utilities/requestMethod";
+import React, { useState } from "react";
+import {
+  AppstoreOutlined,
+  UserOutlined,
+  SearchOutlined,
+  PlusOutlined,
+  DeleteOutlined,
+  EyeOutlined,
+  MenuFoldOutlined,
+  MenuUnfoldOutlined,
+} from "@ant-design/icons";
+import { Button, Input, Layout, Menu, Table, Modal, Form, Select, message } from "antd";
 
-function AdminHome(){
-  const [userStats, setUserStats] = useState([]);
+const { Header, Sider, Content } = Layout;
+const { Option } = Select;
 
-  const MONTHS = useMemo(
-    () => [
-      "Jan",
-      "Feb",
-      "Mar",
-      "Apr",
-      "May",
-      "Jun",
-      "Jul",
-      "Agu",
-      "Sep",
-      "Oct",
-      "Nov",
-      "Dec",
+const AdminHome = () => {
+  const [collapsed, setCollapsed] = useState(false);
+  const [accounts, setAccounts] = useState([
+    { id: 1, name: "John Doe", email: "john@example.com" },
+    { id: 2, name: "Jane Smith", email: "jane@example.com" },
+  ]);
+
+  const [isResidentModalOpen, setResidentModalOpen] = useState(false);
+  const [isCreateAccountModalOpen, setCreateAccountModalOpen] = useState(false);
+  const [form] = Form.useForm();
+
+  const residentData = {
+    verificationFormName: "Hợp đồng mua căn hộ",
+    fullName: "Đặng Đức Hoàng",
+    email: "duchoang@gmail.com",
+    phoneNumber: "0909219432",
+    contractStartDate: "2024-03-01T08:00:00",
+    contractEndDate: "2024-08-01T08:00:00",
+    imageFiles: [
+      "http://res.cloudinary.com/dct0qbbjc/image/upload/v1741776225/yfnkdf8adtvfato4chmq.png",
+      "http://res.cloudinary.com/dct0qbbjc/image/upload/v1741776228/jr0afrbzdpitat9s5r2e.png",
     ],
-    []
-  );
+  };
 
-  useEffect(() => {
-    const getStats = async () => {
-      try {
-        const res = await userRequest.get("/users/stats");
-        res.data.map((item) =>
-          setUserStats((prev) => [
-            ...prev,
-            { name: MONTHS[item._id - 1], "New User": item.total },
-          ])
-        );
-      } catch (error) { }
-    };
-    getStats();
-  }, [MONTHS]);
+  const toggleCollapsed = () => {
+    setCollapsed(!collapsed);
+  };
+
+  const deleteAccount = (id) => {
+    setAccounts(accounts.filter((account) => account.id !== id));
+    message.success("Account deleted successfully!");
+  };
+
+  const handleCreateAccount = async (values) => {
+    try {
+      const response = await fetch("http://localhost:8080/user/add", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(values),
+      });
+
+      if (response.ok) {
+        message.success("Account created successfully!");
+        setCreateAccountModalOpen(false);
+        form.resetFields();
+      } else {
+        message.error("Failed to create account.");
+      }
+    } catch (error) {
+      message.error("Error connecting to server.");
+    }
+  };
+
+  const menuItems = [
+    { key: "1", icon: <AppstoreOutlined />, label: "Dashboard" },
+    { key: "2", icon: <UserOutlined />, label: "Accounts" },
+  ];
+
+  const columns = [
+    { title: "ID", dataIndex: "id", key: "id" },
+    { title: "Name", dataIndex: "name", key: "name" },
+    { title: "Email", dataIndex: "email", key: "email" },
+    {
+      title: "Actions",
+      key: "actions",
+      render: (_, record) => (
+        <Button type="danger" icon={<DeleteOutlined />} onClick={() => deleteAccount(record.id)}>
+          Delete
+        </Button>
+      ),
+    },
+  ];
 
   return (
-    <div className="admin-home-container">
-      <AdminNavBar />
-      <div className="bottom">
-        <AdminLeftBar />
-        <div className="bottom-right">
-          <FeaturedItem />
-          <Chart
-            data={userStats}
-            title="User Analytics"
-            grid
-            dataKey="New User"
-          />
-          <div className="data">
-            <NewMembers />
-            <LatestTransactions />
+    <Layout style={{ minHeight: "100vh" }}>
+      <Sider collapsible collapsed={collapsed} onCollapse={toggleCollapsed}>
+        <div className="logo" />
+        <Menu theme="dark" defaultSelectedKeys={["1"]} mode="inline" items={menuItems} />
+      </Sider>
+      <Layout>
+        <Header
+          style={{
+            padding: 10,
+            background: "#fff",
+            display: "flex",
+            justifyContent: "space-between",
+          }}
+        >
+          <Button onClick={toggleCollapsed} icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />} />
+          <Input placeholder="Search..." prefix={<SearchOutlined />} style={{ width: 200 }} />
+          <div style={{ display: "flex", gap: "10px" }}>
+            <Button type="primary" icon={<PlusOutlined />} onClick={() => setCreateAccountModalOpen(true)}>
+              New Account
+            </Button>
+            <Button type="default" icon={<EyeOutlined />} onClick={() => setResidentModalOpen(true)}>
+              View New Resident
+            </Button>
+          </div>
+        </Header>
+        <Content style={{ margin: "16px" }}>
+          <h2>List of Accounts</h2>
+          <Table dataSource={accounts} columns={columns} rowKey="id" />
+        </Content>
+      </Layout>
+
+      {/* Modal View Resident */}
+      <Modal
+        title="New Resident Details"
+        open={isResidentModalOpen}
+        onCancel={() => setResidentModalOpen(false)}
+        footer={null}
+      >
+        <p><strong>Verification Form:</strong> {residentData.verificationFormName}</p>
+        <p><strong>Full Name:</strong> {residentData.fullName}</p>
+        <p><strong>Email:</strong> {residentData.email}</p>
+        <p><strong>Phone:</strong> {residentData.phoneNumber}</p>
+        <p><strong>Contract Start:</strong> {new Date(residentData.contractStartDate).toLocaleDateString()}</p>
+        <p><strong>Contract End:</strong> {new Date(residentData.contractEndDate).toLocaleDateString()}</p>
+        <div>
+          <strong>Images:</strong>
+          <div style={{ display: "flex", gap: "10px", marginTop: "10px" }}>
+            {residentData.imageFiles.map((img, index) => (
+              <img key={index} src={img} alt="Resident" width={100} />
+            ))}
           </div>
         </div>
-      </div>
-    </div>
+      </Modal>
+
+      {/* Modal Create Account */}
+      <Modal
+        title="Create New Account"
+        open={isCreateAccountModalOpen}
+        onCancel={() => setCreateAccountModalOpen(false)}
+        footer={null}
+      >
+        <Form form={form} layout="vertical" onFinish={handleCreateAccount}>
+          <Form.Item
+            label="Username"
+            name="userName"
+            rules={[{ required: true, message: "Please enter username!" }]}
+          >
+            <Input />
+          </Form.Item>
+          <Form.Item
+            label="Password"
+            name="password"
+            rules={[{ required: true, message: "Please enter password!" }]}
+          >
+            <Input.Password />
+          </Form.Item>
+          <Form.Item
+            label="Role"
+            name="role"
+            rules={[{ required: true, message: "Please select a role!" }]}
+          >
+            <Select placeholder="Select role">
+              <Option value="Chủ căn hộ">Chủ căn hộ</Option>
+              <Option value="Người ở">Người ở</Option>
+            </Select>
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit" style={{ width: "100%" }}>
+              Create Account
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
+    </Layout>
   );
-}
+};
 
 export default AdminHome;
