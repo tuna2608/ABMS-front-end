@@ -9,11 +9,11 @@ import LogoutIcon from '@mui/icons-material/Logout';
 import ModeEditOutlineIcon from '@mui/icons-material/ModeEditOutline';
 import KeyIcon from '@mui/icons-material/Key';
 import { Link, useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch} from "react-redux";
 import { useState } from "react";
 import { logoutDispatch } from "../../../redux/apiCalls";
 const AdminNavBar = () => {
-  const user = useSelector(state => state.user.currentUser);
+  // const user = useSelector(state => state.user.currentUser);
   const [isPopuped, setIsPopuped] = useState(false);
   const dispatch = useDispatch()
   const popup = () => {
