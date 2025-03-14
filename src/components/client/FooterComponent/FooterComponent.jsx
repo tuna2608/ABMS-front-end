@@ -37,7 +37,7 @@ function FooterComponent() {
   return (
     <WrapperFooter justify="space-between">
       <FooterCol span={6}>
-        <Image src={logoMenu} width={150} preview={false} />
+        <Image src={logoMenu} width={200} preview={false} />
         <p>Bản quyền © 2025 ABMS</p>
         <p>Thiết kế bởi Phương Nam</p>
       </FooterCol>
