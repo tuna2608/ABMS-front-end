@@ -5,6 +5,7 @@ import NotFoundPage from "../pages/common/NotFoundPage/NotFoundPage";
 import LoginPage from "../pages/common/LoginPage/LoginPage";
 import AdminHome from "../pages/admin/adminHome/AdminHome";
 import ForgotPasswordPage from "../pages/common/ForgotPasswordPage/ForgotPasswordPage";
+import RegisterPage from "../pages/common/RegisterPage/Register";
 
 
 
@@ -32,6 +33,11 @@ export const routes = [
     {
         path: '/login',
         page: LoginPage,
+        isShowHeader: false
+    },
+    {
+        path: '/register',
+        page: RegisterPage,
         isShowHeader: false
     },
     {
