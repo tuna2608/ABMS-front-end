@@ -6,6 +6,7 @@ import LoginPage from "../pages/common/LoginPage/LoginPage";
 import AdminHome from "../pages/admin/adminHome/AdminHome";
 import ForgotPasswordPage from "../pages/common/ForgotPasswordPage/ForgotPasswordPage";
 import RegisterPage from "../pages/common/RegisterPage/Register";
+import OwnerHome from "../pages/owner/ownerHome/OwnerHome";
 
 
 
@@ -48,6 +49,11 @@ export const routes = [
     {
         path: '/adminHome',
         page: AdminHome,
+        isShowHeader: false
+    },
+    {
+        path: '/ownerHome',
+        page: OwnerHome,
         isShowHeader: false
     },
     {
