@@ -10,7 +10,6 @@ import {
   DollarOutlined,
   EyeOutlined,
   PlusOutlined,
-  CalendarOutlined,
 } from "@ant-design/icons";
 import {
   Button,
@@ -29,10 +28,6 @@ import {
   Statistic,
   Row,
   Col,
-  Space,
-  Progress,
-  List,
-  Avatar,
 } from "antd";
 
 const { Sider, Content } = Layout;
@@ -84,6 +79,7 @@ const OwnerHome = () => {
           <Menu.Item key="dashboard" icon={<DashboardOutlined />}>Bảng điều khiển</Menu.Item>
           <Menu.Item key="properties" icon={<HomeOutlined />}>Bất động sản của tôi</Menu.Item>
           <Menu.Item key="create" icon={<FileAddOutlined />}>Tạo danh sách</Menu.Item>
+          <Menu.Item key="createPost" icon={<BookOutlined />}>Tạo bài viết</Menu.Item>
           <Menu.Item key="bookings" icon={<BookOutlined />}>Đặt chỗ</Menu.Item>
           <Menu.Item key="settings" icon={<SettingOutlined />}>Cài đặt</Menu.Item>
           <Menu.SubMenu key="reports" title="Báo cáo" icon={<ContainerOutlined />}>
@@ -117,6 +113,21 @@ const OwnerHome = () => {
                 <Form.Item label="Giá" name="price" rules={[{ required: true, message: "Vui lòng nhập giá" }]}> <InputNumber style={{ width: "100%" }} /> </Form.Item>
                 <Form.Item label="Tải lên hình ảnh" name="images"> <Upload listType="picture-card" fileList={fileList} onChange={handleImageChange}> <PlusOutlined /> Tải lên </Upload> </Form.Item>
                 <Form.Item> <Button type="primary" htmlType="submit">Gửi</Button> </Form.Item>
+              </Form>
+            </Card>
+          )}
+          {activeTab === "createPost" && (
+            <Card title="Tạo bài viết mới">
+              <Form layout="vertical" form={form} onFinish={() => message.success("Bài viết đã được tạo thành công!")}> 
+                <Form.Item label="Tiêu đề bài viết" name="title" rules={[{ required: true, message: "Vui lòng nhập tiêu đề" }]}> 
+                  <Input /> 
+                </Form.Item>
+                <Form.Item label="Nội dung bài viết" name="content" rules={[{ required: true, message: "Vui lòng nhập nội dung" }]}> 
+                  <Input.TextArea rows={4} /> 
+                </Form.Item>
+                <Form.Item> 
+                  <Button type="primary" htmlType="submit">Đăng bài</Button> 
+                </Form.Item>
               </Form>
             </Card>
           )}
