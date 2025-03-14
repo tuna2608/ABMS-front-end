@@ -14,7 +14,7 @@ export const WrapperContainerLeft = styled.div`
     display: flex;
     flex-direction: column;
     flex: 1;
-    gap: 20px;
+    gap: 16px;
 `
 
 export const WrapperContainerRight = styled.div`

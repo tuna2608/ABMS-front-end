@@ -175,6 +175,9 @@ const SignInPage = () => {
           <Link onClick={() => navigate("/forgot")}> 
             <WrapperTextLight>Quên mật khẩu</WrapperTextLight>
           </Link>
+          <Link onClick={() => navigate("/register")}> 
+            <WrapperTextLight>Chưa có tài khoản ? Đăng ký ngay</WrapperTextLight>
+          </Link>
         </WrapperContainerLeft>
         <WrapperContainerRight>
           <Image src={imgLogin} width="250px" height="250px" preview={false} />
