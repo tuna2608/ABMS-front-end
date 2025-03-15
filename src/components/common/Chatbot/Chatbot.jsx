@@ -3,22 +3,17 @@ import {
   Card, 
   Input, 
   Button, 
-  List, 
   Avatar, 
   Typography, 
   Space, 
-  Divider, 
   Badge, 
   Tooltip,
-  Popover,
-  Empty
 } from 'antd';
 import { 
   SendOutlined, 
   UserOutlined, 
   RobotOutlined, 
   CloseOutlined, 
-  HomeOutlined,
   EnvironmentOutlined,
   DollarOutlined,
   PictureOutlined,

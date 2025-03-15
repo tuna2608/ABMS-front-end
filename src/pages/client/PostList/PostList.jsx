@@ -3,7 +3,6 @@ import {
   Card, 
   Row, 
   Col,
-  Avatar, 
   Space, 
   Tag, 
   Input, 
@@ -14,8 +13,6 @@ import {
   Typography,
   Badge,
   Tooltip,
-  Divider,
-  Image
 } from "antd";
 import { 
   HomeOutlined, 
@@ -28,7 +25,6 @@ import {
   EyeOutlined,
   ArrowRightOutlined
 } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
 
 const { Search } = Input;
 const { Option } = Select;
