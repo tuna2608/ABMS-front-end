@@ -49,12 +49,12 @@ export const routes = [
     {
         path: '/adminHome',
         page: AdminHome,
-        isShowHeader: false
+        isShowHeader: true
     },
     {
         path: '/ownerHome',
         page: OwnerHome,
-        isShowHeader: false
+        isShowHeader: true
     },
     {
         path: '*',
