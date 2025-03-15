@@ -7,6 +7,8 @@ import AdminHome from "../pages/admin/adminHome/AdminHome";
 import ForgotPasswordPage from "../pages/common/ForgotPasswordPage/ForgotPasswordPage";
 import RegisterPage from "../pages/common/RegisterPage/Register";
 import OwnerHome from "../pages/owner/ownerHome/OwnerHome";
+import PostList from "../pages/client/PostList/PostList";
+import Chatbot from "../components/common/Chatbot/Chatbot";
 
 
 
@@ -55,6 +57,16 @@ export const routes = [
         path: '/ownerHome',
         page: OwnerHome,
         isShowHeader: true
+    },
+    {
+        path: '/post',
+        page: PostList,
+        isShowHeader: true
+    },
+    {
+        path: '/chatbot',
+        page: Chatbot,
+        isShowHeader: false
     },
     {
         path: '*',
