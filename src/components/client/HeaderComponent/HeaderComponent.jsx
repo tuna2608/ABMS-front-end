@@ -32,6 +32,25 @@ const NavItem = styled(Button)`
   font-size: 20px;
 `;
 
+const NavItemAVT = styled.div`
+  display: flex;
+  padding: 0 16px;
+  justify-content: center;
+  align-items: center;
+  gap: 20px;
+  height: 50px;
+  background-color: white;
+  color: var(--cheadline);
+  font-size: 20px;
+  border-radius: 10px;
+
+  &:hover{
+    cursor: pointer;
+    background-color: var(--csecondary);
+    color: white;
+  }
+`;
+
 
 
 function HeaderComponent() {
@@ -108,9 +127,11 @@ function HeaderComponent() {
               </NavItem>
             </Badge>
           </Dropdown>
-          <NavItem>
+          
+          <NavItemAVT>
+            <p>Nguyen van a</p>
             <UserOutlined />
-          </NavItem>
+          </NavItemAVT>
         </NavbarListItem>
       </Col>
     </WrapperHeader>

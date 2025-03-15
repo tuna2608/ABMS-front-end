@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { useNavigate} from 'react-router-dom'
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import {
@@ -17,6 +18,7 @@ import ButtonComponent from "../../../components/common/ButtonComponent/ButtonCo
 import { loginUser } from "../../../services/UserService";
 import ErrorBoundary from "antd/es/alert/ErrorBoundary";
 import bgLogin from "../../../assets/common/images/bg-login.jpg";
+import { useDispatch } from "react-redux";
 
 const TextContent = styled.p`
   color: var(--cparagraph);
@@ -32,10 +34,15 @@ const SignInPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
+  const dispatch  = useDispatch();
+
+  const navigate = useNavigate();
+
   const { mutate, isPending, isError, error } = useMutation({
     mutationFn: ({ usernameOrEmail, password }) => loginUser({ usernameOrEmail, password }),
     onSuccess: () => {
       console.log("login success");
+      navigate('/');
     },
   });
 

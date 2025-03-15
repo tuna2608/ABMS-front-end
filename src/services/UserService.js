@@ -1,14 +1,14 @@
-export async function loginUser({ usernameOrEmail, password }) {
-    console.log(usernameOrEmail + password);
 
+export async function loginUser({usernameOrEmail,password}){
+    console.log(usernameOrEmail+password);
     const body = {
         usernameOrEmail,
         password,
-    };
-    console.log(JSON.stringify(body));
-
-    const response = await fetch(`http://localhost:8080/api/login`, {
-        method: "POST",
+    }
+    // console.log(JSON.stringify(body));
+    
+    const response = await fetch(`http://localhost:8080/api/login`,{
+        method: 'POST',
         body: JSON.stringify(body),
         headers: {
             "Content-Type": "application/json",
