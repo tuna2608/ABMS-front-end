@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useNavigate} from 'react-router-dom'
 import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import {
@@ -15,10 +14,9 @@ import styled from "styled-components";
 import Link from "antd/es/typography/Link";
 import InputForm from "../../../components/common/InputForm/InputForm";
 import ButtonComponent from "../../../components/common/ButtonComponent/ButtonComponent";
-import { loginUser } from "../../../services/UserService";
+import { registerUser } from "../../../services/UserService";
 import ErrorBoundary from "antd/es/alert/ErrorBoundary";
 import bgLogin from "../../../assets/common/images/bg-login.jpg";
-import { useDispatch } from "react-redux";
 
 const TextContent = styled.p`
   color: var(--cparagraph);
@@ -28,33 +26,25 @@ const TitlePage = styled.h2`
   color: var(--cheadline);
 `;
 
-const SignInPage = () => {
+const RegisterPage = () => {
   const navigate = useNavigate();
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
-  const dispatch  = useDispatch();
-
-  const navigate = useNavigate();
+  const [confirmPassword, setConfirmPassword] = useState("");
 
   const { mutate, isPending, isError, error } = useMutation({
-    mutationFn: ({ usernameOrEmail, password }) => loginUser({ usernameOrEmail, password }),
+    mutationFn: ({ email, password }) => registerUser({ email, password }),
     onSuccess: () => {
-      console.log("login success");
-      navigate('/');
+      console.log("register success");
     },
   });
 
-  const handleLogin = (values) => {
+  const handleRegister = (values) => {
     mutate({
-      usernameOrEmail: values.usernameOrEmail,
+      email: values.email,
       password: values.password,
     });
-  };
-
-  const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
   };
 
   return (
@@ -70,11 +60,7 @@ const SignInPage = () => {
         }}
       >
         <img
-          style={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-          }}
+          style={{ width: "100%", height: "100%", objectFit: "cover" }}
           src={bgLogin}
           alt=""
         />
@@ -92,7 +78,7 @@ const SignInPage = () => {
       <div
         style={{
           width: "800px",
-          height: "450px",
+          height: "500px",
           display: "flex",
           borderRadius: "10px",
           backgroundColor: "#ffffff",
@@ -100,33 +86,30 @@ const SignInPage = () => {
         }}
       >
         <WrapperContainerLeft>
-          <TitlePage>Xin chào</TitlePage>
-          <TextContent>Mời bạn đăng nhập tài khoản</TextContent>
+          <TitlePage>Đăng ký tài khoản</TitlePage>
+          <TextContent>Hãy tạo tài khoản của bạn</TextContent>
           <Form
-            name="basic"
+            name="register"
             labelCol={{ span: 8 }}
             wrapperCol={{ span: 24 }}
-            style={{ maxWidth: 600 }}
-            initialValues={{ remember: true }}
-            onFinish={handleLogin}
-            onFinishFailed={onFinishFailed}
+            onFinish={handleRegister}
             autoComplete="off"
           >
             <Form.Item
-              name="usernameOrEmail"
-              rules={[{ required: true, message: "Please input your username!" }]}
+              name="email"
+              rules={[{ required: true, message: "Vui lòng nhập email!" }]}
             >
               <InputForm
-                placeholder={"Email hoặc tài khoản"}
+                placeholder="Email"
                 value={email}
-                type="text"
+                type="email"
                 onChange={(e) => setEmail(e.target.value)}
               />
             </Form.Item>
 
             <Form.Item
               name="password"
-              rules={[{ required: true, message: "Please input your password!" }]}
+              rules={[{ required: true, message: "Vui lòng nhập mật khẩu!" }]}
             >
               <div style={{ position: "relative" }}>
                 <span
@@ -136,7 +119,7 @@ const SignInPage = () => {
                   {isShowPassword ? <EyeTwoTone /> : <EyeInvisibleOutlined />}
                 </span>
                 <InputForm
-                  placeholder={"Mật khẩu"}
+                  placeholder="Mật khẩu"
                   value={password}
                   type={isShowPassword ? "text" : "password"}
                   onChange={(e) => setPassword(e.target.value)}
@@ -144,15 +127,29 @@ const SignInPage = () => {
               </div>
             </Form.Item>
 
-            <Form.Item name="remember" valuePropName="checked" label={null}>
-              <Checkbox>Remember me</Checkbox>
+            <Form.Item
+              name="confirmPassword"
+              dependencies={["password"]}
+              rules={[{ required: true, message: "Xác nhận mật khẩu!" }]}
+            >
+              <InputForm
+                placeholder="Nhập lại mật khẩu"
+                value={confirmPassword}
+                type="password"
+                onChange={(e) => setConfirmPassword(e.target.value)}
+              />
             </Form.Item>
-            <Form.Item label={null}>
+
+            <Form.Item name="agree" valuePropName="checked">
+              <Checkbox>Tôi đồng ý với điều khoản sử dụng</Checkbox>
+            </Form.Item>
+
+            <Form.Item>
               {isPending && <p>Loading...</p>}
               {!isPending && (
                 <ButtonComponent
                   htmlType="submit"
-                  disabled={!email.length || !password.length}
+                  disabled={!email.length || !password.length || password !== confirmPassword}
                   size={40}
                   styleButton={{
                     backgroundColor: "var(--cbutton)",
@@ -166,24 +163,14 @@ const SignInPage = () => {
                     fontSize: "20px",
                     fontWeight: "600",
                   }}
-                  textButton={"Đăng nhập"}
+                  textButton={"Đăng ký"}
                 />
               )}
-              {isError && (
-                <ErrorBoundary
-                  description="Failed to login"
-                  message={
-                    error.info?.message || "username or password wrong, try again!"
-                  }
-                />
-              )}
+              {isError && <ErrorBoundary description="Đăng ký thất bại" message={error?.message} />}
             </Form.Item>
           </Form>
-          <Link onClick={() => navigate("/forgot")}> 
-            <WrapperTextLight>Quên mật khẩu</WrapperTextLight>
-          </Link>
-          <Link onClick={() => navigate("/register")}> 
-            <WrapperTextLight>Chưa có tài khoản ? Đăng ký ngay</WrapperTextLight>
+          <Link onClick={() => navigate("/login")}>
+            <WrapperTextLight>Đã có tài khoản? Đăng nhập</WrapperTextLight>
           </Link>
         </WrapperContainerLeft>
         <WrapperContainerRight>
@@ -194,4 +181,4 @@ const SignInPage = () => {
   );
 };
 
-export default SignInPage;
+export default RegisterPage;

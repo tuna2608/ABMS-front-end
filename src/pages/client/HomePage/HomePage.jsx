@@ -86,25 +86,10 @@ const HomePage = () => {
   };
   return (
     <div>
-      <div
-        style={{
-          width: 256,
-        }}
-      >
-        <Button type="primary" onClick={toggleCollapsed} style={{}}>
-          {collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-        </Button>
-        <Menu
-          defaultSelectedKeys={["1"]}
-          defaultOpenKeys={["sub1"]}
-          mode="inline"
-          theme="light"
-          inlineCollapsed={collapsed}
-          items={items}
-        />
-      </div>
+      HomePage
     </div>
-  );
-};
+  )
+}
 
-export default HomePage;
+export default HomePage
+
