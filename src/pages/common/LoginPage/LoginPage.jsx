@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate} from 'react-router-dom'
 import { useMutation } from "@tanstack/react-query";
-import { useNavigate } from "react-router-dom";
 import {
   WrapperContainer,
   WrapperContainerLeft,
@@ -36,7 +35,6 @@ const SignInPage = () => {
 
   const dispatch  = useDispatch();
 
-  const navigate = useNavigate();
 
   const { mutate, isPending, isError, error } = useMutation({
     mutationFn: ({ usernameOrEmail, password }) => loginUser({ usernameOrEmail, password }),
