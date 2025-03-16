@@ -189,7 +189,7 @@ const AdminHome = () => {
       title: "Tên tài khoản",
       dataIndex: "name",
       key: "name",
-      render: (text) => <a>{text}</a>,
+      render: (text) => <Button type="link" style={{ padding: 0, height: 'auto', lineHeight: 'inherit' }}>{text}</Button>,
     },
     {
       title: "Email",
@@ -252,7 +252,7 @@ const AdminHome = () => {
       title: "Chủ hộ",
       dataIndex: "name",
       key: "name",
-      render: (text) => <a>{text}</a>,
+      render: (text) => <Button type="link" style={{ padding: 0, height: 'auto', lineHeight: 'inherit' }}>{text}</Button>,
     },
     {
       title: "Loại hợp đồng",
@@ -474,7 +474,7 @@ const AdminHome = () => {
                   >
                     <List.Item.Meta
                       avatar={<Avatar src={item.avatar} />}
-                      title={<a href="#">{item.title}</a>}
+                      title={<Button type="link" style={{ padding: 0, height: 'auto', lineHeight: 'inherit' }}>{item.title}</Button>}
                       description={`Đăng bởi: ${item.author}`}
                     />
                     <Paragraph ellipsis={{ rows: 2 }}>{item.summary}</Paragraph>
