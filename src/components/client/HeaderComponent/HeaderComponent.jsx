@@ -84,7 +84,7 @@ function HeaderComponent() {
       user = null;
     }
   }
-  console.log(user);
+  //console.log(user);
 
   const navigate = useNavigate();
   const onSearch = (value, _e, info) => console.log(info?.source, value);
@@ -124,8 +124,8 @@ function HeaderComponent() {
           ></Image>
         </Logo>
         <Col span={10}>
-          {(user.role === 'Chủ căn hộ' ||
-            user.role === 'Người thuê') ? (
+          {(user?.role === 'Chủ căn hộ' ||
+            user?.role === 'Người thuê') ? (
               <Search
                 placeholder="Tìm kiếm dịch vụ bạn muốn ?"
                 allowClear

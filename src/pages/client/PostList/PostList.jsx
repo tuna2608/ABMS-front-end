@@ -1,4 +1,6 @@
 import React, { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
+
 import { 
   Card, 
   Row, 
@@ -29,6 +31,7 @@ import {
 const { Search } = Input;
 const { Option } = Select;
 const { Title, Text, Paragraph } = Typography;
+
 
 // Dữ liệu mẫu các bài đăng căn hộ
 const sampleApartments = [
@@ -198,6 +201,8 @@ const PostList = () => {
   const [selectedCategory, setSelectedCategory] = useState("Tất cả");
   const [selectedArea, setSelectedArea] = useState("Tất cả");
   const [currentPage, setCurrentPage] = useState(1);
+
+  const navigate = useNavigate();
   const pageSize = 8;
   // Sử dụng hook useNavigate để chuyển trang
   // Lưu ý: Trong môi trường thực tế, phải đảm bảo component được sử dụng trong Router
@@ -252,6 +257,7 @@ const PostList = () => {
     console.log(`Đang chuyển đến trang chi tiết của căn hộ ID: ${id}`);
     // Có thể thay thế bằng window.location.href trong trường hợp không dùng react-router
     // window.location.href = `/apartment/${id}`;
+    navigate('/apartmentDetail')
   };
 
   return (

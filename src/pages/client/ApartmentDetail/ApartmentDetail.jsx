@@ -1,8 +1,9 @@
-import React from 'react';
-import styled from 'styled-components';
+import React, { useEffect } from "react";
+import styled from "styled-components";
 import { AiOutlinePicture } from "react-icons/ai";
 import { BsFillImageFill } from "react-icons/bs";
 import { FaShare, FaExclamationTriangle, FaHeart } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 /* Phần còn lại của code navbar, container, wrapper, v.v. 
    giả sử bạn vẫn giữ nguyên theo bản cũ. Ở đây chỉ tập trung 
@@ -32,11 +33,10 @@ const TopBar = styled.div`
   font-weight: 500;
 `;
 
-
 /* 2 cột trái-phải */
 const DetailContent = styled.div`
   display: grid;
-  grid-template-columns: 2fr 1fr; 
+  grid-template-columns: 2fr 1fr;
   gap: 16px;
   margin-top: 16px;
 
@@ -61,7 +61,7 @@ const MainImageWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  
+
   svg {
     color: #9ca3af;
     font-size: 80px;
@@ -96,7 +96,7 @@ const InfoCard = styled.div`
   background: white;
   border-radius: 8px;
   padding: 16px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
 const Title = styled.h2`
@@ -116,7 +116,7 @@ const Address = styled.p`
 const InfoTable = styled.div`
   margin-top: 12px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr) 40px 40px 40px; 
+  grid-template-columns: repeat(3, 1fr) 40px 40px 40px;
   gap: 8px;
   align-items: center;
   font-size: 14px;
@@ -153,7 +153,7 @@ const RightColumn = styled.div`
   background: white;
   border-radius: 8px;
   padding: 16px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -213,6 +213,27 @@ const DepositButton = styled(ContactButton)`
 
 /* ------------- Component chính ------------- */
 function ApartmentDetail() {
+  const userLocal = localStorage.getItem("user");
+
+  let user;
+  if (typeof userLocal === "string" && userLocal !== null) {
+    try {
+      user = JSON.parse(userLocal);
+    } catch (error) {
+      console.error("Lỗi khi parse dữ liệu:", error);
+      user = null;
+    }
+  }
+  const navigate = useNavigate();
+
+  function handleCheckUser() {
+    console.log("vao function");
+    if (user == null) {
+      console.log("vao if");
+
+      navigate("/login");
+    }
+  }
   return (
     <Container>
       <Wrapper>
@@ -227,7 +248,7 @@ function ApartmentDetail() {
 
             {/* Hàng thumbnails */}
             <ThumbnailsRow>
-              {[1,2,3,4,5].map((item) => (
+              {[1, 2, 3, 4, 5].map((item) => (
                 <ThumbItem key={item}>
                   <BsFillImageFill />
                 </ThumbItem>
@@ -236,7 +257,10 @@ function ApartmentDetail() {
 
             {/* Info */}
             <InfoCard>
-              <Title>Cho thuê căn hộ 2PN full nội thất tại chung cư FPT Plaza 1 Đà Nẵng</Title>
+              <Title>
+                Cho thuê căn hộ 2PN full nội thất tại chung cư FPT Plaza 1 Đà
+                Nẵng
+              </Title>
               <Address>FPT Plaza 1, đường Võ Chí H...</Address>
 
               <InfoTable>
@@ -244,9 +268,15 @@ function ApartmentDetail() {
                 <InfoLabel>Mức giá</InfoLabel>
                 <InfoLabel>Diện tích</InfoLabel>
                 <InfoLabel>Phòng ngủ</InfoLabel>
-                <IconButton><FaShare /></IconButton>
-                <IconButton><FaExclamationTriangle /></IconButton>
-                <IconButton><FaHeart /></IconButton>
+                <IconButton>
+                  <FaShare />
+                </IconButton>
+                <IconButton>
+                  <FaExclamationTriangle />
+                </IconButton>
+                <IconButton>
+                  <FaHeart />
+                </IconButton>
 
                 {/* Hàng hai: value + cột rỗng (nếu không cần hiển thị gì) */}
                 <InfoValue>8,5 triệu / tháng</InfoValue>
@@ -269,9 +299,13 @@ function ApartmentDetail() {
               </OwnerInfo>
             </OwnerHeader>
 
-            <ZaloButton>Liên hệ bằng zalo</ZaloButton>
-            <PhoneButton>Hiển thị số 0912xxx</PhoneButton>
-            <DepositButton>Đặt cọc trước</DepositButton>
+            <ZaloButton onClick={handleCheckUser}>Liên hệ bằng zalo</ZaloButton>
+            <PhoneButton onClick={handleCheckUser}>
+              Hiển thị số 0912xxx
+            </PhoneButton>
+            <DepositButton onClick={handleCheckUser}>
+              Đặt cọc trước
+            </DepositButton>
           </RightColumn>
         </DetailContent>
       </Wrapper>

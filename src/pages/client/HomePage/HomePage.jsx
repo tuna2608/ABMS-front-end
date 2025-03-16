@@ -231,7 +231,7 @@ export default function HomePage() {
       user = null;
     }
   }
-  console.log(user);
+  // console.log(user);
   const [activeMenu, setActiveMenu] = useState("");
 
   // Các trường search
