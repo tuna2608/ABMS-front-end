@@ -32,15 +32,13 @@ import {
   HeartOutlined, 
   ShareAltOutlined, 
   EyeOutlined, 
-  MessageOutlined,
   BankOutlined,
   SafetyCertificateOutlined,
   CheckCircleOutlined,
-  CloseCircleOutlined,
   LeftOutlined,
   RightOutlined
 } from "@ant-design/icons";
-import { useParams, useNavigate } from "react-router-dom";
+
 
 const { Title, Text, Paragraph } = Typography;
 const { TabPane } = Tabs;
@@ -53,7 +51,7 @@ const statusColors = {
 };
 
 // Dữ liệu mẫu chi tiết căn hộ
-const apartmentDetails = {
+const postDetails = {
   id: 1,
   title: "Căn hộ cao cấp Vinhomes Central Park",
   description: "Căn hộ ban công rộng, view sông, nội thất cao cấp, an ninh 24/7, thiết kế hiện đại, đầy đủ tiện nghi. Khu dân cư văn minh, gần trung tâm thương mại, trường học quốc tế và công viên. Phù hợp với gia đình hoặc người nước ngoài làm việc tại Việt Nam.",
@@ -136,7 +134,7 @@ const PostDetail = () => {
     // Trong thực tế, sẽ gọi API với id
     // fetch(`/api/apartments/${id}`)...
     setTimeout(() => {
-      setApartment(apartmentDetails);
+      setApartment(postDetails);
       setLoading(false);
     }, 1000);
   }, [id]);
