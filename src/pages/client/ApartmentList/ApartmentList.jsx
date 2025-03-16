@@ -249,7 +249,7 @@ const ApartmentList = () => {
   
   // Chuyển đến trang chi tiết - đã mở comment và thêm điều hướng thực tế
   const goToDetails = (id) => {
-    navigate(`/post-detail`);
+    navigate(`/apartment-detail`);
     console.log(`Đang chuyển đến trang chi tiết của căn hộ ID: ${id}`);
   };
 

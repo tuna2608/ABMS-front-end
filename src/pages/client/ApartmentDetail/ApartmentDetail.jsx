@@ -18,7 +18,8 @@ import {
   Form,
   Input,
   message,
-  Tabs
+  Tabs,
+  Drawer,
 } from "antd";
 import { 
   HomeOutlined, 
@@ -36,12 +37,15 @@ import {
   SafetyCertificateOutlined,
   CheckCircleOutlined,
   LeftOutlined,
-  RightOutlined
+  RightOutlined,
+  MessageOutlined,
+  SendOutlined,
 } from "@ant-design/icons";
 
 
 const { Title, Text, Paragraph } = Typography;
 const { TabPane } = Tabs;
+
 
 // Màu trạng thái
 const statusColors = {
@@ -49,6 +53,34 @@ const statusColors = {
   "Đã cho thuê": "red",
   "Đang đặt cọc": "orange"
 };
+
+// Dữ liệu mẫu tin nhắn
+const sampleMessages = [
+  {
+    id: 1,
+    sender: 'user',
+    content: 'Xin chào, tôi muốn hỏi thêm về căn hộ Vinhomes Central Park.',
+    time: '10:30 AM'
+  },
+  {
+    id: 2,
+    sender: 'owner',
+    content: 'Chào bạn, tôi có thể giúp gì cho bạn?',
+    time: '10:32 AM'
+  },
+  {
+    id: 3,
+    sender: 'user',
+    content: 'Căn hộ này còn trống không? Tôi muốn thuê vào đầu tháng sau.',
+    time: '10:35 AM'
+  },
+  {
+    id: 4,
+    sender: 'owner',
+    content: 'Vâng, căn hộ vẫn còn trống. Bạn có thể cho tôi biết thêm thông tin về nhu cầu thuê của bạn không?',
+    time: '10:40 AM'
+  }
+];
 
 // Dữ liệu mẫu chi tiết căn hộ
 const apartmentDetails = {
@@ -119,6 +151,9 @@ const ApartmentDetail = () => {
   const [apartment, setApartment] = useState(null);
   const [loading, setLoading] = useState(true);
   const [contactModalVisible, setContactModalVisible] = useState(false);
+  const [chatDrawerVisible, setChatDrawerVisible] = useState(false);
+  const [messages, setMessages] = useState(sampleMessages);
+  const [messageInput, setMessageInput] = useState("");
   const [form] = Form.useForm();
   
   // Lấy id từ params URL
@@ -150,10 +185,121 @@ const ApartmentDetail = () => {
     form.resetFields();
   };
 
+  // Mở chat drawer
+  const openChatDrawer = () => {
+    setChatDrawerVisible(true);
+  };
+
+  // Đóng chat drawer
+  const closeChatDrawer = () => {
+    setChatDrawerVisible(false);
+  };
+
+  // Gửi tin nhắn
+  const handleSendMessage = () => {
+    if (messageInput.trim()) {
+      const newMessage = {
+        id: messages.length + 1,
+        sender: 'user',
+        content: messageInput,
+        time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+      };
+      
+      setMessages([...messages, newMessage]);
+      setMessageInput("");
+      
+      // Giả lập phản hồi từ chủ nhà
+      setTimeout(() => {
+        const ownerReply = {
+          id: messages.length + 2,
+          sender: 'owner',
+          content: 'Cảm ơn bạn đã quan tâm. Tôi sẽ liên hệ lại với bạn sớm nhất có thể.',
+          time: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })
+        };
+        setMessages(prev => [...prev, ownerReply]);
+      }, 1000);
+    }
+  };
+
   const goBack = () => {
     // navigate(-1);
     // Hoặc sử dụng
     window.history.back();
+  };
+
+  // Render chat drawer
+  const renderChatDrawer = () => {
+    if (!apartment) return null;
+    
+    return (
+      <Drawer
+        title={
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <Avatar src={apartment.avatar} style={{ marginRight: 12 }} />
+            <div>
+              <div style={{ fontWeight: 'bold' }}>{apartment.contactName}</div>
+              <div style={{ fontSize: 12, color: '#8c8c8c' }}>{apartment.owner}</div>
+            </div>
+          </div>
+        }
+        placement="right"
+        width={380}
+        onClose={closeChatDrawer}
+        open={chatDrawerVisible}
+        bodyStyle={{ padding: '12px', display: 'flex', flexDirection: 'column', height: 'calc(100% - 55px)' }}
+      >
+        <div style={{ 
+          flex: 1, 
+          overflowY: 'auto', 
+          padding: '0 4px',
+          marginBottom: 10,
+          display: 'flex',
+          flexDirection: 'column'
+        }}>
+          {messages.map(message => (
+            <div 
+              key={message.id} 
+              style={{ 
+                alignSelf: message.sender === 'user' ? 'flex-end' : 'flex-start',
+                backgroundColor: message.sender === 'user' ? '#1890ff' : '#f0f0f0',
+                color: message.sender === 'user' ? 'white' : 'black',
+                padding: '8px 12px',
+                borderRadius: 16,
+                marginBottom: 8,
+                maxWidth: '80%',
+                wordWrap: 'break-word'
+              }}
+            >
+              <div>{message.content}</div>
+              <div style={{ 
+                fontSize: 10, 
+                textAlign: message.sender === 'user' ? 'right' : 'left',
+                marginTop: 4,
+                opacity: 0.7
+              }}>
+                {message.time}
+              </div>
+            </div>
+          ))}
+        </div>
+        
+        <div style={{ display: 'flex', marginTop: 'auto' }}>
+          <Input 
+            placeholder="Nhập tin nhắn..." 
+            value={messageInput}
+            onChange={(e) => setMessageInput(e.target.value)}
+            onPressEnter={handleSendMessage}
+            style={{ flex: 1, borderRadius: '20px 0 0 20px' }}
+          />
+          <Button 
+            type="primary"
+            icon={<SendOutlined />} 
+            onClick={handleSendMessage}
+            style={{ borderRadius: '0 20px 20px 0' }}
+          />
+        </div>
+      </Drawer>
+    );
   };
 
   if (loading) {
@@ -383,13 +529,14 @@ const ApartmentDetail = () => {
               <Divider style={{ margin: '12px 0' }} />
               
               <Space direction="vertical" style={{ width: '100%' }}>
+                {/* Nút nhắn tin thay thế nút xem số điện thoại */}
                 <Button 
                   type="primary" 
-                  icon={<PhoneOutlined />} 
+                  icon={<MessageOutlined />} 
                   block
-                  onClick={() => message.info(`Số điện thoại: ${apartment.contactPhone}`)}
+                  onClick={openChatDrawer}
                 >
-                  Xem số điện thoại
+                  Nhắn tin liên hệ
                 </Button>
                 <Button 
                   type="default" 
@@ -444,7 +591,7 @@ const ApartmentDetail = () => {
             <Card title="Hướng dẫn liên hệ">
               <Paragraph>
                 <ul>
-                  <li>Vui lòng gọi điện trước khi đến xem căn hộ</li>
+                  <li>Vui lòng nhắn tin trước khi đến xem căn hộ</li>
                   <li>Chuẩn bị CMND/CCCD và đặt cọc nếu có nhu cầu thuê</li>
                   <li>Thời gian xem nhà: 8:00 - 20:00 hàng ngày</li>
                   <li>Có thể thương lượng giá với chủ nhà</li>
@@ -455,6 +602,7 @@ const ApartmentDetail = () => {
         </Row>
       </Card>
       
+      {/* Modal gửi email liên hệ */}
       <Modal
         title="Gửi yêu cầu liên hệ"
         visible={contactModalVisible}
@@ -503,6 +651,9 @@ const ApartmentDetail = () => {
           </Form.Item>
         </Form>
       </Modal>
+      
+      {/* Chat Drawer */}
+      {renderChatDrawer()}
     </div>
   );
 };
