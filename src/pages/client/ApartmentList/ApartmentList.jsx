@@ -3,7 +3,6 @@ import {
   Card, 
   Row, 
   Col,
-  Avatar, 
   Space, 
   Tag, 
   Input, 
@@ -14,8 +13,6 @@ import {
   Typography,
   Badge,
   Tooltip,
-  Divider,
-  Image
 } from "antd";
 import { 
   HomeOutlined, 
