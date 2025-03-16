@@ -40,7 +40,11 @@ import {
   RightOutlined,
   MessageOutlined,
   SendOutlined,
+  TeamOutlined,
+  ExpandAltOutlined
 } from "@ant-design/icons";
+// Trong dự án thực tế, bạn sẽ cần import thư viện định tuyến
+// import { useNavigate } from "react-router-dom";
 
 
 const { Title, Text, Paragraph } = Typography;
@@ -154,10 +158,12 @@ const ApartmentDetail = () => {
   const [chatDrawerVisible, setChatDrawerVisible] = useState(false);
   const [messages, setMessages] = useState(sampleMessages);
   const [messageInput, setMessageInput] = useState("");
+  const [showAdminRoleModal, setShowAdminRoleModal] = useState(false);
   const [form] = Form.useForm();
   
   // Lấy id từ params URL
   // const { id } = useParams();
+  // Thêm hook navigate để điều hướng trang
   // const navigate = useNavigate();
   
   // Trong môi trường thực tế, sẽ lấy id từ URL
@@ -225,6 +231,23 @@ const ApartmentDetail = () => {
     // navigate(-1);
     // Hoặc sử dụng
     window.history.back();
+  };
+
+  // Hiển thị modal xác nhận chuyển đến trang ChatPage
+  const showAdminRoleConfirm = () => {
+    setShowAdminRoleModal(true);
+  };
+
+  // Xử lý chuyển đến trang ChatPage
+  const handleGotoChatPage = () => {
+    // Trong môi trường thực tế, bạn sẽ sử dụng navigate để điều hướng
+    // navigate('/chat-page');
+    
+    message.success('Đang chuyển đến trang quản lý chat');
+    // Giả lập điều hướng đến trang chat
+    window.location.href = '/chat-page';
+    
+    setShowAdminRoleModal(false);
   };
 
   // Render chat drawer
@@ -529,7 +552,7 @@ const ApartmentDetail = () => {
               <Divider style={{ margin: '12px 0' }} />
               
               <Space direction="vertical" style={{ width: '100%' }}>
-                {/* Nút nhắn tin thay thế nút xem số điện thoại */}
+                {/* Nút nhắn tin liên hệ */}
                 <Button 
                   type="primary" 
                   icon={<MessageOutlined />} 
@@ -538,6 +561,17 @@ const ApartmentDetail = () => {
                 >
                   Nhắn tin liên hệ
                 </Button>
+
+                {/* Nút mới: Nhắn tin Admin/Owner */}
+                <Button 
+                  style={{ background: '#52c41a', color: 'white' }}
+                  icon={<TeamOutlined />} 
+                  block
+                  onClick={showAdminRoleConfirm}
+                >
+                  Nhắn tin Admin/Owner
+                </Button>
+
                 <Button 
                   type="default" 
                   icon={<MailOutlined />} 
@@ -650,6 +684,38 @@ const ApartmentDetail = () => {
             </Button>
           </Form.Item>
         </Form>
+      </Modal>
+      
+      {/* Modal xác nhận chuyển đến trang ChatPage */}
+      <Modal
+        title={
+          <div style={{ display: 'flex', alignItems: 'center' }}>
+            <TeamOutlined style={{ marginRight: 8, color: '#52c41a' }} />
+            <span>Chuyển đến giao diện Admin/Owner</span>
+          </div>
+        }
+        visible={showAdminRoleModal}
+        onCancel={() => setShowAdminRoleModal(false)}
+        footer={[
+          <Button key="cancel" onClick={() => setShowAdminRoleModal(false)}>
+            Hủy
+          </Button>,
+          <Button 
+            key="submit" 
+            type="primary" 
+            icon={<ExpandAltOutlined />} 
+            onClick={handleGotoChatPage}
+          >
+            Chuyển đến trang Chat
+          </Button>,
+        ]}
+      >
+        <div style={{ padding: '10px 0' }}>
+          <p>Bạn muốn chuyển đến giao diện Admin/Owner để quản lý tin nhắn từ nhiều người dùng?</p>
+          <p style={{ fontStyle: 'italic', color: '#888' }}>
+            Giao diện Admin/Owner cho phép bạn theo dõi và phản hồi tất cả các cuộc trò chuyện từ một nơi duy nhất.
+          </p>
+        </div>
       </Modal>
       
       {/* Chat Drawer */}
