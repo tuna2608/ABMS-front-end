@@ -26,6 +26,10 @@ export const WrapperContainerRight = styled.div`
     text-align: center;
 `
 
-export const WrapperTextLight = styled.span`
-  color: var(--chightlight);
-`
+export const LinkNav = styled.div`
+  font-size: 16px;
+  margin: 0;
+  &:hover {
+    cursor: pointer;
+  }
+`;

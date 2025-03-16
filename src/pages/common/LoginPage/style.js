@@ -27,5 +27,8 @@ export const WrapperContainerRight = styled.div`
 `
 
 export const WrapperTextLight = styled.span`
-  color: var(--chightlight);
+  color: black;
+  &:hover{
+    color: var(--chightlight);
+  }
 `

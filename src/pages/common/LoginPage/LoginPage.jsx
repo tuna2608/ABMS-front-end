@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useNavigate} from 'react-router-dom'
+import { useNavigate } from "react-router-dom";
 import { useMutation } from "@tanstack/react-query";
 import {
   WrapperContainer,
@@ -8,15 +8,20 @@ import {
   WrapperTextLight,
 } from "./style";
 import { EyeTwoTone, EyeInvisibleOutlined } from "@ant-design/icons";
-import { Checkbox, Form, Image } from "antd";
+import { Checkbox, Form, Image} from "antd";
 import imgLogin from "./../../../assets/common/images/logo-login.png";
 import styled from "styled-components";
-import Link from "antd/es/typography/Link";
 import InputForm from "../../../components/common/InputForm/InputForm";
 import ButtonComponent from "../../../components/common/ButtonComponent/ButtonComponent";
 import { loginUser } from "../../../services/UserService";
 import ErrorBoundary from "antd/es/alert/ErrorBoundary";
 import bgLogin from "../../../assets/common/images/bg-login.jpg";
+import { LoadingComponent } from "../../../components/common/LoadingComponent/LoadingComponent";
+import { LinkNav } from "../ForgotPasswordPage/style";
+
+import * as message from '../../../components/common/MessageComponent/MessageComponent'
+import {useDispatch} from 'react-redux'
+import { userSlices } from "../../../redux/slices/userSlices";
 
 const TextContent = styled.p`
   color: var(--cparagraph);
@@ -32,13 +37,16 @@ const SignInPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
-
+  const dispatch = useDispatch();
 
   const { mutate, isPending, isError, error } = useMutation({
-    mutationFn: ({ usernameOrEmail, password }) => loginUser({ usernameOrEmail, password }),
-    onSuccess: () => {
-      console.log("login success");
-      navigate('/');
+    mutationFn: ({ usernameOrEmail, password }) =>
+      loginUser({ usernameOrEmail, password }),
+    onSuccess: (data) => {
+      message.success('Login successfull !');
+      console.log(data);
+      localStorage.setItem('user',JSON.stringify(data));
+      navigate("/");
     },
   });
 
@@ -47,10 +55,6 @@ const SignInPage = () => {
       usernameOrEmail: values.usernameOrEmail,
       password: values.password,
     });
-  };
-
-  const onFinishFailed = (errorInfo) => {
-    console.log("Failed:", errorInfo);
   };
 
   return (
@@ -105,12 +109,13 @@ const SignInPage = () => {
             style={{ maxWidth: 600 }}
             initialValues={{ remember: true }}
             onFinish={handleLogin}
-            onFinishFailed={onFinishFailed}
             autoComplete="off"
           >
             <Form.Item
               name="usernameOrEmail"
-              rules={[{ required: true, message: "Please input your username!" }]}
+              rules={[
+                { required: true, message: "Please input your username!" },
+              ]}
             >
               <InputForm
                 placeholder={"Email hoặc tài khoản"}
@@ -122,12 +127,19 @@ const SignInPage = () => {
 
             <Form.Item
               name="password"
-              rules={[{ required: true, message: "Please input your password!" }]}
+              rules={[
+                { required: true, message: "Please input your password!" },
+              ]}
             >
               <div style={{ position: "relative" }}>
                 <span
                   onClick={() => setIsShowPassword(!isShowPassword)}
-                  style={{ zIndex: 10, position: "absolute", top: "4px", right: "8px" }}
+                  style={{
+                    zIndex: 10,
+                    position: "absolute",
+                    top: "4px",
+                    right: "8px",
+                  }}
                 >
                   {isShowPassword ? <EyeTwoTone /> : <EyeInvisibleOutlined />}
                 </span>
@@ -139,13 +151,11 @@ const SignInPage = () => {
                 />
               </div>
             </Form.Item>
-
             <Form.Item name="remember" valuePropName="checked" label={null}>
               <Checkbox>Remember me</Checkbox>
             </Form.Item>
             <Form.Item label={null}>
-              {isPending && <p>Loading...</p>}
-              {!isPending && (
+              <LoadingComponent isPending={isPending}>
                 <ButtonComponent
                   htmlType="submit"
                   disabled={!email.length || !password.length}
@@ -164,23 +174,30 @@ const SignInPage = () => {
                   }}
                   textButton={"Đăng nhập"}
                 />
-              )}
+              </LoadingComponent>
               {isError && (
                 <ErrorBoundary
                   description="Failed to login"
                   message={
-                    error.info?.message || "username or password wrong, try again!"
+                    error.info?.message ||
+                    "username or password wrong, try again!"
                   }
                 />
               )}
             </Form.Item>
           </Form>
-          <Link onClick={() => navigate("/forgot")}> 
-            <WrapperTextLight>Quên mật khẩu</WrapperTextLight>
-          </Link>
-          <Link onClick={() => navigate("/register")}> 
-            <WrapperTextLight>Chưa có tài khoản ? Đăng ký ngay</WrapperTextLight>
-          </Link>
+          <LinkNav>
+            <WrapperTextLight onClick={() => navigate("/forgot")}>
+              Quên mật khẩu
+            </WrapperTextLight>
+          </LinkNav>
+          <LinkNav>
+            <p>Chưa có tài khoản ?
+            <WrapperTextLight onClick={() => navigate("/register")}>
+              Đăng ký ngay
+            </WrapperTextLight>
+            </p>
+          </LinkNav>
         </WrapperContainerLeft>
         <WrapperContainerRight>
           <Image src={imgLogin} width="250px" height="250px" preview={false} />
