@@ -9,6 +9,7 @@ import Chatbot from "../components/common/Chatbot/Chatbot";
 import ApartmentList from "../pages/client/ApartmentList/ApartmentList";
 import ApartmentDetail from "../pages/client/ApartmentDetail/ApartmentDetail";
 import ChatPage from "../pages/client/ChatPage/ChatPage";
+import NotificationsPage from "../pages/client/NotificationPage/NotificationPage";
 
 
 
@@ -62,6 +63,11 @@ export const routes = [
     {
         path: '/chat-page',
         page: ChatPage,
+        isShowHeader: false
+    },
+    {
+        path: '/notification',
+        page: NotificationsPage,
         isShowHeader: false
     },
     {
