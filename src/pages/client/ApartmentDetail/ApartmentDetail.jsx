@@ -15,9 +15,9 @@ const Container = styled.div`
 `;
 
 const Wrapper = styled.div`
-  max-width: 1200px;
+  // max-width: 1200px;
   margin: 0 auto;
-  padding: 0 16px;
+  // padding: 0 16px;
 `;
 
 /* Top bar */
@@ -32,46 +32,6 @@ const TopBar = styled.div`
   font-weight: 500;
 `;
 
-/* Navbar chính (giống bạn giữ nguyên) */
-const MainNav = styled.div`
-  display: flex;
-  align-items: center;
-  background: white;
-  padding: 8px 16px;
-`;
-
-const Logo = styled.h1`
-  margin: 0;
-  font-size: 24px;
-  color: #111827;
-`;
-
-const NavLinks = styled.div`
-  display: flex;
-  align-items: center;
-  margin-left: 24px;
-  gap: 16px;
-  flex: 1;
-`;
-
-const Spacer = styled.div`
-  flex: 1;
-`;
-
-const MenuButton = styled.button`
-  background: #fff;
-  border: none;
-  font-weight: 500;
-  cursor: pointer;
-  padding: 8px 16px;
-  border-radius: 4px;
-  color: #111827;
-
-  &:hover {
-    background-color: #166534;
-    color: #fff;
-  }
-`;
 
 /* 2 cột trái-phải */
 const DetailContent = styled.div`
@@ -256,25 +216,6 @@ function ApartmentDetail() {
   return (
     <Container>
       <Wrapper>
-        {/* TOP BAR */}
-        <TopBar>
-          <span>Kênh chủ căn hộ</span>
-          <span>Kênh người thuê căn hộ</span>
-        </TopBar>
-
-        {/* NAV BAR */}
-        <MainNav>
-          <Logo>ABMS</Logo>
-          <NavLinks>
-            <MenuButton>Cho thuê</MenuButton>
-            <MenuButton>Diễn đàn</MenuButton>
-            <MenuButton>Mua bán</MenuButton>
-            <Spacer />
-            <MenuButton>Đăng nhập</MenuButton>
-            <MenuButton>Đăng ký</MenuButton>
-          </NavLinks>
-        </MainNav>
-
         {/* 2 CỘT CHI TIẾT */}
         <DetailContent>
           {/* Cột Trái */}

@@ -11,9 +11,9 @@ const Container = styled.div`
 `;
 
 const Wrapper = styled.div`
-  max-width: 1200px;
+  // max-width: 1200px;
   margin: 0 auto;
-  padding: 16px;
+  // padding: 16px;
 `;
 
 const TopBar = styled.div`
@@ -209,23 +209,6 @@ export default function ApartmentList() {
   return (
     <Container>
       <Wrapper>
-        <TopBar>
-          <span>Kênh chủ căn hộ</span>
-          <span>Kênh người thuê căn hộ</span>
-        </TopBar>
-
-        <MainNavBar>
-          <Logo>ABMS</Logo>
-          <NavLinks>
-            <NavItem to="/forum">Diễn đàn</NavItem>
-            <NavItem to="/rent">Cho thuê</NavItem>
-            <NavItem to="/buy">Mua bán</NavItem>
-            <Spacer />
-            <NavItem to="/signIn">Đăng nhập</NavItem>
-            <NavItem to="/signUp">Đăng ký</NavItem>
-          </NavLinks>
-        </MainNavBar>
-
         <SearchContainer>
           <SearchRow>
             <FaSearch />

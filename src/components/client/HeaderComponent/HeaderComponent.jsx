@@ -1,6 +1,6 @@
 import { Badge, Button, Col, Dropdown, Flex, Image, Row } from "antd";
 import React from "react";
-import { BellOutlined, UserOutlined } from "@ant-design/icons";
+import { BellOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import logoMenu from "../../../assets/common/images/logo-menu.png";
 import { Input } from "antd";
@@ -28,7 +28,7 @@ const TopBar = styled.div`
 const Logo = styled(Col)`
   color: white;
   height: 100%;
-  &:hover{
+  &:hover {
     cursor: pointer;
   }
 `;
@@ -70,7 +70,7 @@ const TopBarItem = styled.div`
   &:hover {
     cursor: pointer;
   }
-`
+`;
 
 function HeaderComponent() {
   const userLocal = localStorage.getItem("user");
@@ -107,15 +107,15 @@ function HeaderComponent() {
     },
   ];
 
-  function handleLogout(){
+  function handleLogout() {
     localStorage.clear();
-    navigate('/login');
+    navigate("/login");
   }
 
   return (
     <>
       <WrapperHeader>
-        <Logo span={4} onClick={()=> navigate('/')}>
+        <Logo span={4} onClick={() => navigate("/")}>
           <Image
             src={logoMenu}
             width="175px"
@@ -124,13 +124,16 @@ function HeaderComponent() {
           ></Image>
         </Logo>
         <Col span={10}>
-          <Search
-            placeholder="Tìm kiếm dịch vụ bạn muốn ?"
-            allowClear
-            enterButton="Tìm kiếm"
-            size="large"
-            onSearch={onSearch}
-          />
+          {(user.role === 'Chủ căn hộ' ||
+            user.role === 'Người thuê') ? (
+              <Search
+                placeholder="Tìm kiếm dịch vụ bạn muốn ?"
+                allowClear
+                enterButton="Tìm kiếm"
+                size="large"
+                onSearch={onSearch}
+              />
+            ):<></>}
         </Col>
         <Col span={10}>
           <NavbarListItem>
@@ -165,9 +168,13 @@ function HeaderComponent() {
       </WrapperHeader>
       <TopBar>
         {user?.role === "Chủ căn hộ" && (
-          <TopBarItem onClick={() => navigate("/ownerHome")}>Kênh chủ căn hộ</TopBarItem>
+          <TopBarItem onClick={() => navigate("/ownerHome")}>
+            Kênh chủ căn hộ
+          </TopBarItem>
         )}
-        {user?.role === "Người thuê" && <TopBarItem>Kênh người thuê căn hộ</TopBarItem>}
+        {user?.role === "Người thuê" && (
+          <TopBarItem>Kênh người thuê căn hộ</TopBarItem>
+        )}
       </TopBar>
     </>
   );

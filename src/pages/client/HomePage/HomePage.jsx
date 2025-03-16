@@ -10,9 +10,9 @@ const Container = styled.div`
 `;
 
 const Wrapper = styled.div`
-  max-width: 1200px;
+  // max-width: 1200px;
   margin: 0 auto;
-  padding: 0 16px;
+  // padding: 0 16px;
 `;
 
 const TopBar = styled.div`
@@ -295,7 +295,7 @@ export default function HomePage() {
       type,
       rooms
     }).toString();
-    navigate(`/apartments?${queryParams}`);
+    navigate(`/post?${queryParams}`);
   };
 
   return (
