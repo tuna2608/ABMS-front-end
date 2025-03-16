@@ -103,21 +103,15 @@ function HeaderComponent() {
     },
     {
       key: "2",
-      label: <div onClick={() => navigate("/login")}>Logout</div>,
-    },
-    {
-      key: "3",
-      label: (
-        <a
-          target="_blank"
-          rel="noopener noreferrer"
-          href="https://www.luohanacademy.com"
-        >
-          3rd menu item
-        </a>
-      ),
+      label: <div onClick={handleLogout}>Logout</div>,
     },
   ];
+
+  function handleLogout(){
+    localStorage.clear();
+    navigate('/login');
+  }
+
   return (
     <>
       <WrapperHeader>
