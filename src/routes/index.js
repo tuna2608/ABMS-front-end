@@ -9,6 +9,7 @@ import RegisterPage from "../pages/common/RegisterPage/Register";
 import OwnerHome from "../pages/owner/ownerHome/OwnerHome";
 import PostList from "../pages/client/PostList/PostList";
 import Chatbot from "../components/common/Chatbot/Chatbot";
+import PostDetail from "../pages/client/PostDetail/PostDetail";
 
 
 
@@ -61,6 +62,11 @@ export const routes = [
     {
         path: '/post',
         page: PostList,
+        isShowHeader: true
+    },
+    {
+        path: '/post-detail',
+        page: PostDetail,
         isShowHeader: true
     },
     {

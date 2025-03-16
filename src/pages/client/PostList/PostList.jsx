@@ -203,9 +203,9 @@ const PostList = () => {
   const [selectedArea, setSelectedArea] = useState("Tất cả");
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 8;
-  // Sử dụng hook useNavigate để chuyển trang
-  // Lưu ý: Trong môi trường thực tế, phải đảm bảo component được sử dụng trong Router
-  // const navigate = useNavigate();
+  
+  // Kích hoạt hook useNavigate để sử dụng điều hướng
+  const navigate = useNavigate();
 
   // Giả lập việc lấy dữ liệu từ API
   useEffect(() => {
@@ -250,12 +250,15 @@ const PostList = () => {
     return new Intl.NumberFormat('vi-VN').format(price) + " VNĐ/tháng";
   };
   
-  // Chuyển đến trang chi tiết
+  // Chuyển đến trang chi tiết - đã mở comment và thêm điều hướng thực tế
   const goToDetails = (id) => {
-    // Trong môi trường thực tế: navigate(`/apartment/${id}`);
+    navigate(`/post-detail`);
     console.log(`Đang chuyển đến trang chi tiết của căn hộ ID: ${id}`);
-    // Có thể thay thế bằng window.location.href trong trường hợp không dùng react-router
-    // window.location.href = `/apartment/${id}`;
+  };
+
+  // Xử lý thêm mới
+  const handleAddNew = () => {
+    navigate('/apartment/new');
   };
 
   return (
@@ -303,7 +306,13 @@ const PostList = () => {
             </Select>
           </Space>
           
-          <Button type="primary" icon={<HomeOutlined />}>Thêm căn hộ mới</Button>
+          <Button 
+            type="primary" 
+            icon={<HomeOutlined />}
+            onClick={handleAddNew}
+          >
+            Thêm căn hộ mới
+          </Button>
         </Space>
 
         <Row gutter={[16, 16]}>
@@ -329,6 +338,7 @@ const PostList = () => {
                         alt={apartment.title}
                         src={apartment.image}
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
+                        onClick={() => goToDetails(apartment.id)}
                       />
                       <Badge 
                         count={apartment.status}
