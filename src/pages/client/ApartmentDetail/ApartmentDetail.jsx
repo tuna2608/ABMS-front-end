@@ -227,10 +227,7 @@ function ApartmentDetail() {
   const navigate = useNavigate();
 
   function handleCheckUser() {
-    console.log("vao function");
     if (user == null) {
-      console.log("vao if");
-
       navigate("/login");
     }
   }
@@ -298,11 +295,7 @@ function ApartmentDetail() {
                 <span className="other-ads">Xem thêm 16 tin khác</span>
               </OwnerInfo>
             </OwnerHeader>
-
-            <ZaloButton onClick={handleCheckUser}>Liên hệ bằng zalo</ZaloButton>
-            <PhoneButton onClick={handleCheckUser}>
-              Hiển thị số 0912xxx
-            </PhoneButton>
+            <ZaloButton onClick={handleCheckUser}>Liên hệ</ZaloButton>
             <DepositButton onClick={handleCheckUser}>
               Đặt cọc trước
             </DepositButton>
