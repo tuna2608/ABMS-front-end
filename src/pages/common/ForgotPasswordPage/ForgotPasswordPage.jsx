@@ -3,6 +3,7 @@ import { useMutation } from "@tanstack/react-query";
 import { Form, Image } from "antd";
 import styled from "styled-components";
 import {
+  LinkNav,
   WrapperContainer,
   WrapperContainerLeft,
   WrapperContainerRight,
@@ -12,6 +13,8 @@ import ButtonComponent from "../../../components/common/ButtonComponent/ButtonCo
 import { resetPassword } from "../../../services/UserService";
 import imgLogin from "../../../assets/common/images/logo-login.png";
 import bgLogin from "../../../assets/common/images/bg-login.jpg";
+import { useNavigate } from "react-router-dom";
+import { WrapperTextLight } from "../LoginPage/style";
 
 const TitlePage = styled.h2`
   color: var(--cheadline);
@@ -21,8 +24,11 @@ const TextContent = styled.p`
   color: var(--cparagraph);
 `;
 
+
+
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState("");
+  const navigate = useNavigate();
 
   const { mutate, isPending, isError, error } = useMutation({
     mutationFn: resetPassword,
@@ -79,7 +85,9 @@ const ForgotPasswordPage = () => {
       >
         <WrapperContainerLeft>
           <TitlePage>Quên mật khẩu</TitlePage>
-          <TextContent>Nhập email để nhận liên kết đặt lại mật khẩu</TextContent>
+          <TextContent>
+            Nhập email để nhận liên kết đặt lại mật khẩu
+          </TextContent>
           <Form
             name="forgotPassword"
             onFinish={handleResetPassword}
@@ -120,6 +128,9 @@ const ForgotPasswordPage = () => {
               {isError && <p className="error-message">{error.message}</p>}
             </Form.Item>
           </Form>
+          <LinkNav>
+            <WrapperTextLight onClick={() => navigate("/login")}>Quay lại trang đăng nhập</WrapperTextLight>
+          </LinkNav>
         </WrapperContainerLeft>
         <WrapperContainerRight>
           <Image src={imgLogin} width="250px" height="250px" preview={false} />

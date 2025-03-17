@@ -5,18 +5,18 @@ import {
   WrapperContainer,
   WrapperContainerLeft,
   WrapperContainerRight,
-  WrapperTextLight,
 } from "./style";
 import { EyeTwoTone, EyeInvisibleOutlined } from "@ant-design/icons";
 import { Checkbox, Form, Image } from "antd";
 import imgLogin from "./../../../assets/common/images/logo-login.png";
 import styled from "styled-components";
-import Link from "antd/es/typography/Link";
 import InputForm from "../../../components/common/InputForm/InputForm";
 import ButtonComponent from "../../../components/common/ButtonComponent/ButtonComponent";
 import { registerUser } from "../../../services/UserService";
 import ErrorBoundary from "antd/es/alert/ErrorBoundary";
 import bgLogin from "../../../assets/common/images/bg-login.jpg";
+import { LinkNav } from "../ForgotPasswordPage/style";
+import { WrapperTextLight } from "../LoginPage/style";
 
 const TextContent = styled.p`
   color: var(--cparagraph);
@@ -114,7 +114,12 @@ const RegisterPage = () => {
               <div style={{ position: "relative" }}>
                 <span
                   onClick={() => setIsShowPassword(!isShowPassword)}
-                  style={{ zIndex: 10, position: "absolute", top: "4px", right: "8px" }}
+                  style={{
+                    zIndex: 10,
+                    position: "absolute",
+                    top: "4px",
+                    right: "8px",
+                  }}
                 >
                   {isShowPassword ? <EyeTwoTone /> : <EyeInvisibleOutlined />}
                 </span>
@@ -149,7 +154,11 @@ const RegisterPage = () => {
               {!isPending && (
                 <ButtonComponent
                   htmlType="submit"
-                  disabled={!email.length || !password.length || password !== confirmPassword}
+                  disabled={
+                    !email.length ||
+                    !password.length ||
+                    password !== confirmPassword
+                  }
                   size={40}
                   styleButton={{
                     backgroundColor: "var(--cbutton)",
@@ -166,12 +175,22 @@ const RegisterPage = () => {
                   textButton={"Đăng ký"}
                 />
               )}
-              {isError && <ErrorBoundary description="Đăng ký thất bại" message={error?.message} />}
+              {isError && (
+                <ErrorBoundary
+                  description="Đăng ký thất bại"
+                  message={error?.message}
+                />
+              )}
             </Form.Item>
           </Form>
-          <Link onClick={() => navigate("/login")}>
-            <WrapperTextLight>Đã có tài khoản? Đăng nhập</WrapperTextLight>
-          </Link>
+          <LinkNav>
+            <p>
+              Đã có tài khoản? 
+              <WrapperTextLight onClick={() => navigate("/login")}>
+                Đăng nhập
+              </WrapperTextLight>
+            </p>
+          </LinkNav>
         </WrapperContainerLeft>
         <WrapperContainerRight>
           <Image src={imgLogin} width="250px" height="250px" preview={false} />

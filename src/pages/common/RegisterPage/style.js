@@ -25,7 +25,3 @@ export const WrapperContainerRight = styled.div`
     background-image: linear-gradient(to right, white, var(--cbutton));
     text-align: center;
 `
-
-export const WrapperTextLight = styled.span`
-  color: var(--chightlight);
-`
