@@ -1,5 +1,3 @@
-import ApartmentDetail from "../pages/client/ApartmentDetail/ApartmentDetail";
-import ApartmentList from "../pages/client/ApartmentList/ApartmentList";
 import HomePage from "../pages/client/HomePage/HomePage";
 import NotFoundPage from "../pages/common/NotFoundPage/NotFoundPage";
 import LoginPage from "../pages/common/LoginPage/LoginPage";
@@ -7,9 +5,12 @@ import AdminHome from "../pages/admin/adminHome/AdminHome";
 import ForgotPasswordPage from "../pages/common/ForgotPasswordPage/ForgotPasswordPage";
 import RegisterPage from "../pages/common/RegisterPage/Register";
 import OwnerHome from "../pages/owner/ownerHome/OwnerHome";
-import PostList from "../pages/client/PostList/PostList";
 import Chatbot from "../components/common/Chatbot/Chatbot";
-import PostDetail from "../pages/client/PostDetail/PostDetail";
+import ApartmentList from "../pages/client/ApartmentList/ApartmentList";
+import ApartmentDetail from "../pages/client/ApartmentDetail/ApartmentDetail";
+import ChatPage from "../pages/client/ChatPage/ChatPage";
+import NotificationsPage from "../pages/client/NotificationPage/NotificationPage";
+
 
 
 
@@ -17,16 +18,6 @@ export const routes = [
     {
         path: '/',
         page: HomePage,
-        isShowHeader: true
-    },
-    {
-        path: '/apartments',
-        page: ApartmentList,
-        isShowHeader: true
-    },
-    {
-        path: '/apartmentDetail',
-        page: ApartmentDetail,
         isShowHeader: true
     },
     // {
@@ -60,14 +51,24 @@ export const routes = [
         isShowHeader: true
     },
     {
-        path: '/post',
-        page: PostList,
+        path: '/apartment',
+        page: ApartmentList,
         isShowHeader: true
     },
     {
-        path: '/post-detail',
-        page: PostDetail,
+        path: '/apartment-detail',
+        page: ApartmentDetail,
         isShowHeader: true
+    },
+    {
+        path: '/chat-page',
+        page: ChatPage,
+        isShowHeader: false
+    },
+    {
+        path: '/notification',
+        page: NotificationsPage,
+        isShowHeader: false
     },
     {
         path: '/chatbot',

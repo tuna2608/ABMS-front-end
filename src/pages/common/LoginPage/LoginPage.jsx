@@ -44,7 +44,7 @@ const SignInPage = () => {
       loginUser({ usernameOrEmail, password }),
     onSuccess: (data) => {
       message.success('Login successfull !');
-      console.log(data);
+      // console.log(data);
       localStorage.setItem('user',JSON.stringify(data));
       navigate("/");
     },

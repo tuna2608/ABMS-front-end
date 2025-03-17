@@ -13,7 +13,7 @@
     "@testing-library/user-event": "^13.5.0",
     "antd": "^5.21.3",
     "antd-img-crop": "^4.23.0",
-    "axios": "^1.8.1",
+    "axios": "^1.8.2",
     "firebase": "^10.12.0",
     "i": "^0.3.7",
     "jwt-decode": "^4.0.0",
