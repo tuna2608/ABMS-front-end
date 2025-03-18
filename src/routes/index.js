@@ -6,11 +6,12 @@ import ForgotPasswordPage from "../pages/common/ForgotPasswordPage/ForgotPasswor
 import RegisterPage from "../pages/common/RegisterPage/Register";
 import OwnerHome from "../pages/owner/ownerHome/OwnerHome";
 import Chatbot from "../components/common/Chatbot/Chatbot";
-import ApartmentList from "../pages/client/ApartmentList/ApartmentList";
-import ApartmentDetail from "../pages/client/ApartmentDetail/ApartmentDetail";
+import ApartmentList from "../pages/client/PostList/PostList";
+import ApartmentDetail from "../pages/client/PostDetail/PostDetail";
 import ChatPage from "../pages/client/ChatPage/ChatPage";
 import NotificationsPage from "../pages/client/NotificationPage/NotificationPage";
 import EditProfilePage from "../pages/common/EditProfilePage/EditProfilePage";
+
 
 
 
@@ -52,12 +53,12 @@ export const routes = [
         isShowHeader: true
     },
     {
-        path: '/apartment',
+        path: '/post',
         page: ApartmentList,
         isShowHeader: true
     },
     {
-        path: '/apartment-detail',
+        path: '/post-detail',
         page: ApartmentDetail,
         isShowHeader: true
     },
