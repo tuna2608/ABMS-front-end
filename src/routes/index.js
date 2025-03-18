@@ -10,6 +10,7 @@ import ApartmentList from "../pages/client/ApartmentList/ApartmentList";
 import ApartmentDetail from "../pages/client/ApartmentDetail/ApartmentDetail";
 import ChatPage from "../pages/client/ChatPage/ChatPage";
 import NotificationsPage from "../pages/client/NotificationPage/NotificationPage";
+import EditProfilePage from "../pages/common/EditProfilePage/EditProfilePage";
 
 
 
@@ -74,6 +75,11 @@ export const routes = [
         path: '/chatbot',
         page: Chatbot,
         isShowHeader: false
+    },
+    {
+        path: '/edit-profile',
+        page: EditProfilePage,
+        isShowHeader: true
     },
     {
         path: '*',

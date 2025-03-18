@@ -16,56 +16,7 @@ const Wrapper = styled.div`
   // padding: 16px;
 `;
 
-const TopBar = styled.div`
-  display: flex;
-  gap: 24px;
-  align-items: center;
-  background: white;
-  color: #dc2626;
-  padding: 8px 16px;
-  font-size: 14px;
-  font-weight: 500;
-`;
 
-const MainNavBar = styled.div`
-  display: flex;
-  align-items: center;
-  background: white;
-  padding: 16px;
-  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-`;
-
-const Logo = styled.h1`
-  margin: 0;
-  font-size: 24px;
-  color: #111827;
-`;
-
-const NavLinks = styled.div`
-  display: flex;
-  align-items: center;
-  margin-left: 24px; 
-  gap: 16px;
-  flex: 1; 
-`;
-
-const Spacer = styled.div`
-  flex: 1; 
-`;
-
-const NavItem = styled(Link)`
-  text-decoration: none;
-  font-weight: 500;
-  padding: 8px 16px;
-  border-radius: 4px;
-  color: #1f2937;
-  background: transparent;
-
-  &:hover {
-    background: #16a34a;
-    color: #fff;
-  }
-`;
 
 const SearchContainer = styled.div`
   background: #fde68a;
