@@ -57,6 +57,7 @@ const SignInPage = () => {
     // console.log(message);
     if(!res.status === 200){
       message.error(messageAPI)
+      return;
     }
     message.success(messageAPI)
     navigate('/')

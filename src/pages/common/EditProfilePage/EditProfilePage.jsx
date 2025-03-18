@@ -1,7 +1,15 @@
-import React, { useState } from 'react';
-import { Form, Input, Button, Typography, DatePicker, Upload, message } from 'antd';
-import { UserOutlined, CameraOutlined, ArrowLeftOutlined, LoadingOutlined } from '@ant-design/icons';
-import styled from 'styled-components';
+import React, { useState } from "react";
+import {
+  Form,
+  Input,
+  Button,
+  Typography,
+  DatePicker,
+  Upload,
+  message,
+} from "antd";
+import { CameraOutlined, ArrowLeftOutlined } from "@ant-design/icons";
+import styled from "styled-components";
 
 const { Title } = Typography;
 
@@ -112,7 +120,7 @@ const SaveButton = styled(Button)`
   height: 40px;
   float: right;
   margin-top: 20px;
-  
+
   &:hover {
     background-color: #6eacac;
     border-color: #6eacac;
@@ -140,45 +148,45 @@ const ProfileEditPage = () => {
 
   const handleSubmit = (values) => {
     setLoading(true);
-    console.log('Form values:', values);
-    
+    console.log("Form values:", values);
+
     // Include the avatar image in the form data
     const formData = {
       ...values,
-      avatar: imageUrl
+      avatar: imageUrl,
     };
-    
-    console.log('Complete form data:', formData);
-    
+
+    console.log("Complete form data:", formData);
+
     // Simulate API request
     setTimeout(() => {
       setLoading(false);
       // Handle success or show notification
     }, 1000);
   };
-  
+
   const handleImageChange = (info) => {
-    if (info.file.status === 'uploading') {
+    if (info.file.status === "uploading") {
       setUploading(true);
       return;
     }
-    
-    if (info.file.status === 'done') {
+
+    if (info.file.status === "done") {
       // Get image URL from response or use FileReader to preview
       setUploading(false);
-      
+
       // In a real app, you'd use the response from your backend
       // Here we're using the browser's FileReader API to create a preview
-      getBase64(info.file.originFileObj, imageUrl => {
+      getBase64(info.file.originFileObj, (imageUrl) => {
         setImageUrl(imageUrl);
       });
     }
   };
-  
+
   // Helper function to convert File to base64 string for preview
   const getBase64 = (file, callback) => {
     const reader = new FileReader();
-    reader.addEventListener('load', () => callback(reader.result));
+    reader.addEventListener("load", () => callback(reader.result));
     reader.readAsDataURL(file);
   };
 
@@ -188,13 +196,15 @@ const ProfileEditPage = () => {
         <LogoText>ABMS</LogoText>
         <LogoSubtext>TECHNOLOGIES</LogoSubtext>
       </Sidebar>
-      
+
       <MainContent>
         <BackButton icon={<ArrowLeftOutlined />} type="default" />
-        
+
         <FormContainer>
-          <Title level={2} style={{ color: '#1d3557', marginBottom: 40 }}>Edit profile</Title>
-          
+          <Title level={2} style={{ color: "#1d3557", marginBottom: 40 }}>
+            Edit profile
+          </Title>
+
           <AvatarContainer>
             <Upload
               name="avatar"
@@ -202,9 +212,9 @@ const ProfileEditPage = () => {
               showUploadList={false}
               action="https://www.mocky.io/v2/5cc8019d300000980a055e76" // Replace with your actual upload endpoint
               beforeUpload={(file) => {
-                const isImage = file.type.startsWith('image/');
+                const isImage = file.type.startsWith("image/");
                 if (!isImage) {
-                  message.error('You can only upload image files!');
+                  message.error("You can only upload image files!");
                 }
                 return isImage;
               }}
@@ -213,114 +223,93 @@ const ProfileEditPage = () => {
               <Avatar>
                 <AvatarImage>
                   {imageUrl ? (
-                    <img 
-                      src={imageUrl} 
-                      alt="Avatar" 
-                      style={{ 
-                        width: '100%', 
-                        height: '100%', 
-                        objectFit: 'cover' 
-                      }} 
+                    <img
+                      src={imageUrl}
+                      alt="Avatar"
+                      style={{
+                        width: "100%",
+                        height: "100%",
+                        objectFit: "cover",
+                      }}
                     />
                   ) : (
-                    <div style={{ 
-                      display: 'flex', 
-                      flexDirection: 'column', 
-                      alignItems: 'center', 
-                      justifyContent: 'center' 
-                    }}>
-                      <img src="/api/placeholder/100/80" alt="Default" style={{ width: 100, height: 60 }} />
+                    <div
+                      style={{
+                        display: "flex",
+                        flexDirection: "column",
+                        alignItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <img
+                        src="/api/placeholder/100/80"
+                        alt="Default"
+                        style={{ width: 100, height: 60 }}
+                      />
                     </div>
                   )}
                 </AvatarImage>
                 <AvatarUploadButton>
-                  <CameraOutlined style={{ color: 'white', fontSize: 16 }} />
+                  <CameraOutlined style={{ color: "white", fontSize: 16 }} />
                 </AvatarUploadButton>
               </Avatar>
             </Upload>
           </AvatarContainer>
-          
+
           <Form
             form={form}
             layout="vertical"
-            initialValues={{ username: 'nguyenquangminh' }}
+            initialValues={{ username: "nguyenquangminh" }}
             onFinish={handleSubmit}
           >
             <FormSection>
-              <Form.Item 
-                label="Username:" 
-                name="username"
-              >
+              <Form.Item label="Username:" name="username">
                 <Input />
               </Form.Item>
-              
-              <Form.Item 
-                label="Password:" 
-                name="password"
-              >
+
+              <Form.Item label="Password:" name="password">
                 <Input.Password />
               </Form.Item>
             </FormSection>
-            
+
             <FormSection>
-              <Form.Item 
-                label="Email:" 
-                name="email"
-              >
+              <Form.Item label="Email:" name="email">
                 <Input />
               </Form.Item>
-              
-              <Form.Item 
-                label="Phone:" 
-                name="phone"
-              >
+
+              <Form.Item label="Phone:" name="phone">
                 <Input />
               </Form.Item>
             </FormSection>
-            
+
             <FormSection>
               <FullWidthSection>
-                <Form.Item 
-                  label="Description" 
-                  name="description"
-                >
+                <Form.Item label="Description" name="description">
                   <Input.TextArea rows={4} />
                 </Form.Item>
               </FullWidthSection>
             </FormSection>
-            
+
             <FormSection>
-              <Form.Item 
-                label="Age:" 
-                name="age"
-              >
+              <Form.Item label="Age:" name="age">
                 <Input />
               </Form.Item>
-              
-              <Form.Item 
-                label="Birthday:" 
-                name="birthday"
-              >
-                <DatePicker style={{ width: '100%' }} />
+
+              <Form.Item label="Birthday:" name="birthday">
+                <DatePicker style={{ width: "100%" }} />
               </Form.Item>
             </FormSection>
-            
+
             <FormSection>
-              <Form.Item 
-                label="ID number:" 
-                name="idNumber"
-              >
+              <Form.Item label="ID number:" name="idNumber">
                 <Input />
               </Form.Item>
-              
-              <Form.Item 
-                label="Job:" 
-                name="job"
-              >
+
+              <Form.Item label="Job:" name="job">
                 <Input />
               </Form.Item>
             </FormSection>
-            
+
             <Form.Item>
               <SaveButton type="primary" htmlType="submit" loading={loading}>
                 SAVE

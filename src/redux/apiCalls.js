@@ -147,6 +147,7 @@ export const deleteUser = async (id, dispatch) => {
   try {
     const res = await userRequest.delete(`/users/${id}`);
     dispatch(deleteUserSuccess(id));
+    return res;
   } catch (error) {
     dispatch(deleteUserFailure());
   }
