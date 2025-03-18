@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React from "react";
 import styled from "styled-components";
 import { AiOutlinePicture } from "react-icons/ai";
 import { BsFillImageFill } from "react-icons/bs";
@@ -21,17 +21,7 @@ const Wrapper = styled.div`
   // padding: 0 16px;
 `;
 
-/* Top bar */
-const TopBar = styled.div`
-  display: flex;
-  gap: 24px;
-  align-items: center;
-  background: white;
-  color: #dc2626;
-  padding: 8px 16px;
-  font-size: 14px;
-  font-weight: 500;
-`;
+
 
 /* 2 cột trái-phải */
 const DetailContent = styled.div`
@@ -201,10 +191,6 @@ const ContactButton = styled.button`
 
 const ZaloButton = styled(ContactButton)`
   background-color: #0e8cf1;
-`;
-
-const PhoneButton = styled(ContactButton)`
-  background-color: #0f766e;
 `;
 
 const DepositButton = styled(ContactButton)`

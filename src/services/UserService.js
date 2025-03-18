@@ -11,13 +11,13 @@ export async function loginUser({usernameOrEmail,password}){
             "Content-Type": "application/json",
         },
     });
-    if (!response.ok) {
-        const error = new Error("An error occurred while login");
-        error.code = response.status;
-        error.info = await response.json();
-        console.log(error);
-        throw error;
-    }
+    // if (!response.ok) {
+    //     const error = new Error("An error occurred while login");
+    //     error.code = response.status;
+    //     error.info = await response.json();
+    //     console.log(error);
+    //     throw error;
+    // }
     const { data } = await response.json();
     return data;
 }

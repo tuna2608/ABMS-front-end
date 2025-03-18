@@ -5,7 +5,11 @@ import styled from "styled-components";
 import logoMenu from "../../../assets/common/images/logo-menu.png";
 import { Input } from "antd";
 import { useNavigate } from "react-router-dom";
+import {useSelector} from 'react-redux'
+
 const { Search } = Input;
+
+
 
 const WrapperHeader = styled(Row)`
   height: 100px;
@@ -73,17 +77,18 @@ const TopBarItem = styled.div`
 `;
 
 function HeaderComponent() {
-  const userLocal = localStorage.getItem("user");
-  let user;
+  // const userLocal = localStorage.getItem("user");
+  // let user;
 
-  if (typeof userLocal === "string" && userLocal !== null) {
-    try {
-      user = JSON.parse(userLocal);
-    } catch (error) {
-      console.error("Lỗi khi parse dữ liệu:", error);
-      user = null;
-    }
-  }
+  // if (typeof userLocal === "string" && userLocal !== null) {
+  //   try {
+  //     user = JSON.parse(userLocal);
+  //   } catch (error) {
+  //     console.error("Lỗi khi parse dữ liệu:", error);
+  //     user = null;
+  //   }
+  // }
+  const user = useSelector((state) => state.user.currentUser);
   //console.log(user);
 
   const navigate = useNavigate();

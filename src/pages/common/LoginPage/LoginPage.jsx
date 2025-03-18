@@ -1,6 +1,5 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { useMutation } from "@tanstack/react-query";
 import {
   WrapperContainer,
   WrapperContainerLeft,
@@ -8,20 +7,18 @@ import {
   WrapperTextLight,
 } from "./style";
 import { EyeTwoTone, EyeInvisibleOutlined } from "@ant-design/icons";
-import { Checkbox, Form, Image} from "antd";
+import { Checkbox, Form, Image, message} from "antd";
 import imgLogin from "./../../../assets/common/images/logo-login.png";
 import styled from "styled-components";
 import InputForm from "../../../components/common/InputForm/InputForm";
 import ButtonComponent from "../../../components/common/ButtonComponent/ButtonComponent";
-import { loginUser } from "../../../services/UserService";
-import ErrorBoundary from "antd/es/alert/ErrorBoundary";
 import bgLogin from "../../../assets/common/images/bg-login.jpg";
 import { LoadingComponent } from "../../../components/common/LoadingComponent/LoadingComponent";
 import { LinkNav } from "../ForgotPasswordPage/style";
-
-import * as message from '../../../components/common/MessageComponent/MessageComponent'
+import {toast}from 'react-toastify'
+import { login } from "../../../redux/apiCalls";
 import {useDispatch} from 'react-redux'
-import { userSlices } from "../../../redux/slices/userSlices";
+
 
 const TextContent = styled.p`
   color: var(--cparagraph);
@@ -36,25 +33,33 @@ const SignInPage = () => {
   const [isShowPassword, setIsShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-
   const dispatch = useDispatch();
 
-  const { mutate, isPending, isError, error } = useMutation({
-    mutationFn: ({ usernameOrEmail, password }) =>
-      loginUser({ usernameOrEmail, password }),
-    onSuccess: (data) => {
-      message.success('Login successfull !');
-      // console.log(data);
-      localStorage.setItem('user',JSON.stringify(data));
-      navigate("/");
-    },
-  });
+  // Validation
+  const isValidEmail = (value) => {
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    return emailRegex.test(value);
+  };
 
-  const handleLogin = (values) => {
-    mutate({
-      usernameOrEmail: values.usernameOrEmail,
-      password: values.password,
-    });
+  const isValidPassword = (value) => {
+    return value.length >= 2;
+  };
+
+  const handleLogin = async () => {
+
+    if(!isValidPassword(password)){
+      message.error("Password must be at least 6 characters long.")
+      return;
+    }
+    const res = await login(dispatch, { usernameOrEmail: email, password });
+    // console.log(res);
+    const message = res.message
+    // console.log(message);
+    if(!res.status === 200){
+      message.error(message)
+    }
+    
+    
   };
 
   return (
@@ -155,7 +160,7 @@ const SignInPage = () => {
               <Checkbox>Remember me</Checkbox>
             </Form.Item>
             <Form.Item label={null}>
-              <LoadingComponent isPending={isPending}>
+              <LoadingComponent isPending={false}>
                 <ButtonComponent
                   htmlType="submit"
                   disabled={!email.length || !password.length}
@@ -175,7 +180,7 @@ const SignInPage = () => {
                   textButton={"Đăng nhập"}
                 />
               </LoadingComponent>
-              {isError && (
+              {/* {isError && (
                 <ErrorBoundary
                   description="Failed to login"
                   message={
@@ -183,7 +188,7 @@ const SignInPage = () => {
                     "username or password wrong, try again!"
                   }
                 />
-              )}
+              )} */}
             </Form.Item>
           </Form>
           <LinkNav>
