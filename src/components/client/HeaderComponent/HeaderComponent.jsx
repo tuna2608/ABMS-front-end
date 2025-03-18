@@ -5,7 +5,8 @@ import styled from "styled-components";
 import logoMenu from "../../../assets/common/images/logo-menu.png";
 import { Input } from "antd";
 import { useNavigate } from "react-router-dom";
-import {useSelector} from 'react-redux'
+import {useDispatch, useSelector} from 'react-redux'
+import { logoutDispatch } from "../../../redux/apiCalls";
 
 const { Search } = Input;
 
@@ -89,7 +90,7 @@ function HeaderComponent() {
   //   }
   // }
   const user = useSelector((state) => state.user.currentUser);
-  //console.log(user);
+  const dispatch = useDispatch();
 
   const navigate = useNavigate();
   const onSearch = (value, _e, info) => console.log(info?.source, value);
@@ -113,7 +114,7 @@ function HeaderComponent() {
   ];
 
   function handleLogout() {
-    localStorage.clear();
+    logoutDispatch(dispatch);
     navigate("/login");
   }
 
