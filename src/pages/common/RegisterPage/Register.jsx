@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
 import { useNavigate } from "react-router-dom";
 import {
   WrapperContainer,
@@ -12,8 +11,6 @@ import imgLogin from "./../../../assets/common/images/logo-login.png";
 import styled from "styled-components";
 import InputForm from "../../../components/common/InputForm/InputForm";
 import ButtonComponent from "../../../components/common/ButtonComponent/ButtonComponent";
-import { registerUser } from "../../../services/UserService";
-import ErrorBoundary from "antd/es/alert/ErrorBoundary";
 import bgLogin from "../../../assets/common/images/bg-login.jpg";
 import { LinkNav } from "../ForgotPasswordPage/style";
 import { WrapperTextLight } from "../LoginPage/style";
@@ -33,18 +30,9 @@ const RegisterPage = () => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
 
-  const { mutate, isPending, isError, error } = useMutation({
-    mutationFn: ({ email, password }) => registerUser({ email, password }),
-    onSuccess: () => {
-      console.log("register success");
-    },
-  });
-
   const handleRegister = (values) => {
-    mutate({
-      email: values.email,
-      password: values.password,
-    });
+    console.log(values);
+    
   };
 
   return (
@@ -150,8 +138,6 @@ const RegisterPage = () => {
             </Form.Item>
 
             <Form.Item>
-              {isPending && <p>Loading...</p>}
-              {!isPending && (
                 <ButtonComponent
                   htmlType="submit"
                   disabled={
@@ -174,13 +160,6 @@ const RegisterPage = () => {
                   }}
                   textButton={"Đăng ký"}
                 />
-              )}
-              {isError && (
-                <ErrorBoundary
-                  description="Đăng ký thất bại"
-                  message={error?.message}
-                />
-              )}
             </Form.Item>
           </Form>
           <LinkNav>
