@@ -15,7 +15,6 @@ import ButtonComponent from "../../../components/common/ButtonComponent/ButtonCo
 import bgLogin from "../../../assets/common/images/bg-login.jpg";
 import { LoadingComponent } from "../../../components/common/LoadingComponent/LoadingComponent";
 import { LinkNav } from "../ForgotPasswordPage/style";
-import {toast}from 'react-toastify'
 import { login } from "../../../redux/apiCalls";
 import {useDispatch} from 'react-redux'
 
@@ -45,6 +44,7 @@ const SignInPage = () => {
     return value.length >= 2;
   };
 
+  
   const handleLogin = async () => {
 
     if(!isValidPassword(password)){
@@ -53,13 +53,13 @@ const SignInPage = () => {
     }
     const res = await login(dispatch, { usernameOrEmail: email, password });
     // console.log(res);
-    const message = res.message
+    const messageAPI = res.message
     // console.log(message);
     if(!res.status === 200){
-      message.error(message)
+      message.error(messageAPI)
     }
-    
-    
+    message.success(messageAPI)
+    navigate('/')
   };
 
   return (
