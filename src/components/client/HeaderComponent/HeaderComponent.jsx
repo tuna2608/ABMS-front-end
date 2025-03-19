@@ -78,17 +78,8 @@ const TopBarItem = styled.div`
 `;
 
 function HeaderComponent() {
-  // const userLocal = localStorage.getItem("user");
-  // let user;
 
-  // if (typeof userLocal === "string" && userLocal !== null) {
-  //   try {
-  //     user = JSON.parse(userLocal);
-  //   } catch (error) {
-  //     console.error("Lỗi khi parse dữ liệu:", error);
-  //     user = null;
-  //   }
-  // }
+  
   const user = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();
 
@@ -130,8 +121,8 @@ function HeaderComponent() {
           ></Image>
         </Logo>
         <Col span={10}>
-          {(user?.role === 'Chủ căn hộ' ||
-            user?.role === 'Người thuê') ? (
+          {(user?.role === 'Owner' ||
+            user?.role === 'Rentor') ? (
               <Search
                 placeholder="Tìm kiếm dịch vụ bạn muốn ?"
                 allowClear
@@ -173,12 +164,12 @@ function HeaderComponent() {
         </Col>
       </WrapperHeader>
       <TopBar>
-        {user?.role === "Chủ căn hộ" && (
+        {user?.role === "Owner" && (
           <TopBarItem onClick={() => navigate("/ownerHome")}>
             Kênh chủ căn hộ
           </TopBarItem>
         )}
-        {user?.role === "Người thuê" && (
+        {user?.role === "Rentor" && (
           <TopBarItem>Kênh người thuê căn hộ</TopBarItem>
         )}
       </TopBar>
