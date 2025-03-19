@@ -25,7 +25,9 @@ import {
   EyeOutlined,
   ArrowRightOutlined
 } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
+import { useDispatch, useSelector } from "react-redux";
+import { getAllPosts } from "../../../redux/apiCalls";
 
 const { Search } = Input;
 const { Option } = Select;
@@ -187,46 +189,40 @@ const areas = ["Tất cả", "Quận 1", "Quận 2", "Quận Bình Thạnh", "Qu
 
 // Màu trạng thái
 const statusColors = {
-  "Còn trống": "green",
-  "Đã cho thuê": "red",
+  "0": "green",
+  "1": "red",
   "Đang đặt cọc": "orange"
 };
 
 const PostList = () => {
+  const location = useLocation();
+  const query = new URLSearchParams(location.search);
+  // const paramValue = query.get("amount");
   const [apartments, setApartments] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Tất cả");
   const [selectedArea, setSelectedArea] = useState("Tất cả");
   const [currentPage, setCurrentPage] = useState(1);
   const pageSize = 8;
+
+  const dispatch = useDispatch();
   
-  // Kích hoạt hook useNavigate để sử dụng điều hướng
   const navigate = useNavigate();
 
-  // Giả lập việc lấy dữ liệu từ API
   useEffect(() => {
-    setTimeout(() => {
-      setApartments(sampleApartments);
-      setLoading(false);
-    }, 1000);
-  }, []);
+    async function getPostList() {
+      setLoading(true)
+      const res = await getAllPosts(dispatch);
+      console.log(res.data);
+      setApartments(res.data);
+      
+    }
+    getPostList();
+    setLoading(false)
+  },[]);
 
-  // Xử lý lọc căn hộ theo danh mục và khu vực
-  const filteredApartments = apartments.filter(apartment => {
-    const matchSearch = apartment.title.toLowerCase().includes(searchText.toLowerCase()) || 
-                       apartment.description.toLowerCase().includes(searchText.toLowerCase());
-    const matchCategory = selectedCategory === "Tất cả" || apartment.category === selectedCategory;
-    const matchArea = selectedArea === "Tất cả" || apartment.address.includes(selectedArea);
-    
-    return matchSearch && matchCategory && matchArea;
-  });
-
-  // Phân trang
-  const paginatedApartments = filteredApartments.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize
-  );
+  console.log(apartments);
 
   const onSearch = value => {
     setSearchText(value);
@@ -247,7 +243,6 @@ const PostList = () => {
     return new Intl.NumberFormat('vi-VN').format(price) + " VNĐ/tháng";
   };
   
-  // Chuyển đến trang chi tiết - đã mở comment và thêm điều hướng thực tế
   const goToDetails = (id) => {
     navigate(`/post-detail`);
     console.log(`Đang chuyển đến trang chi tiết của căn hộ ID: ${id}`);
@@ -325,17 +320,17 @@ const PostList = () => {
             ))
           ) : (
             // Hiển thị danh sách căn hộ dạng card
-            paginatedApartments.map(apartment => (
-              <Col xs={24} sm={12} md={8} lg={6} key={apartment.id}>
+            apartments.map(apartment => (
+              <Col xs={24} sm={12} md={8} lg={6} key={apartment.postId}>
                 <Card
                   hoverable
                   cover={
                     <div style={{ position: 'relative', height: 200, overflow: 'hidden' }}>
                       <img 
                         alt={apartment.title}
-                        src={apartment.image}
+                        src={apartment.postImages[0]}
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                        onClick={() => goToDetails(apartment.id)}
+                        onClick={() => goToDetails(apartment.postId)}
                       />
                       <Badge 
                         count={apartment.status}
@@ -363,8 +358,8 @@ const PostList = () => {
                   }
                   onClick={() => goToDetails(apartment.id)}
                   actions={[
-                    <Space><AreaChartOutlined key="area" />{`${apartment.area} m²`}</Space>,
-                    <Space><UserOutlined key="rooms" />{`${apartment.bedrooms} PN, ${apartment.bathrooms} VS`}</Space>,
+                    <Space><AreaChartOutlined key="area" />{`200 m²`}</Space>,
+                    <Space><UserOutlined key="rooms" />{`2 PN, 2 VS`}</Space>,
                     <Space><EyeOutlined key="view" />{apartment.views}</Space>
                   ]}
                 >
@@ -373,7 +368,7 @@ const PostList = () => {
                     description={
                       <>
                         <Paragraph ellipsis={{ rows: 2 }} style={{ height: 40 }}>
-                          {apartment.description}
+                          {apartment.content}
                         </Paragraph>
                         <Space direction="vertical" style={{ width: '100%' }}>
                           <div>
@@ -386,12 +381,12 @@ const PostList = () => {
                           </div>
                           <div>
                             <Space wrap>
-                              {apartment.tags.slice(0, 2).map(tag => (
+                              {/* {apartment.tags.slice(0, 2).map(tag => (
                                 <Tag color="blue" key={tag}>
                                   {tag}
                                 </Tag>
-                              ))}
-                              {apartment.tags.length > 2 && <Tag>+{apartment.tags.length - 2}</Tag>}
+                              ))} */}
+                              {/* {apartment.tags.length > 2 && <Tag>+{apartment.tags.length - 2}</Tag>} */}
                             </Space>
                           </div>
                           <Button type="link" style={{ padding: 0 }} onClick={(e) => {
@@ -414,7 +409,7 @@ const PostList = () => {
           <Pagination
             current={currentPage}
             pageSize={pageSize}
-            total={filteredApartments.length}
+            // total={apartments.length}
             onChange={page => setCurrentPage(page)}
             showSizeChanger={false}
           />

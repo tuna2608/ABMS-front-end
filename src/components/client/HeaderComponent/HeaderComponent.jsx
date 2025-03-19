@@ -78,17 +78,8 @@ const TopBarItem = styled.div`
 `;
 
 function HeaderComponent() {
-  // const userLocal = localStorage.getItem("user");
-  // let user;
 
-  // if (typeof userLocal === "string" && userLocal !== null) {
-  //   try {
-  //     user = JSON.parse(userLocal);
-  //   } catch (error) {
-  //     console.error("Lỗi khi parse dữ liệu:", error);
-  //     user = null;
-  //   }
-  // }
+  
   const user = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();
 

@@ -5,6 +5,7 @@ import productReducer from "./productSlice"
 import usersReducer from "./userSlice"
 import orderReducer from "./orderSlice"
 import counterReducer from "./slices/counterSlices"
+import postReducer from './postSlice'
 
 // Persist account
 import {
@@ -25,7 +26,7 @@ const persistConfig = {
   storage,
 }
 
-const rootReducer = combineReducers({ user: userReducer, cart: cartReducer, product: productReducer, users: usersReducer, order: orderReducer,counter: counterReducer })
+const rootReducer = combineReducers({ user: userReducer, post: postReducer, cart: cartReducer, product: productReducer, users: usersReducer, order: orderReducer,counter: counterReducer })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
 
