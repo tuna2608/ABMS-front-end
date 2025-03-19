@@ -214,15 +214,12 @@ const PostList = () => {
     async function getPostList() {
       setLoading(true)
       const res = await getAllPosts(dispatch);
-      console.log(res.data);
       setApartments(res.data);
       
     }
     getPostList();
     setLoading(false)
   },[]);
-
-  console.log(apartments);
 
   const onSearch = value => {
     setSearchText(value);
