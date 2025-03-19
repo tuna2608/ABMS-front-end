@@ -983,7 +983,6 @@ const OwnerHome = () => {
             <Avatar style={{ backgroundColor: "#87d068" }} icon={<UserOutlined />} />
           </div>
         </Header>
-        
         <Content style={{ margin: "24px 16px", padding: 24, background: "#fff", borderRadius: 4, minHeight: 280 }}>
           {currentView === "list" ? renderApartmentList() : renderApartmentDetail()}
           {renderApartmentModal()}
