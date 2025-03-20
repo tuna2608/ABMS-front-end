@@ -21,7 +21,8 @@ import {
   Menu,
   Layout,
   Typography,
-  Divider
+  Divider,
+  Table
 } from "antd";
 import { 
   HomeOutlined, 
@@ -85,7 +86,8 @@ const sampleApartments = [
         title: "Cho thuê căn hộ cao cấp view sông",
         content: "Căn hộ cao cấp 2 phòng ngủ tại Vinhomes Central Park, view sông tuyệt đẹp. Phù hợp cho gia đình hoặc người nước ngoài. Liên hệ ngay để xem nhà.",
         createdAt: "2025-03-12",
-        status: "Đang hiển thị"
+        status: "Đang hiển thị",
+        depositPrice: 5800000
       }
     ]
   },
@@ -131,7 +133,8 @@ const sampleApartments = [
         title: "Cho thuê căn hộ 3PN tại Masteri Thảo Điền",
         content: "Căn góc 3 phòng ngủ, view đẹp, nội thất cao cấp. Tiện ích đầy đủ: hồ bơi, gym. Phù hợp cho gia đình hoặc nhóm ở ghép.",
         createdAt: "2025-03-08",
-        status: "Đang hiển thị"
+        status: "Đang hiển thị",
+        depositPrice: 7200000
       }
     ]
   },
@@ -158,7 +161,8 @@ const sampleApartments = [
         title: "Bán Penthouse cao cấp Saigon Pearl",
         content: "Penthouse sang trọng với view toàn thành phố, thiết kế hiện đại. Diện tích lớn với 4 phòng ngủ và sân vườn riêng.",
         createdAt: "2025-03-05",
-        status: "Đang hiển thị"
+        status: "Đang hiển thị",
+        depositPrice: 30000000
       }
     ]
   },
@@ -182,6 +186,9 @@ const sampleApartments = [
     posts: []
   },
 ];
+
+// Các loại bài viết
+const postTypes = ["Cho thuê", "Mua bán"];
 
 // Các danh mục căn hộ
 const categories = ["Tất cả", "Cho thuê", "Bán", "Đã cho thuê", "Đang đặt cọc"];
@@ -209,6 +216,8 @@ const OwnerHome = () => {
   const [apartmentForm] = Form.useForm();
   const [postForm] = Form.useForm();
   const [collapsed, setCollapsed] = useState(false);
+  const [selectedPostType, setSelectedPostType] = useState(null);
+  const [filteredApartmentsForPost, setFilteredApartmentsForPost] = useState([]);
   const pageSize = 4;
 
   // Giả lập việc lấy dữ liệu từ API
@@ -218,6 +227,28 @@ const OwnerHome = () => {
       setLoading(false);
     }, 1000);
   }, []);
+
+  // Effect để lọc các căn hộ cho bài viết khi loại bài viết thay đổi
+  useEffect(() => {
+    if (selectedPostType) {
+      // Lọc căn hộ phù hợp với loại bài viết đã chọn
+      const filtered = apartments.filter(apt => {
+        const matchesType = selectedPostType === "Cho thuê" ? apt.category === "Cho thuê" : apt.category === "Bán";
+        return matchesType;
+      });
+      
+      // Sắp xếp: chưa có bài viết lên đầu
+      filtered.sort((a, b) => {
+        if (a.posts.length === 0 && b.posts.length > 0) return -1;
+        if (a.posts.length > 0 && b.posts.length === 0) return 1;
+        return 0;
+      });
+      
+      setFilteredApartmentsForPost(filtered);
+    } else {
+      setFilteredApartmentsForPost([]);
+    }
+  }, [selectedPostType, apartments]);
 
   // Toggle sidebar collapse
   const toggleCollapsed = () => {
@@ -355,51 +386,72 @@ const OwnerHome = () => {
     setCurrentApartment(null);
   };
 
-  // Xử lý mở modal tạo bài viết
-  const showPostModal = (postToEdit = null) => {
-    if (postToEdit) {
+  // Xử lý chọn loại bài viết cho create post
+  const handlePostTypeChange = (value) => {
+    setSelectedPostType(value);
+    postForm.setFieldsValue({
+      apartmentId: undefined
+    });
+  };
+
+  // Xử lý chọn căn hộ cho create post
+  const handleSelectApartmentForPost = (value) => {
+    const selected = apartments.find(apt => apt.id === value);
+    if (selected) {
+      setCurrentApartment(selected);
+      // Đặt giá tiền cọc mặc định là bằng giá thuê/bán
       postForm.setFieldsValue({
-        title: postToEdit.title,
-        content: postToEdit.content,
-        status: postToEdit.status
+        depositPrice: selected.price
       });
-    } else {
-      postForm.resetFields();
     }
-    setIsPostModalVisible(true);
   };
 
   // Xử lý đóng modal bài viết
   const handlePostCancel = () => {
     setIsPostModalVisible(false);
+    if (currentView === "createPost") {
+      postForm.resetFields();
+      setSelectedPostType(null);
+      setCurrentApartment(null);
+    }
   };
 
   // Xử lý lưu bài viết
   const handlePostSubmit = () => {
-    if (!currentApartment) {
-      message.error("Vui lòng chọn căn hộ trước khi tạo bài viết");
-      return;
-    }
-
     postForm.validateFields().then(values => {
+      const selectedApartment = apartments.find(apt => apt.id === values.apartmentId);
+      
+      if (!selectedApartment) {
+        message.error("Vui lòng chọn căn hộ trước khi tạo bài viết");
+        return;
+      }
+
       const newPost = {
-        id: Math.max(0, ...currentApartment.posts.map(p => p.id)) + 1,
+        id: Math.max(0, ...selectedApartment.posts.map(p => p.id)) + 1,
         title: values.title,
         content: values.content,
+        depositPrice: values.depositPrice,
         createdAt: new Date().toISOString().split('T')[0],
-        status: values.status || "Đang hiển thị"
+        status: "Đang hiển thị"
       };
 
-      const updatedPosts = [...currentApartment.posts, newPost];
-      const updatedApartment = { ...currentApartment, posts: updatedPosts };
+      const updatedPosts = [...selectedApartment.posts, newPost];
+      const updatedApartment = { ...selectedApartment, posts: updatedPosts };
       const updatedApartments = apartments.map(apt => 
-        apt.id === currentApartment.id ? updatedApartment : apt
+        apt.id === selectedApartment.id ? updatedApartment : apt
       );
 
       setApartments(updatedApartments);
-      setCurrentApartment(updatedApartment);
       message.success("Đã tạo bài viết mới thành công!");
-      setIsPostModalVisible(false);
+      
+      if (currentView === "createPost") {
+        postForm.resetFields();
+        setSelectedPostType(null);
+        setCurrentApartment(null);
+      } else {
+        setIsPostModalVisible(false);
+        setCurrentApartment(updatedApartment);
+      }
     });
   };
 
@@ -637,9 +689,15 @@ const OwnerHome = () => {
                 type="primary" 
                 icon={<FileAddOutlined />}
                 onClick={() => showPostModal()}
+                disabled={currentApartment.posts.length >= 2}
               >
                 Tạo bài viết mới
               </Button>
+              {currentApartment.posts.length >= 2 && (
+                <Text type="warning" style={{ marginLeft: 8 }}>
+                  Đã đạt giới hạn tối đa 2 bài viết cho căn hộ này
+                </Text>
+              )}
             </div>
 
             {currentApartment.posts.length === 0 ? (
@@ -668,23 +726,22 @@ const OwnerHome = () => {
                         onClick={() => handleDeletePost(post.id)}
                       >
                         Xóa
-                      </Button>
+                      </Button>,
                     ]}
-                    extra={
-                      <Space direction="vertical" align="end">
-                        <div>Ngày tạo: {post.createdAt}</div>
-                        <Tag color={post.status === "Đang hiển thị" ? "green" : "orange"}>
-                          {post.status}
-                        </Tag>
-                      </Space>
-                    }
                   >
                     <List.Item.Meta
                       title={post.title}
+                      description={
+                        <Space direction="vertical">
+                          <Text>Ngày tạo: {post.createdAt}</Text>
+                          <Tag color={post.status === "Đang hiển thị" ? "green" : "default"}>
+                            {post.status}
+                          </Tag>
+                          <Text>Giá đặt cọc: {formatPrice(post.depositPrice)}</Text>
+                        </Space>
+                      }
                     />
-                    <div style={{ whiteSpace: 'pre-line', marginTop: 10 }}>
-                      {post.content}
-                    </div>
+                    <div>{post.content}</div>
                   </List.Item>
                 )}
               />
@@ -692,429 +749,699 @@ const OwnerHome = () => {
           </TabPane>
 
           <TabPane tab={<span><PictureOutlined /> Hình ảnh</span>} key="images">
-            <div style={{ textAlign: 'center', padding: '20px 0' }}>
-              <Upload
-                listType="picture-card"
-                fileList={[]}
-                beforeUpload={() => false}
-              >
-                <div>
-                  <PlusOutlined />
-                  <div style={{ marginTop: 8 }}>Tải lên</div>
-                </div>
-              </Upload>
-              <p>Chức năng đang được phát triển</p>
-            </div>
-          </TabPane>
-        </Tabs>
-      </Card>
-    );
-  };
-
-  // Modal thêm/sửa căn hộ
-  const renderApartmentModal = () => {
-    return (
-      <Modal
-        title={currentApartment ? "Sửa thông tin căn hộ" : "Thêm căn hộ mới"}
-        open={isApartmentModalVisible}
-        onCancel={handleApartmentCancel}
-        footer={[
-          <Button key="back" onClick={handleApartmentCancel}>
-            Hủy
-          </Button>,
-          <Button key="submit" type="primary" onClick={handleApartmentSubmit}>
-            {currentApartment ? "Cập nhật" : "Thêm mới"}
-          </Button>,
-        ]}
-        width={800}
-      >
-        <Form
-          form={apartmentForm}
-          layout="vertical"
-          initialValues={{
-            category: "Cho thuê",
-            status: "Còn trống",
-            bedrooms: 1,
-            bathrooms: 1
-          }}
-        >
-          <Form.Item
-            name="title"
-            label="Tiêu đề"
-            rules={[{ required: true, message: 'Vui lòng nhập tiêu đề căn hộ!' }]}
-          >
-            <Input placeholder="Nhập tiêu đề căn hộ" />
-          </Form.Item>
-
-          <Form.Item
-            name="description"
-            label="Mô tả"
-            rules={[{ required: true, message: 'Vui lòng nhập mô tả căn hộ!' }]}
-            >
-            <TextArea rows={4} placeholder="Nhập mô tả chi tiết về căn hộ" />
-          </Form.Item>
-
-          <Form.Item
-            name="address"
-            label="Địa chỉ"
-            rules={[{ required: true, message: 'Vui lòng nhập địa chỉ căn hộ!' }]}
-          >
-            <Input placeholder="Nhập địa chỉ căn hộ" />
-          </Form.Item>
-
-          <div style={{ display: 'flex', gap: '16px' }}>
-            <Form.Item
-              name="price"
-              label="Giá thuê/bán (VNĐ)"
-              rules={[{ required: true, message: 'Vui lòng nhập giá căn hộ!' }]}
-              style={{ flex: 1 }}
-            >
-              <InputNumber style={{ width: '100%' }} placeholder="Nhập giá căn hộ" formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} />
-            </Form.Item>
-
-            <Form.Item
-              name="area"
-              label="Diện tích (m²)"
-              rules={[{ required: true, message: 'Vui lòng nhập diện tích căn hộ!' }]}
-              style={{ flex: 1 }}
-            >
-              <InputNumber style={{ width: '100%' }} placeholder="Nhập diện tích căn hộ" />
-            </Form.Item>
-          </div>
-
-          <div style={{ display: 'flex', gap: '16px' }}>
-            <Form.Item
-              name="bedrooms"
-              label="Số phòng ngủ"
-              rules={[{ required: true, message: 'Vui lòng nhập số phòng ngủ!' }]}
-              style={{ flex: 1 }}
-            >
-              <InputNumber style={{ width: '100%' }} placeholder="Nhập số phòng ngủ" min={0} />
-            </Form.Item>
-
-            <Form.Item
-              name="bathrooms"
-              label="Số phòng tắm"
-              rules={[{ required: true, message: 'Vui lòng nhập số phòng tắm!' }]}
-              style={{ flex: 1 }}
-            >
-              <InputNumber style={{ width: '100%' }} placeholder="Nhập số phòng tắm" min={0} />
-            </Form.Item>
-          </div>
-
-          <div style={{ display: 'flex', gap: '16px' }}>
-            <Form.Item
-              name="category"
-              label="Loại căn hộ"
-              rules={[{ required: true, message: 'Vui lòng chọn loại căn hộ!' }]}
-              style={{ flex: 1 }}
-            >
-              <Select>
-                <Option value="Cho thuê">Cho thuê</Option>
-                <Option value="Bán">Bán</Option>
-              </Select>
-            </Form.Item>
-
-            <Form.Item
-              name="status"
-              label="Trạng thái"
-              rules={[{ required: true, message: 'Vui lòng chọn trạng thái căn hộ!' }]}
-              style={{ flex: 1 }}
-            >
-              <Select>
-                <Option value="Còn trống">Còn trống</Option>
-                <Option value="Đã cho thuê">Đã cho thuê</Option>
-                <Option value="Đang đặt cọc">Đang đặt cọc</Option>
-              </Select>
-            </Form.Item>
-          </div>
-
-          <Form.Item
-            name="tags"
-            label="Tags (phân cách bằng dấu phẩy)"
-          >
-            <Input placeholder="Ví dụ: Cao cấp, View đẹp, Gần trung tâm" />
-          </Form.Item>
-
-          <Form.Item
-            name="images"
-            label="Hình ảnh"
-          >
             <Upload
               listType="picture-card"
-              fileList={[]}
-              beforeUpload={() => false}
+              fileList={currentApartment.images.map((img, index) => ({
+                uid: -index,
+                name: img,
+                status: 'done',
+                url: img
+              }))}
+              onPreview={() => {}}
             >
               <div>
                 <PlusOutlined />
                 <div style={{ marginTop: 8 }}>Tải lên</div>
               </div>
             </Upload>
-          </Form.Item>
-        </Form>
-      </Modal>
-    );
-  };
-
-  // Modal tạo bài viết
-  const renderPostModal = () => {
-    return (
-      <Modal
-        title="Tạo bài viết mới"
-        open={isPostModalVisible}
-        onCancel={handlePostCancel}
-        footer={[
-          <Button key="back" onClick={handlePostCancel}>
-            Hủy
-          </Button>,
-          <Button key="submit" type="primary" onClick={handlePostSubmit}>
-            Đăng bài
-          </Button>,
-        ]}
-        width={800}
-      >
-        <Form
-          form={postForm}
-          layout="vertical"
-          initialValues={{
-            status: "Đang hiển thị"
-          }}
-        >
-          <Form.Item
-            name="title"
-            label="Tiêu đề bài viết"
-            rules={[{ required: true, message: 'Vui lòng nhập tiêu đề bài viết!' }]}
-          >
-            <Input placeholder="Nhập tiêu đề bài viết" />
-          </Form.Item>
-
-          <Form.Item
-            name="content"
-            label="Nội dung bài viết"
-            rules={[{ required: true, message: 'Vui lòng nhập nội dung bài viết!' }]}
-          >
-            <TextArea rows={10} placeholder="Nhập nội dung chi tiết bài viết" />
-          </Form.Item>
-
-          <Form.Item
-            name="status"
-            label="Trạng thái"
-          >
-            <Select>
-              <Option value="Đang hiển thị">Đang hiển thị</Option>
-              <Option value="Ẩn">Ẩn</Option>
-            </Select>
-          </Form.Item>
-        </Form>
-      </Modal>
-    );
-  };
-
-  // Render phần tải lên ảnh
-  const renderUploadContent = () => {
-    return (
-      <Card title={<span><UploadOutlined /> Quản lý hình ảnh</span>}>
-        <Upload.Dragger
-          name="files"
-          action="/upload.do"
-          listType="picture"
-          multiple={true}
-          beforeUpload={() => false}
-        >
-          <p className="ant-upload-drag-icon">
-            <InboxOutlined />
-          </p>
-          <p className="ant-upload-text">Kéo thả file vào đây hoặc click để tải lên</p>
-          <p className="ant-upload-hint">Hỗ trợ tải lên nhiều file cùng lúc</p>
-        </Upload.Dragger>
-      </Card>
-    );
-  };
-
-  // Render quản lý hợp đồng
-  const renderContractContent = () => {
-    return (
-      <Card title={<span><FileProtectOutlined /> Quản lý hợp đồng</span>}>
-        <List
-          itemLayout="horizontal"
-          dataSource={[
-            { id: 1, name: "Hợp đồng thuê căn hộ - Nguyễn Văn X", date: "15/03/2025", status: "Đang hiệu lực" },
-            { id: 2, name: "Hợp đồng thuê căn hộ - Trần Văn Y", date: "10/03/2025", status: "Đang hiệu lực" },
-            { id: 3, name: "Hợp đồng thuê căn hộ - Lê Thị Z", date: "05/03/2025", status: "Chờ ký" },
-          ]}
-          renderItem={item => (
-            <List.Item
-              actions={[
-                <Button type="link">Xem</Button>,
-                <Button type="link">Tải xuống</Button>
-              ]}
-            >
-              <List.Item.Meta
-                title={item.name}
-                description={`Ngày tạo: ${item.date} - Trạng thái: ${item.status}`}
-              />
-            </List.Item>
-          )}
-        />
-        <div style={{ marginTop: 16, textAlign: 'center' }}>
-          <Button type="primary" icon={<FileAddOutlined />}>Tạo hợp đồng mới</Button>
-        </div>
-      </Card>
-    );
-  };
-
-  // Render thanh toán
-  const renderPaymentContent = () => {
-    return (
-      <Card title={<span><WalletOutlined /> Quản lý thanh toán</span>}>
-        <Tabs defaultActiveKey="1">
-          <TabPane tab="Thanh toán đến hạn" key="1">
-            <List
-              itemLayout="horizontal"
-              dataSource={[
-                { id: 1, name: "Tiền thuê tháng 3/2025 - Căn hộ A", amount: 5800000, dueDate: "25/03/2025" },
-                { id: 2, name: "Tiền thuê tháng 3/2025 - Căn hộ B", amount: 7200000, dueDate: "28/03/2025" },
-              ]}
-              renderItem={item => (
-                <List.Item
-                  actions={[
-                    <Button type="primary">Xác nhận thanh toán</Button>
-                  ]}
-                >
-                  <List.Item.Meta
-                    title={item.name}
-                    description={`Số tiền: ${new Intl.NumberFormat('vi-VN').format(item.amount)} VNĐ - Hạn thanh toán: ${item.dueDate}`}
-                  />
-                </List.Item>
-              )}
-            />
-          </TabPane>
-          <TabPane tab="Lịch sử thanh toán" key="2">
-            <List
-              itemLayout="horizontal"
-              dataSource={[
-                { id: 1, name: "Tiền thuê tháng 2/2025 - Căn hộ A", amount: 5800000, paidDate: "25/02/2025" },
-                { id: 2, name: "Tiền thuê tháng 2/2025 - Căn hộ B", amount: 7200000, paidDate: "26/02/2025" },
-                { id: 3, name: "Tiền thuê tháng 1/2025 - Căn hộ A", amount: 5800000, paidDate: "25/01/2025" },
-              ]}
-              renderItem={item => (
-                <List.Item
-                  actions={[
-                    <Button type="link">Xem chi tiết</Button>
-                  ]}
-                >
-                  <List.Item.Meta
-                    title={item.name}
-                    description={`Số tiền: ${new Intl.NumberFormat('vi-VN').format(item.amount)} VNĐ - Ngày thanh toán: ${item.paidDate}`}
-                  />
-                </List.Item>
-              )}
-            />
           </TabPane>
         </Tabs>
       </Card>
     );
   };
 
-  // Render nội dung chính
-  const renderMainContent = () => {
-    switch (currentView) {
-      case "detail":
-        return renderApartmentDetail();
-      case "upload":
-        return renderUploadContent();
-      case "contract":
-        return renderContractContent();
-      case "payment":
-        return renderPaymentContent();
-      case "list":
-      default:
-        return renderApartmentList();
+  // Xử lý mở modal bài viết
+  const showPostModal = (post = null) => {
+    if (currentView === "createPost") {
+      // Tiếp tục ở chế độ create post
+    } else {
+      if (post) {
+        // Chỉnh sửa bài viết hiện có
+        postForm.setFieldsValue({
+          apartmentId: currentApartment.id,
+          title: post.title,
+          content: post.content,
+          depositPrice: post.depositPrice
+        });
+      } else {
+        // Tạo bài viết mới
+        postForm.setFieldsValue({
+          apartmentId: currentApartment.id,
+          depositPrice: currentApartment.price
+        });
+      }
+      setIsPostModalVisible(true);
     }
+  };
+
+  // Render trang tạo bài viết
+  const renderCreatePost = () => {
+    return (
+      <Card
+        title={
+          <Space>
+            <FileAddOutlined />
+            <span>Tạo bài viết mới</span>
+          </Space>
+        }
+      >
+        <Form form={postForm} layout="vertical">
+          <Form.Item
+            name="postType"
+            label="Loại bài viết"
+            rules={[{ required: true, message: 'Vui lòng chọn loại bài viết' }]}
+          >
+            <Select 
+              placeholder="Chọn loại bài viết" 
+              onChange={handlePostTypeChange}
+              style={{ maxWidth: 400 }}
+            >
+              {postTypes.map(type => (
+                <Option key={type} value={type}>{type}</Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          <Form.Item
+            name="apartmentId"
+            label="Chọn căn hộ"
+            rules={[{ required: true, message: 'Vui lòng chọn căn hộ' }]}
+          >
+            <Select
+              placeholder="Chọn căn hộ"
+              onChange={handleSelectApartmentForPost}
+              disabled={!selectedPostType}
+              style={{ maxWidth: 600 }}
+            >
+              {filteredApartmentsForPost.map(apt => (
+                <Option key={apt.id} value={apt.id}>
+                  <Space>
+                    {apt.title} - {apt.address}
+                    {apt.posts.length > 0 && (
+                      <Tag color="orange">Đã có {apt.posts.length} bài viết</Tag>
+                    )}
+                  </Space>
+                </Option>
+              ))}
+            </Select>
+          </Form.Item>
+
+          {currentApartment && (
+            <>
+              <Divider />
+              <Text strong>Thông tin bài viết</Text>
+              
+              <Form.Item
+                name="title"
+                label="Tiêu đề bài viết"
+                rules={[{ required: true, message: 'Vui lòng nhập tiêu đề bài viết' }]}
+                style={{ marginTop: 16 }}
+              >
+                <Input placeholder="Nhập tiêu đề bài viết" maxLength={100} />
+              </Form.Item>
+
+              <Form.Item
+                name="content"
+                label="Nội dung bài viết"
+                rules={[{ required: true, message: 'Vui lòng nhập nội dung bài viết' }]}
+              >
+                <TextArea rows={6} placeholder="Mô tả chi tiết về căn hộ, tiện ích, điều kiện thuê/mua..." />
+              </Form.Item>
+
+              <Form.Item
+                name="depositPrice"
+                label="Giá đặt cọc"
+                rules={[{ required: true, message: 'Vui lòng nhập giá đặt cọc' }]}
+              >
+                <InputNumber
+                  style={{ width: '100%', maxWidth: 400 }}
+                  formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                  addonAfter="VNĐ"
+                />
+              </Form.Item>
+
+              <Form.Item>
+                <Space>
+                  <Button type="primary" onClick={handlePostSubmit}>
+                    Tạo bài viết
+                  </Button>
+                  <Button onClick={() => {
+                    postForm.resetFields();
+                    setSelectedPostType(null);
+                    setCurrentApartment(null);
+                  }}>
+                    Làm mới
+                  </Button>
+                  <Button onClick={handleBackToList}>
+                    Quay lại
+                  </Button>
+                </Space>
+              </Form.Item>
+            </>
+          )}
+        </Form>
+      </Card>
+    );
+  };
+
+  // Render trang hợp đồng
+  const renderContracts = () => {
+    const contractColumns = [
+      {
+        title: 'Mã hợp đồng',
+        dataIndex: 'id',
+        key: 'id',
+      },
+      {
+        title: 'Căn hộ',
+        dataIndex: 'apartment',
+        key: 'apartment',
+      },
+      {
+        title: 'Khách hàng',
+        dataIndex: 'customer',
+        key: 'customer',
+      },
+      {
+        title: 'Loại hợp đồng',
+        dataIndex: 'type',
+        key: 'type',
+        render: type => <Tag color={type === 'Thuê' ? 'green' : 'blue'}>{type}</Tag>,
+      },
+      {
+        title: 'Ngày bắt đầu',
+        dataIndex: 'startDate',
+        key: 'startDate',
+      },
+      {
+        title: 'Ngày kết thúc',
+        dataIndex: 'endDate',
+        key: 'endDate',
+      },
+      {
+        title: 'Giá trị',
+        dataIndex: 'value',
+        key: 'value',
+        render: value => formatPrice(value),
+      },
+      {
+        title: 'Trạng thái',
+        key: 'status',
+        dataIndex: 'status',
+        render: status => {
+          let color = 'default';
+          if (status === 'Đang hiệu lực') color = 'green';
+          else if (status === 'Đã hết hạn') color = 'red';
+          else if (status === 'Chờ ký kết') color = 'orange';
+          return <Tag color={color}>{status}</Tag>;
+        },
+      },
+      {
+        title: 'Thao tác',
+        key: 'action',
+        render: () => (
+          <Space size="middle">
+            <Button type="link" icon={<FileProtectOutlined />}>Xem</Button>
+            <Button type="link" icon={<EditOutlined />}>Sửa</Button>
+          </Space>
+        ),
+      },
+    ];
+
+    const sampleContracts = [
+      {
+        key: '1',
+        id: 'HD001',
+        apartment: 'Căn hộ 2PN Vinhomes Central Park',
+        customer: 'Nguyễn Văn X',
+        type: 'Thuê',
+        startDate: '01/01/2025',
+        endDate: '31/12/2025',
+        value: 5800000,
+        status: 'Đang hiệu lực',
+      },
+      {
+        key: '2',
+        id: 'HD002',
+        apartment: 'Căn hộ 3PN Masteri Thảo Điền',
+        customer: 'Trần Thị Y',
+        type: 'Thuê',
+        startDate: '15/02/2025',
+        endDate: '14/02/2026',
+        value: 7200000,
+        status: 'Chờ ký kết',
+      }
+    ];
+
+    return (
+      <Card 
+        title={
+          <Space>
+            <FileProtectOutlined />
+            <span>Quản lý hợp đồng</span>
+          </Space>
+        }
+        extra={<Button type="primary" icon={<PlusOutlined />}>Tạo hợp đồng mới</Button>}
+      >
+        <Table columns={contractColumns} dataSource={sampleContracts} />
+      </Card>
+    );
+  };
+
+  // Render trang thanh toán
+  const renderPayments = () => {
+    const paymentColumns = [
+      {
+        title: 'Mã giao dịch',
+        dataIndex: 'id',
+        key: 'id',
+      },
+      {
+        title: 'Căn hộ',
+        dataIndex: 'apartment',
+        key: 'apartment',
+      },
+      {
+        title: 'Khách hàng',
+        dataIndex: 'customer',
+        key: 'customer',
+      },
+      {
+        title: 'Loại thanh toán',
+        dataIndex: 'type',
+        key: 'type',
+        render: type => <Tag color={type === 'Tiền thuê' ? 'green' : (type === 'Tiền cọc' ? 'orange' : 'blue')}>{type}</Tag>,
+      },
+      {
+        title: 'Ngày thanh toán',
+        dataIndex: 'date',
+        key: 'date',
+      },
+      {
+        title: 'Số tiền',
+        dataIndex: 'amount',
+        key: 'amount',
+        render: amount => formatPrice(amount),
+      },
+      {
+        title: 'Trạng thái',
+        key: 'status',
+        dataIndex: 'status',
+        render: status => {
+          let color = 'default';
+          if (status === 'Đã thanh toán') color = 'green';
+          else if (status === 'Chưa thanh toán') color = 'red';
+          else if (status === 'Đang xử lý') color = 'orange';
+          return <Tag color={color}>{status}</Tag>;
+        },
+      },
+      {
+        title: 'Thao tác',
+        key: 'action',
+        render: () => (
+          <Space size="middle">
+            <Button type="link" icon={<AppstoreOutlined />}>Chi tiết</Button>
+            <Button type="link" icon={<EditOutlined />}>Cập nhật</Button>
+          </Space>
+        ),
+      },
+    ];
+
+    const samplePayments = [
+      {
+        key: '1',
+        id: 'TT001',
+        apartment: 'Căn hộ 2PN Vinhomes Central Park',
+        customer: 'Nguyễn Văn X',
+        type: 'Tiền thuê',
+        date: '01/03/2025',
+        amount: 5800000,
+        status: 'Đã thanh toán',
+      },
+      {
+        key: '2',
+        id: 'TT002',
+        apartment: 'Căn hộ 3PN Masteri Thảo Điền',
+        customer: 'Trần Thị Y',
+        type: 'Tiền cọc',
+        date: '15/02/2025',
+        amount: 7200000,
+        status: 'Đã thanh toán',
+      },
+      {
+        key: '3',
+        id: 'TT003',
+        apartment: 'Căn hộ 2PN Vinhomes Central Park',
+        customer: 'Nguyễn Văn X',
+        type: 'Tiền thuê',
+        date: '01/04/2025',
+        amount: 5800000,
+        status: 'Chưa thanh toán',
+      }
+    ];
+
+    return (
+      <Card 
+        title={
+          <Space>
+            <WalletOutlined />
+            <span>Quản lý thanh toán</span>
+          </Space>
+        }
+        extra={<Button type="primary" icon={<PlusOutlined />}>Ghi nhận thanh toán mới</Button>}
+      >
+        <Table columns={paymentColumns} dataSource={samplePayments} />
+      </Card>
+    );
+  };
+
+  // Render trang tải lên tài liệu
+  const renderUploadDocuments = () => {
+    return (
+      <Card
+        title={
+          <Space>
+            <UploadOutlined />
+            <span>Tải lên tài liệu</span>
+          </Space>
+        }
+      >
+        <Tabs defaultActiveKey="apartment">
+          <TabPane tab="Tài liệu căn hộ" key="apartment">
+            <Form layout="vertical">
+              <Form.Item label="Chọn căn hộ">
+                <Select placeholder="Chọn căn hộ" style={{ width: '100%', maxWidth: 600 }}>
+                  {apartments.map(apt => (
+                    <Option key={apt.id} value={apt.id}>{apt.title}</Option>
+                  ))}
+                </Select>
+              </Form.Item>
+              
+              <Form.Item label="Loại tài liệu">
+                <Select placeholder="Chọn loại tài liệu" style={{ width: '100%', maxWidth: 400 }}>
+                  <Option value="sodo">Sơ đồ căn hộ</Option>
+                  <Option value="thongtin">Thông tin pháp lý</Option>
+                  <Option value="hinh">Hình ảnh</Option>
+                  <Option value="khac">Tài liệu khác</Option>
+                </Select>
+              </Form.Item>
+              
+              <Form.Item label="Tài liệu">
+                <Upload.Dragger
+                  multiple
+                  listType="picture"
+                  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                >
+                  <p className="ant-upload-drag-icon">
+                    <InboxOutlined />
+                  </p>
+                  <p className="ant-upload-text">Nhấp hoặc kéo file vào khu vực này để tải lên</p>
+                  <p className="ant-upload-hint">Hỗ trợ tải lên một hoặc nhiều file</p>
+                </Upload.Dragger>
+              </Form.Item>
+              
+              <Form.Item>
+                <Button type="primary">Tải lên</Button>
+              </Form.Item>
+            </Form>
+          </TabPane>
+          
+          <TabPane tab="Tài liệu hợp đồng" key="contract">
+            <Form layout="vertical">
+              <Form.Item label="Chọn hợp đồng">
+                <Select placeholder="Chọn hợp đồng" style={{ width: '100%', maxWidth: 600 }}>
+                  <Option value="HD001">HD001 - Căn hộ 2PN Vinhomes Central Park</Option>
+                  <Option value="HD002">HD002 - Căn hộ 3PN Masteri Thảo Điền</Option>
+                </Select>
+              </Form.Item>
+              
+              <Form.Item label="Loại tài liệu">
+                <Select placeholder="Chọn loại tài liệu" style={{ width: '100%', maxWidth: 400 }}>
+                  <Option value="hopdong">Hợp đồng có chữ ký</Option>
+                  <Option value="cmnd">CMND/CCCD</Option>
+                  <Option value="bienbangiao">Biên bản giao nhận</Option>
+                  <Option value="khac">Tài liệu khác</Option>
+                </Select>
+              </Form.Item>
+              
+              <Form.Item label="Tài liệu">
+                <Upload.Dragger
+                  multiple
+                  listType="picture"
+                  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                >
+                  <p className="ant-upload-drag-icon">
+                    <InboxOutlined />
+                  </p>
+                  <p className="ant-upload-text">Nhấp hoặc kéo file vào khu vực này để tải lên</p>
+                  <p className="ant-upload-hint">Hỗ trợ tải lên một hoặc nhiều file</p>
+                </Upload.Dragger>
+              </Form.Item>
+              
+              <Form.Item>
+                <Button type="primary">Tải lên</Button>
+              </Form.Item>
+            </Form>
+          </TabPane>
+        </Tabs>
+      </Card>
+    );
   };
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Sider trigger={null} collapsible collapsed={collapsed} width={240}>
-        <div style={{ height: 64, padding: '16px', textAlign: 'center' }}>
-          <Typography.Title level={4} style={{ color: '#fff', margin: 0 }}>
-            {collapsed ? 'RMS' : 'Rental Management'}
-          </Typography.Title>
+      <Sider trigger={null} collapsible collapsed={collapsed} width={250}>
+        <div style={{ height: 64, padding: 16, display: 'flex', alignItems: 'center', justifyContent: collapsed ? 'center' : 'flex-start' }}>
+          <HomeOutlined style={{ fontSize: 24, color: '#fff' }} />
+          {!collapsed && <span style={{ color: '#fff', fontSize: 18, marginLeft: 12 }}>Quản lý nhà</span>}
         </div>
+        
         <Menu
           theme="dark"
           mode="inline"
           defaultSelectedKeys={['1']}
-          items={[
-            {
-              key: '1',
-              icon: <HomeOutlined />,
-              label: 'Quản lý căn hộ',
-              onClick: () => setCurrentView("list")
-            },
-            {
-              key: '2',
-              icon: <FormOutlined />,
-              label: 'Quản lý bài viết',
-              onClick: () => setCurrentView("list")
-            },
-            {
-              key: '3',
-              icon: <BuildOutlined />,
-              label: 'Quản lý dịch vụ',
-              onClick: () => message.info('Tính năng đang phát triển')
-            },
-            {
-              key: '4',
-              icon: <TeamOutlined />,
-              label: 'Quản lý khách thuê',
-              onClick: () => message.info('Tính năng đang phát triển')
-            },
-            {
-              key: '5',
-              icon: <WalletOutlined />,
-              label: 'Quản lý thanh toán',
-              onClick: () => setCurrentView("payment")
-            },
-            {
-              key: '6',
-              icon: <FileProtectOutlined />,
-              label: 'Quản lý hợp đồng',
-              onClick: () => setCurrentView("contract")
-            },
-            {
-              key: '7',
-              icon: <UploadOutlined />,
-              label: 'Quản lý hình ảnh',
-              onClick: () => setCurrentView("upload")
-            },
+          selectedKeys={[
+            currentView === "list" || currentView === "detail" ? '1' : 
+            currentView === "createPost" ? '2' : 
+            currentView === "contract" ? '3' : 
+            currentView === "payment" ? '4' : 
+            currentView === "upload" ? '5' : '1'
           ]}
-        />
+        >
+          <Menu.Item key="1" icon={<HomeOutlined />} onClick={() => {
+            setCurrentView("list");
+            setCurrentApartment(null);
+          }}>
+            Quản lý căn hộ
+          </Menu.Item>
+          <Menu.Item key="2" icon={<FormOutlined />} onClick={() => {
+            setCurrentView("createPost");
+            setCurrentApartment(null);
+            postForm.resetFields();
+            setSelectedPostType(null);
+          }}>
+            Tạo bài viết
+          </Menu.Item>
+          <Menu.Item key="3" icon={<FileProtectOutlined />} onClick={() => setCurrentView("contract")}>
+            Quản lý hợp đồng
+          </Menu.Item>
+          <Menu.Item key="4" icon={<WalletOutlined />} onClick={() => setCurrentView("payment")}>
+            Quản lý thanh toán
+          </Menu.Item>
+          <Menu.Item key="5" icon={<UploadOutlined />} onClick={() => setCurrentView("upload")}>
+            Tải lên tài liệu
+          </Menu.Item>
+        </Menu>
       </Sider>
+      
       <Layout>
-        <Header style={{ padding: 0, background: '#fff' }}>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingRight: 24 }}>
-            <Button
-              type="text"
-              icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-              onClick={toggleCollapsed}
-              style={{ fontSize: '16px', width: 64, height: 64 }}
-            />
-            <Space>
-              <Badge count={5}>
-                <Button type="text" icon={<BellOutlined />} style={{ fontSize: '16px' }} />
-              </Badge>
-              <Avatar icon={<UserOutlined />} />
-              <span>Nguyễn Văn A</span>
-            </Space>
-          </div>
+        <Header style={{ padding: '0 16px', background: '#fff', display: 'flex', alignItems: 'center', justifyContent: 'space-between' }}>
+          <Button
+            type="text"
+            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            onClick={toggleCollapsed}
+            style={{ fontSize: '16px', width: 64, height: 64 }}
+          />
+          <Space>
+            <Badge count={3}>
+              <Button icon={<BellOutlined />} shape="circle" />
+            </Badge>
+            <Button icon={<UserOutlined />} shape="circle" />
+            <span>Nguyễn Văn A</span>
+          </Space>
         </Header>
+        
         <Content style={{ margin: '24px 16px', padding: 24, background: '#fff', minHeight: 280 }}>
-          {renderMainContent()}
-          {renderApartmentModal()}
-          {renderPostModal()}
+          {currentView === "list" && renderApartmentList()}
+          {currentView === "detail" && renderApartmentDetail()}
+          {currentView === "createPost" && renderCreatePost()}
+          {currentView === "contract" && renderContracts()}
+          {currentView === "payment" && renderPayments()}
+          {currentView === "upload" && renderUploadDocuments()}
         </Content>
       </Layout>
+
+      {/* Modal thêm/sửa căn hộ */}
+      <Modal
+        title={currentApartment ? "Chỉnh sửa thông tin căn hộ" : "Thêm căn hộ mới"}
+        visible={isApartmentModalVisible}
+        onOk={handleApartmentSubmit}
+        onCancel={handleApartmentCancel}
+        width={800}
+      >
+        <Form form={apartmentForm} layout="vertical">
+          <Form.Item
+            name="title"
+            label="Tiêu đề"
+            rules={[{ required: true, message: 'Vui lòng nhập tiêu đề' }]}
+          >
+            <Input placeholder="Nhập tiêu đề căn hộ" />
+          </Form.Item>
+          
+          <Form.Item
+            name="description"
+            label="Mô tả"
+            rules={[{ required: true, message: 'Vui lòng nhập mô tả' }]}
+          >
+            <TextArea rows={4} placeholder="Nhập mô tả chi tiết về căn hộ" />
+          </Form.Item>
+          
+          <Space size="large" style={{ width: '100%' }}>
+            <Form.Item
+              name="address"
+              label="Địa chỉ"
+              rules={[{ required: true, message: 'Vui lòng nhập địa chỉ' }]}
+              style={{ width: '100%' }}
+            >
+              <Input placeholder="Nhập địa chỉ căn hộ" />
+            </Form.Item>
+            
+            <Form.Item
+              name="price"
+              label="Giá"
+              rules={[{ required: true, message: 'Vui lòng nhập giá' }]}
+              style={{ width: '100%' }}
+            >
+              <InputNumber
+                style={{ width: '100%' }}
+                formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                parser={value => value.replace(/\$\s?|(,*)/g, '')}
+                placeholder="Nhập giá thuê/bán"
+                addonAfter="VNĐ"
+              />
+            </Form.Item>
+          </Space>
+          
+          <Space size="large" style={{ width: '100%' }}>
+            <Form.Item
+              name="area"
+              label="Diện tích"
+              rules={[{ required: true, message: 'Vui lòng nhập diện tích' }]}
+              style={{ width: '100%' }}
+            >
+              <InputNumber style={{ width: '100%' }} min={1} placeholder="Diện tích" addonAfter="m²" />
+            </Form.Item>
+            
+            <Form.Item
+              name="bedrooms"
+              label="Số phòng ngủ"
+              rules={[{ required: true, message: 'Vui lòng nhập số phòng ngủ' }]}
+              style={{ width: '100%' }}
+            >
+              <InputNumber style={{ width: '100%' }} min={0} placeholder="Số phòng ngủ" />
+            </Form.Item>
+            
+            <Form.Item
+              name="bathrooms"
+              label="Số phòng tắm"
+              rules={[{ required: true, message: 'Vui lòng nhập số phòng tắm' }]}
+              style={{ width: '100%' }}
+            >
+              <InputNumber style={{ width: '100%' }} min={0} placeholder="Số phòng tắm" />
+            </Form.Item>
+          </Space>
+          
+          <Space size="large" style={{ width: '100%' }}>
+            <Form.Item
+              name="category"
+              label="Loại"
+              rules={[{ required: true, message: 'Vui lòng chọn loại' }]}
+              style={{ width: '100%' }}
+            >
+              <Select placeholder="Chọn loại">
+                <Option value="Cho thuê">Cho thuê</Option>
+                <Option value="Bán">Bán</Option>
+              </Select>
+            </Form.Item>
+            
+            <Form.Item
+              name="status"
+              label="Trạng thái"
+              rules={[{ required: true, message: 'Vui lòng chọn trạng thái' }]}
+              style={{ width: '100%' }}
+            >
+              <Select placeholder="Chọn trạng thái">
+                <Option value="Còn trống">Còn trống</Option>
+                <Option value="Đã cho thuê">Đã cho thuê</Option>
+                <Option value="Đang đặt cọc">Đang đặt cọc</Option>
+              </Select>
+            </Form.Item>
+          </Space>
+          
+          <Form.Item
+            name="tags"
+            label="Tags"
+            rules={[{ required: true, message: 'Vui lòng nhập tags' }]}
+          >
+            <Input placeholder="Nhập các tags (phân cách bởi dấu phẩy)" />
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      {/* Modal tạo bài viết */}
+      <Modal
+        title="Tạo bài viết"
+        visible={isPostModalVisible}
+        onOk={handlePostSubmit}
+        onCancel={handlePostCancel}
+        width={800}
+      >
+        <Form form={postForm} layout="vertical">
+          <Form.Item name="apartmentId" hidden>
+            <Input />
+          </Form.Item>
+          
+          <Form.Item
+            name="title"
+            label="Tiêu đề bài viết"
+            rules={[{ required: true, message: 'Vui lòng nhập tiêu đề bài viết' }]}
+          >
+            <Input placeholder="Nhập tiêu đề bài viết" maxLength={100} />
+          </Form.Item>
+
+          <Form.Item
+            name="content"
+            label="Nội dung bài viết"
+            rules={[{ required: true, message: 'Vui lòng nhập nội dung bài viết' }]}
+          >
+            <TextArea rows={6} placeholder="Mô tả chi tiết về căn hộ, tiện ích, điều kiện thuê/mua..." />
+          </Form.Item>
+
+          <Form.Item
+            name="depositPrice"
+            label="Giá đặt cọc"
+            rules={[{ required: true, message: 'Vui lòng nhập giá đặt cọc' }]}
+          >
+            <InputNumber
+              style={{ width: '100%', maxWidth: 400 }}
+              formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+              parser={value => value.replace(/\$\s?|(,*)/g, '')}
+              addonAfter="VNĐ"
+            />
+          </Form.Item>
+        </Form>
+      </Modal>
     </Layout>
   );
 };
