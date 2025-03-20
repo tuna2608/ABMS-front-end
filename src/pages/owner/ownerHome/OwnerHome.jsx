@@ -20,7 +20,8 @@ import {
   Descriptions,
   Menu,
   Layout,
-  Typography
+  Typography,
+  Divider
 } from "antd";
 import { 
   HomeOutlined, 
@@ -39,11 +40,17 @@ import {
   PictureOutlined,
   AppstoreOutlined,
   UnorderedListOutlined,
-
   FileAddOutlined,
   MenuUnfoldOutlined,
   MenuFoldOutlined,
-  BellOutlined
+  BellOutlined,
+  FormOutlined,
+  BuildOutlined,
+  TeamOutlined,
+  WalletOutlined,
+  FileProtectOutlined,
+  UploadOutlined,
+  InboxOutlined
 } from "@ant-design/icons";
 
 const { Search } = Input;
@@ -51,7 +58,7 @@ const { Option } = Select;
 const { TabPane } = Tabs;
 const { Header, Sider, Content } = Layout;
 const { TextArea } = Input;
-const { Title } = Typography;
+const { Title, Text } = Typography;
 
 // Dữ liệu mẫu các bài đăng căn hộ
 const sampleApartments = [
@@ -198,10 +205,10 @@ const OwnerHome = () => {
   const [isApartmentModalVisible, setIsApartmentModalVisible] = useState(false);
   const [isPostModalVisible, setIsPostModalVisible] = useState(false);
   const [currentApartment, setCurrentApartment] = useState(null);
-  const [currentView, setCurrentView] = useState("list"); // "list" hoặc "detail"
+  const [currentView, setCurrentView] = useState("list"); // "list", "detail", "createPost", "myApartments", "payment", "contract", "upload"
   const [apartmentForm] = Form.useForm();
   const [postForm] = Form.useForm();
-  const [collapsed, setCollapsed] = useState(false); // Added state for sidebar collapse
+  const [collapsed, setCollapsed] = useState(false);
   const pageSize = 4;
 
   // Giả lập việc lấy dữ liệu từ API
@@ -427,7 +434,7 @@ const OwnerHome = () => {
         title={
           <Space>
             <HomeOutlined /> 
-            <span>Quản lý căn hộ chung cư</span>
+            <span>Danh sách căn hộ</span>
           </Space>
         } 
         extra={<Button type="primary" icon={<PlusOutlined />} onClick={() => showApartmentModal()}>Thêm căn hộ mới</Button>}
@@ -743,8 +750,8 @@ const OwnerHome = () => {
             name="description"
             label="Mô tả"
             rules={[{ required: true, message: 'Vui lòng nhập mô tả căn hộ!' }]}
-          >
-            <TextArea rows={4} placeholder="Nhập mô tả chi tiết căn hộ" />
+            >
+            <TextArea rows={4} placeholder="Nhập mô tả chi tiết về căn hộ" />
           </Form.Item>
 
           <Form.Item
@@ -755,74 +762,54 @@ const OwnerHome = () => {
             <Input placeholder="Nhập địa chỉ căn hộ" />
           </Form.Item>
 
-          <div style={{ display: 'flex', gap: '20px' }}>
+          <div style={{ display: 'flex', gap: '16px' }}>
             <Form.Item
               name="price"
-              label="Giá"
-              style={{ flex: 1 }}
+              label="Giá thuê/bán (VNĐ)"
               rules={[{ required: true, message: 'Vui lòng nhập giá căn hộ!' }]}
+              style={{ flex: 1 }}
             >
-              <InputNumber
-                style={{ width: '100%' }}
-                min={0}
-                formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                parser={value => value.replace(/\$\s?|(,*)/g, '')}
-                placeholder="Giá thuê/bán"
-                addonAfter="VNĐ"
-              />
+              <InputNumber style={{ width: '100%' }} placeholder="Nhập giá căn hộ" formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')} />
             </Form.Item>
 
             <Form.Item
               name="area"
-              label="Diện tích"
-              style={{ flex: 1 }}
+              label="Diện tích (m²)"
               rules={[{ required: true, message: 'Vui lòng nhập diện tích căn hộ!' }]}
+              style={{ flex: 1 }}
             >
-              <InputNumber
-                style={{ width: '100%' }}
-                min={0}
-                placeholder="Diện tích"
-                addonAfter="m²"
-              />
+              <InputNumber style={{ width: '100%' }} placeholder="Nhập diện tích căn hộ" />
             </Form.Item>
           </div>
 
-          <div style={{ display: 'flex', gap: '20px' }}>
+          <div style={{ display: 'flex', gap: '16px' }}>
             <Form.Item
               name="bedrooms"
               label="Số phòng ngủ"
-              style={{ flex: 1 }}
               rules={[{ required: true, message: 'Vui lòng nhập số phòng ngủ!' }]}
+              style={{ flex: 1 }}
             >
-              <InputNumber
-                style={{ width: '100%' }}
-                min={0}
-                placeholder="Số phòng ngủ"
-              />
+              <InputNumber style={{ width: '100%' }} placeholder="Nhập số phòng ngủ" min={0} />
             </Form.Item>
 
             <Form.Item
               name="bathrooms"
               label="Số phòng tắm"
-              style={{ flex: 1 }}
               rules={[{ required: true, message: 'Vui lòng nhập số phòng tắm!' }]}
+              style={{ flex: 1 }}
             >
-              <InputNumber
-                style={{ width: '100%' }}
-                min={0}
-                placeholder="Số phòng tắm"
-              />
+              <InputNumber style={{ width: '100%' }} placeholder="Nhập số phòng tắm" min={0} />
             </Form.Item>
           </div>
 
-          <div style={{ display: 'flex', gap: '20px' }}>
+          <div style={{ display: 'flex', gap: '16px' }}>
             <Form.Item
               name="category"
-              label="Loại"
-              style={{ flex: 1 }}
+              label="Loại căn hộ"
               rules={[{ required: true, message: 'Vui lòng chọn loại căn hộ!' }]}
+              style={{ flex: 1 }}
             >
-              <Select placeholder="Chọn loại căn hộ">
+              <Select>
                 <Option value="Cho thuê">Cho thuê</Option>
                 <Option value="Bán">Bán</Option>
               </Select>
@@ -831,10 +818,10 @@ const OwnerHome = () => {
             <Form.Item
               name="status"
               label="Trạng thái"
-              style={{ flex: 1 }}
               rules={[{ required: true, message: 'Vui lòng chọn trạng thái căn hộ!' }]}
+              style={{ flex: 1 }}
             >
-              <Select placeholder="Chọn trạng thái căn hộ">
+              <Select>
                 <Option value="Còn trống">Còn trống</Option>
                 <Option value="Đã cho thuê">Đã cho thuê</Option>
                 <Option value="Đang đặt cọc">Đang đặt cọc</Option>
@@ -844,10 +831,25 @@ const OwnerHome = () => {
 
           <Form.Item
             name="tags"
-            label="Tags"
-            rules={[{ required: true, message: 'Vui lòng nhập ít nhất một tag!' }]}
+            label="Tags (phân cách bằng dấu phẩy)"
           >
-            <Input placeholder="Nhập các tags cách nhau bởi dấu phẩy (ví dụ: Cao cấp, View đẹp, Nội thất đầy đủ)" />
+            <Input placeholder="Ví dụ: Cao cấp, View đẹp, Gần trung tâm" />
+          </Form.Item>
+
+          <Form.Item
+            name="images"
+            label="Hình ảnh"
+          >
+            <Upload
+              listType="picture-card"
+              fileList={[]}
+              beforeUpload={() => false}
+            >
+              <div>
+                <PlusOutlined />
+                <div style={{ marginTop: 8 }}>Tải lên</div>
+              </div>
+            </Upload>
           </Form.Item>
         </Form>
       </Modal>
@@ -858,7 +860,7 @@ const OwnerHome = () => {
   const renderPostModal = () => {
     return (
       <Modal
-        title="Tạo bài viết cho căn hộ"
+        title="Tạo bài viết mới"
         open={isPostModalVisible}
         onCancel={handlePostCancel}
         footer={[
@@ -888,7 +890,7 @@ const OwnerHome = () => {
 
           <Form.Item
             name="content"
-            label="Nội dung"
+            label="Nội dung bài viết"
             rules={[{ required: true, message: 'Vui lòng nhập nội dung bài viết!' }]}
           >
             <TextArea rows={10} placeholder="Nhập nội dung chi tiết bài viết" />
@@ -897,11 +899,10 @@ const OwnerHome = () => {
           <Form.Item
             name="status"
             label="Trạng thái"
-            rules={[{ required: true, message: 'Vui lòng chọn trạng thái bài viết!' }]}
           >
-            <Select placeholder="Chọn trạng thái bài viết">
+            <Select>
               <Option value="Đang hiển thị">Đang hiển thị</Option>
-              <Option value="Đã ẩn">Đã ẩn</Option>
+              <Option value="Ẩn">Ẩn</Option>
             </Select>
           </Form.Item>
         </Form>
@@ -909,82 +910,207 @@ const OwnerHome = () => {
     );
   };
 
-  // Render chính
+  // Render phần tải lên ảnh
+  const renderUploadContent = () => {
+    return (
+      <Card title={<span><UploadOutlined /> Quản lý hình ảnh</span>}>
+        <Upload.Dragger
+          name="files"
+          action="/upload.do"
+          listType="picture"
+          multiple={true}
+          beforeUpload={() => false}
+        >
+          <p className="ant-upload-drag-icon">
+            <InboxOutlined />
+          </p>
+          <p className="ant-upload-text">Kéo thả file vào đây hoặc click để tải lên</p>
+          <p className="ant-upload-hint">Hỗ trợ tải lên nhiều file cùng lúc</p>
+        </Upload.Dragger>
+      </Card>
+    );
+  };
+
+  // Render quản lý hợp đồng
+  const renderContractContent = () => {
+    return (
+      <Card title={<span><FileProtectOutlined /> Quản lý hợp đồng</span>}>
+        <List
+          itemLayout="horizontal"
+          dataSource={[
+            { id: 1, name: "Hợp đồng thuê căn hộ - Nguyễn Văn X", date: "15/03/2025", status: "Đang hiệu lực" },
+            { id: 2, name: "Hợp đồng thuê căn hộ - Trần Văn Y", date: "10/03/2025", status: "Đang hiệu lực" },
+            { id: 3, name: "Hợp đồng thuê căn hộ - Lê Thị Z", date: "05/03/2025", status: "Chờ ký" },
+          ]}
+          renderItem={item => (
+            <List.Item
+              actions={[
+                <Button type="link">Xem</Button>,
+                <Button type="link">Tải xuống</Button>
+              ]}
+            >
+              <List.Item.Meta
+                title={item.name}
+                description={`Ngày tạo: ${item.date} - Trạng thái: ${item.status}`}
+              />
+            </List.Item>
+          )}
+        />
+        <div style={{ marginTop: 16, textAlign: 'center' }}>
+          <Button type="primary" icon={<FileAddOutlined />}>Tạo hợp đồng mới</Button>
+        </div>
+      </Card>
+    );
+  };
+
+  // Render thanh toán
+  const renderPaymentContent = () => {
+    return (
+      <Card title={<span><WalletOutlined /> Quản lý thanh toán</span>}>
+        <Tabs defaultActiveKey="1">
+          <TabPane tab="Thanh toán đến hạn" key="1">
+            <List
+              itemLayout="horizontal"
+              dataSource={[
+                { id: 1, name: "Tiền thuê tháng 3/2025 - Căn hộ A", amount: 5800000, dueDate: "25/03/2025" },
+                { id: 2, name: "Tiền thuê tháng 3/2025 - Căn hộ B", amount: 7200000, dueDate: "28/03/2025" },
+              ]}
+              renderItem={item => (
+                <List.Item
+                  actions={[
+                    <Button type="primary">Xác nhận thanh toán</Button>
+                  ]}
+                >
+                  <List.Item.Meta
+                    title={item.name}
+                    description={`Số tiền: ${new Intl.NumberFormat('vi-VN').format(item.amount)} VNĐ - Hạn thanh toán: ${item.dueDate}`}
+                  />
+                </List.Item>
+              )}
+            />
+          </TabPane>
+          <TabPane tab="Lịch sử thanh toán" key="2">
+            <List
+              itemLayout="horizontal"
+              dataSource={[
+                { id: 1, name: "Tiền thuê tháng 2/2025 - Căn hộ A", amount: 5800000, paidDate: "25/02/2025" },
+                { id: 2, name: "Tiền thuê tháng 2/2025 - Căn hộ B", amount: 7200000, paidDate: "26/02/2025" },
+                { id: 3, name: "Tiền thuê tháng 1/2025 - Căn hộ A", amount: 5800000, paidDate: "25/01/2025" },
+              ]}
+              renderItem={item => (
+                <List.Item
+                  actions={[
+                    <Button type="link">Xem chi tiết</Button>
+                  ]}
+                >
+                  <List.Item.Meta
+                    title={item.name}
+                    description={`Số tiền: ${new Intl.NumberFormat('vi-VN').format(item.amount)} VNĐ - Ngày thanh toán: ${item.paidDate}`}
+                  />
+                </List.Item>
+              )}
+            />
+          </TabPane>
+        </Tabs>
+      </Card>
+    );
+  };
+
+  // Render nội dung chính
+  const renderMainContent = () => {
+    switch (currentView) {
+      case "detail":
+        return renderApartmentDetail();
+      case "upload":
+        return renderUploadContent();
+      case "contract":
+        return renderContractContent();
+      case "payment":
+        return renderPaymentContent();
+      case "list":
+      default:
+        return renderApartmentList();
+    }
+  };
+
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      {/* Updated Sidebar to match AdminHome styling */}
-      <Sider
-        trigger={null}
-        collapsible
-        collapsed={collapsed}
-        theme="dark"
-        width={250}
-      >
-        <div
-          style={{
-            height: 64,
-            margin: 16,
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
-          }}
-        >
-          <Title level={5} style={{ color: "white", margin: 0 }}>
-            {collapsed ? "OW" : "OWNER"}
-          </Title>
+      <Sider trigger={null} collapsible collapsed={collapsed} width={240}>
+        <div style={{ height: 64, padding: '16px', textAlign: 'center' }}>
+          <Typography.Title level={4} style={{ color: '#fff', margin: 0 }}>
+            {collapsed ? 'RMS' : 'Rental Management'}
+          </Typography.Title>
         </div>
         <Menu
           theme="dark"
           mode="inline"
           defaultSelectedKeys={['1']}
-        >
-          <Menu.Item key="1" icon={<AppstoreOutlined />}>
-            Quản lý căn hộ của tôi
-          </Menu.Item>
-          <Menu.Item key="2" icon={<FileTextOutlined />}>
-            Bài viết đã đăng
-          </Menu.Item>
-          <Menu.Item key="3" icon={<UserOutlined />}>
-            Khách hàng quan tâm
-          </Menu.Item>
-          <Menu.Item key="4" icon={<DollarOutlined />}>
-            Giao dịch
-          </Menu.Item>
-        </Menu>
+          items={[
+            {
+              key: '1',
+              icon: <HomeOutlined />,
+              label: 'Quản lý căn hộ',
+              onClick: () => setCurrentView("list")
+            },
+            {
+              key: '2',
+              icon: <FormOutlined />,
+              label: 'Quản lý bài viết',
+              onClick: () => setCurrentView("list")
+            },
+            {
+              key: '3',
+              icon: <BuildOutlined />,
+              label: 'Quản lý dịch vụ',
+              onClick: () => message.info('Tính năng đang phát triển')
+            },
+            {
+              key: '4',
+              icon: <TeamOutlined />,
+              label: 'Quản lý khách thuê',
+              onClick: () => message.info('Tính năng đang phát triển')
+            },
+            {
+              key: '5',
+              icon: <WalletOutlined />,
+              label: 'Quản lý thanh toán',
+              onClick: () => setCurrentView("payment")
+            },
+            {
+              key: '6',
+              icon: <FileProtectOutlined />,
+              label: 'Quản lý hợp đồng',
+              onClick: () => setCurrentView("contract")
+            },
+            {
+              key: '7',
+              icon: <UploadOutlined />,
+              label: 'Quản lý hình ảnh',
+              onClick: () => setCurrentView("upload")
+            },
+          ]}
+        />
       </Sider>
-      
       <Layout>
-        {/* Added Header to match AdminHome */}
-        <Header
-          style={{
-            padding: "0 24px",
-            background: "#fff",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-            boxShadow: "0 2px 8px rgba(0, 0, 0, 0.09)",
-          }}
-        >
-          <div style={{ display: "flex", alignItems: "center" }}>
+        <Header style={{ padding: 0, background: '#fff' }}>
+          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', paddingRight: 24 }}>
             <Button
               type="text"
               icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
               onClick={toggleCollapsed}
-              style={{ fontSize: "16px", marginRight: 16 }}
+              style={{ fontSize: '16px', width: 64, height: 64 }}
             />
-            <Title level={4} style={{ margin: 0 }}>
-              Quản lý căn hộ chung cư
-            </Title>
-          </div>
-          <div>
-            <Badge count={3} style={{ marginRight: 24 }}>
-              <Avatar icon={<BellOutlined />} />
-            </Badge>
-            <Avatar style={{ backgroundColor: "#87d068" }} icon={<UserOutlined />} />
+            <Space>
+              <Badge count={5}>
+                <Button type="text" icon={<BellOutlined />} style={{ fontSize: '16px' }} />
+              </Badge>
+              <Avatar icon={<UserOutlined />} />
+              <span>Nguyễn Văn A</span>
+            </Space>
           </div>
         </Header>
-        <Content style={{ margin: "24px 16px", padding: 24, background: "#fff", borderRadius: 4, minHeight: 280 }}>
-          {currentView === "list" ? renderApartmentList() : renderApartmentDetail()}
+        <Content style={{ margin: '24px 16px', padding: 24, background: '#fff', minHeight: 280 }}>
+          {renderMainContent()}
           {renderApartmentModal()}
           {renderPostModal()}
         </Content>
