@@ -713,7 +713,7 @@ const AdminHome = () => {
       {/* RESIDENT DETAIL MODAL */}
       <Modal
         title="Thông tin chi tiết cư dân"
-        visible={isModalVisible}
+        open={isModalVisible}
         onCancel={handleCancel}
         footer={[
           <Button key="back" onClick={handleCancel}>
