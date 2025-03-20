@@ -237,7 +237,7 @@ const PostList = () => {
   };
 
   const formatPrice = (price) => {
-    return new Intl.NumberFormat('vi-VN').format(price) + " VNĐ/tháng";
+    return new Intl.NumaderFormat('vi-VN').format(price) + " VNĐ/tháng";
   };
   
   const goToDetails = (id) => {
