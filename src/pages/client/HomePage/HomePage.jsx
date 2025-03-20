@@ -2,6 +2,8 @@ import React, { useState } from "react";
 import styled from "styled-components";
 import { FaSearch } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { getAllPosts } from "../../../redux/apiCalls";
+import { useDispatch } from "react-redux";
 
 /* ----------- Styled-components (navbar, layout) như cũ ----------- */
 const Container = styled.div`
@@ -158,18 +160,6 @@ const ListItem = styled.div`
 
 /* --------------------- Component chính --------------------- */
 export default function HomePage() {
-  // const userLocal = localStorage.getItem("user");
-  // let user;
-
-  // if (typeof userLocal === "string" && userLocal !== null) {
-  //   try {
-  //     user = JSON.parse(userLocal);
-  //   } catch (error) {
-  //     console.error("Lỗi khi parse dữ liệu:", error);
-  //     user = null;
-  //   }
-  // }
-  
 
   // Các trường search
   const [searchText, setSearchText] = useState("");
@@ -218,13 +208,7 @@ export default function HomePage() {
     isRoomsValid
   );
 
-  const handleSearch = () => {
-    // Nếu chưa nhập gì hoặc sai => báo
-    if (!isFormValid) {
-      alert("Không có - Hãy nhập/thay đổi thông tin để tìm kiếm.");
-      return;
-    }
-    // Xây query
+  const handleSearch = async () => {
     const queryParams = new URLSearchParams({
       search: searchText,
       area,
@@ -250,7 +234,7 @@ export default function HomePage() {
               />
               <SearchButton 
                 onClick={handleSearch}
-                disabled={!isFormValid}
+                // disabled={!isFormValid}
               >
                 Tìm kiếm
               </SearchButton>

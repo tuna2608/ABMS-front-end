@@ -54,12 +54,14 @@ const SignInPage = () => {
     const res = await login(dispatch, { usernameOrEmail: email, password });
     // console.log(res);
     const messageAPI = res.message
-    // console.log(message);
-    if(!res.status === 200){
+
+    if(res.status === 401){
       message.error(messageAPI)
+      return;
+    }else{
+      message.success(messageAPI)
+      navigate('/')
     }
-    message.success(messageAPI)
-    navigate('/')
   };
 
   return (

@@ -60,6 +60,7 @@ import {
   resetOrdersSuccess,
   updateOrderStatusSuccess,
 } from "./orderSlice";
+import { getAllPostsStart } from "./postSlice";
 
 // Auth
 export const login = async (dispatch, user) => {
@@ -147,6 +148,7 @@ export const deleteUser = async (id, dispatch) => {
   try {
     const res = await userRequest.delete(`/users/${id}`);
     dispatch(deleteUserSuccess(id));
+    return res;
   } catch (error) {
     dispatch(deleteUserFailure());
   }
@@ -236,7 +238,7 @@ export const decreaseCartQuantity = async (
 
 // Order
 
-export const getOrdersByUId = async (dispatch, userId) => {
+export const getPostsByUId = async (dispatch, userId) => {
   dispatch(getOrdersStart());
   try {
     const res = await publicRequest.get(`orders/find/${userId}`);
@@ -246,35 +248,84 @@ export const getOrdersByUId = async (dispatch, userId) => {
   }
 };
 
-export const getAllOrders = async (dispatch) => {
-  dispatch(getAllOrdersStart());
+export const getAllPosts = async (dispatch) => {
+  dispatch(getAllPostsStart());
   try {
-    const res = await publicRequest.get(`/orders`);
-    dispatch(getAllOrdersSuccess(res.data));
+    const res = await publicRequest.get(`/post`);
+    dispatch(getAllOrdersSuccess(res.data.data));
+    // console.log(res.data.data);
+    return res.data;
   } catch (error) {
     dispatch(getAllOrdersFailure());
+    return error;
   }
 }
 
-export const createOrder = async (dispatch, order) => {
-  dispatch(createOrderFailure());
-  try {
-    const res = await publicRequest.post(`/orders`, order);
-    dispatch(createOrderSuccess(res.data));
-  } catch (error) {
-    dispatch(createOrderFailure());
-  }
-};
+// export const createOrder = async (dispatch, order) => {
+//   dispatch(createOrderFailure());
+//   try {
+//     const res = await publicRequest.post(`/orders`, order);
+//     dispatch(createOrderSuccess(res.data));
+//   } catch (error) {
+//     dispatch(createOrderFailure());
+//   }
+// };
 
-export const resetOrders = async (dispatch) => {
-  try {
-    dispatch(resetOrdersSuccess());
-  } catch (error) { }
-};
+// export const resetOrders = async (dispatch) => {
+//   try {
+//     dispatch(resetOrdersSuccess());
+//   } catch (error) { }
+// };
 
-export const updateOrderStatus = async (dispatch, orderId, status) => {
-  try {
-    const res = userRequest.put(`/orders/${orderId}`, { status: status });
-    dispatch(updateOrderStatusSuccess(res.data));
-  } catch (error) { }
-};
+// export const updateOrderStatus = async (dispatch, orderId, status) => {
+//   try {
+//     const res = userRequest.put(`/orders/${orderId}`, { status: status });
+//     dispatch(updateOrderStatusSuccess(res.data));
+//   } catch (error) { }
+// };
+
+// // Order
+
+// export const getOrdersByUId = async (dispatch, userId) => {
+//   dispatch(getOrdersStart());
+//   try {
+//     const res = await publicRequest.get(`orders/find/${userId}`);
+//     dispatch(getOrdersSuccess(res.data));
+//   } catch (error) {
+//     dispatch(getOrdersFailure());
+//   }
+// };
+
+// export const getAllOrders = async (dispatch) => {
+//   dispatch(getAllOrdersStart());
+//   try {
+//     const res = await publicRequest.get(`/orders`);
+//     dispatch(getAllOrdersSuccess(res.data));
+//   } catch (error) {
+//     dispatch(getAllOrdersFailure());
+//   }
+// }
+
+// export const createOrder = async (dispatch, order) => {
+//   dispatch(createOrderFailure());
+//   try {
+//     const res = await publicRequest.post(`/orders`, order);
+//     dispatch(createOrderSuccess(res.data));
+//   } catch (error) {
+//     dispatch(createOrderFailure());
+//   }
+// };
+
+// export const resetOrders = async (dispatch) => {
+//   try {
+//     dispatch(resetOrdersSuccess());
+//   } catch (error) { }
+// };
+
+// export const updateOrderStatus = async (dispatch, orderId, status) => {
+//   try {
+//     const res = userRequest.put(`/orders/${orderId}`, { status: status });
+//     dispatch(updateOrderStatusSuccess(res.data));
+//   } catch (error) { }
+// };
+

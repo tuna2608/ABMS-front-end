@@ -245,8 +245,7 @@ const NotificationsPage = () => {
       )
     );
   };
-
-  // Đánh dấu nhiều thông báo đã đọc
+ // Đánh dấu nhiều thông báo đã đọc
   const markSelectedAsRead = () => {
     setNotifications(prevNotifications => 
       prevNotifications.map(notification => 
