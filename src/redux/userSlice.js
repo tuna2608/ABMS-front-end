@@ -64,8 +64,7 @@ export const userSlice = createSlice({
     },
     addUserFailure: (state) => {
       state.isFetching = false;
-      state.error = true;
-       
+      state.error = true;   
   }
   },
 });

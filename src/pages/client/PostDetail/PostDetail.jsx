@@ -43,7 +43,7 @@ import {
   ExpandAltOutlined
 } from "@ant-design/icons";
 import { useLocation, useParams } from "react-router-dom";
-import { getPostById } from "../../../redux/apiCalls";
+import { getPostById, getUserByUserName } from "../../../redux/apiCalls";
 import { useDispatch } from "react-redux";
 
 const { Title, Text, Paragraph } = Typography;
@@ -174,6 +174,7 @@ const PrevArrow = (props) => {
 
 const PostDetail = () => {
   const [apartment, setApartment] = useState(null);
+  const [owner,setOwner] = useState(null);
   const [loading, setLoading] = useState(true);
   const [contactModalVisible, setContactModalVisible] = useState(false);
   const [chatDrawerVisible, setChatDrawerVisible] = useState(false);
@@ -190,16 +191,21 @@ const PostDetail = () => {
   useEffect(() => {
     // Trong thực tế, sẽ gọi API với id
     async function getPostDetail(){
-      // setLoading(true)
+      setLoading(true)
       const res = await getPostById(dispatch,postId);
       // res.data.postImages.map((image)=>console.log(image))
+      const resUser = await getUserByUserName(dispatch,res.data.userName)
       setApartment(res.data);
+      // console.log(resUser.data[0]);
+      setOwner(resUser.data[0]);
       setLoading(false)
     }
     getPostDetail();
+
   }, [postId, dispatch]);
 
-  
+  // console.log(owner);
+
   
   const formatPrice = (price) => {
     return new Intl.NumberFormat('vi-VN').format(price) + " VNĐ/tháng";
@@ -339,7 +345,7 @@ const PostDetail = () => {
             <Avatar src={apartment.avatar} style={{ marginRight: 12 }} />
             <div>
               <div style={{ fontWeight: 'bold' }}>{apartment.contactName}</div>
-              <div style={{ fontSize: 12, color: '#8c8c8c' }}>{apartment.owner}</div>
+              <div style={{ fontSize: 12, color: '#8c8c8c' }}>{apartment.userName}</div>
             </div>
           </div>
         }

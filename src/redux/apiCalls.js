@@ -272,6 +272,18 @@ export const getPostById = async (dispatch,postId) => {
   }
 }
 
+export const getUserByUserName = async (dispatch,username) => {
+  dispatch(getUserStart());
+  try {
+    const res = await publicRequest.get(`/user/find?username=${username}`);
+    dispatch(getUserSuccess(res.data));
+    return res.data;
+  } catch (error) {
+    dispatch(getUserFailure());
+    return error;
+  }
+}
+
 // export const createOrder = async (dispatch, order) => {
 //   dispatch(createOrderFailure());
 //   try {
