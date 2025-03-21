@@ -204,7 +204,7 @@ const PostDetail = () => {
 
   }, [postId, dispatch]);
 
-  console.log(owner);
+  // console.log(owner);
 
   
   const formatPrice = (price) => {
