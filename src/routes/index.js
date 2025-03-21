@@ -11,6 +11,8 @@ import ApartmentDetail from "../pages/client/PostDetail/PostDetail";
 import ChatPage from "../pages/client/ChatPage/ChatPage";
 import NotificationsPage from "../pages/client/NotificationPage/NotificationPage";
 import EditProfilePage from "../pages/common/EditProfilePage/EditProfilePage";
+import StaffHome from "../pages/staff/StaffHome";
+import CardManagement from "../pages/staff/CardManagement";
 
 export const routes = [
     {
@@ -46,6 +48,16 @@ export const routes = [
     {
         path: '/ownerHome',
         page: OwnerHome,
+        isShowHeader: true
+    },
+    {
+        path: '/staffHome',
+        page: StaffHome,
+        isShowHeader: true
+    },
+    {
+        path: '/card',
+        page: CardManagement,
         isShowHeader: true
     },
     {

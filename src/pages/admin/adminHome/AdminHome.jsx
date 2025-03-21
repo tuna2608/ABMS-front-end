@@ -11,6 +11,9 @@ import {
   SettingOutlined,
   BellOutlined,
   PlusOutlined,
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  UserAddOutlined,
 } from "@ant-design/icons";
 import {
   Layout,
@@ -33,11 +36,16 @@ import {
   Select,
   Upload,
   DatePicker,
+  Tabs,
+  Tooltip,
+  Alert,
+  Empty,
 } from "antd";
 
 const { Title, Text, Paragraph } = Typography;
 const { Header, Sider, Content } = Layout;
 const { SubMenu } = Menu;
+const { TabPane } = Tabs;
 
 const AdminHome = () => {
   // State for sidebar collapse
@@ -58,6 +66,12 @@ const AdminHome = () => {
   const [isNewApartmentModalVisible, setIsNewApartmentModalVisible] = useState(false);
   // Form for new apartment
   const [apartmentForm] = Form.useForm();
+  // State for user approval modal
+  const [isUserApprovalModalVisible, setIsUserApprovalModalVisible] = useState(false);
+  // State for selected pending user
+  const [selectedPendingUser, setSelectedPendingUser] = useState(null);
+  // Form for user approval
+  const [userApprovalForm] = Form.useForm();
 
   // Handle menu click
   const handleMenuClick = (e) => {
@@ -102,6 +116,27 @@ const AdminHome = () => {
   const handleNewApartmentModalCancel = () => {
     setIsNewApartmentModalVisible(false);
   };
+  
+  // Show user approval modal
+  const showUserApprovalModal = (user) => {
+    setSelectedPendingUser(user);
+    setIsUserApprovalModalVisible(true);
+    userApprovalForm.resetFields();
+    
+    // Pre-fill the form with user data
+    userApprovalForm.setFieldsValue({
+      name: user.name,
+      email: user.email,
+      phone: user.phone,
+      apartment: user.apartment,
+      role: 'User', // Default role
+    });
+  };
+  
+  // Close user approval modal
+  const handleUserApprovalModalCancel = () => {
+    setIsUserApprovalModalVisible(false);
+  };
 
   // Mock data for accounts
   const accountData = [
@@ -109,6 +144,61 @@ const AdminHome = () => {
     { key: "2", name: "Tran Thi B", role: "User", status: "Inactive", email: "tranthib@example.com" },
     { key: "3", name: "Hoang Van C", role: "User", status: "Active", email: "hoangvanc@example.com" },
     { key: "4", name: "Le Minh D", role: "Editor", status: "Active", email: "leminhd@example.com" },
+  ];
+
+  // Mock data for pending user registrations
+  const pendingUserData = [
+    { 
+      key: "1", 
+      name: "Phạm Thị Mai", 
+      email: "phammai@gmail.com", 
+      phone: "0912345678", 
+      apartment: "D-1102", 
+      registrationDate: "10/03/2025",
+      status: "Chờ duyệt",
+      identityCard: "031298001234",
+      images: [
+        "http://res.cloudinary.com/dct0qbbjc/image/upload/v1741776225/yfnkdf8adtvfato4chmq.png",
+      ]
+    },
+    { 
+      key: "2", 
+      name: "Nguyễn Đức Thành", 
+      email: "ducthanh@gmail.com", 
+      phone: "0987654321", 
+      apartment: "A-0505", 
+      registrationDate: "11/03/2025",
+      status: "Chờ bổ sung giấy tờ",
+      identityCard: "038476001234",
+      images: []
+    },
+    { 
+      key: "3", 
+      name: "Trần Minh Tú", 
+      email: "minhtu@gmail.com", 
+      phone: "0909876543", 
+      apartment: "B-0815", 
+      registrationDate: "15/03/2025",
+      status: "Chờ duyệt",
+      identityCard: "031989005678",
+      images: [
+        "http://res.cloudinary.com/dct0qbbjc/image/upload/v1741776228/jr0afrbzdpitat9s5r2e.png",
+      ]
+    },
+    { 
+      key: "4", 
+      name: "Lê Hoàng Anh", 
+      email: "lehoanganh@gmail.com", 
+      phone: "0923456789", 
+      apartment: "C-1801", 
+      registrationDate: "16/03/2025",
+      status: "Chờ duyệt",
+      identityCard: "032001007895",
+      images: [
+        "http://res.cloudinary.com/dct0qbbjc/image/upload/v1741776225/yfnkdf8adtvfato4chmq.png",
+        "http://res.cloudinary.com/dct0qbbjc/image/upload/v1741776228/jr0afrbzdpitat9s5r2e.png",
+      ]
+    },
   ];
 
   // Mock data for residents
@@ -301,6 +391,77 @@ const AdminHome = () => {
       ),
     },
   ];
+  
+  // Column configuration for pending users table
+  const pendingUserColumns = [
+    {
+      title: "Họ và tên",
+      dataIndex: "name",
+      key: "name",
+      render: (text) => <Button type="link" style={{ padding: 0, height: 'auto', lineHeight: 'inherit' }}>{text}</Button>,
+    },
+    {
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
+    },
+    {
+      title: "Số điện thoại",
+      dataIndex: "phone",
+      key: "phone",
+    },
+    {
+      title: "Căn hộ",
+      dataIndex: "apartment",
+      key: "apartment",
+    },
+    {
+      title: "Ngày đăng ký",
+      dataIndex: "registrationDate",
+      key: "registrationDate",
+    },
+    {
+      title: "Trạng thái",
+      dataIndex: "status",
+      key: "status",
+      render: (status) => {
+        let color = status.includes("Chờ duyệt") ? "blue" : "orange";
+        return <Tag color={color}>{status}</Tag>;
+      },
+    },
+    {
+      title: "Hành động",
+      key: "action",
+      render: (_, record) => (
+        <Space>
+          <Button
+            type="primary"
+            icon={<EyeOutlined />}
+            size="small"
+            onClick={() => showUserApprovalModal(record)}
+          >
+            Xem
+          </Button>
+          <Tooltip title="Duyệt tài khoản">
+            <Button
+              type="default"
+              icon={<CheckCircleOutlined />}
+              size="small"
+              style={{ color: 'green', borderColor: 'green' }}
+              onClick={() => showUserApprovalModal(record)}
+            />
+          </Tooltip>
+          <Tooltip title="Từ chối">
+            <Button
+              icon={<CloseCircleOutlined />}
+              danger
+              size="small"
+            />
+          </Tooltip>
+        </Space>
+      ),
+    },
+  ];
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
@@ -334,6 +495,9 @@ const AdminHome = () => {
         >
           <Menu.Item key="accounts" icon={<UserOutlined />}>
             Quản lý tài khoản
+          </Menu.Item>
+          <Menu.Item key="pendingUsers" icon={<UserAddOutlined />}>
+            Duyệt tài khoản
           </Menu.Item>
           <SubMenu key="apartments" icon={<HomeOutlined />} title="Quản lý căn hộ">
             <Menu.Item key="apartmentList">
@@ -372,6 +536,8 @@ const AdminHome = () => {
             <Title level={4} style={{ margin: 0 }}>
               {activeTab === "accounts"
                 ? "Quản lý tài khoản"
+                : activeTab === "pendingUsers"
+                ? "Duyệt đăng ký tài khoản"
                 : activeTab === "apartmentList"
                 ? "Danh sách căn hộ"
                 : activeTab === "createPost"
@@ -402,6 +568,52 @@ const AdminHome = () => {
               <Table
                 dataSource={accountData}
                 columns={accountColumns}
+                pagination={{ pageSize: 5 }}
+                bordered
+                rowKey="key"
+              />
+            </>
+          )}
+          
+          {/* PENDING USER APPROVAL */}
+          {activeTab === "pendingUsers" && (
+            <>
+              <div style={{ marginBottom: 16 }}>
+                <Row gutter={16} align="middle">
+                  <Col>
+                    <Input
+                      prefix={<SearchOutlined />}
+                      placeholder="Tìm người dùng theo tên hoặc email"
+                      style={{ width: 300 }}
+                    />
+                  </Col>
+                  <Col>
+                    <Select defaultValue="all" style={{ width: 200 }}>
+                      <Select.Option value="all">Tất cả trạng thái</Select.Option>
+                      <Select.Option value="pending">Chờ duyệt</Select.Option>
+                      <Select.Option value="needMore">Chờ bổ sung giấy tờ</Select.Option>
+                    </Select>
+                  </Col>
+                  <Col flex="auto" style={{ textAlign: 'right' }}>
+                    <Badge count={pendingUserData.length} style={{ backgroundColor: '#108ee9' }}>
+                      <Tag color="blue">Yêu cầu đang chờ</Tag>
+                    </Badge>
+                  </Col>
+                </Row>
+              </div>
+              
+              <Alert
+                message="Lưu ý"
+                description="Vui lòng kiểm tra kỹ thông tin giấy tờ của người dùng trước khi duyệt tài khoản."
+                type="info"
+                showIcon
+                closable
+                style={{ marginBottom: 16 }}
+              />
+              
+              <Table
+                dataSource={pendingUserData}
+                columns={pendingUserColumns}
                 pagination={{ pageSize: 5 }}
                 bordered
                 rowKey="key"
@@ -625,7 +837,7 @@ const AdminHome = () => {
               <Button icon={<EyeOutlined />}>Xem trước</Button>
               <Button onClick={handlePostModalCancel}>Hủy</Button>
             </Space>
-          </Form.Item>
+            </Form.Item>
         </Form>
       </Modal>
       
@@ -642,7 +854,7 @@ const AdminHome = () => {
             <Col span={12}>
               <Form.Item
                 label="Mã căn hộ"
-                name="apartment"
+                name="apartmentId"
                 rules={[{ required: true, message: "Vui lòng nhập mã căn hộ" }]}
               >
                 <Input placeholder="Ví dụ: A-1203" />
@@ -650,13 +862,15 @@ const AdminHome = () => {
             </Col>
             <Col span={12}>
               <Form.Item
-                label="Loại hợp đồng"
-                name="contractType"
-                rules={[{ required: true, message: "Vui lòng chọn loại hợp đồng" }]}
+                label="Loại căn hộ"
+                name="apartmentType"
+                rules={[{ required: true, message: "Vui lòng chọn loại căn hộ" }]}
               >
-                <Select placeholder="Chọn loại hợp đồng">
-                  <Select.Option value="Hợp đồng mua căn hộ">Hợp đồng mua căn hộ</Select.Option>
-                  <Select.Option value="Hợp đồng thuê căn hộ">Hợp đồng thuê căn hộ</Select.Option>
+                <Select placeholder="Chọn loại căn hộ">
+                  <Select.Option value="1BR">1 Phòng ngủ</Select.Option>
+                  <Select.Option value="2BR">2 Phòng ngủ</Select.Option>
+                  <Select.Option value="3BR">3 Phòng ngủ</Select.Option>
+                  <Select.Option value="penthouse">Penthouse</Select.Option>
                 </Select>
               </Form.Item>
             </Col>
@@ -665,8 +879,31 @@ const AdminHome = () => {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                label="Họ và tên chủ hộ"
-                name="name"
+                label="Diện tích (m²)"
+                name="area"
+                rules={[{ required: true, message: "Vui lòng nhập diện tích" }]}
+              >
+                <Input type="number" placeholder="Ví dụ: 75" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                label="Giá bán/thuê (VNĐ)"
+                name="price"
+                rules={[{ required: true, message: "Vui lòng nhập giá" }]}
+              >
+                <Input type="number" placeholder="Ví dụ: 3000000000" />
+              </Form.Item>
+            </Col>
+          </Row>
+          
+          <Divider orientation="left">Thông tin chủ hộ</Divider>
+          
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                label="Họ và tên"
+                name="ownerName"
                 rules={[{ required: true, message: "Vui lòng nhập tên chủ hộ" }]}
               >
                 <Input placeholder="Nhập họ và tên chủ hộ" />
@@ -675,7 +912,7 @@ const AdminHome = () => {
             <Col span={12}>
               <Form.Item
                 label="Số điện thoại"
-                name="phone"
+                name="ownerPhone"
                 rules={[{ required: true, message: "Vui lòng nhập số điện thoại" }]}
               >
                 <Input placeholder="Nhập số điện thoại" />
@@ -683,59 +920,97 @@ const AdminHome = () => {
             </Col>
           </Row>
           
-          <Form.Item
-            label="Email"
-            name="email"
-            rules={[
-              { required: true, message: "Vui lòng nhập email" },
-              { type: "email", message: "Email không hợp lệ" }
-            ]}
-          >
-            <Input placeholder="Nhập email" />
-          </Form.Item>
-          
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                label="Ngày bắt đầu hợp đồng"
-                name="contractStart"
-                rules={[{ required: true, message: "Vui lòng chọn ngày bắt đầu" }]}
+                label="Email"
+                name="ownerEmail"
+                rules={[
+                  { required: true, message: "Vui lòng nhập email" },
+                  { type: 'email', message: "Email không hợp lệ" }
+                ]}
               >
-                <DatePicker style={{ width: '100%' }} format="DD/MM/YYYY" placeholder="Chọn ngày bắt đầu" />
+                <Input placeholder="Nhập email" />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
-                label="Ngày kết thúc hợp đồng"
-                name="contractEnd"
-                rules={[{ required: true, message: "Vui lòng chọn ngày kết thúc" }]}
+                label="CMND/CCCD"
+                name="ownerId"
+                rules={[{ required: true, message: "Vui lòng nhập CMND/CCCD" }]}
               >
-                <DatePicker style={{ width: '100%' }} format="DD/MM/YYYY" placeholder="Chọn ngày kết thúc" />
+                <Input placeholder="Nhập số CMND/CCCD" />
               </Form.Item>
             </Col>
           </Row>
           
-          <Form.Item
-            label="Hình ảnh giấy tờ"
-            name="images"
-          >
-            <Upload
-              action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
-              listType="picture-card"
-              maxCount={5}
-            >
-              <div>
-                <PlusOutlined />
-                <div style={{ marginTop: 8 }}>Tải lên</div>
-              </div>
-            </Upload>
-          </Form.Item>
+          <Divider orientation="left">Thông tin hợp đồng</Divider>
+          
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                label="Loại hợp đồng"
+                name="contractType"
+                rules={[{ required: true, message: "Vui lòng chọn loại hợp đồng" }]}
+              >
+                <Select placeholder="Chọn loại hợp đồng">
+                  <Select.Option value="buy">Hợp đồng mua căn hộ</Select.Option>
+                  <Select.Option value="rent">Hợp đồng thuê căn hộ</Select.Option>
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                label="Ngày bắt đầu"
+                name="contractStart"
+                rules={[{ required: true, message: "Vui lòng chọn ngày bắt đầu" }]}
+              >
+                <DatePicker style={{ width: '100%' }} format="DD/MM/YYYY" />
+              </Form.Item>
+            </Col>
+          </Row>
+          
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                label="Ngày kết thúc"
+                name="contractEnd"
+                dependencies={['contractType']}
+                rules={[
+                  ({ getFieldValue }) => ({
+                    required: getFieldValue('contractType') === 'rent',
+                    message: "Vui lòng chọn ngày kết thúc"
+                  })
+                ]}
+              >
+                <DatePicker style={{ width: '100%' }} format="DD/MM/YYYY" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                label="Hình ảnh hợp đồng"
+                name="contractImages"
+                rules={[{ required: true, message: "Vui lòng tải lên hình ảnh hợp đồng" }]}
+              >
+                <Upload
+                  action="https://www.mocky.io/v2/5cc8019d300000980a055e76"
+                  listType="picture-card"
+                  maxCount={5}
+                >
+                  <div>
+                    <PlusOutlined />
+                    <div style={{ marginTop: 8 }}>Tải lên</div>
+                  </div>
+                </Upload>
+              </Form.Item>
+            </Col>
+          </Row>
           
           <Divider />
           
           <Form.Item>
             <Space>
-              <Button type="primary" htmlType="submit" icon={<HomeOutlined />}>
+              <Button type="primary" htmlType="submit" icon={<PlusOutlined />}>
                 Thêm căn hộ
               </Button>
               <Button onClick={handleNewApartmentModalCancel}>Hủy</Button>
@@ -743,8 +1018,169 @@ const AdminHome = () => {
           </Form.Item>
         </Form>
       </Modal>
+      
+      {/* USER APPROVAL MODAL */}
+      <Modal
+        title="Xét duyệt đăng ký tài khoản"
+        visible={isUserApprovalModalVisible}
+        onCancel={handleUserApprovalModalCancel}
+        footer={null}
+        width={700}
+      >
+        {selectedPendingUser && (
+          <>
+            <Tabs defaultActiveKey="userInfo">
+              <TabPane tab="Thông tin người dùng" key="userInfo">
+                <Form layout="vertical" form={userApprovalForm}>
+                  <Row gutter={16}>
+                    <Col span={12}>
+                      <Form.Item
+                        label="Họ và tên"
+                        name="name"
+                        rules={[{ required: true, message: "Vui lòng nhập họ tên" }]}
+                      >
+                        <Input placeholder="Nhập họ và tên" />
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item
+                        label="Số điện thoại"
+                        name="phone"
+                        rules={[{ required: true, message: "Vui lòng nhập số điện thoại" }]}
+                      >
+                        <Input placeholder="Nhập số điện thoại" />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                  
+                  <Row gutter={16}>
+                    <Col span={12}>
+                      <Form.Item
+                        label="Email"
+                        name="email"
+                        rules={[
+                          { required: true, message: "Vui lòng nhập email" },
+                          { type: 'email', message: "Email không hợp lệ" }
+                        ]}
+                      >
+                        <Input placeholder="Nhập email" />
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item
+                        label="Căn hộ"
+                        name="apartment"
+                        rules={[{ required: true, message: "Vui lòng nhập mã căn hộ" }]}
+                      >
+                        <Input placeholder="Nhập mã căn hộ" />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                  
+                  <Row gutter={16}>
+                    <Col span={12}>
+                      <Form.Item
+                        label="CMND/CCCD"
+                        name="identityCard"
+                      >
+                        <Input disabled />
+                      </Form.Item>
+                    </Col>
+                    <Col span={12}>
+                      <Form.Item
+                        label="Vai trò"
+                        name="role"
+                        rules={[{ required: true, message: "Vui lòng chọn vai trò" }]}
+                      >
+                        <Select placeholder="Chọn vai trò">
+                          <Select.Option value="User">Người dùng</Select.Option>
+                          <Select.Option value="Editor">Biên tập viên</Select.Option>
+                          <Select.Option value="Admin">Quản trị viên</Select.Option>
+                        </Select>
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                  
+                  <Divider />
+                  
+                  <Row gutter={16}>
+                    <Col span={24}>
+                      <Form.Item
+                        label="Ghi chú"
+                        name="notes"
+                      >
+                        <Input.TextArea rows={4} placeholder="Nhập ghi chú nếu cần..." />
+                      </Form.Item>
+                    </Col>
+                  </Row>
+                </Form>
+              </TabPane>
+              
+              <TabPane tab="Hình ảnh" key="images">
+                <div style={{ marginBottom: 16 }}>
+                  <Alert
+                    message="Hình ảnh đính kèm"
+                    description="Vui lòng kiểm tra kỹ các hình ảnh CMND/CCCD và giấy tờ liên quan trước khi duyệt."
+                    type="info"
+                    showIcon
+                  />
+                </div>
+                
+                {selectedPendingUser.images && selectedPendingUser.images.length > 0 ? (
+                  <div style={{ display: "flex", flexWrap: "wrap", gap: 16 }}>
+                    {selectedPendingUser.images.map((img, index) => (
+                      <div key={index} style={{ textAlign: "center" }}>
+                        <img
+                          src={img}
+                          alt={`Hình ảnh ${index + 1}`}
+                          style={{ width: "200px", height: "200px", objectFit: "cover", borderRadius: 4 }}
+                        />
+                        <p>Hình ảnh {index + 1}</p>
+                      </div>
+                    ))}
+                  </div>
+                ) : (
+                  <Empty description="Không có hình ảnh đính kèm" />
+                )}
+              </TabPane>
+            </Tabs>
+            
+            <Divider />
+            
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <Space>
+                <Button
+                  danger
+                  icon={<CloseCircleOutlined />}
+                  onClick={handleUserApprovalModalCancel}
+                >
+                  Từ chối đăng ký
+                </Button>
+                <Button
+                  icon={<BellOutlined />}
+                >
+                  Yêu cầu bổ sung giấy tờ
+                </Button>
+              </Space>
+              
+              <Button
+                type="primary"
+                icon={<CheckCircleOutlined />}
+                onClick={() => {
+                  // Xử lý duyệt tài khoản
+                  handleUserApprovalModalCancel();
+                }}
+              >
+                Duyệt tài khoản
+              </Button>
+            </div>
+          </>
+        )}
+      </Modal>
     </Layout>
   );
 };
+
+
 
 export default AdminHome;
