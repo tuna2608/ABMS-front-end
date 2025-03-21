@@ -191,8 +191,12 @@ const areas = ["Tất cả", "Quận 1", "Quận 2", "Quận Bình Thạnh", "Qu
 const statusColors = {
   "0": "green",
   "1": "red",
-  "Đang đặt cọc": "orange"
 };
+
+const statusPost = {
+  "0": "Unent",
+  "1": "Rented",
+}
 
 const PostList = () => {
   const location = useLocation();
@@ -215,10 +219,9 @@ const PostList = () => {
       setLoading(true)
       const res = await getAllPosts(dispatch);
       setApartments(res.data);
-      
     }
     getPostList();
-    setLoading(false)
+    setLoading(false);
   },[]);
 
   const onSearch = value => {
@@ -240,9 +243,9 @@ const PostList = () => {
     return new Intl.NumberFormat('vi-VN').format(price) + " VNĐ/tháng";
   };
   
-  const goToDetails = (id) => {
-    navigate(`/post-detail`);
-    console.log(`Đang chuyển đến trang chi tiết của căn hộ ID: ${id}`);
+  const goToDetails = (postId) => {
+    navigate(`/post-detail/${postId}`);
+    console.log(`Đang chuyển đến trang chi tiết của căn hộ ID: ${postId}`);
   };
 
   // Xử lý thêm mới
@@ -327,15 +330,14 @@ const PostList = () => {
                         alt={apartment.title}
                         src={apartment.postImages[0]}
                         style={{ width: '100%', height: '100%', objectFit: 'cover' }}
-                        onClick={() => goToDetails(apartment.postId)}
                       />
                       <Badge 
-                        count={apartment.status}
+                        count={apartment.depositCheck}
                         style={{ 
                           position: 'absolute', 
                           top: 10, 
                           right: 10,
-                          backgroundColor: statusColors[apartment.status]
+                          backgroundColor: statusColors[apartment.depositCheck]
                         }}
                       />
                       <div 
@@ -349,14 +351,14 @@ const PostList = () => {
                           color: 'white'
                         }}
                       >
-                        <Text style={{ color: 'white', fontWeight: 'bold' }}>{apartment.owner}</Text>
+                        <Text style={{ color: 'white', fontWeight: 'bold' }}>{apartment.userName}</Text>
                       </div>
                     </div>
                   }
-                  onClick={() => goToDetails(apartment.id)}
+                  onClick={() => goToDetails(apartment.postId)}
                   actions={[
                     <Space><AreaChartOutlined key="area" />{`200 m²`}</Space>,
-                    <Space><UserOutlined key="rooms" />{`2 PN, 2 VS`}</Space>,
+                    <Space><UserOutlined key="rooms" />{`${apartment.apartmentName.numberOfBedrooms}PN, ${apartment.apartmentName.numberOfBathrooms}VS`}</Space>,
                     <Space><EyeOutlined key="view" />{apartment.views}</Space>
                   ]}
                 >
@@ -370,25 +372,17 @@ const PostList = () => {
                         <Space direction="vertical" style={{ width: '100%' }}>
                           <div>
                             <EnvironmentOutlined style={{ marginRight: 5 }} />
-                            <Text type="secondary">{apartment.address}</Text>
+                            <Text type="secondary">{apartment.apartmentName.apartmentName}</Text>
                           </div>
                           <div>
                             <DollarOutlined style={{ marginRight: 5 }} />
                             <Text strong>{formatPrice(apartment.price)}</Text>
                           </div>
                           <div>
-                            <Space wrap>
-                              {/* {apartment.tags.slice(0, 2).map(tag => (
-                                <Tag color="blue" key={tag}>
-                                  {tag}
-                                </Tag>
-                              ))} */}
-                              {/* {apartment.tags.length > 2 && <Tag>+{apartment.tags.length - 2}</Tag>} */}
-                            </Space>
                           </div>
                           <Button type="link" style={{ padding: 0 }} onClick={(e) => {
                             e.stopPropagation();
-                            goToDetails(apartment.id);
+                            goToDetails(apartment.postId);
                           }}>
                             Xem chi tiết <ArrowRightOutlined />
                           </Button>

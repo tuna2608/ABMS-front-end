@@ -13,7 +13,6 @@ import {
   Avatar, 
   Statistic, 
   Badge, 
-  Breadcrumb,
   Modal,
   Form,
   Input,
@@ -43,13 +42,11 @@ import {
   TeamOutlined,
   ExpandAltOutlined
 } from "@ant-design/icons";
-// Trong dự án thực tế, bạn sẽ cần import thư viện định tuyến
-// import { useNavigate } from "react-router-dom";
-
+import { useLocation, useParams } from "react-router-dom";
+import { getPostById } from "../../../redux/apiCalls";
+import { useDispatch } from "react-redux";
 
 const { Title, Text, Paragraph } = Typography;
-const { TabPane } = Tabs;
-
 
 // Màu trạng thái
 const statusColors = {
@@ -122,7 +119,8 @@ const apartmentDetails = {
     "https://picsum.photos/800/600?random=3",
     "https://picsum.photos/800/600?random=4",
     "https://picsum.photos/800/600?random=5"
-  ],
+  ]
+  ,
   similar: [
     {
       id: 2,
@@ -151,6 +149,29 @@ const apartmentDetails = {
   ]
 };
 
+// Custom arrow components for Carousel that don't pass down DOM props
+const NextArrow = (props) => {
+  const { className, style, onClick } = props;
+  return (
+    <RightOutlined
+      className={className}
+      style={{ ...style, display: 'block', fontSize: '16px', color: '#fff' }}
+      onClick={onClick}
+    />
+  );
+};
+
+const PrevArrow = (props) => {
+  const { className, style, onClick } = props;
+  return (
+    <LeftOutlined
+      className={className}
+      style={{ ...style, display: 'block', fontSize: '16px', color: '#fff' }}
+      onClick={onClick}
+    />
+  );
+};
+
 const PostDetail = () => {
   const [apartment, setApartment] = useState(null);
   const [loading, setLoading] = useState(true);
@@ -160,26 +181,26 @@ const PostDetail = () => {
   const [messageInput, setMessageInput] = useState("");
   const [showAdminRoleModal, setShowAdminRoleModal] = useState(false);
   const [form] = Form.useForm();
+  const dispatch = useDispatch();
   
-  // Lấy id từ params URL
-  // const { id } = useParams();
-  // Thêm hook navigate để điều hướng trang
-  // const navigate = useNavigate();
+  const postId = useParams().postId;
+  // console.log(postId);
   
-  // Trong môi trường thực tế, sẽ lấy id từ URL
-  // Ở đây giả định id = 1 cho demo
-  const id = 1;
-
   // Giả lập việc lấy dữ liệu từ API
   useEffect(() => {
     // Trong thực tế, sẽ gọi API với id
-    // fetch(`/api/apartments/${id}`)...
-    setTimeout(() => {
-      setApartment(apartmentDetails);
-      setLoading(false);
-    }, 1000);
-  }, [id]);
+    async function getPostDetail(){
+      // setLoading(true)
+      const res = await getPostById(dispatch,postId);
+      // res.data.postImages.map((image)=>console.log(image))
+      setApartment(res.data);
+      setLoading(false)
+    }
+    getPostDetail();
+  }, [postId, dispatch]);
 
+  
+  
   const formatPrice = (price) => {
     return new Intl.NumberFormat('vi-VN').format(price) + " VNĐ/tháng";
   };
@@ -228,8 +249,6 @@ const PostDetail = () => {
   };
 
   const goBack = () => {
-    // navigate(-1);
-    // Hoặc sử dụng
     window.history.back();
   };
 
@@ -240,9 +259,6 @@ const PostDetail = () => {
 
   // Xử lý chuyển đến trang ChatPage
   const handleGotoChatPage = () => {
-    // Trong môi trường thực tế, bạn sẽ sử dụng navigate để điều hướng
-    // navigate('/chat-page');
-    
     message.success('Đang chuyển đến trang quản lý chat');
     // Giả lập điều hướng đến trang chat
     window.location.href = '/chat-page';
@@ -250,10 +266,72 @@ const PostDetail = () => {
     setShowAdminRoleModal(false);
   };
 
+  // Create tab items for the new Tabs API
+  const tabItems = [
+    {
+      key: "1",
+      label: "Thông tin chi tiết",
+      children: (
+        <>
+          <Paragraph>{apartment?.content}</Paragraph>
+          {/* <Space wrap>
+            {apartment?.tags.map(tag => (
+              <Tag color="blue" key={tag}>
+                {tag}
+              </Tag>
+            ))}
+          </Space> */}
+          <Divider orientation="left">Thông tin cơ bản</Divider>
+          <Descriptions bordered column={{ xs: 1, sm: 2, md: 3 }}>
+            {/* <Descriptions.Item label="Loại căn hộ">{apartment?.category}</Descriptions.Item> */}
+            <Descriptions.Item label="Tình trạng">
+              <Badge status={statusColors[apartment?.status] === 'green' ? 'success' : statusColors[apartment?.status] === 'red' ? 'error' : 'warning'} text={apartment?.status} />
+            </Descriptions.Item>
+            <Descriptions.Item label="Hướng nhà">{apartment?.direction}</Descriptions.Item>
+            <Descriptions.Item label="Nội thất">{apartment?.furnishing}</Descriptions.Item>
+            <Descriptions.Item label="Tầng số">{apartment?.floor}</Descriptions.Item>
+            <Descriptions.Item label="Tòa nhà">{apartment?.buildingName}</Descriptions.Item>
+            <Descriptions.Item label="Tiền cọc">{apartment?.depositAmount}</Descriptions.Item>
+            <Descriptions.Item label="Thời hạn hợp đồng">{apartment?.contractTerm}</Descriptions.Item>
+          </Descriptions>
+
+          <Divider orientation="left">Tiện ích</Divider>
+          {/* <Row gutter={[16, 16]}>
+            {apartment?.utilities.map((utility, index) => (
+              <Col span={8} key={index}>
+                <Space>
+                  <CheckCircleOutlined style={{ color: 'green' }} />
+                  <Text>{utility}</Text>
+                </Space>
+              </Col>
+            ))}
+          </Row> */}
+        </>
+      )
+    },
+    {
+      key: "2",
+      label: "Bản đồ",
+      children: (
+        <div style={{ background: '#f0f0f0', height: 400, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <Text type="secondary">Bản đồ vị trí căn hộ</Text>
+        </div>
+      )
+    },
+    {
+      key: "3",
+      label: "Đánh giá",
+      children: (
+        <div style={{ padding: '20px 0' }}>
+          <Text>Chưa có đánh giá nào cho căn hộ này.</Text>
+        </div>
+      )
+    }
+  ];
+
   // Render chat drawer
   const renderChatDrawer = () => {
     if (!apartment) return null;
-    
     return (
       <Drawer
         title={
@@ -269,7 +347,14 @@ const PostDetail = () => {
         width={380}
         onClose={closeChatDrawer}
         open={chatDrawerVisible}
-        bodyStyle={{ padding: '12px', display: 'flex', flexDirection: 'column', height: 'calc(100% - 55px)' }}
+        styles={{
+          body: { 
+            padding: '12px', 
+            display: 'flex', 
+            flexDirection: 'column', 
+            height: 'calc(100% - 55px)' 
+          }
+        }}
       >
         <div style={{ 
           flex: 1, 
@@ -338,16 +423,16 @@ const PostDetail = () => {
     );
   }
 
+  // Carousel settings with custom arrow components
+  const carouselSettings = {
+    autoplay: true,
+    arrows: true,
+    nextArrow: <NextArrow />,
+    prevArrow: <PrevArrow />
+  };
+
   return (
     <div style={{ padding: "20px" }}>
-      <Breadcrumb style={{ marginBottom: 16 }}>
-        <Breadcrumb.Item>
-          <HomeOutlined />
-          <span>Trang chủ</span>
-        </Breadcrumb.Item>
-        <Breadcrumb.Item>Danh sách căn hộ</Breadcrumb.Item>
-        <Breadcrumb.Item>{apartment.title}</Breadcrumb.Item>
-      </Breadcrumb>
 
       <Button 
         type="default" 
@@ -362,13 +447,8 @@ const PostDetail = () => {
         <Row gutter={[24, 24]}>
           <Col xs={24} lg={16}>
             <div style={{ position: 'relative' }}>
-              <Carousel 
-                autoplay 
-                arrows 
-                prevArrow={<LeftOutlined />}
-                nextArrow={<RightOutlined />}
-              >
-                {apartment.images.map((image, index) => (
+              <Carousel {...carouselSettings}>
+                {apartment.postImages.map((image, index) => (
                   <div key={index}>
                     <div style={{ height: 500, position: 'relative' }}>
                       <img 
@@ -394,15 +474,15 @@ const PostDetail = () => {
 
             <Title level={2} style={{ marginTop: 16 }}>{apartment.title}</Title>
             <Space size="large" wrap>
-              <Text><EnvironmentOutlined /> {apartment.address}</Text>
-              <Text><EyeOutlined /> {apartment.views} lượt xem</Text>
-              <Text><CalendarOutlined /> Đăng ngày: {new Date(apartment.date).toLocaleDateString('vi-VN')}</Text>
+              <Text><EnvironmentOutlined /> {apartment.apartmentName.apartmentName}</Text>
+              {/* <Text><EyeOutlined /> {apartment.views} lượt xem</Text> */}
+              <Text><CalendarOutlined /> Đăng ngày: {new Date(apartment.postDate).toLocaleDateString('vi-VN')}</Text>
             </Space>
 
             <Divider />
 
             <Row gutter={[16, 16]}>
-              <Col xs={12} sm={8} md={6}>
+              <Col xs={16} sm={12} md={8}>
                 <Statistic 
                   title="Giá thuê" 
                   value={formatPrice(apartment.price)} 
@@ -413,7 +493,7 @@ const PostDetail = () => {
               <Col xs={12} sm={8} md={6}>
                 <Statistic 
                   title="Diện tích" 
-                  value={`${apartment.area} m²`} 
+                  value={`200 m²`} 
                   prefix={<AreaChartOutlined />} 
                   valueStyle={{ fontSize: 18 }}
                 />
@@ -421,15 +501,15 @@ const PostDetail = () => {
               <Col xs={12} sm={8} md={6}>
                 <Statistic 
                   title="Phòng ngủ" 
-                  value={apartment.bedrooms} 
+                  value={apartment.apartmentName.numberOfBedrooms} 
                   prefix={<UserOutlined />} 
                   valueStyle={{ fontSize: 18 }}
                 />
               </Col>
-              <Col xs={12} sm={8} md={6}>
+              <Col xs={12} sm={8} md={4}>
                 <Statistic 
                   title="Phòng tắm" 
-                  value={apartment.bathrooms} 
+                  value={apartment.apartmentName.numberOfBathrooms} 
                   valueStyle={{ fontSize: 18 }}
                 />
               </Col>
@@ -437,60 +517,13 @@ const PostDetail = () => {
 
             <Divider />
 
-            <Tabs defaultActiveKey="1">
-              <TabPane tab="Thông tin chi tiết" key="1">
-                <Paragraph>{apartment.description}</Paragraph>
-                <Space wrap>
-                  {apartment.tags.map(tag => (
-                    <Tag color="blue" key={tag}>
-                      {tag}
-                    </Tag>
-                  ))}
-                </Space>
-
-                <Divider orientation="left">Thông tin cơ bản</Divider>
-                <Descriptions bordered column={{ xs: 1, sm: 2, md: 3 }}>
-                  <Descriptions.Item label="Loại căn hộ">{apartment.category}</Descriptions.Item>
-                  <Descriptions.Item label="Tình trạng">
-                    <Badge status={statusColors[apartment.status] === 'green' ? 'success' : statusColors[apartment.status] === 'red' ? 'error' : 'warning'} text={apartment.status} />
-                  </Descriptions.Item>
-                  <Descriptions.Item label="Hướng nhà">{apartment.direction}</Descriptions.Item>
-                  <Descriptions.Item label="Nội thất">{apartment.furnishing}</Descriptions.Item>
-                  <Descriptions.Item label="Tầng số">{apartment.floor}</Descriptions.Item>
-                  <Descriptions.Item label="Tòa nhà">{apartment.buildingName}</Descriptions.Item>
-                  <Descriptions.Item label="Tiền cọc">{apartment.depositAmount}</Descriptions.Item>
-                  <Descriptions.Item label="Thời hạn hợp đồng">{apartment.contractTerm}</Descriptions.Item>
-                </Descriptions>
-
-                <Divider orientation="left">Tiện ích</Divider>
-                <Row gutter={[16, 16]}>
-                  {apartment.utilities.map((utility, index) => (
-                    <Col span={8} key={index}>
-                      <Space>
-                        <CheckCircleOutlined style={{ color: 'green' }} />
-                        <Text>{utility}</Text>
-                      </Space>
-                    </Col>
-                  ))}
-                </Row>
-              </TabPane>
-              <TabPane tab="Bản đồ" key="2">
-                <div style={{ background: '#f0f0f0', height: 400, display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                  <Text type="secondary">Bản đồ vị trí căn hộ</Text>
-                  {/* Trong thực tế, sẽ nhúng Google Maps hoặc các bản đồ khác ở đây */}
-                </div>
-              </TabPane>
-              <TabPane tab="Đánh giá" key="3">
-                <div style={{ padding: '20px 0' }}>
-                  <Text>Chưa có đánh giá nào cho căn hộ này.</Text>
-                </div>
-              </TabPane>
-            </Tabs>
+            {/* Updated Tabs implementation using items */}
+            <Tabs defaultActiveKey="1" items={tabItems} />
 
             <Divider />
 
-            <Title level={4}>Các căn hộ tương tự</Title>
-            <Row gutter={[16, 16]}>
+            {/* <Title level={4}>Các căn hộ tương tự</Title> */}
+            {/* <Row gutter={[16, 16]}>
               {apartment.similar.map(item => (
                 <Col xs={24} sm={12} md={8} key={item.id}>
                   <Card
@@ -503,7 +536,6 @@ const PostDetail = () => {
                       />
                     }
                     onClick={() => {
-                      // navigate(`/apartment/${item.id}`);
                       console.log(`Chuyển đến trang chi tiết của căn hộ ID: ${item.id}`);
                     }}
                   >
@@ -529,7 +561,7 @@ const PostDetail = () => {
                   </Card>
                 </Col>
               ))}
-            </Row>
+            </Row> */}
           </Col>
           
           <Col xs={24} lg={8}>
@@ -544,7 +576,7 @@ const PostDetail = () => {
                   </div>
                   <div>
                     <BankOutlined style={{ marginRight: 8 }} />
-                    <Text type="secondary">{apartment.owner}</Text>
+                    <Text type="secondary">{apartment.userName}</Text>
                   </div>
                 </div>
               </Space>
@@ -552,7 +584,6 @@ const PostDetail = () => {
               <Divider style={{ margin: '12px 0' }} />
               
               <Space direction="vertical" style={{ width: '100%' }}>
-                {/* Nút nhắn tin liên hệ */}
                 <Button 
                   type="primary" 
                   icon={<MessageOutlined />} 
@@ -562,7 +593,6 @@ const PostDetail = () => {
                   Nhắn tin liên hệ
                 </Button>
 
-                {/* Nút mới: Nhắn tin Admin/Owner */}
                 <Button 
                   style={{ background: '#52c41a', color: 'white' }}
                   icon={<TeamOutlined />} 
@@ -572,7 +602,6 @@ const PostDetail = () => {
                   Nhắn tin Admin/Owner
                 </Button>
                 
-
                 <Button 
                   type="default" 
                   icon={<MailOutlined />} 
@@ -640,7 +669,7 @@ const PostDetail = () => {
       {/* Modal gửi email liên hệ */}
       <Modal
         title="Gửi yêu cầu liên hệ"
-        visible={contactModalVisible}
+        open={contactModalVisible}
         onCancel={() => setContactModalVisible(false)}
         footer={null}
       >
@@ -695,7 +724,7 @@ const PostDetail = () => {
             <span>Chuyển đến giao diện Admin/Owner</span>
           </div>
         }
-        visible={showAdminRoleModal}
+        open={showAdminRoleModal}
         onCancel={() => setShowAdminRoleModal(false)}
         footer={[
           <Button key="cancel" onClick={() => setShowAdminRoleModal(false)}>

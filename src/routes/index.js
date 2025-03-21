@@ -14,10 +14,6 @@ import EditProfilePage from "../pages/common/EditProfilePage/EditProfilePage";
 import StaffHome from "../pages/staff/StaffHome";
 import CardManagement from "../pages/staff/CardManagement";
 
-
-
-
-
 export const routes = [
     {
         path: '/',
@@ -70,7 +66,7 @@ export const routes = [
         isShowHeader: true
     },
     {
-        path: '/post-detail',
+        path: '/post-detail/:postId',
         page: ApartmentDetail,
         isShowHeader: true
     },
