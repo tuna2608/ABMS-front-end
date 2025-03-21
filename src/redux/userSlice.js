@@ -76,9 +76,7 @@ export const {
   deleteUserStart, deleteUserSuccess, deleteUserFailure,
   updateUserStart, updateUserSuccess, updateUserFailure,
   addUserStart, addUserSuccess, addUserFailure
-
-               
- } = userSlice.actions;
+} = userSlice.actions;
 
 export default userSlice.reducer;
  

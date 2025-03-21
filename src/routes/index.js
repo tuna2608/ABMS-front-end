@@ -12,10 +12,6 @@ import ChatPage from "../pages/client/ChatPage/ChatPage";
 import NotificationsPage from "../pages/client/NotificationPage/NotificationPage";
 import EditProfilePage from "../pages/common/EditProfilePage/EditProfilePage";
 
-
-
-
-
 export const routes = [
     {
         path: '/',
@@ -58,7 +54,7 @@ export const routes = [
         isShowHeader: true
     },
     {
-        path: '/post-detail',
+        path: '/post-detail/:postId',
         page: ApartmentDetail,
         isShowHeader: true
     },

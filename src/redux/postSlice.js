@@ -11,15 +11,15 @@ export const postSlice = createSlice({
   initialState,
   reducers: {
     // Get Orders
-    getPostsStart: (state) => {
+    getPostStart: (state) => {
       state.isFetching = true;
       state.error = false;
     },
-    getPostsSuccess: (state, action) => {
+    getPostSuccess: (state, action) => {
       state.isFetching = false;
       state.post = action.payload;
     },
-    getPostsFailure: (state) => {
+    getPostFailure: (state) => {
       state.isFetching = false;
       state.error = true;
     },
@@ -45,7 +45,7 @@ export const postSlice = createSlice({
     },
     createPostSuccess: (state, action) => {
       state.isFetching = false;
-      state.order = action.payload;
+      state.post = action.payload;
     },
     createPostFailure: (state) => {
       state.isFetching = false;
@@ -53,7 +53,7 @@ export const postSlice = createSlice({
     },
     updatePostStatusSuccess: (state, action) => {
       state.isFetching = false;
-      state.order = action.payload;
+      state.post = action.payload;
     },
     resetPostsSuccess: () => {
       return initialState;
@@ -63,7 +63,7 @@ export const postSlice = createSlice({
 
 // Action creators are generated for each case reducer function
 export const {
-  getPostsStart,getPostsSuccess,getPostsFailure,getAllPostsStart,getAllPostsSuccess,getAllPostsFailure
+  getPostStart,getPostSuccess,getPostFailure,getAllPostsStart,getAllPostsSuccess,getAllPostsFailure
 } = postSlice.actions;
 
 export default postSlice.reducer;

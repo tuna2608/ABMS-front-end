@@ -60,7 +60,7 @@ import {
   resetOrdersSuccess,
   updateOrderStatusSuccess,
 } from "./orderSlice";
-import { getAllPostsStart } from "./postSlice";
+import { getAllPostsFailure, getAllPostsStart, getAllPostsSuccess, getPostFailure, getPostsFailure, getPostsStart, getPostsSuccess, getPostStart, getPostSuccess } from "./postSlice";
 
 // Auth
 export const login = async (dispatch, user) => {
@@ -252,11 +252,22 @@ export const getAllPosts = async (dispatch) => {
   dispatch(getAllPostsStart());
   try {
     const res = await publicRequest.get(`/post`);
-    dispatch(getAllOrdersSuccess(res.data.data));
-    // console.log(res.data.data);
+    dispatch(getAllPostsSuccess(res.data.data));
     return res.data;
   } catch (error) {
-    dispatch(getAllOrdersFailure());
+    dispatch(getAllPostsFailure());
+    return error;
+  }
+}
+
+export const getPostById = async (dispatch,postId) => {
+  dispatch(getPostStart());
+  try {
+    const res = await publicRequest.get(`/post/${postId}`);
+    dispatch(getPostSuccess(res.data));
+    return res.data;
+  } catch (error) {
+    dispatch(getPostFailure());
     return error;
   }
 }
