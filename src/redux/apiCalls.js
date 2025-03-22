@@ -62,6 +62,19 @@ import {
 } from "./orderSlice";
 import { getAllPostsFailure, getAllPostsStart, getAllPostsSuccess, getPostFailure, getPostsFailure, getPostsStart, getPostsSuccess, getPostStart, getPostSuccess } from "./postSlice";
 
+import {
+  getMessagesStart,
+  getMessagesSuccess,
+  getMessagesFailure,
+  fetchContactsStart,
+  fetchContactsSuccess,
+  fetchContactsFailure,
+  markMessagesAsReadStart,
+  markMessagesAsReadSuccess,
+  markMessagesAsReadFailure,
+  addNewContact
+} from "./chatSlice";
+
 // Auth
 export const login = async (dispatch, user) => {
   dispatch(loginStart());
@@ -352,3 +365,66 @@ export const getUserByUserName = async (dispatch,username) => {
 //   } catch (error) { }
 // };
 
+// Chat functions
+// Lấy lịch sử tin nhắn
+export const getMessages = (receiverId, currentUserId) => async (dispatch) => {
+  dispatch(getMessagesStart());
+  try {
+    const res = await userRequest.get(`/chat/history/${receiverId}?currentUserId=${currentUserId}`);
+    dispatch(getMessagesSuccess(res.data));
+    return res.data;
+  } catch (error) {
+    dispatch(getMessagesFailure());
+    console.error("Lỗi khi lấy tin nhắn:", error);
+    throw error;
+  }
+};
+
+// Lấy danh sách người liên hệ
+export const fetchContacts = (currentUserId) => async (dispatch) => {
+  dispatch(fetchContactsStart());
+  try {
+    const res = await userRequest.get(`/chat/contacts?currentUserId=${currentUserId}`);
+    dispatch(fetchContactsSuccess(res.data));
+    return res.data;
+  } catch (error) {
+    console.log("Lỗi khi lấy danh sách người liên hệ:", error);
+    dispatch(fetchContactsFailure(error.message));
+    throw error;
+  }
+};
+
+// Đánh dấu tin nhắn là đã đọc
+export const markMessagesAsRead = (otherUserId, currentUserId) => async (dispatch) => {
+  dispatch(markMessagesAsReadStart());
+  try {
+    await userRequest.post(`/chat/read/${otherUserId}?currentUserId=${currentUserId}`);
+    dispatch(markMessagesAsReadSuccess(otherUserId));
+    return true;
+  } catch (error) {
+    console.log("Lỗi khi đánh dấu tin nhắn đã đọc:", error);
+    dispatch(markMessagesAsReadFailure(error.message));
+    throw error;
+  }
+};
+
+// Tìm kiếm thông tin người dùng theo ID
+export const getUserInfo = (userId) => async (dispatch) => {
+  try {
+    const res = await userRequest.get(`/user/get/${userId}`);
+    if (res.data && res.data.data) {
+      dispatch(addNewContact({
+        userId: res.data.data.userId,
+        userName: res.data.data.userName,
+        fullName: res.data.data.fullName,
+        userImgUrl: res.data.data.userImgUrl,
+        unreadCount: 0
+      }));
+      return res.data.data;
+    }
+    return null;
+  } catch (error) {
+    console.error("Lỗi khi lấy thông tin người dùng:", error);
+    return null;
+  }
+};

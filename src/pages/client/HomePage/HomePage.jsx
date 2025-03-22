@@ -240,6 +240,7 @@ export default function HomePage() {
     navigate(`/post?${queryParams}`);
   };
 
+  
   return (
     <Container>
       <Carousel
