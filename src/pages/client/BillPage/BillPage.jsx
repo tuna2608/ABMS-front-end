@@ -481,7 +481,7 @@ const BillPage = () => {
       {/* Modal tạo hóa đơn mới */}
       <Modal
         title="Tạo hóa đơn mới"
-        visible={createBillVisible}
+        open={createBillVisible}
         onCancel={() => setCreateBillVisible(false)}
         width={800}
         footer={[
@@ -691,7 +691,7 @@ const BillPage = () => {
       {/* Modal chi tiết hóa đơn */}
       <Modal
         title={<span><DollarOutlined /> Chi tiết hóa đơn</span>}
-        visible={billDetailsVisible}
+        open={billDetailsVisible}
         onCancel={() => setbillDetailsVisible(false)}
         width={800}
         footer={[
