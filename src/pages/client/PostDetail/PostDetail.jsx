@@ -45,6 +45,8 @@ import {
 import { useLocation, useParams } from "react-router-dom";
 import { getPostById, getUserByUserName } from "../../../redux/apiCalls";
 import { useDispatch } from "react-redux";
+import ChatBox from "../../../components/common/Chatbot/Chatbot";
+import { useSelector } from "react-redux";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -181,8 +183,14 @@ const PostDetail = () => {
   const [messages, setMessages] = useState(sampleMessages);
   const [messageInput, setMessageInput] = useState("");
   const [showAdminRoleModal, setShowAdminRoleModal] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const [form] = Form.useForm();
   const dispatch = useDispatch();
+
+  const postData = useSelector((state) => state.post.post?.data);
+  const userIdFromPost = postData?.userId;
+  const userNameFromPost = postData?.apartment?.householder;
+//  console.log("User ID của người đăng bài:", userNameFromPost);
   
   const postId = useParams().postId;
   // console.log(postId);
@@ -218,15 +226,17 @@ const PostDetail = () => {
     form.resetFields();
   };
 
-  // Mở chat drawer
-  const openChatDrawer = () => {
+   // Mở chat drawer
+   const openChatDrawer = () => {
     setChatDrawerVisible(true);
   };
 
   // Đóng chat drawer
   const closeChatDrawer = () => {
     setChatDrawerVisible(false);
+
   };
+
 
   // Gửi tin nhắn
   const handleSendMessage = () => {
@@ -480,7 +490,7 @@ const PostDetail = () => {
 
             <Title level={2} style={{ marginTop: 16 }}>{apartment.title}</Title>
             <Space size="large" wrap>
-              <Text><EnvironmentOutlined /> {apartment.apartmentName.apartmentName}</Text>
+              <Text><EnvironmentOutlined /> {apartment.apartment.apartmentName}</Text>
               {/* <Text><EyeOutlined /> {apartment.views} lượt xem</Text> */}
               <Text><CalendarOutlined /> Đăng ngày: {new Date(apartment.postDate).toLocaleDateString('vi-VN')}</Text>
             </Space>
@@ -507,7 +517,7 @@ const PostDetail = () => {
               <Col xs={12} sm={8} md={6}>
                 <Statistic 
                   title="Phòng ngủ" 
-                  value={apartment.apartmentName.numberOfBedrooms} 
+                  value={apartment.apartment.numberOfBedrooms} 
                   prefix={<UserOutlined />} 
                   valueStyle={{ fontSize: 18 }}
                 />
@@ -515,7 +525,7 @@ const PostDetail = () => {
               <Col xs={12} sm={8} md={4}>
                 <Statistic 
                   title="Phòng tắm" 
-                  value={apartment.apartmentName.numberOfBathrooms} 
+                  value={apartment.apartment.numberOfBathrooms} 
                   valueStyle={{ fontSize: 18 }}
                 />
               </Col>
@@ -590,11 +600,10 @@ const PostDetail = () => {
               <Divider style={{ margin: '12px 0' }} />
               
               <Space direction="vertical" style={{ width: '100%' }}>
-                <Button 
-                  type="primary" 
-                  icon={<MessageOutlined />} 
+              <Button
+                  type="primary"
                   block
-                  onClick={openChatDrawer}
+                  onClick={() => setIsChatOpen(true)}
                 >
                   Nhắn tin liên hệ
                 </Button>
@@ -607,6 +616,7 @@ const PostDetail = () => {
                 >
                   Nhắn tin Admin/Owner
                 </Button>
+                
                 
                 <Button 
                   type="default" 
@@ -755,7 +765,14 @@ const PostDetail = () => {
       </Modal>
       
       {/* Chat Drawer */}
-      {renderChatDrawer()}
+      {/* {renderChatDrawer()} */}
+      {isChatOpen && (
+        <ChatBox 
+          receiverId={userIdFromPost} 
+          receiverName={userNameFromPost} 
+          onClose={() => setIsChatOpen(false)}
+        />
+      )}
     </div>
   );
 };

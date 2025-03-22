@@ -6,6 +6,7 @@ import usersReducer from "./userSlice"
 import orderReducer from "./orderSlice"
 import counterReducer from "./slices/counterSlices"
 import postReducer from './postSlice'
+import chatReducer from './chatSlice'
 
 // Persist account
 import {
@@ -26,7 +27,16 @@ const persistConfig = {
   storage,
 }
 
-const rootReducer = combineReducers({ user: userReducer, post: postReducer, cart: cartReducer, product: productReducer, users: usersReducer, order: orderReducer,counter: counterReducer })
+const rootReducer = combineReducers({ 
+  user: userReducer, 
+  post: postReducer, 
+  cart: cartReducer,
+  product: productReducer, 
+  users: usersReducer, 
+  order: orderReducer,
+  counter: counterReducer,
+  chat: chatReducer
+})
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
 
@@ -35,7 +45,20 @@ export const store = configureStore({
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({
       serializableCheck: {
-        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+        ignoredActions: [
+          FLUSH, 
+          REHYDRATE, 
+          PAUSE, 
+          PERSIST, 
+          PURGE, 
+          REGISTER,
+          // Thêm các action type có thể chứa dữ liệu không thể serialize
+          'chat/sendMessageStart',
+          'chat/sendMessageSuccess',
+          'chat/receiveMessage'
+        ],
+        // Bỏ qua kiểm tra đối với các đường dẫn cụ thể trong state
+        ignoredPaths: ['chat.messages']
       },
     }),
 });
