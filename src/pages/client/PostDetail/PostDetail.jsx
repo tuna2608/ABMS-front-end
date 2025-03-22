@@ -45,6 +45,8 @@ import {
 import { useLocation, useParams } from "react-router-dom";
 import { getPostById, getUserByUserName } from "../../../redux/apiCalls";
 import { useDispatch } from "react-redux";
+import ChatBox from "../../../components/common/Chatbot/Chatbot";
+import { useSelector } from "react-redux";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -181,8 +183,14 @@ const PostDetail = () => {
   const [messages, setMessages] = useState(sampleMessages);
   const [messageInput, setMessageInput] = useState("");
   const [showAdminRoleModal, setShowAdminRoleModal] = useState(false);
+  const [isChatOpen, setIsChatOpen] = useState(false);
   const [form] = Form.useForm();
   const dispatch = useDispatch();
+
+  const postData = useSelector((state) => state.post.post?.data);
+  const userIdFromPost = postData?.userId;
+  const userNameFromPost = postData?.apartment?.householder;
+//  console.log("User ID của người đăng bài:", userNameFromPost);
   
   const postId = useParams().postId;
   // console.log(postId);
@@ -218,15 +226,17 @@ const PostDetail = () => {
     form.resetFields();
   };
 
-  // Mở chat drawer
-  const openChatDrawer = () => {
+   // Mở chat drawer
+   const openChatDrawer = () => {
     setChatDrawerVisible(true);
   };
 
   // Đóng chat drawer
   const closeChatDrawer = () => {
     setChatDrawerVisible(false);
+
   };
+
 
   // Gửi tin nhắn
   const handleSendMessage = () => {
@@ -590,11 +600,10 @@ const PostDetail = () => {
               <Divider style={{ margin: '12px 0' }} />
               
               <Space direction="vertical" style={{ width: '100%' }}>
-                <Button 
-                  type="primary" 
-                  icon={<MessageOutlined />} 
+              <Button
+                  type="primary"
                   block
-                  onClick={openChatDrawer}
+                  onClick={() => setIsChatOpen(true)}
                 >
                   Nhắn tin liên hệ
                 </Button>
@@ -607,6 +616,7 @@ const PostDetail = () => {
                 >
                   Nhắn tin Admin/Owner
                 </Button>
+                
                 
                 <Button 
                   type="default" 
@@ -755,7 +765,14 @@ const PostDetail = () => {
       </Modal>
       
       {/* Chat Drawer */}
-      {renderChatDrawer()}
+      {/* {renderChatDrawer()} */}
+      {isChatOpen && (
+        <ChatBox 
+          receiverId={userIdFromPost} 
+          receiverName={userNameFromPost} 
+          onClose={() => setIsChatOpen(false)}
+        />
+      )}
     </div>
   );
 };
