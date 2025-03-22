@@ -1,9 +1,8 @@
-import React, { useState } from "react";
+import React, { useState} from "react";
 import styled from "styled-components";
 import { FaSearch } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { getAllPosts } from "../../../redux/apiCalls";
-import { useDispatch } from "react-redux";
+import { Carousel, Image } from "antd";
 
 /* ----------- Styled-components (navbar, layout) như cũ ----------- */
 const Container = styled.div`
@@ -30,7 +29,7 @@ const SearchBox = styled.div`
   margin: 0 auto;
   border-radius: 8px;
   padding: 16px;
-  box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+  box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
 `;
 
 const SearchRow = styled.div`
@@ -103,7 +102,7 @@ const TabsRow = styled.div`
   }
 
   .see-more {
-    margin-left: auto; 
+    margin-left: auto;
     color: #dc2626;
     cursor: pointer;
     font-size: 14px;
@@ -113,7 +112,7 @@ const TabsRow = styled.div`
 
 const HighlightRow = styled.div`
   display: grid;
-  grid-template-columns: 1fr 1.2fr; 
+  grid-template-columns: 1fr 1.2fr;
   gap: 16px;
   padding: 0 16px;
 
@@ -137,7 +136,7 @@ const ImagePlaceholder = styled.div`
 
 const ImageTitle = styled.p`
   margin-top: 8px;
-  color: #15803d; 
+  color: #15803d;
   font-weight: 500;
 `;
 
@@ -158,9 +157,33 @@ const ListItem = styled.div`
   }
 `;
 
+const contentBanner = [
+  {
+    text: "ABMS - A Hệ thống quản lý căn hộ thông minh, giúp bạn theo dõi, quản lý và vận hành căn hộ một cách dễ dàng và hiệu quả. Trải nghiệm sự tiện lợi ngay hôm nay!",
+    image:
+      "https://images.cenhomes.vn/2020/03/1585033148-can-ho-mau-an-land-complex.jpg",
+  },
+  {
+    text: "ABMS - B Hệ thống quản lý căn hộ thông minh, giúp bạn theo dõi, quản lý và vận hành căn hộ một cách dễ dàng và hiệu quả. Trải nghiệm sự tiện lợi ngay hôm nay!",
+    image:
+      "https://images.cenhomes.vn/2020/03/1585033149-can-ho-mau-cosmo-tay-ho.jpg",
+  },
+  {
+    text: "ABMS - C Hệ thống quản lý căn hộ thông minh, giúp bạn theo dõi, quản lý và vận hành căn hộ một cách dễ dàng và hiệu quả. Trải nghiệm sự tiện lợi ngay hôm nay!",
+    image:
+      "https://images.cenhomes.vn/2020/03/1585033155-can-ho-mau-imperia-sky-garden.jpg",
+  },
+  {
+    text: "ABMS - D Hệ thống quản lý căn hộ thông minh, giúp bạn theo dõi, quản lý và vận hành căn hộ một cách dễ dàng và hiệu quả. Trải nghiệm sự tiện lợi ngay hôm nay!",
+    image:
+      "https://images.cenhomes.vn/2020/03/1585033153-can-ho-mau-green-bay-garden.jpg",
+  },
+];
+
+
+
 /* --------------------- Component chính --------------------- */
 export default function HomePage() {
-
   // Các trường search
   const [searchText, setSearchText] = useState("");
   const [area, setArea] = useState("");
@@ -172,24 +195,23 @@ export default function HomePage() {
 
   // Giả sử mảng hợp lệ
   const validSearchKeywords = ["FPT", "Plaza", "Căn hộ"];
-  const validAreas = ["30","50","80"];
-  const validPrices = ["3","5","10"];
-  const validTypes = ["chothue","ban"];
-  const validRooms = ["1","2","3"];
+  const validAreas = ["30", "50", "80"];
+  const validPrices = ["3", "5", "10"];
+  const validTypes = ["chothue", "ban"];
+  const validRooms = ["1", "2", "3"];
 
   // Kiểm tra user có nhập/chọn gì chưa => ít nhất 1 trường
-  const isAnythingFilled = (
+  const isAnythingFilled =
     searchText.trim() !== "" ||
     area !== "" ||
     price !== "" ||
     type !== "" ||
-    rooms !== ""
-  );
+    rooms !== "";
 
   // Kiểm tra searchText
-  const isSearchValid = 
-    !searchText ||  // nếu chưa nhập => true
-    validSearchKeywords.some((k) => 
+  const isSearchValid =
+    !searchText || // nếu chưa nhập => true
+    validSearchKeywords.some((k) =>
       searchText.toLowerCase().includes(k.toLowerCase())
     );
 
@@ -199,14 +221,13 @@ export default function HomePage() {
   const isRoomsValid = !rooms || validRooms.includes(rooms);
 
   // Tất cả các trường (đã nhập) phải hợp lệ
-  const isFormValid = (
-    isAnythingFilled && 
+  const isFormValid =
+    isAnythingFilled &&
     isSearchValid &&
     isAreaValid &&
     isPriceValid &&
     isTypeValid &&
-    isRoomsValid
-  );
+    isRoomsValid;
 
   const handleSearch = async () => {
     const queryParams = new URLSearchParams({
@@ -214,25 +235,44 @@ export default function HomePage() {
       area,
       price,
       type,
-      rooms
+      rooms,
     }).toString();
     navigate(`/post?${queryParams}`);
   };
 
   return (
     <Container>
+      <Carousel
+        arrows
+        autoplay={{
+          dotDuration: true,
+        }}
+        autoplaySpeed={2000}
+      >
+        {contentBanner.map((banner,index) => (
+          <div key={index}>
+            <div style={{ display: "flex" }}>
+              <div style={{ width: "50%", padding: "80px", display: 'flex', justifyContent: 'center',alignItems: 'center' }}>
+                <p style={{fontSize: "20px" }}>
+                  {banner.text}
+                </p>
+              </div>
+              <Image width="50%" preview={false} src={banner.image}></Image>
+            </div>
+          </div>
+        ))}
+      </Carousel>
       <Wrapper>
-        {/* Top bar */}
         <HeroSection>
           <SearchBox>
             <SearchRow>
               <FaSearch />
-              <SearchInput 
+              <SearchInput
                 placeholder="Tìm kiếm"
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
               />
-              <SearchButton 
+              <SearchButton
                 onClick={handleSearch}
                 // disabled={!isFormValid}
               >
@@ -241,10 +281,7 @@ export default function HomePage() {
             </SearchRow>
             <FiltersRow>
               {/* Diện tích */}
-              <Select
-                value={area}
-                onChange={(e) => setArea(e.target.value)}
-              >
+              <Select value={area} onChange={(e) => setArea(e.target.value)}>
                 <option value="">Diện tích</option>
                 <option value="30">Dưới 30m2</option>
                 <option value="50">Dưới 50m2</option>
@@ -252,10 +289,7 @@ export default function HomePage() {
               </Select>
 
               {/* Giá tiền */}
-              <Select
-                value={price}
-                onChange={(e) => setPrice(e.target.value)}
-              >
+              <Select value={price} onChange={(e) => setPrice(e.target.value)}>
                 <option value="">Giá tiền</option>
                 <option value="3">Dưới 3 triệu</option>
                 <option value="5">Dưới 5 triệu</option>
@@ -263,20 +297,14 @@ export default function HomePage() {
               </Select>
 
               {/* Hình thức */}
-              <Select
-                value={type}
-                onChange={(e) => setType(e.target.value)}
-              >
+              <Select value={type} onChange={(e) => setType(e.target.value)}>
                 <option value="">Hình thức</option>
                 <option value="chothue">Cho thuê</option>
                 <option value="ban">Mua bán</option>
               </Select>
 
               {/* Số phòng */}
-              <Select
-                value={rooms}
-                onChange={(e) => setRooms(e.target.value)}
-              >
+              <Select value={rooms} onChange={(e) => setRooms(e.target.value)}>
                 <option value="">Số phòng</option>
                 <option value="1">1 phòng</option>
                 <option value="2">2 phòng</option>
@@ -308,30 +336,30 @@ export default function HomePage() {
             <div>
               <ImagePlaceholder>Hình ảnh</ImagePlaceholder>
               <ImageTitle>
-                Căn Hộ Bán Chung Cư FPT Plaza 1, Plaza 2 và Plaza 3
-                Tháng 2/2025 - Giá Tốt - Hỗ Trợ Vay
+                Căn Hộ Bán Chung Cư FPT Plaza 1, Plaza 2 và Plaza 3 Tháng 2/2025
+                - Giá Tốt - Hỗ Trợ Vay
               </ImageTitle>
             </div>
             <ListWrapper>
               <ListItem>
-                Căn Hộ Bán Chung Cư FPT Plaza 1, Plaza 2 và Plaza 3
-                Tháng 2/2025 - Giá Tốt - Hỗ Trợ Vay
+                Căn Hộ Bán Chung Cư FPT Plaza 1, Plaza 2 và Plaza 3 Tháng 2/2025
+                - Giá Tốt - Hỗ Trợ Vay
               </ListItem>
               <ListItem>
-                Căn Hộ Bán Chung Cư FPT Plaza 1, Plaza 2 và Plaza 3
-                Tháng 2/2025 - Giá Tốt - Hỗ Trợ Vay
+                Căn Hộ Bán Chung Cư FPT Plaza 1, Plaza 2 và Plaza 3 Tháng 2/2025
+                - Giá Tốt - Hỗ Trợ Vay
               </ListItem>
               <ListItem>
-                Căn Hộ Bán Chung Cư FPT Plaza 1, Plaza 2 và Plaza 3
-                Tháng 2/2025 - Giá Tốt - Hỗ Trợ Vay
+                Căn Hộ Bán Chung Cư FPT Plaza 1, Plaza 2 và Plaza 3 Tháng 2/2025
+                - Giá Tốt - Hỗ Trợ Vay
               </ListItem>
               <ListItem>
-                Căn Hộ Bán Chung Cư FPT Plaza 1, Plaza 2 và Plaza 3
-                Tháng 2/2025 - Giá Tốt - Hỗ Trợ Vay
+                Căn Hộ Bán Chung Cư FPT Plaza 1, Plaza 2 và Plaza 3 Tháng 2/2025
+                - Giá Tốt - Hỗ Trợ Vay
               </ListItem>
               <ListItem>
-                Căn Hộ Bán Chung Cư FPT Plaza 1, Plaza 2 và Plaza 3
-                Tháng 2/2025 - Giá Tốt - Hỗ Trợ Vay
+                Căn Hộ Bán Chung Cư FPT Plaza 1, Plaza 2 và Plaza 3 Tháng 2/2025
+                - Giá Tốt - Hỗ Trợ Vay
               </ListItem>
             </ListWrapper>
           </HighlightRow>
