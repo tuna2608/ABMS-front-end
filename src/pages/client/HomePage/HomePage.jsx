@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from "react";
+import React, { useState} from "react";
 import styled from "styled-components";
 import { FaSearch } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
-import { getAllPosts } from "../../../redux/apiCalls";
-import { useDispatch } from "react-redux";
 import { Carousel, Image } from "antd";
 
 /* ----------- Styled-components (navbar, layout) như cũ ----------- */
@@ -158,14 +156,6 @@ const ListItem = styled.div`
     border-bottom: none;
   }
 `;
-/*------- quỳnh nhờ banj blackboxai và chatgpt viết --------------*/
-
-const images = [
-  "https://images.cenhomes.vn/2020/03/1585033148-can-ho-mau-an-land-complex.jpg",
-  "https://images.cenhomes.vn/2020/03/1585033149-can-ho-mau-cosmo-tay-ho.jpg",
-  "https://images.cenhomes.vn/2020/03/1585033155-can-ho-mau-imperia-sky-garden.jpg",
-  "https://images.cenhomes.vn/2020/03/1585033153-can-ho-mau-green-bay-garden.jpg",
-];
 
 const contentBanner = [
   {
@@ -190,52 +180,7 @@ const contentBanner = [
   },
 ];
 
-const SliderContainer = styled.div`
-  width: 300px;
-  overflow: hidden;
-  position: relative;
-`;
 
-const SliderWrapper = styled.div`
-  display: flex;
-  transition: transform 0.5s ease-in-out;
-`;
-
-const SlideImage = styled.img`
-  width: 300px;
-  height: 300px;
-  object-fit: cover;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
-`;
-
-const Button = styled.button`
-  position: absolute;
-  top: 50%;
-  transform: translateY(-50%);
-  background: rgba(0, 0, 0, 0.5);
-  color: white;
-  border: none;
-  padding: 10px;
-  cursor: pointer;
-  z-index: 10;
-`;
-
-const LeftButton = styled(Button)`
-  left: 10px;
-`;
-
-const RightButton = styled(Button)`
-  right: 10px;
-`;
-
-const contentStyle = {
-  height: "160px",
-  color: "#fff",
-  lineHeight: "160px",
-  textAlign: "center",
-  background: "#364d79",
-};
 
 /* --------------------- Component chính --------------------- */
 export default function HomePage() {
