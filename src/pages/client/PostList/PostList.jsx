@@ -358,7 +358,7 @@ const PostList = () => {
                   onClick={() => goToDetails(apartment.postId)}
                   actions={[
                     <Space><AreaChartOutlined key="area" />{`200 m²`}</Space>,
-                    <Space><UserOutlined key="rooms" />{`${apartment.apartmentName.numberOfBedrooms}PN, ${apartment.apartmentName.numberOfBathrooms}VS`}</Space>,
+                    <Space><UserOutlined key="rooms" />{`${apartment.apartment.numberOfBedrooms}PN, ${apartment.apartment.numberOfBathrooms}VS`}</Space>,
                     <Space><EyeOutlined key="view" />{apartment.views}</Space>
                   ]}
                 >
@@ -372,7 +372,7 @@ const PostList = () => {
                         <Space direction="vertical" style={{ width: '100%' }}>
                           <div>
                             <EnvironmentOutlined style={{ marginRight: 5 }} />
-                            <Text type="secondary">{apartment.apartmentName.apartmentName}</Text>
+                            <Text type="secondary">{apartment.apartment.apartmentName}</Text>
                           </div>
                           <div>
                             <DollarOutlined style={{ marginRight: 5 }} />
