@@ -31,6 +31,7 @@ import {
   getUserFailure,
   getUserStart,
   getUserSuccess,
+  resetUsersSuccess,
   updateUserFailure,
   updateUserStart,
   updateUserSuccess,
@@ -100,6 +101,7 @@ export const signup = async (dispatch, user) => {
 
 export const logoutDispatch = async (dispatch) => {
   dispatch(logout());
+  dispatch(resetUsersSuccess())
 };
 
 // Product
