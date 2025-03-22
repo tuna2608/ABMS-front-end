@@ -10,9 +10,11 @@ import ApartmentList from "../pages/client/PostList/PostList";
 import ApartmentDetail from "../pages/client/PostDetail/PostDetail";
 import ChatPage from "../pages/client/ChatPage/ChatPage";
 import NotificationsPage from "../pages/client/NotificationPage/NotificationPage";
+import BillPage from "../pages/client/BillPage/BillPage";
 import EditProfilePage from "../pages/common/EditProfilePage/EditProfilePage";
 import StaffHome from "../pages/staff/StaffHome";
 import CardManagement from "../pages/staff/CardManagement";
+import OTPPage from "../pages/common/OTPPage/OTPPage";
 
 export const routes = [
     {
@@ -38,6 +40,11 @@ export const routes = [
     {
         path: '/forgot',
         page: ForgotPasswordPage,
+        isShowHeader: false
+    },
+    {
+        path: '/verify-otp',
+        page: OTPPage,
         isShowHeader: false
     },
     {
@@ -74,6 +81,11 @@ export const routes = [
         path: '/chat-page',
         page: ChatPage,
         isShowHeader: false
+    },
+    {
+        path: '/bill',
+        page: BillPage,
+        isShowHeader: true
     },
     {
         path: '/notification',

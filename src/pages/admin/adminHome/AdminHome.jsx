@@ -713,7 +713,7 @@ const AdminHome = () => {
       {/* RESIDENT DETAIL MODAL */}
       <Modal
         title="Thông tin chi tiết cư dân"
-        visible={isModalVisible}
+        open={isModalVisible}
         onCancel={handleCancel}
         footer={[
           <Button key="back" onClick={handleCancel}>
@@ -781,7 +781,7 @@ const AdminHome = () => {
       {/* POST CREATION MODAL */}
       <Modal
         title={`Tạo bài viết cho căn hộ ${selectedApartment?.apartment || ''}`}
-        visible={isPostModalVisible}
+        open={isPostModalVisible}
         onCancel={handlePostModalCancel}
         footer={null}
         width={700}
@@ -844,7 +844,7 @@ const AdminHome = () => {
       {/* NEW APARTMENT MODAL */}
       <Modal
         title="Thêm căn hộ mới"
-        visible={isNewApartmentModalVisible}
+        open={isNewApartmentModalVisible}
         onCancel={handleNewApartmentModalCancel}
         footer={null}
         width={700}
@@ -1022,7 +1022,7 @@ const AdminHome = () => {
       {/* USER APPROVAL MODAL */}
       <Modal
         title="Xét duyệt đăng ký tài khoản"
-        visible={isUserApprovalModalVisible}
+        open={isUserApprovalModalVisible}
         onCancel={handleUserApprovalModalCancel}
         footer={null}
         width={700}

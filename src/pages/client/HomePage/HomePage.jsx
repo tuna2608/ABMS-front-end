@@ -45,7 +45,6 @@ const SearchInput = styled.input`
   outline: none;
   border-radius: 4px;
 `;
-
 /* Nút Tìm kiếm có thể disable */
 const SearchButton = styled.button`
   background: ${(props) => (props.disabled ? "#ccc" : "#dc2626")};
