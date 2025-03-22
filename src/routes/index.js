@@ -13,6 +13,7 @@ import NotificationsPage from "../pages/client/NotificationPage/NotificationPage
 import EditProfilePage from "../pages/common/EditProfilePage/EditProfilePage";
 import StaffHome from "../pages/staff/StaffHome";
 import CardManagement from "../pages/staff/CardManagement";
+import OTPPage from "../pages/common/OTPPage/OTPPage";
 
 export const routes = [
     {
@@ -38,6 +39,11 @@ export const routes = [
     {
         path: '/forgot',
         page: ForgotPasswordPage,
+        isShowHeader: false
+    },
+    {
+        path: '/verify-otp',
+        page: OTPPage,
         isShowHeader: false
     },
     {

@@ -808,7 +808,7 @@ const StaffHome = () => {
       
       <Modal
         title="Trả lời tin nhắn"
-        visible={isReplyModalVisible}
+        open={isReplyModalVisible}
         onCancel={() => setIsReplyModalVisible(false)}
         onOk={handleReplySubmit}
       >
