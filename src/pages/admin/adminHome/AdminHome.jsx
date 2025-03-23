@@ -1062,5 +1062,4 @@ const AdminHome = () => {
     </Layout>
   );
 };
-
 export default AdminHome;
