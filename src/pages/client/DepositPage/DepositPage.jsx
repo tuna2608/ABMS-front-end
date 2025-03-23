@@ -1,12 +1,10 @@
 import React, { useState } from 'react';
 import { 
   Modal, 
-  Form, 
   Input, 
   InputNumber, 
   Checkbox, 
   Button, 
-  Alert,
   Divider,
   Row,
   Col
@@ -32,7 +30,6 @@ const DepositPage = ({
   onCancel, 
   onSubmit 
 }) => {
-  const [form] = Form.useForm();
   const [termsAgreed, setTermsAgreed] = useState(true);
   const [modalVisible, setModalVisible] = useState(true);
 

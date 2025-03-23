@@ -4,7 +4,6 @@ import {
   HomeOutlined,
   FileAddOutlined,
   SearchOutlined,
-  DeleteOutlined,
   EyeOutlined,
   MenuUnfoldOutlined,
   MenuFoldOutlined,
@@ -14,8 +13,7 @@ import {
   SafetyOutlined,
   DollarOutlined,
   CheckCircleOutlined,
-  CloseCircleOutlined,
-  InfoCircleOutlined
+  CloseCircleOutlined
 } from "@ant-design/icons";
 import {
   Layout,
@@ -66,9 +64,9 @@ const AdminHome = () => {
   const [depositFilterStatus, setDepositFilterStatus] = useState("all");
 
   // Handle menu click
-  const handleMenuClick = (e) => {
-    setActiveTab(e.key);
-  };
+  // const handleMenuClick = (e) => {
+  //   setActiveTab(e.key);
+  // };
 
   // Toggle sidebar collapse
   const toggleCollapsed = () => {
