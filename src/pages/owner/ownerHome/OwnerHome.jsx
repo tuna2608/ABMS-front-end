@@ -12,7 +12,10 @@ import {
   Upload,
   message,
   Form,
-  FloatButton
+  FloatButton,
+  InputNumber,
+  Alert,
+  Typography
 } from "antd";
 import { 
   HomeOutlined, 
@@ -26,7 +29,8 @@ import {
   MenuUnfoldOutlined,
   MenuFoldOutlined,
   CommentOutlined,
-  InboxOutlined
+  InboxOutlined,
+  InfoCircleOutlined
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
@@ -34,6 +38,8 @@ const { Sider, Content, Header } = Layout;
 const { Search } = Input;
 const { Option } = Select;
 const { Dragger } = Upload;
+const { TextArea } = Input;
+const { Text } = Typography;
 
 const OwnerHome = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -41,13 +47,25 @@ const OwnerHome = () => {
   const [fileList, setFileList] = useState([]);
   const [uploadType, setUploadType] = useState(null);
   const [selectedApartment, setSelectedApartment] = useState(null);
+  const [postForm] = Form.useForm();
+  const [selectedPostType, setSelectedPostType] = useState(null);
   const navigate = useNavigate();
 
   // Sample data
   const apartments = [
-    { id: 1, title: "Căn hộ 2PN Vinhomes Central Park" },
-    { id: 2, title: "Căn hộ 3PN Masteri Thảo Điền" }
+    { 
+      id: 1, 
+      title: "Căn hộ 2PN Vinhomes Central Park",
+      price: 5800000 
+    },
+    { 
+      id: 2, 
+      title: "Căn hộ 3PN Masteri Thảo Điền", 
+      price: 7200000 
+    }
   ];
+
+  const postTypes = ["Cho thuê", "Bán"];
 
   const documentTypes = [
     { value: "sodo", label: "Sơ đồ căn hộ" },
@@ -81,7 +99,6 @@ const OwnerHome = () => {
     formData.append('apartmentId', selectedApartment);
     formData.append('documentType', uploadType);
 
-    // In a real application, you would send this to your backend
     message.success("Tải lên tài liệu thành công!");
     
     // Reset form after upload
@@ -123,6 +140,34 @@ const OwnerHome = () => {
       // Prevent automatic upload
       return false;
     }
+  };
+
+  // Handle post type change
+  const handlePostTypeChange = (value) => {
+    setSelectedPostType(value);
+    postForm.setFieldsValue({ 
+      apartmentId: undefined,
+      depositAmount: undefined 
+    });
+  };
+
+  // Handle apartment selection for post
+  const handleApartmentSelect = (value) => {
+    const apartment = apartments.find(apt => apt.id === value);
+    setSelectedApartment(apartment);
+    
+    // Set default deposit amount based on rent/sale price
+    postForm.setFieldsValue({ 
+      depositAmount: apartment.price * 3 
+    });
+  };
+
+  // Handle post submission
+  const handlePostSubmit = () => {
+    postForm.validateFields().then(values => {
+      console.log('Post Submission:', values);
+      message.success('Bài viết đã được gửi chờ duyệt');
+    });
   };
 
   // Menu items
@@ -238,14 +283,129 @@ const OwnerHome = () => {
               </Space>
             }
           >
-            <Form layout="vertical">
-              <Form.Item label="Loại bài viết">
-                <Select placeholder="Chọn loại bài viết" />
+            <Form 
+              form={postForm} 
+              layout="vertical"
+              onFinish={handlePostSubmit}
+            >
+              <Form.Item
+                name="postType"
+                label="Loại bài viết"
+                rules={[{ required: true, message: "Vui lòng chọn loại bài viết" }]}
+              >
+                <Select 
+                  placeholder="Chọn loại bài viết"
+                  onChange={handlePostTypeChange}
+                >
+                  {postTypes.map(type => (
+                    <Select.Option key={type} value={type}>
+                      {type}
+                    </Select.Option>
+                  ))}
+                </Select>
               </Form.Item>
               
-              <Form.Item label="Chọn căn hộ">
-                <Select placeholder="Chọn căn hộ" />
+              <Form.Item
+                name="apartmentId"
+                label="Chọn căn hộ"
+                rules={[{ required: true, message: "Vui lòng chọn căn hộ" }]}
+              >
+                <Select 
+                  placeholder="Chọn căn hộ"
+                  onChange={handleApartmentSelect}
+                  disabled={!selectedPostType}
+                >
+                  {apartments.map(apt => (
+                    <Select.Option key={apt.id} value={apt.id}>
+                      {apt.title}
+                    </Select.Option>
+                  ))}
+                </Select>
               </Form.Item>
+
+              {selectedApartment && (
+                <>
+                  <Alert
+                    message="Thông Tin Tiền Cọc"
+                    description={
+                      <Text>
+                        Tiền cọc sẽ do <strong>ADMIN quản lý</strong>. Bài viết chỉ được 
+                        đăng sau khi admin xác nhận và giữ tiền cọc.
+                      </Text>
+                    }
+                    type="warning"
+                    showIcon
+                    icon={<InfoCircleOutlined />}
+                    style={{ marginBottom: 16 }}
+                  />
+
+                  <Form.Item
+                    name="depositAmount"
+                    label="Số Tiền Cọc"
+                    rules={[
+                      { 
+                        required: true, 
+                        message: "Vui lòng nhập số tiền cọc" 
+                      },
+                      {
+                        validator: (_, value) => {
+                          const minDeposit = selectedApartment.price * 1;
+                          const maxDeposit = selectedApartment.price * 3;
+                          
+                          if (value < minDeposit) {
+                            return Promise.reject(new Error(`Số tiền cọc tối thiểu là ${minDeposit.toLocaleString()} VNĐ`));
+                          }
+                          
+                          if (value > maxDeposit) {
+                            return Promise.reject(new Error(`Số tiền cọc tối đa là ${maxDeposit.toLocaleString()} VNĐ`));
+                          }
+                          
+                          return Promise.resolve();
+                        }
+                      }
+                    ]}
+                  >
+                    <InputNumber 
+                      style={{ width: '100%' }}
+                      formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                      parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
+                      addonAfter="VNĐ"
+                      placeholder="Nhập số tiền cọc"
+                      min={selectedApartment.price}
+                      max={selectedApartment.price * 3}
+                    />
+                  </Form.Item>
+
+                  <Form.Item
+                    name="title"
+                    label="Tiêu đề bài viết"
+                    rules={[{ required: true, message: "Vui lòng nhập tiêu đề bài viết" }]}
+                  >
+                    <Input placeholder="Nhập tiêu đề bài viết" />
+                  </Form.Item>
+
+                  <Form.Item
+                    name="content"
+                    label="Nội dung bài viết"
+                    rules={[{ required: true, message: "Vui lòng nhập nội dung bài viết" }]}
+                  >
+                    <TextArea 
+                      rows={6} 
+                      placeholder="Nhập chi tiết thông tin căn hộ" 
+                    />
+                  </Form.Item>
+
+                  <Form.Item>
+                    <Button 
+                      type="primary" 
+                      htmlType="submit" 
+                      block
+                    >
+                      Gửi Bài Viết Chờ Duyệt
+                    </Button>
+                  </Form.Item>
+                </>
+              )}
             </Form>
           </Card>
         );
@@ -324,106 +484,76 @@ const OwnerHome = () => {
                 </p>
                 <p className="ant-upload-hint">
                   Hỗ trợ tải lên nhiều file (tối đa 5 file)
+                  Hỗ trợ các định dạng: JPG, PNG, PDF, DOC (tối đa 10MB/file)
                 </p>
               </Dragger>
 
               <Button 
                 type="primary" 
-                icon={<UploadOutlined />} 
-                onClick={handleUpload}
-                disabled={!selectedApartment || !uploadType || fileList.length === 0}
-                style={{ width: '100%' }}
+                onClick={handleUpload} 
+                disabled={fileList.length === 0}
+                block
               >
-                Tải lên tài liệu
+                Tải lên
               </Button>
             </Space>
           </Card>
         );
       
       default:
-        return null;
+        return <Card title="Không tìm thấy nội dung" />;
     }
   };
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sider 
-        trigger={null} 
         collapsible 
         collapsed={collapsed} 
+        onCollapse={setCollapsed}
+        trigger={null}
+        theme="light"
         width={250}
       >
-        <div
-          style={{
-            height: 64,
-            padding: 16,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: collapsed ? "center" : "flex-start",
-          }}
-        >
-          <HomeOutlined style={{ fontSize: 24, color: "#fff" }} />
-          {!collapsed && (
-            <span style={{ color: "#fff", fontSize: 18, marginLeft: 12 }}>
-              Quản lý nhà
-            </span>
-          )}
+        <div style={{ height: 64, padding: 16, textAlign: "center" }}>
+          <h2 style={{ margin: 0, fontSize: collapsed ? 14 : 18 }}>
+            {collapsed ? "QL" : "Quản Lý Chủ Nhà"}
+          </h2>
         </div>
-
         <Menu
-          theme="dark"
           mode="inline"
           defaultSelectedKeys={["1"]}
-          selectedKeys={[
-            currentView === "list" ? "1" :
-            currentView === "createPost" ? "2" :
-            currentView === "contract" ? "3" :
-            currentView === "payment" ? "4" :
-            currentView === "upload" ? "5" : "1"
-          ]}
           items={menuItems}
         />
       </Sider>
-
       <Layout>
-        <Header
-          style={{
-            padding: "0 16px",
-            background: "#fff",
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
+        <Header style={{ 
+          background: "#fff", 
+          padding: 0, 
+          display: "flex", 
+          alignItems: "center",
+          justifyContent: "space-between"
+        }}>
           <Button
             type="text"
             icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
             onClick={toggleCollapsed}
-            style={{ fontSize: "16px", width: 64, height: 64 }}
+            style={{ fontSize: '16px', width: 64, height: 64 }}
           />
+          <div style={{ marginRight: 20 }}></div>
         </Header>
-
-        <Content
-          style={{
-            margin: "24px 16px",
-            padding: 24,
-            background: "#fff",
-            minHeight: 280,
-          }}
-        >
+        <Content style={{ margin: "24px 16px", padding: 24, background: "#fff" }}>
           {renderContent()}
         </Content>
       </Layout>
-
-      {/* Chat Float Button */}
+      
+      {/* FloatButton for chat access - Modified to match StaffHome styling */}
       <FloatButton
         icon={<CommentOutlined />}
         type="primary"
-        tooltip="Chat"
+        tooltip="Chat với khách hàng"
         onClick={navigateToChatPage}
-        style={{ right: 24, bottom: 24 }}
-        shape="circle"
-        size="large"
+        style={{ right: 24 }}
       />
     </Layout>
   );
