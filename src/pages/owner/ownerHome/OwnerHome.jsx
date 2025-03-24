@@ -15,7 +15,10 @@ import {
   FloatButton,
   InputNumber,
   Alert,
-  Typography
+  Typography,
+  Checkbox,
+  Modal,
+  Empty
 } from "antd";
 import { 
   HomeOutlined, 
@@ -73,6 +76,31 @@ const OwnerHome = () => {
     { value: "hinh", label: "Hình ảnh" },
     { value: "khac", label: "Tài liệu khác" }
   ];
+
+  // Deposit terms text
+  const depositTerms = `
+ĐIỀU KHOẢN HOÀN TRẢ TIỀN ĐẶT CỌC
+
+1. Quy Định Hoàn Trả Tiền Đặt Cọc
+- Chủ nhà sẽ hoàn trả 90% số tiền đặt cọc sau khi:
+  a) Người thuê thực hiện đúng các cam kết trong hợp đồng
+  b) Không có hư hỏng vượt quá mức sử dụng bình thường
+  c) Thông báo và bàn giao lại mặt bằng đúng thời hạn
+
+2. Điều Kiện Mất Tiền Đặt Cọc
+Khách hàng có thể mất một phần hoặc toàn bộ tiền đặt cọc nếu:
+- Vi phạm các điều khoản trong hợp đồng thuê
+- Hủy hợp đồng trước thời hạn không có lý do chính đáng
+- Gây hư hỏng tài sản vượt quá mức độ sử dụng bình thường
+
+3. Thời Gian Và Phương Thức Hoàn Trả
+- Thời gian hoàn trả: 10 ngày làm việc sau khi kết thúc hợp đồng
+- Phương thức: Chuyển khoản ngân hàng theo thông tin do người thuê cung cấp
+
+4. Cam Kết
+- Chúng tôi cam kết minh bạch và rõ ràng trong việc hoàn trả tiền đặt cọc
+- Mọi thắc mắc vui lòng liên hệ trực tiếp với chủ nhà để được giải đáp
+  `;
 
   // Toggle sidebar collapse
   const toggleCollapsed = () => {
@@ -163,10 +191,33 @@ const OwnerHome = () => {
   };
 
   // Handle post submission
-  const handlePostSubmit = () => {
-    postForm.validateFields().then(values => {
-      console.log('Post Submission:', values);
-      message.success('Bài viết đã được gửi chờ duyệt');
+  const handlePostSubmit = (values) => {
+    // Validate form
+    postForm.validateFields().then(validatedValues => {
+      console.log('Post Submission:', validatedValues);
+      
+      // Check if deposit terms are agreed
+      if (!validatedValues.depositTerms) {
+        Modal.error({
+          title: 'Điều khoản chưa được đồng ý',
+          content: 'Vui lòng đọc và đồng ý với các điều khoản đặt cọc trước khi gửi bài.'
+        });
+        return;
+      }
+
+      // Show success message
+      Modal.success({
+        title: 'Gửi Bài Viết Thành Công',
+        content: 'Bài viết của bạn đã được gửi và đang chờ duyệt.',
+        onOk: () => {
+          // Reset form
+          postForm.resetFields();
+          setSelectedApartment(null);
+          setSelectedPostType(null);
+        }
+      });
+    }).catch(errorInfo => {
+      console.log('Validation Failed:', errorInfo);
     });
   };
 
@@ -330,7 +381,7 @@ const OwnerHome = () => {
                     description={
                       <Text>
                         Tiền cọc sẽ do <strong>ADMIN quản lý</strong>. Bài viết chỉ được 
-                        đăng sau khi admin xác nhận và giữ tiền cọc.
+                        đăng sau khi admin xác nhận .
                       </Text>
                     }
                     type="warning"
@@ -349,7 +400,7 @@ const OwnerHome = () => {
                       },
                       {
                         validator: (_, value) => {
-                          const minDeposit = selectedApartment.price * 1;
+                          const minDeposit = 1000000; // Minimum deposit set to 1,000,000 VNĐ
                           const maxDeposit = selectedApartment.price * 3;
                           
                           if (value < minDeposit) {
@@ -371,9 +422,42 @@ const OwnerHome = () => {
                       parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
                       addonAfter="VNĐ"
                       placeholder="Nhập số tiền cọc"
-                      min={selectedApartment.price}
+                      min={1000000}
                       max={selectedApartment.price * 3}
                     />
+                  </Form.Item>
+
+                  {/* Deposit Terms Section */}
+                  <Form.Item
+                    name="depositTerms"
+                    rules={[
+                      {
+                        validator: (_, value) => 
+                          value ? Promise.resolve() : Promise.reject(new Error('Vui lòng đọc và đồng ý các điều khoản đặt cọc'))
+                      }
+                    ]}
+                  >
+                    <div>
+                    <div style={{ 
+                        maxHeight: 250, 
+                        overflowY: 'auto', 
+                        border: '1px solid #d9d9d9', 
+                        padding: 16, 
+                        borderRadius: 4,
+                        marginBottom: 16
+                      }}>
+                        <pre style={{ whiteSpace: 'pre-wrap', fontFamily: 'inherit' }}>
+                          {depositTerms}
+                        </pre>
+                      </div>
+                      
+                      <Checkbox 
+                        name="depositTerms"
+                        valuePropName="checked"
+                      >
+                        Tôi đã đọc và đồng ý với các điều khoản đặt cọc
+                      </Checkbox>
+                    </div>
                   </Form.Item>
 
                   <Form.Item
@@ -421,6 +505,10 @@ const OwnerHome = () => {
             }
           >
             {/* Contract management content */}
+            <Empty 
+              description="Chưa có hợp đồng nào" 
+              style={{ margin: '50px 0' }} 
+            />
           </Card>
         );
       
@@ -435,6 +523,10 @@ const OwnerHome = () => {
             }
           >
             {/* Payment management content */}
+            <Empty 
+              description="Chưa có giao dịch thanh toán" 
+              style={{ margin: '50px 0' }} 
+            />
           </Card>
         );
       
@@ -547,7 +639,6 @@ const OwnerHome = () => {
         </Content>
       </Layout>
       
-      {/* FloatButton for chat access - Modified to match StaffHome styling */}
       <FloatButton
         icon={<CommentOutlined />}
         type="primary"
