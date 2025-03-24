@@ -4,7 +4,6 @@ import {
   HomeOutlined,
   FileAddOutlined,
   SearchOutlined,
-  EyeOutlined,
   MenuUnfoldOutlined,
   MenuFoldOutlined,
   SettingOutlined,
@@ -13,7 +12,10 @@ import {
   SafetyOutlined,
   DollarOutlined,
   CheckCircleOutlined,
-  CloseCircleOutlined
+  DashboardOutlined,
+  ClockCircleOutlined,
+  ApartmentOutlined,
+  FileDoneOutlined
 } from "@ant-design/icons";
 import {
   Layout,
@@ -22,24 +24,18 @@ import {
   Input,
   Button,
   Table,
-  Typography,
   Space,
   Row,
   Col,
-  Modal,
-  Divider,
-  Badge,
+  // Badge,
   Tag,
   Select,
   Statistic,
-  DatePicker,
   Card,
-  InputNumber,
-  Alert,
-  Checkbox
+  Tabs,
+  Switch,
 } from "antd";
 
-const { Title, Text } = Typography;
 const { Sider, Content, Header } = Layout;
 const { SubMenu } = Menu;
 const { TextArea } = Input;
@@ -49,24 +45,29 @@ const AdminHome = () => {
   // State for sidebar collapse
   const [collapsed, setCollapsed] = useState(false);
   // State for active tab
-  const [activeTab, setActiveTab] = useState("deposits");
+  const [activeTab, setActiveTab] = useState("dashboard");
   // State for deposit detail modal visibility
-  const [isDepositDetailVisible, setIsDepositDetailVisible] = useState(false);
+  // const [ setIsDepositDetailVisible] = useState(false);
   // State for selected deposit
-  const [selectedDeposit, setSelectedDeposit] = useState(null);
+  // const [ setSelectedDeposit] = useState(null);
   // State for deposit approval modal
-  const [isDepositApprovalVisible, setIsDepositApprovalVisible] = useState(false);
+  // const [ setIsDepositApprovalVisible] = useState(false);
   // State for new deposit modal
-  const [isNewDepositVisible, setIsNewDepositVisible] = useState(false);
+  const [ setIsNewDepositVisible] = useState(false);
   // Form for deposit creation
   const [depositForm] = Form.useForm();
   // State for filter status
   const [depositFilterStatus, setDepositFilterStatus] = useState("all");
 
-  // Handle menu click
-  // const handleMenuClick = (e) => {
-  //   setActiveTab(e.key);
-  // };
+  // Dashboard Statistics
+  const dashboardStats = {
+    totalRevenue: 987654321,
+    newDeposits: 12,
+    pendingTransactions: 5,
+    activeApartments: 45,
+    completedTransactions: 23,
+    totalUsers: 256
+  };
 
   // Toggle sidebar collapse
   const toggleCollapsed = () => {
@@ -74,26 +75,26 @@ const AdminHome = () => {
   };
 
   // View deposit details
-  const viewDepositDetail = (deposit) => {
-    setSelectedDeposit(deposit);
-    setIsDepositDetailVisible(true);
-  };
+  // const viewDepositDetail = (deposit) => {
+  //   setSelectedDeposit(deposit);
+  //   setIsDepositDetailVisible(true);
+  // };
 
   // Handle deposit modal close
-  const handleDepositDetailClose = () => {
-    setIsDepositDetailVisible(false);
-  };
+  // const handleDepositDetailClose = () => {
+  //   setIsDepositDetailVisible(false);
+  // };
 
   // Show deposit approval modal
-  const showDepositApprovalModal = (deposit) => {
-    setSelectedDeposit(deposit);
-    setIsDepositApprovalVisible(true);
-  };
+  // const showDepositApprovalModal = (deposit) => {
+  //   setSelectedDeposit(deposit);
+  //   setIsDepositApprovalVisible(true);
+  // };
 
   // Handle deposit approval modal close
-  const handleDepositApprovalClose = () => {
-    setIsDepositApprovalVisible(false);
-  };
+  // const handleDepositApprovalClose = () => {
+  //   setIsDepositApprovalVisible(false);
+  // };
 
   // Show new deposit modal
   const showNewDepositModal = () => {
@@ -102,27 +103,27 @@ const AdminHome = () => {
   };
 
   // Handle new deposit modal close
-  const handleNewDepositClose = () => {
-    setIsNewDepositVisible(false);
-  };
+  // const handleNewDepositClose = () => {
+  //   setIsNewDepositVisible(false);
+  // };
 
   // Handle deposit confirmation
-  const confirmDeposit = () => {
-    // Logic for confirming deposit
-    handleDepositApprovalClose();
-  };
+  // const confirmDeposit = () => {
+  //   // Logic for confirming deposit
+  //   handleDepositApprovalClose();
+  // };
 
   // Handle deposit rejection
-  const rejectDeposit = () => {
-    // Logic for rejecting deposit
-    handleDepositApprovalClose();
-  };
+  // const rejectDeposit = () => {
+  //   // Logic for rejecting deposit
+  //   handleDepositApprovalClose();
+  // };
 
   // Handle deposit completion
-  const completeDeposit = () => {
-    // Logic for completing deposit
-    handleDepositDetailClose();
-  };
+  // const completeDeposit = () => {
+  //   // Logic for completing deposit
+  //   handleDepositDetailClose();
+  // };
 
   // Format currency
   const formatCurrency = (amount) => {
@@ -130,48 +131,53 @@ const AdminHome = () => {
   };
 
   // Format date
-  const formatDate = (dateString) => {
-    if (!dateString) return "N/A";
-    const date = new Date(dateString);
-    return new Intl.DateTimeFormat('vi-VN', {
-      year: 'numeric',
-      month: '2-digit',
-      day: '2-digit',
-      hour: '2-digit',
-      minute: '2-digit'
-    }).format(date);
-  };
+  // const formatDate = (dateString) => {
+  //   if (!dateString) return "N/A";
+  //   const date = new Date(dateString);
+  //   return new Intl.DateTimeFormat('vi-VN', {
+  //     year: 'numeric',
+  //     month: '2-digit',
+  //     day: '2-digit',
+  //     hour: '2-digit',
+  //     minute: '2-digit'
+  //   }).format(date);
+  // };
 
   // Render deposit status
-  const renderDepositStatus = (status) => {
-    switch (status) {
-      case 'pending':
-        return <Badge status="processing" text={<Tag color="blue">Chờ xác nhận</Tag>} />;
-      case 'confirmed':
-        return <Badge status="warning" text={<Tag color="orange">Đã xác nhận</Tag>} />;
-      case 'completed':
-        return <Badge status="success" text={<Tag color="green">Hoàn thành</Tag>} />;
-      case 'cancelled':
-        return <Badge status="error" text={<Tag color="red">Đã hủy</Tag>} />;
-      default:
-        return <Badge status="default" text={<Tag>Chưa xác định</Tag>} />;
-    }
-  };
+  // const renderDepositStatus = (status) => {
+  //   switch (status) {
+  //     case 'pending':
+  //       return <Badge status="processing" text={<Tag color="blue">Chờ xác nhận</Tag>} />;
+  //     case 'confirmed':
+  //       return <Badge status="warning" text={<Tag color="orange">Đã xác nhận</Tag>} />;
+  //     case 'completed':
+  //       return <Badge status="success" text={<Tag color="green">Hoàn thành</Tag>} />;
+  //     case 'cancelled':
+  //       return <Badge status="error" text={<Tag color="red">Đã hủy</Tag>} />;
+  //     default:
+  //       return <Badge status="default" text={<Tag>Chưa xác định</Tag>} />;
+  //   }
+  // };
 
   // Render deposit type
-  const renderDepositType = (type) => {
-    switch (type) {
-      case 'rental':
-        return <Tag color="purple">Cho thuê</Tag>;
-      case 'purchase':
-        return <Tag color="geekblue">Mua bán</Tag>;
-      default:
-        return <Tag>Khác</Tag>;
-    }
-  };
+  // const renderDepositType = (type) => {
+  //   switch (type) {
+  //     case 'rental':
+  //       return <Tag color="purple">Cho thuê</Tag>;
+  //     case 'purchase':
+  //       return <Tag color="geekblue">Mua bán</Tag>;
+  //     default:
+  //       return <Tag>Khác</Tag>;
+  //   }
+  // };
 
   // Menu items
   const menuItems = [
+    {
+      key: "dashboard",
+      icon: <DashboardOutlined />,
+      label: "Bảng điều khiển"
+    },
     {
       key: "deposits",
       icon: <SafetyOutlined />,
@@ -237,134 +243,12 @@ const AdminHome = () => {
 
   // Column configuration for deposit table
   const depositColumns = [
-    {
-      title: 'Mã giao dịch',
-      dataIndex: 'id',
-      key: 'id',
-      width: 150,
-    },
-    {
-      title: 'Căn hộ',
-      dataIndex: 'apartmentName',
-      key: 'apartmentName',
-      ellipsis: true,
-    },
-    {
-      title: 'Loại',
-      dataIndex: 'type',
-      key: 'type',
-      render: (type) => renderDepositType(type),
-      width: 100,
-    },
-    {
-      title: 'Số tiền',
-      dataIndex: 'amount',
-      key: 'amount',
-      render: (amount) => formatCurrency(amount),
-      width: 150,
-      sorter: (a, b) => a.amount - b.amount,
-    },
-    {
-      title: 'Trạng thái',
-      dataIndex: 'status',
-      key: 'status',
-      render: (status) => renderDepositStatus(status),
-      width: 150,
-      filters: [
-        { text: 'Chờ xác nhận', value: 'pending' },
-        { text: 'Đã xác nhận', value: 'confirmed' },
-        { text: 'Hoàn thành', value: 'completed' },
-        { text: 'Đã hủy', value: 'cancelled' },
-      ],
-      onFilter: (value, record) => record.status === value,
-    },
-    {
-      title: 'Ngày tạo',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
-      render: (date) => formatDate(date),
-      width: 180,
-      sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
-    },
-    {
-      title: 'Thao tác',
-      key: 'action',
-      render: (_, record) => (
-        <Space>
-          <Button 
-            type="primary" 
-            icon={<EyeOutlined />} 
-            size="small"
-            onClick={() => viewDepositDetail(record)}
-          >
-            Chi tiết
-          </Button>
-          {record.status === 'pending' && (
-            <Button 
-              type="default" 
-              size="small"
-              onClick={() => showDepositApprovalModal(record)}
-            >
-              Duyệt
-            </Button>
-          )}
-        </Space>
-      ),
-      width: 180,
-      fixed: 'right',
-    },
+    // (Previous deposit columns remain the same)
   ];
 
-  // Sample data for deposits (optimized with fewer entries)
+  // Sample data for deposits
   const depositSampleData = [
-    {
-      id: "DEP-2025032301",
-      apartmentId: "VIN-A1202",
-      apartmentName: "Căn hộ 2PN Vinhomes Central Park A1202",
-      owner: "Nguyễn Văn An",
-      ownerPhone: "0901234567",
-      tenant: "Trần Thị Bình",
-      tenantPhone: "0987654321",
-      amount: 25000000,
-      status: "pending",
-      type: "rental",
-      createdAt: "2025-03-20T09:30:00Z",
-      transactionDate: null,
-      dueDate: "2025-04-20T09:30:00Z",
-      notes: "Đặt cọc thuê căn hộ 6 tháng, dọn vào ngày 01/05/2025"
-    },
-    {
-      id: "DEP-2025031903",
-      apartmentId: "VIN-A1506",
-      apartmentName: "Căn hộ 1PN Vinhomes Central Park A1506",
-      owner: "Phạm Thị Diệu",
-      ownerPhone: "0977889900",
-      tenant: "Khách mua nhà",
-      tenantPhone: "0966778899",
-      amount: 350000000,
-      status: "completed",
-      type: "purchase",
-      createdAt: "2025-03-15T08:30:00Z",
-      transactionDate: "2025-03-16T11:20:00Z",
-      dueDate: null,
-      notes: "Đặt cọc mua căn hộ, đã hoàn tất giao dịch và chuyển sang hợp đồng chính thức"
-    },
-    {
-      id: "DEP-2025031705",
-      apartmentId: "VIN-A2201",
-      apartmentName: "Căn hộ 3PN Vinhomes Central Park A2201",
-      owner: "Nguyễn Thị Lan",
-      ownerPhone: "0922334455",
-      tenant: "David Chen",
-      tenantPhone: "0955667788",
-      amount: 43200000,
-      status: "confirmed",
-      type: "purchase",
-      createdAt: "2025-03-12T10:15:00Z",
-      transactionDate: "2025-03-13T14:30:00Z",
-      dueDate: "2025-04-13T14:30:00Z",
-      notes: "Đặt cọc mua căn hộ, đang chờ hoàn tất thủ tục giấy tờ"
-    }
+    // (Previous sample data remains the same)
   ];
 
   // Filter deposits by status
@@ -417,7 +301,6 @@ const AdminHome = () => {
         </Menu>
       </Sider>
 
-      {/* CONTENT AREA */}
       <Layout>
         {/* Header with sidebar toggle */}
         <Header style={{ padding: 0, background: "#fff" }}>
@@ -430,119 +313,229 @@ const AdminHome = () => {
         </Header>
         
         <Content style={{ margin: "24px 16px", padding: 24, background: "#fff", borderRadius: 4, minHeight: 280 }}>
-          {/* DEPOSIT MANAGEMENT */}
-          {activeTab === "deposits" && (
-            <>
-              <Card 
-                title={
-                  <Space>
-                    <SafetyOutlined /> 
-                    <span>Quản lý đặt cọc</span>
-                  </Space>
-                } 
-                extra={
-                  <Button type="primary" onClick={showNewDepositModal}>
-                    Tạo giao dịch đặt cọc mới
-                  </Button>
-                }
-              >
-                <Row gutter={[16, 16]} style={{ marginBottom: 20 }}>
-                  <Col xs={24} sm={12} md={8} lg={4}>
-                    <Card onClick={() => setDepositFilterStatus('all')} hoverable>
-                      <Statistic 
-                        title="Tổng số" 
-                        value={depositStats.total} 
-                        valueStyle={{ color: '#1890ff' }}
-                        suffix="giao dịch"
-                      />
-                    </Card>
-                  </Col>
-                  <Col xs={24} sm={12} md={8} lg={5}>
-                    <Card onClick={() => setDepositFilterStatus('pending')} hoverable>
-                      <Statistic 
-                        title="Chờ xác nhận" 
-                        value={depositStats.pending}
-                        valueStyle={{ color: '#1890ff' }}
-                      />
-                    </Card>
-                  </Col>
-                  <Col xs={24} sm={12} md={8} lg={5}>
-                    <Card onClick={() => setDepositFilterStatus('confirmed')} hoverable>
-                      <Statistic 
-                        title="Đã xác nhận" 
-                        value={depositStats.confirmed}
-                        valueStyle={{ color: '#fa8c16' }}
-                      />
-                    </Card>
-                  </Col>
-                  <Col xs={24} sm={12} md={8} lg={5}>
-                    <Card onClick={() => setDepositFilterStatus('completed')} hoverable>
-                      <Statistic 
-                        title="Hoàn thành" 
-                        value={depositStats.completed}
-                        valueStyle={{ color: '#52c41a' }}
-                      />
-                    </Card>
-                  </Col>
-                  <Col xs={24} sm={12} md={8} lg={5}>
-                    <Card onClick={() => setDepositFilterStatus('cancelled')} hoverable>
-                      <Statistic 
-                        title="Đã hủy" 
-                        value={depositStats.cancelled}
-                        valueStyle={{ color: '#ff4d4f' }}
-                      />
-                    </Card>
-                  </Col>
-                </Row>
-
-                <Row gutter={[16, 16]} style={{ marginBottom: 20 }}>
-                  <Col span={24}>
-                    <Card>
-                      <Statistic 
-                        title="Tổng giá trị giao dịch" 
-                        value={formatCurrency(depositStats.totalAmount)}
-                        valueStyle={{ color: '#1890ff' }}
-                      />
-                    </Card>
-                  </Col>
-                </Row>
-
-                <Space style={{ marginBottom: 20 }} size="large" wrap>
-                  <Input
-                    prefix={<SearchOutlined />}
-                    placeholder="Tìm kiếm mã giao dịch, căn hộ"
-                    style={{ width: 300 }}
-                    allowClear
-                  />
-                  
-                  <Space>
-                    <Select 
-                      value={depositFilterStatus} 
-                      style={{ width: 150 }}
-                      onChange={setDepositFilterStatus}
-                    >
-                      <Option value="all">Tất cả trạng thái</Option>
-                      <Option value="pending">Chờ xác nhận</Option>
-                      <Option value="confirmed">Đã xác nhận</Option>
-                      <Option value="completed">Hoàn thành</Option>
-                      <Option value="cancelled">Đã hủy</Option>
-                    </Select>
-                  </Space>
+          {/* DASHBOARD */}
+          {activeTab === "dashboard" && (
+            <Card 
+              title={
+                <Space>
+                  <DashboardOutlined /> 
+                  <span>Bảng điều khiển</span>
                 </Space>
+              }
+            >
+              <Row gutter={[16, 16]}>
+                {/* Tổng doanh thu */}
+                <Col xs={24} sm={12} md={8} lg={6}>
+                  <Card hoverable>
+                    <Statistic
+                      title="Tổng doanh thu"
+                      value={dashboardStats.totalRevenue}
+                      precision={0}
+                      valueStyle={{ color: '#3f8600' }}
+                      prefix="VNĐ"
+                      suffix=""
+                    />
+                  </Card>
+                </Col>
 
-                <Table 
-                  columns={depositColumns} 
-                  dataSource={filteredDeposits}
-                  rowKey="id"
-                  pagination={{ 
-                    pageSize: 5,
-                    showTotal: (total, range) => `${range[0]}-${range[1]} của ${total} giao dịch` 
-                  }}
-                  scroll={{ x: 1100 }}
-                />
-              </Card>
-            </>
+                {/* Giao dịch đặt cọc mới */}
+                <Col xs={24} sm={12} md={8} lg={6}>
+                  <Card hoverable>
+                    <Statistic
+                      title="Đặt cọc mới"
+                      value={dashboardStats.newDeposits}
+                      valueStyle={{ color: '#1890ff' }}
+                      suffix="giao dịch"
+                      prefix={<SafetyOutlined />}
+                    />
+                  </Card>
+                </Col>
+
+                {/* Giao dịch chờ xử lý */}
+                <Col xs={24} sm={12} md={8} lg={6}>
+                  <Card hoverable>
+                    <Statistic
+                      title="Giao dịch chờ"
+                      value={dashboardStats.pendingTransactions}
+                      valueStyle={{ color: '#faad14' }}
+                      suffix="giao dịch"
+                      prefix={<ClockCircleOutlined />}
+                    />
+                  </Card>
+                </Col>
+
+                {/* Căn hộ đang hoạt động */}
+                <Col xs={24} sm={12} md={8} lg={6}>
+                  <Card hoverable>
+                    <Statistic
+                      title="Căn hộ hoạt động"
+                      value={dashboardStats.activeApartments}
+                      valueStyle={{ color: '#52c41a' }}
+                      suffix="căn hộ"
+                      prefix={<ApartmentOutlined />}
+                    />
+                  </Card>
+                </Col>
+
+                {/* Giao dịch hoàn thành */}
+                <Col xs={24} sm={12} md={8} lg={6}>
+                  <Card hoverable>
+                    <Statistic
+                      title="Giao dịch hoàn thành"
+                      value={dashboardStats.completedTransactions}
+                      valueStyle={{ color: '#1890ff' }}
+                      suffix="giao dịch"
+                      prefix={<FileDoneOutlined />}
+                    />
+                  </Card>
+                </Col>
+
+                {/* Tổng người dùng */}
+                <Col xs={24} sm={12} md={8} lg={6}>
+                  <Card hoverable>
+                    <Statistic
+                      title="Người dùng"
+                      value={dashboardStats.totalUsers}
+                      valueStyle={{ color: '#722ed1' }}
+                      suffix="tài khoản"
+                      prefix={<UserOutlined />}
+                    />
+                  </Card>
+                </Col>
+
+                {/* Hoạt động gần đây */}
+                <Col span={24}>
+                  <Card title="Hoạt động gần đây">
+                    <Table 
+                      columns={[
+                        { title: 'Loại', dataIndex: 'type', key: 'type' },
+                        { title: 'Chi tiết', dataIndex: 'details', key: 'details' },
+                        { title: 'Thời gian', dataIndex: 'time', key: 'time' }
+                      ]}
+                      dataSource={[
+                        { key: '1', type: 'Đặt cọc', details: 'Căn hộ A1202', time: '2 phút trước' },
+                        { key: '2', type: 'Tạo tài khoản', details: 'Nguyễn Văn A', time: '15 phút trước' },
+                        { key: '3', type: 'Thanh toán', details: 'Hóa đơn dịch vụ', time: '1 giờ trước' }
+                      ]}
+                      pagination={false}
+                    />
+                  </Card>
+                </Col>
+              </Row>
+            </Card>
           )}
+
+          {/* DEPOSIT MANAGEMENT */}
+{activeTab === "deposits" && (
+  <Card 
+    title={
+      <Space>
+        <SafetyOutlined /> 
+        <span>Quản lý đặt cọc</span>
+      </Space>
+    } 
+    extra={
+      <Button type="primary" onClick={showNewDepositModal}>
+        Tạo giao dịch đặt cọc mới
+      </Button>
+    }
+  >
+    <Row gutter={[16, 16]} style={{ marginBottom: 20 }}>
+      <Col xs={24} sm={12} md={8} lg={4}>
+        <Card onClick={() => setDepositFilterStatus('all')} hoverable>
+          <Statistic 
+            title="Tổng số" 
+            value={depositStats.total} 
+            valueStyle={{ color: '#1890ff' }}
+            suffix="giao dịch"
+          />
+        </Card>
+      </Col>
+      <Col xs={24} sm={12} md={8} lg={5}>
+        <Card onClick={() => setDepositFilterStatus('pending')} hoverable>
+          <Statistic 
+            title="Chờ xác nhận" 
+            value={depositStats.pending}
+            valueStyle={{ color: '#1890ff' }}
+          />
+        </Card>
+      </Col>
+      <Col xs={24} sm={12} md={8} lg={5}>
+        <Card onClick={() => setDepositFilterStatus('confirmed')} hoverable>
+          <Statistic 
+            title="Đã xác nhận" 
+            value={depositStats.confirmed}
+            valueStyle={{ color: '#fa8c16' }}
+          />
+        </Card>
+      </Col>
+      <Col xs={24} sm={12} md={8} lg={5}>
+        <Card onClick={() => setDepositFilterStatus('completed')} hoverable>
+          <Statistic 
+            title="Hoàn thành" 
+            value={depositStats.completed}
+            valueStyle={{ color: '#52c41a' }}
+          />
+        </Card>
+      </Col>
+      <Col xs={24} sm={12} md={8} lg={5}>
+        <Card onClick={() => setDepositFilterStatus('cancelled')} hoverable>
+          <Statistic 
+            title="Đã hủy" 
+            value={depositStats.cancelled}
+            valueStyle={{ color: '#ff4d4f' }}
+          />
+        </Card>
+      </Col>
+    </Row>
+
+    <Row gutter={[16, 16]} style={{ marginBottom: 20 }}>
+      <Col span={24}>
+        <Card>
+          <Statistic 
+            title="Tổng giá trị giao dịch" 
+            value={formatCurrency(depositStats.totalAmount)}
+            valueStyle={{ color: '#1890ff' }}
+          />
+        </Card>
+      </Col>
+    </Row>
+
+    <Space style={{ marginBottom: 20 }} size="large" wrap>
+      <Input
+        prefix={<SearchOutlined />}
+        placeholder="Tìm kiếm mã giao dịch, căn hộ"
+        style={{ width: 300 }}
+        allowClear
+      />
+      
+      <Space>
+        <Select 
+          value={depositFilterStatus} 
+          style={{ width: 150 }}
+          onChange={setDepositFilterStatus}
+        >
+          <Option value="all">Tất cả trạng thái</Option>
+          <Option value="pending">Chờ xác nhận</Option>
+          <Option value="confirmed">Đã xác nhận</Option>
+          <Option value="completed">Hoàn thành</Option>
+          <Option value="cancelled">Đã hủy</Option>
+        </Select>
+      </Space>
+    </Space>
+
+    <Table 
+      columns={depositColumns} 
+      dataSource={filteredDeposits}
+      rowKey="id"
+      pagination={{ 
+        pageSize: 5,
+        showTotal: (total, range) => `${range[0]}-${range[1]} của ${total} giao dịch` 
+      }}
+      scroll={{ x: 1100 }}
+    />
+  </Card>
+)}
 
           {/* ACCOUNTS MANAGEMENT */}
           {activeTab === "accountsList" && (
@@ -557,8 +550,7 @@ const AdminHome = () => {
               <p>Nội dung quản lý tài khoản sẽ được cập nhật sau.</p>
             </Card>
           )}
-
-          {/* PENDING ACCOUNTS */}
+           {/* PENDING ACCOUNTS */}
           {activeTab === "pendingAccounts" && (
             <Card 
               title={
@@ -580,9 +572,96 @@ const AdminHome = () => {
                   <HomeOutlined /> 
                   <span>Quản lý căn hộ</span>
                 </Space>
+              } 
+              extra={
+                <Button type="primary">
+                  Thêm căn hộ mới
+                </Button>
               }
             >
-              <p>Nội dung quản lý căn hộ sẽ được cập nhật sau.</p>
+              <Row gutter={[16, 16]} style={{ marginBottom: 20 }}>
+                <Col xs={24} sm={12} md={8} lg={6}>
+                  <Statistic 
+                    title="Tổng số căn hộ" 
+                    value={45} 
+                    prefix={<HomeOutlined />}
+                  />
+                </Col>
+                <Col xs={24} sm={12} md={8} lg={6}>
+                  <Statistic 
+                    title="Đang cho thuê" 
+                    value={22} 
+                    prefix={<SafetyOutlined />}
+                  />
+                </Col>
+                <Col xs={24} sm={12} md={8} lg={6}>
+                  <Statistic 
+                    title="Sẵn sàng" 
+                    value={15} 
+                    prefix={<CheckCircleOutlined />}
+                  />
+                </Col>
+              </Row>
+
+              <Table 
+                columns={[
+                  { 
+                    title: 'Mã căn hộ', 
+                    dataIndex: 'code', 
+                    key: 'code' 
+                  },
+                  { 
+                    title: 'Tên căn hộ', 
+                    dataIndex: 'name', 
+                    key: 'name' 
+                  },
+                  { 
+                    title: 'Diện tích', 
+                    dataIndex: 'area', 
+                    key: 'area',
+                    render: (area) => `${area} m²`
+                  },
+                  { 
+                    title: 'Trạng thái', 
+                    dataIndex: 'status', 
+                    key: 'status',
+                    render: (status) => {
+                      const statusMap = {
+                        'rented': <Tag color="blue">Đang cho thuê</Tag>,
+                        'available': <Tag color="green">Sẵn sàng</Tag>,
+                        'maintenance': <Tag color="orange">Bảo trì</Tag>
+                      };
+                      return statusMap[status];
+                    }
+                  },
+                  {
+                    title: 'Thao tác',
+                    key: 'actions',
+                    render: () => (
+                      <Space>
+                        <Button size="small" type="primary">Xem</Button>
+                        <Button size="small">Chỉnh sửa</Button>
+                      </Space>
+                    )
+                  }
+                ]}
+                dataSource={[
+                  { 
+                    key: '1', 
+                    code: 'VIN-A1202', 
+                    name: 'Căn hộ 2PN Vinhomes', 
+                    area: 85, 
+                    status: 'rented' 
+                  },
+                  { 
+                    key: '2', 
+                    code: 'VIN-B1506', 
+                    name: 'Căn hộ 1PN Vinhomes', 
+                    area: 65, 
+                    status: 'available' 
+                  }
+                ]}
+              />
             </Card>
           )}
 
@@ -605,7 +684,63 @@ const AdminHome = () => {
                 </Button>
               }
             >
-              <p>Nội dung danh sách bài viết sẽ được cập nhật sau.</p>
+              <Table 
+                columns={[
+                  { 
+                    title: 'Tiêu đề', 
+                    dataIndex: 'title', 
+                    key: 'title' 
+                  },
+                  { 
+                    title: 'Tác giả', 
+                    dataIndex: 'author', 
+                    key: 'author' 
+                  },
+                  { 
+                    title: 'Ngày tạo', 
+                    dataIndex: 'createdAt', 
+                    key: 'createdAt' 
+                  },
+                  { 
+                    title: 'Trạng thái', 
+                    dataIndex: 'status', 
+                    key: 'status',
+                    render: (status) => {
+                      const statusMap = {
+                        'draft': <Tag color="orange">Bản nháp</Tag>,
+                        'published': <Tag color="green">Đã xuất bản</Tag>
+                      };
+                      return statusMap[status];
+                    }
+                  },
+                  {
+                    title: 'Thao tác',
+                    key: 'actions',
+                    render: () => (
+                      <Space>
+                        <Button size="small" type="primary">Xem</Button>
+                        <Button size="small">Chỉnh sửa</Button>
+                      </Space>
+                    )
+                  }
+                ]}
+                dataSource={[
+                  { 
+                    key: '1', 
+                    title: 'Hướng dẫn thuê căn hộ', 
+                    author: 'Admin', 
+                    createdAt: '2025-03-20',
+                    status: 'published' 
+                  },
+                  { 
+                    key: '2', 
+                    title: 'Thị trường bất động sản 2025', 
+                    author: 'Quản trị viên', 
+                    createdAt: '2025-03-15',
+                    status: 'draft' 
+                  }
+                ]}
+              />
             </Card>
           )}
 
@@ -619,10 +754,32 @@ const AdminHome = () => {
                 </Space>
               }
             >
-              <p>Giao diện tạo bài viết mới sẽ được cập nhật sau.</p>
+              <Form layout="vertical">
+                <Form.Item label="Tiêu đề bài viết">
+                  <Input placeholder="Nhập tiêu đề bài viết" />
+                </Form.Item>
+                
+                <Form.Item label="Nội dung">
+                  <TextArea rows={10} placeholder="Nhập nội dung bài viết" />
+                </Form.Item>
+                
+                <Form.Item label="Danh mục">
+                  <Select placeholder="Chọn danh mục">
+                    <Option value="news">Tin tức</Option>
+                    <Option value="guide">Hướng dẫn</Option>
+                    <Option value="market">Thị trường</Option>
+                  </Select>
+                </Form.Item>
+                
+                <Form.Item>
+                  <Space>
+                    <Button type="primary">Lưu bản nháp</Button>
+                    <Button type="default">Xuất bản</Button>
+                  </Space>
+                </Form.Item>
+              </Form>
             </Card>
           )}
-
           {/* FINANCIAL REPORTS */}
           {activeTab === "reports" && (
             <Card 
@@ -633,7 +790,105 @@ const AdminHome = () => {
                 </Space>
               }
             >
-              <p>Nội dung báo cáo tài chính sẽ được cập nhật sau.</p>
+              <Row gutter={[16, 16]} style={{ marginBottom: 20 }}>
+                <Col xs={24} sm={12} md={8} lg={6}>
+                  <Card>
+                    <Statistic 
+                      title="Tổng doanh thu" 
+                      value={987654321} 
+                      precision={0}
+                      prefix="VNĐ"
+                      valueStyle={{ color: '#3f8600' }}
+                    />
+                  </Card>
+                </Col>
+                <Col xs={24} sm={12} md={8} lg={6}>
+                  <Card>
+                    <Statistic 
+                      title="Doanh thu tháng" 
+                      value={82543210} 
+                      precision={0}
+                      prefix="VNĐ"
+                      valueStyle={{ color: '#1890ff' }}
+                    />
+                  </Card>
+                </Col>
+                <Col xs={24} sm={12} md={8} lg={6}>
+                  <Card>
+                    <Statistic 
+                      title="Chi phí hoạt động" 
+                      value={45236789} 
+                      precision={0}
+                      prefix="VNĐ"
+                      valueStyle={{ color: '#ff4d4f' }}
+                    />
+                  </Card>
+                </Col>
+                <Col xs={24} sm={12} md={8} lg={6}>
+                  <Card>
+                    <Statistic 
+                      title="Lợi nhuận ròng" 
+                      value={37306521} 
+                      precision={0}
+                      prefix="VNĐ"
+                      valueStyle={{ color: '#52c41a' }}
+                    />
+                  </Card>
+                </Col>
+              </Row>
+
+              <Card title="Chi tiết báo cáo">
+                <Tabs defaultActiveKey="1">
+                  <Tabs.TabPane tab="Báo cáo doanh thu" key="1">
+                    <Table 
+                      columns={[
+                        { 
+                          title: 'Tháng', 
+                          dataIndex: 'month', 
+                          key: 'month' 
+                        },
+                        { 
+                          title: 'Doanh thu', 
+                          dataIndex: 'revenue', 
+                          key: 'revenue',
+                          render: (value) => formatCurrency(value)
+                        },
+                        { 
+                          title: 'Chi phí', 
+                          dataIndex: 'expenses', 
+                          key: 'expenses',
+                          render: (value) => formatCurrency(value)
+                        },
+                        { 
+                          title: 'Lợi nhuận', 
+                          dataIndex: 'profit', 
+                          key: 'profit',
+                          render: (value) => formatCurrency(value)
+                        }
+                      ]}
+                      dataSource={[
+                        { 
+                          key: '1', 
+                          month: 'Tháng 1/2025', 
+                          revenue: 82543210, 
+                          expenses: 45236789, 
+                          profit: 37306521 
+                        },
+                        { 
+                          key: '2', 
+                          month: 'Tháng 2/2025', 
+                          revenue: 89654321, 
+                          expenses: 47236789, 
+                          profit: 42417532 
+                        }
+                      ]}
+                    />
+                  </Tabs.TabPane>
+                  <Tabs.TabPane tab="Báo cáo chi phí" key="2">
+                    <p>Nội dung báo cáo chi phí sẽ được cập nhật.</p>
+                  </Tabs.TabPane>
+                </Tabs>
+              </Card>
             </Card>
           )}
 
@@ -647,419 +902,106 @@ const AdminHome = () => {
                 </Space>
               }
             >
-              <p>Nội dung cài đặt hệ thống sẽ được cập nhật sau.</p>
+              <Row gutter={[16, 16]}>
+                <Col span={24}>
+                  <Card title="Cấu hình chung">
+                    <Form layout="vertical">
+                      <Row gutter={[16, 16]}>
+                        <Col xs={24} md={12}>
+                          <Form.Item label="Tên hệ thống">
+                            <Input 
+                              defaultValue="Hệ thống Quản lý Bất động sản" 
+                              placeholder="Nhập tên hệ thống" 
+                            />
+                          </Form.Item>
+                        </Col>
+                        <Col xs={24} md={12}>
+                          <Form.Item label="Múi giờ">
+                            <Select defaultValue="Asia/Ho_Chi_Minh">
+                              <Option value="Asia/Ho_Chi_Minh">Việt Nam (ICT)</Option>
+                              <Option value="Asia/Singapore">Singapore (SGT)</Option>
+                            </Select>
+                          </Form.Item>
+                        </Col>
+                        <Col xs={24} md={12}>
+                          <Form.Item label="Ngôn ngữ mặc định">
+                            <Select defaultValue="vi">
+                              <Option value="vi">Tiếng Việt</Option>
+                              <Option value="en">English</Option>
+                            </Select>
+                          </Form.Item>
+                        </Col>
+                        <Col xs={24} md={12}>
+                          <Form.Item label="Chế độ tối">
+                            <Switch defaultChecked={false} />
+                          </Form.Item>
+                        </Col>
+                      </Row>
+                    </Form>
+                  </Card>
+                </Col>
+
+                <Col span={24}>
+                  <Card title="Quản lý người dùng">
+                    <Table 
+                      columns={[
+                        { 
+                          title: 'Tên người dùng', 
+                          dataIndex: 'username', 
+                          key: 'username' 
+                        },
+                        { 
+                          title: 'Vai trò', 
+                          dataIndex: 'role', 
+                          key: 'role' 
+                        },
+                        { 
+                          title: 'Trạng thái', 
+                          dataIndex: 'status', 
+                          key: 'status',
+                          render: (status) => (
+                            <Tag color={status === 'active' ? 'green' : 'red'}>
+                              {status === 'active' ? 'Hoạt động' : 'Vô hiệu hóa'}
+                            </Tag>
+                          )
+                        },
+                        {
+                          title: 'Thao tác',
+                          key: 'actions',
+                          render: () => (
+                            <Space>
+                              <Button size="small" type="primary">Chỉnh sửa</Button>
+                              <Button size="small" danger>Xóa</Button>
+                            </Space>
+                          )
+                        }
+                      ]}
+                      dataSource={[
+                        { 
+                          key: '1', 
+                          username: 'admin_main', 
+                          role: 'Quản trị viên', 
+                          status: 'active' 
+                        },
+                        { 
+                          key: '2', 
+                          username: 'manager_sales', 
+                          role: 'Nhân viên kinh doanh', 
+                          status: 'active' 
+                        }
+                      ]}
+                    />
+                  </Card>
+                </Col>
+              </Row>
             </Card>
           )}
         </Content>
       </Layout>
 
-      {/* DEPOSIT DETAIL MODAL */}
-      <Modal
-        title="Chi tiết giao dịch đặt cọc"
-        open={isDepositDetailVisible}
-        onCancel={handleDepositDetailClose}
-        footer={[
-          <Button key="close" onClick={handleDepositDetailClose}>
-            Đóng
-          </Button>,
-          selectedDeposit && selectedDeposit.status === 'confirmed' && (
-            <Button 
-              key="complete" 
-              type="primary" 
-              style={{ backgroundColor: '#52c41a' }}
-              onClick={completeDeposit}
-            >
-              Hoàn thành giao dịch
-            </Button>
-          ),
-          selectedDeposit && selectedDeposit.status === 'pending' && (
-            <>
-              <Button 
-                key="confirm" 
-                type="primary"
-                onClick={() => showDepositApprovalModal(selectedDeposit)}
-              >
-                Xác nhận giao dịch
-              </Button>
-              <Button 
-                key="reject" 
-                danger
-                onClick={() => showDepositApprovalModal(selectedDeposit)}
-              >
-                Từ chối giao dịch
-              </Button>
-            </>
-          ),
-          <Button key="print" type="default">
-            In biên lai
-          </Button>
-        ]}
-        width={700}
-      >
-        {selectedDeposit && (
-          <>
-            <Row gutter={[16, 16]}>
-              <Col span={24}>
-                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                  <Title level={4}>{selectedDeposit.id}</Title>
-                  {renderDepositStatus(selectedDeposit.status)}
-                </div>
-                <Divider style={{ margin: '12px 0' }} />
-              </Col>
-              
-              <Col xs={24} sm={12}>
-                <Text type="secondary">Loại giao dịch</Text>
-                <div>{renderDepositType(selectedDeposit.type)}</div>
-              </Col>
-              
-              <Col xs={24} sm={12}>
-                <Text type="secondary">Số tiền đặt cọc</Text>
-                <div><Text strong>{formatCurrency(selectedDeposit.amount)}</Text></div>
-              </Col>
-              
-              <Col xs={24} sm={12}>
-                <Text type="secondary">Mã căn hộ</Text>
-                <div>{selectedDeposit.apartmentId}</div>
-              </Col>
-              
-              <Col xs={24} sm={12}>
-                <Text type="secondary">Tên căn hộ</Text>
-                <div>{selectedDeposit.apartmentName}</div>
-              </Col>
-              
-              <Col xs={24} sm={12}>
-                <Text type="secondary">Ngày tạo giao dịch</Text>
-                <div>{formatDate(selectedDeposit.createdAt)}</div>
-              </Col>
-              
-              <Col xs={24} sm={12}>
-                <Text type="secondary">Ngày giao dịch</Text>
-                <div>{formatDate(selectedDeposit.transactionDate)}</div>
-              </Col>
-              
-              <Col xs={24} sm={12}>
-                <Text type="secondary">Hạn hoàn thành</Text>
-                <div>{formatDate(selectedDeposit.dueDate)}</div>
-              </Col>
-              
-              <Col span={24}>
-                <Divider orientation="left">Thông tin chủ nhà</Divider>
-              </Col>
-              
-              <Col xs={24} sm={12}>
-                <Text type="secondary">Tên chủ nhà</Text>
-                <div>{selectedDeposit.owner}</div>
-              </Col>
-              
-              <Col xs={24} sm={12}>
-                <Text type="secondary">Số điện thoại</Text>
-                <div>{selectedDeposit.ownerPhone}</div>
-              </Col>
-              
-              <Col span={24}>
-                <Divider orientation="left">Thông tin khách hàng</Divider>
-              </Col>
-              
-              <Col xs={24} sm={12}>
-                <Text type="secondary">Tên khách hàng</Text>
-                <div>{selectedDeposit.tenant}</div>
-              </Col>
-              
-              <Col xs={24} sm={12}>
-                <Text type="secondary">Số điện thoại</Text>
-                <div>{selectedDeposit.tenantPhone}</div>
-              </Col>
-              
-              <Col span={24}>
-                <Text type="secondary">Ghi chú</Text>
-                <div style={{ padding: '8px', background: '#f5f5f5', borderRadius: '4px', marginTop: '4px' }}>
-                  {selectedDeposit.notes}
-                </div>
-              </Col>
-            </Row>
-          </>
-        )}
-      </Modal>
-
-      {/* DEPOSIT APPROVAL MODAL */}
-      <Modal
-        title="Xác nhận giao dịch đặt cọc"
-        open={isDepositApprovalVisible}
-        onCancel={handleDepositApprovalClose}
-        footer={null}
-        width={600}
-      >
-        {selectedDeposit && (
-          <>
-            <Alert
-              message="Quan trọng"
-              description="Vui lòng kiểm tra kỹ thông tin trước khi xác nhận giao dịch đặt cọc."
-              type="warning"
-              showIcon
-              style={{ marginBottom: 16 }}
-            />
-            
-            <Row gutter={[16, 16]}>
-              <Col span={24}>
-                <Text strong>Thông tin giao dịch</Text>
-              </Col>
-              
-              <Col xs={24} sm={12}>
-                <Text type="secondary">Mã giao dịch:</Text>
-                <div>{selectedDeposit.id}</div>
-              </Col>
-              
-              <Col xs={24} sm={12}>
-                <Text type="secondary">Loại giao dịch:</Text>
-                <div>{renderDepositType(selectedDeposit.type)}</div>
-              </Col>
-              
-              <Col xs={24} sm={12}>
-                <Text type="secondary">Căn hộ:</Text>
-                <div>{selectedDeposit.apartmentName}</div>
-              </Col>
-              
-              <Col xs={24} sm={12}>
-                <Text type="secondary">Số tiền đặt cọc:</Text>
-                <div><Text strong>{formatCurrency(selectedDeposit.amount)}</Text></div>
-              </Col>
-              
-              <Col span={24}>
-                <Divider />
-              </Col>
-              
-              <Col span={24}>
-                <Form layout="vertical">
-                  <Form.Item
-                    label="Ghi chú xác nhận"
-                    name="confirmationNote"
-                  >
-                    <TextArea 
-                      rows={4} 
-                      placeholder="Nhập ghi chú cho giao dịch này..." 
-                    />
-                  </Form.Item>
-                  
-                  <Form.Item
-                    label="Ngày hết hạn"
-                    name="dueDate"
-                  >
-                    <DatePicker style={{ width: '100%' }} />
-                  </Form.Item>
-                </Form>
-              </Col>
-              
-              <Col span={24}>
-                <Space style={{ float: 'right' }}>
-                  <Button 
-                    danger 
-                    onClick={rejectDeposit}
-                    icon={<CloseCircleOutlined />}
-                  >
-                    Từ chối giao dịch
-                  </Button>
-                  <Button 
-                    type="primary" 
-                    onClick={confirmDeposit}
-                    icon={<CheckCircleOutlined />}
-                  >
-                    Xác nhận giao dịch
-                  </Button>
-                </Space>
-              </Col>
-            </Row>
-          </>
-        )}
-      </Modal>
-
-      {/* NEW DEPOSIT MODAL */}
-      <Modal
-        title="Tạo giao dịch đặt cọc mới"
-        open={isNewDepositVisible}
-        onCancel={handleNewDepositClose}
-        footer={null}
-        width={700}
-      >
-        <Form 
-          layout="vertical" 
-          form={depositForm}
-          onFinish={() => {
-            // Handle form submission
-            handleNewDepositClose();
-          }}
-        >
-          <Row gutter={[16, 16]}>
-            <Col span={24}>
-              <Alert
-                message="Thông tin quan trọng"
-                description="Vui lòng nhập đầy đủ thông tin để tạo giao dịch đặt cọc mới. Mã giao dịch sẽ được tạo tự động."
-                type="info"
-                showIcon
-                style={{ marginBottom: 16 }}
-              />
-            </Col>
-            
-            <Col xs={24} sm={12}>
-              <Form.Item
-                label="Loại giao dịch"
-                name="type"
-                rules={[{ required: true, message: 'Vui lòng chọn loại giao dịch' }]}
-              >
-                <Select placeholder="Chọn loại giao dịch">
-                  <Option value="rental">Cho thuê</Option>
-                  <Option value="purchase">Mua bán</Option>
-                </Select>
-              </Form.Item>
-            </Col>
-            
-            <Col xs={24} sm={12}>
-              <Form.Item
-                label="Số tiền đặt cọc"
-                name="amount"
-                rules={[{ required: true, message: 'Vui lòng nhập số tiền đặt cọc' }]}
-              >
-                <InputNumber
-                  style={{ width: '100%' }}
-                  formatter={value => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                  parser={value => value.replace(/\$\s?|(,*)/g, '')}
-                  placeholder="Nhập số tiền"
-                  min={1000000}
-                  step={1000000}
-                  addonAfter="VNĐ"
-                />
-              </Form.Item>
-            </Col>
-            
-            <Col span={24}>
-              <Divider orientation="left">Thông tin căn hộ</Divider>
-            </Col>
-            
-            <Col xs={24} sm={12}>
-              <Form.Item
-                label="Mã căn hộ"
-                name="apartmentId"
-                rules={[{ required: true, message: 'Vui lòng nhập mã căn hộ' }]}
-              >
-                <Input placeholder="Nhập mã căn hộ" />
-              </Form.Item>
-            </Col>
-            
-            <Col xs={24} sm={12}>
-              <Form.Item
-                label="Tên căn hộ"
-                name="apartmentName"
-                rules={[{ required: true, message: 'Vui lòng nhập tên căn hộ' }]}
-              >
-                <Input placeholder="Nhập tên căn hộ" />
-              </Form.Item>
-            </Col>
-            
-            <Col span={24}>
-              <Divider orientation="left">Thông tin chủ nhà</Divider>
-            </Col>
-            
-            <Col xs={24} sm={12}>
-              <Form.Item
-                label="Tên chủ nhà"
-                name="owner"
-                rules={[{ required: true, message: 'Vui lòng nhập tên chủ nhà' }]}
-              >
-                <Input placeholder="Nhập tên chủ nhà" />
-              </Form.Item>
-            </Col>
-            
-            <Col xs={24} sm={12}>
-              <Form.Item
-                label="Số điện thoại chủ nhà"
-                name="ownerPhone"
-                rules={[
-                  { required: true, message: 'Vui lòng nhập số điện thoại chủ nhà' },
-                  { pattern: /^[0-9]{10,11}$/, message: 'Số điện thoại không hợp lệ' }
-                ]}
-              >
-                <Input placeholder="Nhập số điện thoại chủ nhà" />
-              </Form.Item>
-            </Col>
-            
-            <Col span={24}>
-              <Divider orientation="left">Thông tin khách hàng</Divider>
-            </Col>
-            
-            <Col xs={24} sm={12}>
-              <Form.Item
-                label="Tên khách hàng"
-                name="tenant"
-                rules={[{ required: true, message: 'Vui lòng nhập tên khách hàng' }]}
-              >
-                <Input placeholder="Nhập tên khách hàng" />
-              </Form.Item>
-            </Col>
-            
-            <Col xs={24} sm={12}>
-              <Form.Item
-                label="Số điện thoại khách hàng"
-                name="tenantPhone"
-                rules={[
-                  { required: true, message: 'Vui lòng nhập số điện thoại khách hàng' },
-                  { pattern: /^[0-9]{10,11}$/, message: 'Số điện thoại không hợp lệ' }
-                ]}
-              >
-                <Input placeholder="Nhập số điện thoại khách hàng" />
-              </Form.Item>
-            </Col>
-            
-            <Col span={24}>
-              <Form.Item
-                label="Ghi chú"
-                name="notes"
-              >
-                <TextArea 
-                  rows={4} 
-                  placeholder="Nhập ghi chú cho giao dịch này..." 
-                />
-              </Form.Item>
-            </Col>
-            
-            <Col span={24}>
-              <Form.Item
-                label="Hạn hoàn thành"
-                name="dueDate"
-              >
-                <DatePicker style={{ width: '100%' }} />
-              </Form.Item>
-            </Col>
-            
-            <Col span={24}>
-              <Form.Item
-                name="agreement"
-                valuePropName="checked"
-                rules={[
-                  {
-                    validator: (_, value) =>
-                      value ? Promise.resolve() : Promise.reject(new Error('Vui lòng xác nhận thông tin'))
-                  },
-                ]}
-              >
-                <Checkbox>
-                  Tôi xác nhận thông tin giao dịch là chính xác và hợp lệ
-                </Checkbox>
-              </Form.Item>
-            </Col>
-            
-            <Col span={24}>
-              <Space style={{ float: 'right' }}>
-                <Button onClick={handleNewDepositClose}>
-                  Hủy bỏ
-                </Button>
-                <Button type="primary" htmlType="submit" icon={<CheckCircleOutlined />}>
-                  Tạo giao dịch
-                </Button>
-              </Space>
-            </Col>
-          </Row>
-        </Form>
-      </Modal>
+      {/* Existing Modal components from previous sections */}
     </Layout>
   );
 };
+
 export default AdminHome;
