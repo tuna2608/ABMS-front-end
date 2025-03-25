@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Form,
   Input,
@@ -10,6 +10,9 @@ import {
 } from "antd";
 import { CameraOutlined, ArrowLeftOutlined } from "@ant-design/icons";
 import styled from "styled-components";
+import { useSelector } from "react-redux";
+
+import avtBase from '../../../assets/common/images/avtbase.jpg'
 
 const { Title } = Typography;
 
@@ -141,10 +144,37 @@ const BackButton = styled(Button)`
 `;
 
 const ProfileEditPage = () => {
+  const [user, setUser] = useState(null);
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
-  const [uploading, setUploading] = useState(false);
+  const [selectedImage,setSelectedImage] = useState(avtBase);
+  const [selectedFile, setSelectedFile] = useState(null);
+
+  const userCurrent = useSelector((state) => state.user.currentUser);
+  console.log(userCurrent);
+
+  const [formData, setFormData] = useState({
+    fullName: "",
+    email: "",
+    description: "",
+    phone: "",
+    userImgUrl: "",
+    age: "",
+    birthday: "",
+    idNumber: "",
+    job: "",
+  });
+
+  const handleImageChange = (e) =>{
+    const file = e.target.files[0];
+    if(file){
+      const imageUrl = URL.createObjectURL(file);
+      // console.log(imageUrl);
+      setSelectedFile(file);
+      setSelectedImage(imageUrl);
+    }
+  }
 
   const handleSubmit = (values) => {
     setLoading(true);
@@ -153,7 +183,7 @@ const ProfileEditPage = () => {
     // Include the avatar image in the form data
     const formData = {
       ...values,
-      avatar: imageUrl,
+      user: imageUrl,
     };
 
     console.log("Complete form data:", formData);
@@ -165,31 +195,6 @@ const ProfileEditPage = () => {
     }, 1000);
   };
 
-  const handleImageChange = (info) => {
-    if (info.file.status === "uploading") {
-      setUploading(true);
-      return;
-    }
-
-    if (info.file.status === "done") {
-      // Get image URL from response or use FileReader to preview
-      setUploading(false);
-
-      // In a real app, you'd use the response from your backend
-      // Here we're using the browser's FileReader API to create a preview
-      getBase64(info.file.originFileObj, (imageUrl) => {
-        setImageUrl(imageUrl);
-      });
-    }
-  };
-
-  // Helper function to convert File to base64 string for preview
-  const getBase64 = (file, callback) => {
-    const reader = new FileReader();
-    reader.addEventListener("load", () => callback(reader.result));
-    reader.readAsDataURL(file);
-  };
-
   return (
     <PageContainer>
       <Sidebar>
@@ -198,82 +203,33 @@ const ProfileEditPage = () => {
       </Sidebar>
 
       <MainContent>
-        <BackButton icon={<ArrowLeftOutlined />} type="default" />
-
+        {/* <BackButton icon={<ArrowLeftOutlined />} type="default" /> */}
         <FormContainer>
           <Title level={2} style={{ color: "#1d3557", marginBottom: 40 }}>
             Edit profile
           </Title>
-
           <AvatarContainer>
-            <Upload
-              name="avatar"
-              listType="none"
-              showUploadList={false}
-              action="https://www.mocky.io/v2/5cc8019d300000980a055e76" // Replace with your actual upload endpoint
-              beforeUpload={(file) => {
-                const isImage = file.type.startsWith("image/");
-                if (!isImage) {
-                  message.error("You can only upload image files!");
-                }
-                return isImage;
-              }}
-              onChange={handleImageChange}
-            >
-              <Avatar>
-                <AvatarImage>
-                  {imageUrl ? (
-                    <img
-                      src={imageUrl}
-                      alt="Avatar"
-                      style={{
-                        width: "100%",
-                        height: "100%",
-                        objectFit: "cover",
-                      }}
-                    />
-                  ) : (
-                    <div
-                      style={{
-                        display: "flex",
-                        flexDirection: "column",
-                        alignItems: "center",
-                        justifyContent: "center",
-                      }}
-                    >
-                      <img
-                        src="/api/placeholder/100/80"
-                        alt="Default"
-                        style={{ width: 100, height: 60 }}
-                      />
-                    </div>
-                  )}
-                </AvatarImage>
-                <AvatarUploadButton>
-                  <CameraOutlined style={{ color: "white", fontSize: 16 }} />
-                </AvatarUploadButton>
-              </Avatar>
-            </Upload>
+            <img style={{width: '50px',height: '50px',}} src={selectedImage || userCurrent.userImgUrl}/>
+            <input type="file" accept="image/*" onChange={handleImageChange}/>
           </AvatarContainer>
-
           <Form
             form={form}
             layout="vertical"
-            initialValues={{ username: "nguyenquangminh" }}
+            initialValues={userCurrent}
             onFinish={handleSubmit}
           >
             <FormSection>
-              <Form.Item label="Username:" name="username">
-                <Input />
+              <Form.Item label="Username:" name="user">
+                <Input disabled />
               </Form.Item>
 
-              <Form.Item label="Password:" name="password">
-                <Input.Password />
+              <Form.Item label="Email:" name="email">
+                <Input disabled />
               </Form.Item>
             </FormSection>
 
             <FormSection>
-              <Form.Item label="Email:" name="email">
+              <Form.Item label="Fullname:" name="fullName">
                 <Input />
               </Form.Item>
 
@@ -281,15 +237,6 @@ const ProfileEditPage = () => {
                 <Input />
               </Form.Item>
             </FormSection>
-
-            <FormSection>
-              <FullWidthSection>
-                <Form.Item label="Description" name="description">
-                  <Input.TextArea rows={4} />
-                </Form.Item>
-              </FullWidthSection>
-            </FormSection>
-
             <FormSection>
               <Form.Item label="Age:" name="age">
                 <Input />
@@ -299,15 +246,12 @@ const ProfileEditPage = () => {
                 <DatePicker style={{ width: "100%" }} />
               </Form.Item>
             </FormSection>
-
             <FormSection>
-              <Form.Item label="ID number:" name="idNumber">
-                <Input />
-              </Form.Item>
-
-              <Form.Item label="Job:" name="job">
-                <Input />
-              </Form.Item>
+              <FullWidthSection>
+                <Form.Item label="Description" name="description">
+                  <Input.TextArea rows={4} />
+                </Form.Item>
+              </FullWidthSection>
             </FormSection>
 
             <Form.Item>

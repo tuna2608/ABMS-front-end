@@ -3,9 +3,12 @@ import {
   loginFailure,
   loginStart,
   loginSuccess,
-  signupStart,
-  signupSuccess,
-  signupFail,
+  registerStart,
+  registerSuccess,
+  registerFail,
+  verifyStart,
+  verifySuccess,
+  verifyFail,
 } from "./authSlice";
 import { publicRequest, userRequest } from "../utilities/requestMethod";
 import {
@@ -31,6 +34,7 @@ import {
   getUserFailure,
   getUserStart,
   getUserSuccess,
+  resetUsersSuccess,
   updateUserFailure,
   updateUserStart,
   updateUserSuccess,
@@ -88,18 +92,36 @@ export const login = async (dispatch, user) => {
   }
 };
 
-export const signup = async (dispatch, user) => {
-  dispatch(signupStart());
+export const register = async (dispatch, user) => {
+  dispatch(registerStart());
   try {
-    const res = await publicRequest.post("/auth/register", user);
-    dispatch(signupSuccess(res.data));
+    const res = await publicRequest.post("/api/register", user);
+    // console.log(res);
+    dispatch(registerSuccess(res.data.data));
+    return res.data
   } catch (error) {
-    dispatch(signupFail());
+    dispatch(registerFail());
+    return error.response
   }
 };
 
+export const verifyOTP = async (dispatch, user) => {
+  dispatch(verifyStart());
+  try {
+    const res = await publicRequest.post("/api/verify", user.user);
+    dispatch(verifySuccess());
+    return res.data;
+  } catch (error) {
+    dispatch(verifyFail());
+    return error.response
+  }
+};
+
+
+
 export const logoutDispatch = async (dispatch) => {
   dispatch(logout());
+  dispatch(resetUsersSuccess())
 };
 
 // Product
@@ -181,6 +203,21 @@ export const updateUser = async (id, user, dispatch) => {
   dispatch(updateUserStart());
   try {
     const res = await userRequest.put(`/users/${id}`, user);
+    dispatch(updateUserSuccess(res.data));
+  } catch (error) {
+    dispatch(updateUserFailure());
+  }
+};
+
+export const getImageCloud = async (dispatch,formData) => {
+  console.log(formData);
+  dispatch(updateUserStart());
+  try {
+    const res = await userRequest.put(`/users/update_image`, {
+      method: "PUT",
+      credentials: "include",
+      body: formData,
+  });
     dispatch(updateUserSuccess(res.data));
   } catch (error) {
     dispatch(updateUserFailure());
