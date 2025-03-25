@@ -179,7 +179,6 @@ const OTPPage = () => {
       message.success(messageAPI)
       navigate('/login')
     }
-
   };
 
   return (
