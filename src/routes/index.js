@@ -11,6 +11,7 @@ import ApartmentDetail from "../pages/client/PostDetail/PostDetail";
 import ChatPage from "../pages/client/ChatPage/ChatPage";
 import NotificationsPage from "../pages/client/NotificationPage/NotificationPage";
 import BillPage from "../pages/client/BillPage/BillPage";
+import DepositPage from "../pages/client/DepositPage/DepositPage";
 import EditProfilePage from "../pages/common/EditProfilePage/EditProfilePage";
 import StaffHome from "../pages/staff/StaffHome";
 import CardManagement from "../pages/staff/CardManagement";
@@ -85,6 +86,11 @@ export const routes = [
     {
         path: '/bill',
         page: BillPage,
+        isShowHeader: true
+    },
+    {
+        path: '/deposit-check',
+        page: DepositPage,
         isShowHeader: true
     },
     {

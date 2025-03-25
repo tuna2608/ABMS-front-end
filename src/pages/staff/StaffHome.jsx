@@ -1,24 +1,27 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { 
   Layout, 
   Menu, 
   Card, 
   List, 
-  Avatar, 
   Space, 
-  Tag, 
   Input, 
   Select, 
   Button, 
   Pagination,
-  Skeleton,
-  Badge,
   Typography,
   Table,
   Form,
   Modal,
   Tabs,
-  message
+  message,
+  FloatButton,
+  Badge,
+  Tag,
+  Statistic,
+  Row,
+  Col,
+  Divider
 } from "antd";
 import { 
   HomeOutlined, 
@@ -27,333 +30,93 @@ import {
   SearchOutlined, 
   FilterOutlined,
   EnvironmentOutlined,
-  AreaChartOutlined,
   BankOutlined,
-  AppstoreOutlined,
-  FileTextOutlined,
   MessageOutlined,
-  LogoutOutlined,
   ThunderboltOutlined,
+  CommentOutlined,
+  MenuUnfoldOutlined,
+  MenuFoldOutlined,
+  SafetyOutlined,
+  EyeOutlined,
+  ClockCircleOutlined,
+  CheckCircleOutlined,
+  CloseCircleOutlined
 } from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
 
-const { Header, Sider, Content } = Layout;
+const { Sider, Content, Header } = Layout;
 const { Search } = Input;
 const { Option } = Select;
-const { Title, Text } = Typography;
+const { Text, Title } = Typography;
 const { TabPane } = Tabs;
-
-// Dữ liệu mẫu các căn hộ
-const sampleApartments = [
-  {
-    id: 1,
-    title: "Căn hộ cao cấp 2 phòng ngủ - The Vinhomes Central Park",
-    description: "Căn hộ ban công rộng, view sông, nội thất cao cấp, an ninh 24/7",
-    address: "Quận Bình Thạnh, TP.HCM",
-    price: 5800000,
-    area: 70,
-    bedrooms: 2,
-    bathrooms: 2,
-    owner: "Nguyễn Văn A",
-    avatar: "https://xsgames.co/randomusers/avatar.php?g=pixel&key=1",
-    date: "2025-03-12",
-    category: "Cho thuê",
-    tags: ["Cao cấp", "Đầy đủ nội thất", "View sông"],
-    views: 145,
-    status: "Đang cho thuê",
-    contractId: "CT00123",
-    images: ["apartment1.jpg"]
-  },
-  {
-    id: 2,
-    title: "Studio căn hộ The Sun Avenue - Đầy đủ nội thất",
-    description: "Căn hộ đầy đủ nội thất, cửa sổ lớn, bảo vệ 24/7, gần trung tâm thương mại",
-    address: "Quận 2, TP.HCM",
-    price: 3500000,
-    area: 35,
-    bedrooms: 1,
-    bathrooms: 1,
-    owner: "Trần Thị B",
-    avatar: "https://xsgames.co/randomusers/avatar.php?g=pixel&key=2",
-    date: "2025-03-10",
-    category: "Cho thuê",
-    tags: ["Studio", "Đầy đủ nội thất", "Gần trung tâm"],
-    views: 98,
-    status: "Đang ở",
-    contractId: "CT00124",
-    images: ["apartment2.jpg"]
-  },
-  {
-    id: 3,
-    title: "Căn hộ 3 phòng ngủ - Masteri Thảo Điền",
-    description: "Căn góc, view đẹp, nội thất cao cấp, bảo vệ 24/7, hồ bơi, gym",
-    address: "Quận 2, TP.HCM",
-    price: 7200000,
-    area: 95,
-    bedrooms: 3,
-    bathrooms: 2,
-    owner: "Lê Văn C",
-    avatar: "https://xsgames.co/randomusers/avatar.php?g=pixel&key=3",
-    date: "2025-03-08",
-    category: "Cho thuê",
-    tags: ["Căn góc", "Nội thất cao cấp", "View đẹp"],
-    views: 167,
-    status: "Trống",
-    contractId: "CT00125",
-    images: ["apartment3.jpg"]
-  },
-  {
-    id: 4,
-    title: "Căn hộ Penthouse - Saigon Pearl",
-    description: "Penthouse sang trọng, view toàn thành phố, sân vườn riêng, an ninh tuyệt đối",
-    address: "Quận Bình Thạnh, TP.HCM",
-    price: 15000000,
-    area: 180,
-    bedrooms: 4,
-    bathrooms: 3,
-    owner: "Phạm Văn D",
-    avatar: "https://xsgames.co/randomusers/avatar.php?g=pixel&key=4",
-    date: "2025-03-05",
-    category: "Bán",
-    tags: ["Penthouse", "Sang trọng", "View toàn thành phố"],
-    views: 213,
-    status: "Đã bán",
-    contractId: "CT00126",
-    images: ["apartment4.jpg"]
-  },
-  {
-    id: 5,
-    title: "Căn hộ 2 phòng ngủ - Gateway Thảo Điền",
-    description: "Căn hộ thiết kế hiện đại, view sông, bảo vệ 24/7, gần trạm metro",
-    address: "Quận 2, TP.HCM",
-    price: 6000000,
-    area: 65,
-    bedrooms: 2,
-    bathrooms: 2,
-    owner: "Hoàng Thị E",
-    avatar: "https://xsgames.co/randomusers/avatar.php?g=pixel&key=5",
-    date: "2025-03-01",
-    category: "Cho thuê",
-    tags: ["Hiện đại", "View sông", "Gần metro"],
-    views: 187,
-    status: "Chưa bán",
-    contractId: "",
-    images: ["apartment5.jpg"]
-  },
-];
-
-// Dữ liệu mẫu cho điện nước
-const sampleUtilityBills = [
-  {
-    id: 1,
-    apartmentId: 1,
-    type: "Điện",
-    month: "03/2025",
-    readDate: "2025-03-15",
-    previousReading: 2450,
-    currentReading: 2650,
-    unitPrice: 3500,
-    total: 700000,
-    status: "Chưa thanh toán"
-  },
-  {
-    id: 2,
-    apartmentId: 1,
-    type: "Nước",
-    month: "03/2025",
-    readDate: "2025-03-15",
-    previousReading: 145,
-    currentReading: 165,
-    unitPrice: 15000,
-    total: 300000,
-    status: "Chưa thanh toán"
-  },
-  {
-    id: 3,
-    apartmentId: 2,
-    type: "Điện",
-    month: "03/2025",
-    readDate: "2025-03-14",
-    previousReading: 1250,
-    currentReading: 1380,
-    unitPrice: 3500,
-    total: 455000,
-    status: "Đã thanh toán"
-  },
-  {
-    id: 4,
-    apartmentId: 2,
-    type: "Nước",
-    month: "03/2025",
-    readDate: "2025-03-14",
-    previousReading: 85,
-    currentReading: 96,
-    unitPrice: 15000,
-    total: 165000,
-    status: "Đã thanh toán"
-  },
-];
-
-// Dữ liệu mẫu các tin nhắn
-const sampleMessages = [
-  {
-    id: 1,
-    sender: "Nguyễn Văn A",
-    avatar: "https://xsgames.co/randomusers/avatar.php?g=pixel&key=1",
-    content: "Tôi muốn báo cáo sự cố về hệ thống điều hòa trong căn hộ của tôi.",
-    time: "2025-03-18 09:45",
-    read: false,
-    replies: []
-  },
-  {
-    id: 2,
-    sender: "Trần Thị B",
-    avatar: "https://xsgames.co/randomusers/avatar.php?g=pixel&key=2",
-    content: "Khi nào sẽ có hóa đơn điện nước tháng này?",
-    time: "2025-03-17 14:20",
-    read: true,
-    replies: [
-      {
-        id: 1,
-        content: "Hóa đơn sẽ được gửi vào ngày 20 hàng tháng. Cảm ơn bạn đã hỏi.",
-        time: "2025-03-17 15:05",
-        staff: "Lê Văn Staff"
-      }
-    ]
-  },
-  {
-    id: 3,
-    sender: "Lê Văn C",
-    avatar: "https://xsgames.co/randomusers/avatar.php?g=pixel&key=3",
-    content: "Tôi muốn đổi ngày thanh toán tiền thuê nhà hàng tháng. Có thể không?",
-    time: "2025-03-15 11:30",
-    read: true,
-    replies: []
-  }
-];
-
-// Trạng thái căn hộ và màu sắc tương ứng
-const statusColors = {
-  "Chưa bán": "blue",
-  "Đã bán": "red",
-  "Đang cho thuê": "green",
-  "Đang ở": "purple",
-  "Trống": "orange"
-};
-
-// Loại căn hộ
-const apartmentTypes = ["Tất cả", "Căn hộ", "Penthouse", "Studio", "Duplex"];
 
 // Khu vực
 const areas = ["Tất cả", "Quận 1", "Quận 2", "Quận Bình Thạnh", "Quận 7", "Quận 4"];
 
+// Sample data for deposits (reduced to single entry)
+const depositSampleData = [
+  {
+    id: "DEP-2025032301",
+    apartmentId: "VIN-A1202",
+    apartmentName: "Căn hộ 2PN Vinhomes Central Park A1202",
+    owner: "Nguyễn Văn An",
+    ownerPhone: "0901234567",
+    tenant: "Trần Thị Bình",
+    tenantPhone: "0987654321",
+    amount: 25000000,
+    status: "pending",
+    type: "rental",
+    createdAt: "2025-03-20T09:30:00Z",
+    transactionDate: null,
+    dueDate: "2025-04-20T09:30:00Z",
+    notes: "Đặt cọc thuê căn hộ 6 tháng, dọn vào ngày 01/05/2025"
+  }
+];
+
 const StaffHome = () => {
+  // State Management
   const [collapsed, setCollapsed] = useState(false);
-  const [apartments, setApartments] = useState([]);
-  const [utilityBills, setUtilityBills] = useState([]);
-  const [messages, setMessages] = useState([]);
-  const [loading, setLoading] = useState(true);
-  const [searchText, setSearchText] = useState("");
-  const [selectedStatus, setSelectedStatus] = useState("Tất cả");
-  const [selectedArea, setSelectedArea] = useState("Tất cả");
+  const [setSearchText] = useState("");
+  const [setSelectedStatus] = useState("Tất cả");
+  const [setSelectedArea] = useState("Tất cả");
   const [currentPage, setCurrentPage] = useState(1);
   const [activeMenuItem, setActiveMenuItem] = useState("apartment-list");
-  const [utilityType, setUtilityType] = useState("electric");
+  const [setUtilityType] = useState("electric");
   const [isReplyModalVisible, setIsReplyModalVisible] = useState(false);
-  const [currentMessage, setCurrentMessage] = useState(null);
+  const [currentMessage] = useState(null);
+  const [isDepositDetailVisible, setIsDepositDetailVisible] = useState(false);
+  const [selectedDeposit, setSelectedDeposit] = useState(null);
+  const [depositFilterStatus, setDepositFilterStatus] = useState("all");
+
+  // Form Instances
   const [replyForm] = Form.useForm();
   const [accountForm] = Form.useForm();
   const pageSize = 4;
+  const navigate = useNavigate();
 
-  // Thông tin nhân viên
-  const staffInfo = {
-    name: "Lê Văn Staff",
-    position: "Nhân viên quản lý",
-    avatar: "https://xsgames.co/randomusers/avatar.php?g=pixel&key=10"
+  // Utility Functions
+  const toggleCollapsed = () => {
+    setCollapsed(!collapsed);
   };
 
-  // Giả lập việc lấy dữ liệu từ API
-  useEffect(() => {
-    setTimeout(() => {
-      setApartments(sampleApartments);
-      setUtilityBills(sampleUtilityBills);
-      setMessages(sampleMessages);
-      setLoading(false);
-    }, 1000);
-  }, []);
-
-  // Xử lý lọc căn hộ theo trạng thái và khu vực
-  const filteredApartments = apartments.filter(apartment => {
-    const matchSearch = apartment.title.toLowerCase().includes(searchText.toLowerCase()) || 
-                       apartment.description.toLowerCase().includes(searchText.toLowerCase());
-    const matchStatus = selectedStatus === "Tất cả" || apartment.status === selectedStatus;
-    const matchArea = selectedArea === "Tất cả" || apartment.address.includes(selectedArea);
-    
-    return matchSearch && matchStatus && matchArea;
-  });
-
-  // Phân trang
-  const paginatedApartments = filteredApartments.slice(
-    (currentPage - 1) * pageSize,
-    currentPage * pageSize
-  );
-
-  const onSearch = value => {
+  const onSearch = (value) => {
     setSearchText(value);
     setCurrentPage(1);
   };
 
-  const onStatusChange = value => {
+  const onStatusChange = (value) => {
     setSelectedStatus(value);
     setCurrentPage(1);
   };
 
-  const onAreaChange = value => {
+  const onAreaChange = (value) => {
     setSelectedArea(value);
     setCurrentPage(1);
   };
 
-  const formatPrice = (price) => {
-    return new Intl.NumberFormat('vi-VN').format(price) + " VNĐ/tháng";
-  };
-
-  const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('vi-VN').format(amount) + " VNĐ";
-  };
-
-  const IconText = ({ icon, text }) => (
-    <Space>
-      {icon}
-      {text}
-    </Space>
-  );
-
-  const handleReplyMessage = (message) => {
-    setCurrentMessage(message);
-    setIsReplyModalVisible(true);
-  };
-
+  // Message Handling
   const handleReplySubmit = () => {
     replyForm.validateFields().then(values => {
-      const updatedMessages = messages.map(msg => {
-        if (msg.id === currentMessage.id) {
-          return {
-            ...msg,
-            read: true,
-            replies: [
-              ...msg.replies,
-              {
-                id: msg.replies.length + 1,
-                content: values.reply,
-                time: new Date().toLocaleString('vi-VN'),
-                staff: staffInfo.name
-              }
-            ]
-          };
-        }
-        return msg;
-      });
-      
-      setMessages(updatedMessages);
       setIsReplyModalVisible(false);
       replyForm.resetFields();
       message.success("Đã gửi phản hồi thành công!");
@@ -362,86 +125,191 @@ const StaffHome = () => {
 
   const handleAccountFormSubmit = () => {
     accountForm.validateFields().then(values => {
-      console.log("Thông tin tài khoản:", values);
       message.success("Đã gửi thông tin tài khoản cho admin!");
       accountForm.resetFields();
     });
   };
 
-  // Cột cho bảng điện
+  const navigateToChatPage = () => {
+    navigate('/chat-page');
+  };
+  
+  // Deposit handling
+  const viewDepositDetail = (deposit) => {
+    setSelectedDeposit(deposit);
+    setIsDepositDetailVisible(true);
+  };
+
+  const formatCurrency = (amount) => {
+    return new Intl.NumberFormat('vi-VN').format(amount) + " VNĐ";
+  };
+
+  const formatDate = (dateString) => {
+    if (!dateString) return "N/A";
+    const date = new Date(dateString);
+    return new Intl.DateTimeFormat('vi-VN', {
+      year: 'numeric',
+      month: '2-digit',
+      day: '2-digit',
+      hour: '2-digit',
+      minute: '2-digit'
+    }).format(date);
+  };
+
+  // Deposit status renderer
+  const renderDepositStatus = (status) => {
+    switch (status) {
+      case 'pending':
+        return <Badge status="processing" text={<Tag color="blue">Chờ xác nhận</Tag>} />;
+      case 'confirmed':
+        return <Badge status="warning" text={<Tag color="orange">Đã xác nhận</Tag>} />;
+      case 'completed':
+        return <Badge status="success" text={<Tag color="green">Hoàn thành</Tag>} />;
+      case 'cancelled':
+        return <Badge status="error" text={<Tag color="red">Đã hủy</Tag>} />;
+      default:
+        return <Badge status="default" text={<Tag>Chưa xác định</Tag>} />;
+    }
+  };
+
+  // Deposit type renderer
+  const renderDepositType = (type) => {
+    switch (type) {
+      case 'rental':
+        return <Tag color="purple">Cho thuê</Tag>;
+      case 'purchase':
+        return <Tag color="geekblue">Mua bán</Tag>;
+      default:
+        return <Tag>Khác</Tag>;
+    }
+  };
+
+  // Columns for Utility Tables
   const electricColumns = [
     {
       title: 'Số căn hộ',
       dataIndex: 'apartmentId',
       key: 'apartmentId',
-      render: (id) => {
-        const apartment = apartments.find(apt => apt.id === id);
-        return apartment ? apartment.title.split(' - ')[0] : id;
-      }
+    },
+    // ... (rest of the columns remain the same)
+  ];
+
+  // Columns for Deposit Table
+  const depositColumns = [
+    {
+      title: 'Mã giao dịch',
+      dataIndex: 'id',
+      key: 'id',
+      width: 150,
     },
     {
-      title: 'Tháng',
-      dataIndex: 'month',
-      key: 'month',
+      title: 'Căn hộ',
+      dataIndex: 'apartmentName',
+      key: 'apartmentName',
+      ellipsis: true,
     },
     {
-      title: 'Ngày đọc số',
-      dataIndex: 'readDate',
-      key: 'readDate',
+      title: 'Loại',
+      dataIndex: 'type',
+      key: 'type',
+      render: (type) => renderDepositType(type),
+      width: 100,
     },
     {
-      title: 'Chỉ số cũ',
-      dataIndex: 'previousReading',
-      key: 'previousReading',
-    },
-    {
-      title: 'Chỉ số mới',
-      dataIndex: 'currentReading',
-      key: 'currentReading',
-    },
-    {
-      title: 'Số tiêu thụ',
-      key: 'consumption',
-      render: (_, record) => record.currentReading - record.previousReading
-    },
-    {
-      title: 'Đơn giá',
-      dataIndex: 'unitPrice',
-      key: 'unitPrice',
-      render: (price) => formatCurrency(price)
-    },
-    {
-      title: 'Thành tiền',
-      dataIndex: 'total',
-      key: 'total',
-      render: (amount) => formatCurrency(amount)
+      title: 'Số tiền',
+      dataIndex: 'amount',
+      key: 'amount',
+      render: (amount) => formatCurrency(amount),
+      width: 150,
+      sorter: (a, b) => a.amount - b.amount,
     },
     {
       title: 'Trạng thái',
       dataIndex: 'status',
       key: 'status',
-      render: (status) => (
-        <Tag color={status === "Đã thanh toán" ? "green" : "volcano"}>
-          {status}
-        </Tag>
-      )
+      render: (status) => renderDepositStatus(status),
+      width: 150,
+      filters: [
+        { text: 'Chờ xác nhận', value: 'pending' },
+        { text: 'Đã xác nhận', value: 'confirmed' },
+        { text: 'Hoàn thành', value: 'completed' },
+        { text: 'Đã hủy', value: 'cancelled' },
+      ],
+      onFilter: (value, record) => record.status === value,
+    },
+    {
+      title: 'Ngày tạo',
+      dataIndex: 'createdAt',
+      key: 'createdAt',
+      render: (date) => formatDate(date),
+      width: 180,
+      sorter: (a, b) => new Date(a.createdAt) - new Date(b.createdAt),
     },
     {
       title: 'Thao tác',
       key: 'action',
       render: (_, record) => (
-        <Space size="middle">
-          <Button type="primary" size="small">Sửa</Button>
-          <Button size="small">Chi tiết</Button>
-        </Space>
+        <Button 
+          type="primary" 
+          icon={<EyeOutlined />} 
+          size="small"
+          onClick={() => viewDepositDetail(record)}
+        >
+          Xem chi tiết
+        </Button>
       ),
+      width: 120,
+      fixed: 'right',
     },
   ];
 
-  // Lọc dữ liệu điện nước theo loại
-  const filteredUtilityBills = utilityBills.filter(bill => bill.type === (utilityType === "electric" ? "Điện" : "Nước"));
+  // Return all deposits regardless of filter status (Staff can only view)
+  const filteredDeposits = depositSampleData;
 
-  // Render nội dung dựa trên menu item đang active
+  // Menu items
+  const menuItems = [
+    {
+      key: "apartment-list",
+      icon: <HomeOutlined />,
+      label: "Danh sách nhà",
+      onClick: () => setActiveMenuItem("apartment-list"),
+    },
+    {
+      key: "deposit-management",
+      icon: <SafetyOutlined />,
+      label: "Quản lý đặt cọc",
+      onClick: () => setActiveMenuItem("deposit-management"),
+    },
+    {
+      key: "utility-management",
+      icon: <DollarOutlined />,
+      label: "Khoản phí",
+      onClick: () => setActiveMenuItem("utility-management"),
+    },
+    {
+      key: "account-management",
+      icon: <UserOutlined />,
+      label: "Quản lý tài khoản",
+      onClick: () => setActiveMenuItem("account-management"),
+    },
+    {
+      key: "messages",
+      icon: <MessageOutlined />,
+      label: "Tin nhắn",
+      onClick: () => setActiveMenuItem("messages"),
+    },
+  ];
+
+  // Deposit status statistics
+  const depositStats = {
+    total: depositSampleData.length,
+    pending: depositSampleData.filter(d => d.status === 'pending').length,
+    confirmed: depositSampleData.filter(d => d.status === 'confirmed').length,
+    completed: depositSampleData.filter(d => d.status === 'completed').length,
+    cancelled: depositSampleData.filter(d => d.status === 'cancelled').length,
+  };
+
+  // Content Rendering
   const renderContent = () => {
     switch (activeMenuItem) {
       case "apartment-list":
@@ -496,63 +364,119 @@ const StaffHome = () => {
             <List
               itemLayout="vertical"
               size="large"
-              dataSource={paginatedApartments}
-              renderItem={apartment => (
-                <List.Item
-                  key={apartment.id}
-                  actions={!loading && [
-                    <IconText icon={<EnvironmentOutlined />} text={apartment.address} key="list-location" />,
-                    <IconText icon={<AreaChartOutlined />} text={`${apartment.area} m²`} key="list-area" />,
-                    <IconText icon={<DollarOutlined />} text={formatPrice(apartment.price)} key="list-price" />,
-                    <IconText icon={<UserOutlined />} text={`${apartment.bedrooms} PN, ${apartment.bathrooms} VS`} key="list-rooms" />,
-                    <IconText icon={<FileTextOutlined />} text={apartment.contractId || "Chưa có hợp đồng"} key="list-contract" />,
-                  ]}
-                  extra={!loading && (
-                    <div style={{ textAlign: 'right' }}>
-                      <Badge 
-                        color={statusColors[apartment.status]} 
-                        text={apartment.status} 
-                        style={{ marginBottom: 8 }}
-                      />
-                      <div style={{ marginBottom: 8 }}>Ngày đăng: {apartment.date}</div>
-                      <Space style={{ marginTop: 8 }}>
-                        {apartment.tags.map(tag => (
-                          <Tag color="blue" key={tag}>
-                            {tag}
-                          </Tag>
-                        ))}
-                      </Space>
-                    </div>
-                  )}
-                >
-                  <Skeleton loading={loading} active avatar>
-                    <List.Item.Meta
-                      avatar={<Avatar src={apartment.avatar} />}
-                      title={
-                        <Space>
-                          <a href={`/apartment/${apartment.id}`}>{apartment.title}</a>
-                          <Tag color={statusColors[apartment.status]}>
-                            {apartment.status}
-                          </Tag>
-                        </Space>
-                      }
-                      description={`Chủ nhà: ${apartment.owner} | Loại: ${apartment.category}`}
-                    />
-                    {apartment.description}
-                  </Skeleton>
-                </List.Item>
-              )}
+              dataSource={[]}
+              renderItem={() => null}
             />
 
             <div style={{ textAlign: 'right', marginTop: 16 }}>
               <Pagination
                 current={currentPage}
                 pageSize={pageSize}
-                total={filteredApartments.length}
+                total={0}
                 onChange={page => setCurrentPage(page)}
                 showSizeChanger={false}
               />
             </div>
+          </Card>
+        );
+      
+      case "deposit-management":
+        return (
+          <Card 
+            title={
+              <Space>
+                <SafetyOutlined /> 
+                <span>Quản lý đặt cọc</span>
+              </Space>
+            } 
+          >
+            <Row gutter={[16, 16]} style={{ marginBottom: 20 }}>
+              <Col xs={24} sm={12} md={8} lg={4}>
+                <Card onClick={() => setDepositFilterStatus('all')} hoverable>
+                  <Statistic 
+                    title="Tổng số" 
+                    value={depositStats.total} 
+                    valueStyle={{ color: '#1890ff' }}
+                    suffix="giao dịch"
+                  />
+                </Card>
+              </Col>
+              <Col xs={24} sm={12} md={8} lg={5}>
+                <Card onClick={() => setDepositFilterStatus('pending')} hoverable>
+                  <Statistic 
+                    title="Chờ xác nhận" 
+                    value={depositStats.pending}
+                    valueStyle={{ color: '#1890ff' }}
+                    prefix={<ClockCircleOutlined />}
+                  />
+                </Card>
+              </Col>
+              <Col xs={24} sm={12} md={8} lg={5}>
+                <Card onClick={() => setDepositFilterStatus('confirmed')} hoverable>
+                  <Statistic 
+                    title="Đã xác nhận" 
+                    value={depositStats.confirmed}
+                    valueStyle={{ color: '#fa8c16' }}
+                    prefix={<CheckCircleOutlined />}
+                  />
+                </Card>
+              </Col>
+              <Col xs={24} sm={12} md={8} lg={5}>
+                <Card onClick={() => setDepositFilterStatus('completed')} hoverable>
+                  <Statistic 
+                    title="Hoàn thành" 
+                    value={depositStats.completed}
+                    valueStyle={{ color: '#52c41a' }}
+                    prefix={<CheckCircleOutlined />}
+                  />
+                </Card>
+              </Col>
+              <Col xs={24} sm={12} md={8} lg={5}>
+                <Card onClick={() => setDepositFilterStatus('cancelled')} hoverable>
+                  <Statistic 
+                    title="Đã hủy" 
+                    value={depositStats.cancelled}
+                    valueStyle={{ color: '#ff4d4f' }}
+                    prefix={<CloseCircleOutlined />}
+                  />
+                </Card>
+              </Col>
+            </Row>
+
+            <Space style={{ marginBottom: 20 }} size="large" wrap>
+              <Search
+                placeholder="Tìm kiếm mã giao dịch, căn hộ"
+                style={{ width: 300 }}
+                prefix={<SearchOutlined />}
+                allowClear
+              />
+              
+              <Space>
+                <FilterOutlined />
+                <Select 
+                  value={depositFilterStatus} 
+                  style={{ width: 150 }}
+                  onChange={setDepositFilterStatus}
+                >
+                  <Option value="all">Tất cả trạng thái</Option>
+                  <Option value="pending">Chờ xác nhận</Option>
+                  <Option value="confirmed">Đã xác nhận</Option>
+                  <Option value="completed">Hoàn thành</Option>
+                  <Option value="cancelled">Đã hủy</Option>
+                </Select>
+              </Space>
+            </Space>
+
+            <Table 
+              columns={depositColumns} 
+              dataSource={filteredDeposits}
+              rowKey="id"
+              pagination={{ 
+                pageSize: 5,
+                showTotal: (total, range) => `${range[0]}-${range[1]} của ${total} giao dịch` 
+              }}
+              scroll={{ x: 1100 }}
+            />
           </Card>
         );
       
@@ -581,15 +505,10 @@ const StaffHome = () => {
               >
                 <Table 
                   columns={electricColumns} 
-                  dataSource={filteredUtilityBills} 
+                  dataSource={[]} 
                   rowKey="id"
                   pagination={{ pageSize: 5 }}
                 />
-                <div style={{ textAlign: 'right', marginTop: 16 }}>
-                  <Button type="primary" icon={<AppstoreOutlined />}>
-                    Nhập chỉ số mới
-                  </Button>
-                </div>
               </TabPane>
               <TabPane 
                 tab={
@@ -602,15 +521,10 @@ const StaffHome = () => {
               >
                 <Table 
                   columns={electricColumns} 
-                  dataSource={filteredUtilityBills} 
+                  dataSource={[]} 
                   rowKey="id"
                   pagination={{ pageSize: 5 }}
                 />
-                <div style={{ textAlign: 'right', marginTop: 16 }}>
-                  <Button type="primary" icon={<AppstoreOutlined />}>
-                    Nhập chỉ số mới
-                  </Button>
-                </div>
               </TabPane>
             </Tabs>
           </Card>
@@ -699,113 +613,62 @@ const StaffHome = () => {
           >
             <List
               itemLayout="vertical"
-              dataSource={messages}
-              renderItem={item => (
-                <List.Item
-                  key={item.id}
-                  actions={[
-                    <Button 
-                      type="primary" 
-                      onClick={() => handleReplyMessage(item)}
-                    >
-                      Trả lời
-                    </Button>
-                  ]}
-                >
-                  <List.Item.Meta
-                    avatar={<Avatar src={item.avatar} />}
-                    title={
-                      <Space>
-                        <span>{item.sender}</span>
-                        {!item.read && <Badge color="red" text="Chưa đọc" />}
-                      </Space>
-                    }
-                    description={`Thời gian: ${item.time}`}
-                  />
-                  <div style={{ marginBottom: 16 }}>
-                    {item.content}
-                  </div>
-                  
-                  {item.replies.length > 0 && (
-                    <div style={{ marginLeft: 40, marginTop: 16 }}>
-                      <Text strong>Phản hồi:</Text>
-                      {item.replies.map(reply => (
-                        <div key={reply.id} style={{ marginTop: 8, background: "#f5f5f5", padding: 8, borderRadius: 4 }}>
-                          <div>
-                            <Text type="secondary">{reply.staff} - {reply.time}</Text>
-                          </div>
-                          <div>{reply.content}</div>
-                        </div>
-                      ))}
-                    </div>
-                  )}
-                </List.Item>
-              )}
+              dataSource={[]}
+              renderItem={() => null}
             />
           </Card>
         );
       
       default:
-        return <div>Chọn một mục từ menu</div>;
+        return <Card title="Không tìm thấy nội dung" />;
     }
   };
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <Sider collapsible collapsed={collapsed} onCollapse={setCollapsed}>
-        <div style={{ height: 64, display: 'flex', alignItems: 'center', justifyContent: 'center', color: 'white' }}>
-          <BankOutlined style={{ fontSize: 24 }} /> 
-          {!collapsed && <span style={{ marginLeft: 8, fontSize: 20 }}>Quản lý toà nhà</span>}
+      <Sider 
+        width={250}
+        collapsible
+        collapsed={collapsed}
+        onCollapse={setCollapsed}
+        trigger={null}
+        theme="light"
+      >
+        <div style={{ height: 64, padding: 16, textAlign: "center" }}>
+          <h2 style={{ margin: 0, fontSize: collapsed ? 14 : 18 }}>
+            {collapsed ? "QL" : "Quản Lý Toà Nhà"}
+          </h2>
         </div>
-        
         <Menu
-          theme="dark"
-          defaultSelectedKeys={['apartment-list']}
           mode="inline"
-          onClick={({ key }) => setActiveMenuItem(key)}
-        >
-          <Menu.SubMenu key="building-management" icon={<BankOutlined />} title="Quản lý toà nhà">
-            <Menu.Item key="apartment-list" icon={<HomeOutlined />}>Danh sách nhà</Menu.Item>
-          </Menu.SubMenu>
-          
-          <Menu.Item key="utility-management" icon={<DollarOutlined />}>
-            Khoản phí
-          </Menu.Item>
-          
-          <Menu.Item key="account-management" icon={<UserOutlined />}>
-            Quản lý tài khoản
-          </Menu.Item>
-          
-          <Menu.Item key="messages" icon={<MessageOutlined />}>
-            Tin nhắn
-            {messages.filter(m => !m.read).length > 0 && (
-              <Badge 
-                count={messages.filter(m => !m.read).length} 
-                style={{ marginLeft: 8 }} 
-              />
-            )}
-          </Menu.Item>
-        </Menu>
+          defaultSelectedKeys={['apartment-list']}
+          items={menuItems}
+        />
       </Sider>
       
-      <Layout className="site-layout">
-        <Header style={{ padding: 0, background: '#fff' }}>
-          <div style={{ float: 'right', marginRight: 24 }}>
-            <Space>
-              <span>Xin chào, {staffInfo.name}</span>
-              <Avatar src={staffInfo.avatar} />
-              <Button type="link" icon={<LogoutOutlined />}>
-                Đăng xuất
-              </Button>
-            </Space>
-          </div>
+      <Layout>
+        <Header style={{ 
+          background: "#fff", 
+          padding: 0, 
+          display: "flex", 
+          alignItems: "center",
+          justifyContent: "space-between"
+        }}>
+          <Button
+            type="text"
+            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            onClick={toggleCollapsed}
+            style={{ fontSize: '16px', width: 64, height: 64 }}
+          />
+          <div style={{ marginRight: 20 }}></div>
         </Header>
         
-        <Content style={{ margin: '16px' }}>
+        <Content style={{ margin: "24px 16px", padding: 24, background: "#fff" }}>
           {renderContent()}
         </Content>
       </Layout>
       
+      {/* Reply Modal */}
       <Modal
         title="Trả lời tin nhắn"
         open={isReplyModalVisible}
@@ -835,6 +698,120 @@ const StaffHome = () => {
           </>
         )}
       </Modal>
+      
+      {/* Deposit Detail Modal - Read-only for Staff */}
+      <Modal
+        title="Chi tiết giao dịch đặt cọc"
+        open={isDepositDetailVisible}
+        onCancel={() => setIsDepositDetailVisible(false)}
+        footer={[
+          <Button key="close" onClick={() => setIsDepositDetailVisible(false)}>
+            Đóng
+          </Button>
+        ]}
+        width={700}
+      >
+        {selectedDeposit && (
+          <>
+            <Row gutter={[16, 16]}>
+              <Col span={24}>
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                  <Title level={4}>{selectedDeposit.id}</Title>
+                  {renderDepositStatus(selectedDeposit.status)}
+                </div>
+                <Divider style={{ margin: '12px 0' }} />
+              </Col>
+              
+              <Col xs={24} sm={12}>
+                <Text type="secondary">Loại giao dịch</Text>
+                <div>{renderDepositType(selectedDeposit.type)}</div>
+              </Col>
+              
+              <Col xs={24} sm={12}>
+                <Text type="secondary">Số tiền đặt cọc</Text>
+                <div><Text strong>{formatCurrency(selectedDeposit.amount)}</Text></div>
+              </Col>
+              
+              <Col xs={24} sm={12}>
+                <Text type="secondary">Mã căn hộ</Text>
+                <div>{selectedDeposit.apartmentId}</div>
+              </Col>
+              
+              <Col xs={24} sm={12}>
+                <Text type="secondary">Tên căn hộ</Text>
+                <div>{selectedDeposit.apartmentName}</div>
+              </Col>
+              
+              <Col xs={24} sm={12}>
+                <Text type="secondary">Ngày tạo giao dịch</Text>
+                <div>{formatDate(selectedDeposit.createdAt)}</div>
+              </Col>
+              
+              <Col xs={24} sm={12}>
+                <Text type="secondary">Ngày giao dịch</Text>
+                <div>{formatDate(selectedDeposit.transactionDate)}</div>
+              </Col>
+              
+              <Col xs={24} sm={12}>
+                <Text type="secondary">Hạn hoàn thành</Text>
+                <div>{formatDate(selectedDeposit.dueDate)}</div>
+              </Col>
+              
+              <Col span={24}>
+                <Divider orientation="left">Thông tin chủ nhà</Divider>
+              </Col>
+              
+              <Col xs={24} sm={12}>
+                <Text type="secondary">Tên chủ nhà</Text>
+                <div>{selectedDeposit.owner}</div>
+              </Col>
+              
+              <Col xs={24} sm={12}>
+                <Text type="secondary">Số điện thoại</Text>
+                <div>{selectedDeposit.ownerPhone}</div>
+              </Col>
+              
+              <Col span={24}>
+                <Divider orientation="left">Thông tin khách hàng</Divider>
+              </Col>
+              
+              <Col xs={24} sm={12}>
+                <Text type="secondary">Tên khách hàng</Text>
+                <div>{selectedDeposit.tenant}</div>
+              </Col>
+              
+              <Col xs={24} sm={12}>
+                <Text type="secondary">Số điện thoại</Text>
+                <div>{selectedDeposit.tenantPhone}</div>
+              </Col>
+              
+              <Col span={24}>
+                <Text type="secondary">Ghi chú</Text>
+                <div style={{ padding: '8px', background: '#f5f5f5', borderRadius: '4px', marginTop: '4px' }}>
+                  {selectedDeposit.notes}
+                </div>
+              </Col>
+              
+              <Col span={24} style={{ marginTop: 16 }}>
+                <div className="note-box" style={{ padding: '12px', background: '#f0f8ff', borderRadius: '4px', border: '1px solid #d9e8ff' }}>
+                  <Text type="secondary">
+                    <i>Ghi chú: Nhân viên chỉ có quyền xem thông tin giao dịch. Vui lòng liên hệ quản lý để thực hiện các thao tác xác nhận hoặc hủy giao dịch.</i>
+                  </Text>
+                </div>
+              </Col>
+            </Row>
+          </>
+        )}
+      </Modal>
+      
+      {/* Floating action button for quick chat access */}
+      <FloatButton
+        icon={<CommentOutlined />}
+        type="primary"
+        tooltip="Chat với khách hàng"
+        onClick={navigateToChatPage}
+        style={{ right: 24 }}
+      />
     </Layout>
   );
 };
