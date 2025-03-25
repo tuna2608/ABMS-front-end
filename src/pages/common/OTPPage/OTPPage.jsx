@@ -1,17 +1,19 @@
 import React, { useState, useRef, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { Await, useNavigate } from "react-router-dom";
 import {
   WrapperContainer,
   WrapperContainerLeft,
   WrapperContainerRight,
 } from "./style";
-import { Form, Image } from "antd";
+import { Form, Image, message } from "antd";
 import imgLogin from "./../../../assets/common/images/logo-login.png";
 import styled from "styled-components";
 import ButtonComponent from "../../../components/common/ButtonComponent/ButtonComponent";
 import bgLogin from "../../../assets/common/images/bg-login.jpg";
 import { LinkNav } from "../ForgotPasswordPage/style";
 import { WrapperTextLight } from "../LoginPage/style";
+import { useDispatch, useSelector } from "react-redux";
+import { verifyOTP } from "../../../redux/apiCalls";
 
 const TextContent = styled.p`
   color: var(--cparagraph);
@@ -74,10 +76,18 @@ const OTPPage = () => {
   const [canResend, setCanResend] = useState(false);
   const inputRefs = useRef([]);
 
+  const [userRegister,setUserRegister] = useState({});
+  const userRegister1 = useSelector((state) => state.user.userRegister);
+
+  const dispatch = useDispatch();
+
+  useEffect(()=>{
+    setUserRegister(userRegister1);
+  },[userRegister])
+
   // Add focus management for OTP inputs
   const handleOtpChange = (e, index) => {
     const value = e.target.value;
-    
     // Allow only numbers
     if (value && !/^\d+$/.test(value)) {
       return;
@@ -157,15 +167,19 @@ const OTPPage = () => {
     }
   };
 
-  const handleVerifyOTP = () => {
+  const handleVerifyOTP = async () => {
     const otpString = otp.join("");
-    // Here you would verify the OTP via your API
-    console.log("Verifying OTP:", otpString);
-    
-    // Simulate successful verification and navigate to login
-    if (otpString.length === 6) {
-      navigate("/login");
+    const userAddOtp = {...userRegister,otp: otpString}
+    const res = await verifyOTP(dispatch,{user: userAddOtp})
+    const messageAPI = res?.message
+    if(res?.status === 400 || res?.status === 403 || res?.status === 401){
+      message.error(messageAPI)
+      return;
+    }else{
+      message.success(messageAPI)
+      navigate('/login')
     }
+
   };
 
   return (

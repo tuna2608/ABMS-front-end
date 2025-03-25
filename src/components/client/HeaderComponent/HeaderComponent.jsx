@@ -78,24 +78,24 @@ const TopBarItem = styled.div`
 `;
 
 function HeaderComponent() {
-
   
   const user = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();
 
+  
   const navigate = useNavigate();
   const onSearch = (value, _e, info) => console.log(info?.source, value);
   const items = [
     {
       key: "1",
       label: (
-        <a
+        <div
           target="_blank"
           rel="noopener noreferrer"
-          href="https://www.antgroup.com"
+          onClick={()=> navigate('/edit-profile')}
         >
           Edit profile
-        </a>
+        </div>
       ),
     },
     {
