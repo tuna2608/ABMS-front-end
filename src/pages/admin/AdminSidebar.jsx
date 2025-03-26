@@ -92,7 +92,7 @@ const AdminSidebar = ({ collapsed, activeTab, setActiveTab, toggleCollapsed }) =
     >
       <div style={{ height: 64, padding: 16, textAlign: "center" }}>
         <h2 style={{ margin: 0, fontSize: collapsed ? 14 : 18 }}>
-          {collapsed ? "QL" : "Quản Lý Admin"}
+          {collapsed ? "AD" : "Admin"}
         </h2>
       </div>
       <Menu
