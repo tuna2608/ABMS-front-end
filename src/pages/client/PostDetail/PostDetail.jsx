@@ -40,9 +40,10 @@ import {
   MessageOutlined,
   SendOutlined,
   TeamOutlined,
-  ExpandAltOutlined
+  ExpandAltOutlined,
+  MoneyCollectOutlined
 } from "@ant-design/icons";
-import { useLocation, useParams } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 import { getPostById, getUserByUserName } from "../../../redux/apiCalls";
 import { useDispatch } from "react-redux";
 import ChatBox from "../../../components/common/Chatbot/Chatbot";
@@ -187,6 +188,9 @@ const PostDetail = () => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
 
+  const userCurrent = useSelector((state) => state.user.currentUser);
+  const navigate = useNavigate();
+
   const postData = useSelector((state) => state.post.post?.data);
   const userIdFromPost = postData?.userId;
   const userNameFromPost = postData?.apartment?.householder;
@@ -210,7 +214,7 @@ const PostDetail = () => {
     }
     getPostDetail();
 
-  }, [postId, dispatch]);
+  }, [postId]);
 
   // console.log(owner);
 
@@ -603,18 +607,18 @@ const PostDetail = () => {
               <Button
                   type="primary"
                   block
-                  onClick={() => setIsChatOpen(true)}
+                  onClick={() => userCurrent ? setIsChatOpen(true) : navigate('/login')}
                 >
                   Nhắn tin liên hệ
                 </Button>
 
                 <Button 
-                  style={{ background: '#52c41a', color: 'white' }}
-                  icon={<TeamOutlined />} 
+                  style={{ background: 'var(--forange)', color: 'white' }}
+                  icon={<MoneyCollectOutlined />} 
                   block
-                  onClick={showAdminRoleConfirm}
+                  onClick={() => userCurrent ? showAdminRoleConfirm : navigate('/login')}
                 >
-                  Nhắn tin Admin/Owner
+                  Đặt cọc
                 </Button>
                 
                 

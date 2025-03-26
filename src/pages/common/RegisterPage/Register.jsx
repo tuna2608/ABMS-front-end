@@ -6,7 +6,7 @@ import {
   WrapperContainerRight,
 } from "./style";
 import { EyeTwoTone, EyeInvisibleOutlined } from "@ant-design/icons";
-import { Checkbox, Form, Image } from "antd";
+import { Checkbox, Form, Image, message } from "antd";
 import imgLogin from "./../../../assets/common/images/logo-login.png";
 import styled from "styled-components";
 import InputForm from "../../../components/common/InputForm/InputForm";
@@ -14,6 +14,8 @@ import ButtonComponent from "../../../components/common/ButtonComponent/ButtonCo
 import bgLogin from "../../../assets/common/images/bg-login.jpg";
 import { LinkNav } from "../ForgotPasswordPage/style";
 import { WrapperTextLight } from "../LoginPage/style";
+import { register } from "../../../redux/apiCalls";
+import { useDispatch } from "react-redux";
 
 const TextContent = styled.p`
   color: var(--cparagraph);
@@ -26,13 +28,24 @@ const TitlePage = styled.h2`
 const RegisterPage = () => {
   const navigate = useNavigate();
   const [isShowPassword, setIsShowPassword] = useState(false);
+  const [isShowConfirmPassword, setIsShowConfirmPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
+  const [soDienThoai,setSoDienThoai] = useState("");
+  const [userName,setUserName] = useState("");
+  const dispatch = useDispatch();
 
-  const handleRegister = (values) => {
-    console.log(values);
-    
+  const handleRegister = async (values) => {
+    const res = await register(dispatch, {userName,phone:soDienThoai,email,password,re_password: confirmPassword});
+    const messageAPI = res?.message
+    if(res?.status === 401){
+      message.error(messageAPI)
+      return;
+    }else{
+      message.success(messageAPI)
+      navigate('/verify-otp')
+    }
   };
 
   return (
@@ -66,7 +79,7 @@ const RegisterPage = () => {
       <div
         style={{
           width: "800px",
-          height: "500px",
+          // height: "500px",
           display: "flex",
           borderRadius: "10px",
           backgroundColor: "#ffffff",
@@ -92,6 +105,30 @@ const RegisterPage = () => {
                 value={email}
                 type="email"
                 onChange={(e) => setEmail(e.target.value)}
+              />
+            </Form.Item>
+
+            <Form.Item
+              name="userName"
+              rules={[{ required: true, message: "Vui lòng nhập user name" }]}
+            >
+              <InputForm
+                placeholder="User name"
+                value={userName}
+                type="text"
+                onChange={(e) => setUserName(e.target.value)}
+              />
+            </Form.Item>
+
+            <Form.Item
+              name="soDienThoai"
+              rules={[{ required: true, message: "Vui lòng nhập số điện thoại" }]}
+            >
+              <InputForm
+                placeholder="09xxxxx"
+                value={soDienThoai}
+                type="text"
+                onChange={(e) => setSoDienThoai(e.target.value)}
               />
             </Form.Item>
 
@@ -122,49 +159,81 @@ const RegisterPage = () => {
 
             <Form.Item
               name="confirmPassword"
-              dependencies={["password"]}
-              rules={[{ required: true, message: "Xác nhận mật khẩu!" }]}
+              rules={[
+                { required: true, message: "Xác nhận mật khẩu !" },
+                ({ getFieldValue }) => ({
+                  validator(_, value) {
+                    if (!value || getFieldValue("password") === value) {
+                      return Promise.resolve();
+                    }
+                    return Promise.reject(
+                      new Error("Mật khẩu xác nhận không khớp!")
+                    );
+                  },
+                }),
+              ]}
             >
-              <InputForm
-                placeholder="Nhập lại mật khẩu"
-                value={confirmPassword}
-                type="password"
-                onChange={(e) => setConfirmPassword(e.target.value)}
-              />
+              <div style={{ position: "relative" }}>
+                <span
+                  onClick={() =>
+                    setIsShowConfirmPassword(!isShowConfirmPassword)
+                  }
+                  style={{
+                    zIndex: 10,
+                    position: "absolute",
+                    top: "4px",
+                    right: "8px",
+                  }}
+                >
+                  {isShowConfirmPassword ? (
+                    <EyeTwoTone />
+                  ) : (
+                    <EyeInvisibleOutlined />
+                  )}
+                </span>
+                <InputForm
+                  placeholder="Nhập lại mật khẩu"
+                  value={confirmPassword}
+                  type={isShowConfirmPassword ? "text" : "password"}
+                  onChange={(e) => setConfirmPassword(e.target.value)}
+                />
+              </div>
             </Form.Item>
 
-            <Form.Item name="agree" valuePropName="checked">
+            {/* <Form.Item name="agree" valuePropName="checked">
               <Checkbox>Tôi đồng ý với điều khoản sử dụng</Checkbox>
-            </Form.Item>
+            </Form.Item> */}
 
             <Form.Item>
-                <ButtonComponent
-                  htmlType="submit"
-                  disabled={
-                    !email.length ||
-                    !password.length ||
-                    password !== confirmPassword
-                  }
-                  size={40}
-                  styleButton={{
-                    backgroundColor: "var(--cbutton)",
-                    height: "48px",
-                    width: "100%",
-                    border: "none",
-                    borderRadius: "4px",
-                  }}
-                  styleTextButton={{
-                    color: "var(--cbuttontext)",
-                    fontSize: "20px",
-                    fontWeight: "600",
-                  }}
-                  textButton={"Đăng ký"}
-                />
+              <ButtonComponent
+                htmlType="submit"
+                disabled={
+                  !email.length ||
+                  !password.length ||
+                  password !== confirmPassword ||
+                  !userName.length ||
+                  !soDienThoai.length
+                }
+                size={40}
+                styleButton={{
+                  backgroundColor: "var(--cbutton)",
+                  height: "48px",
+                  width: "100%",
+                  border: "none",
+                  borderRadius: "4px",
+                }}
+                styleTextButton={{
+                  color: "var(--cbuttontext)",
+                  fontSize: "20px",
+                  fontWeight: "600",
+                }}
+                textButton={"Đăng ký"}
+              />
             </Form.Item>
           </Form>
           <LinkNav>
             <p>
-              Đã có tài khoản? 
+              Đã có tài khoản?
               <WrapperTextLight onClick={() => navigate("/login")}>
                 Đăng nhập
               </WrapperTextLight>

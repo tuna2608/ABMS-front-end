@@ -11,7 +11,7 @@ const LayoutWrapper = styled.div`
 
 const ContentWrapper = styled.main`
   flex: 1;
-  padding: 20px;
+  // padding: 20px;
 `;
 
 const DefaultComponent = ({ children }) => {

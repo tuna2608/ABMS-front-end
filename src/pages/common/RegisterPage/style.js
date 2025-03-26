@@ -20,7 +20,7 @@ export const WrapperContainerLeft = styled.div`
 export const WrapperContainerRight = styled.div`
     border-radius: 10px;
     width: 400px;
-    height: 100%;
+    height: inherit;
     align-content: center;
     background-image: linear-gradient(to right, white, var(--cbutton));
     text-align: center;
