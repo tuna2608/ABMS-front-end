@@ -16,7 +16,6 @@ import PaymentView from "./PaymentView";
 import DocumentUploadView from "./DocumentUploadView";
 
 const { Sider, Content, Header } = Layout;
-
 const OwnerHome = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [currentView, setCurrentView] = useState("list");
