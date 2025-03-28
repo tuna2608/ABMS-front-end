@@ -61,7 +61,7 @@ const UtilityManagement = () => {
       key: 'apartmentName',
     },
     {
-      title: 'Danh Sách Người Dùng',
+      title: 'Người dùng',
       dataIndex: 'users',
       key: 'users',
       render: (users) => (
@@ -176,7 +176,7 @@ const UtilityManagement = () => {
       title={
         <Space>
           <DollarOutlined /> 
-          <span>Quản Lý Tiện Ích</span>
+          <span>Khoản phí</span>
         </Space>
       } 
     >

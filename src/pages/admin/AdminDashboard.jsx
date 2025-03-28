@@ -2,7 +2,6 @@ import React from 'react';
 import { Card, Row, Col, Statistic, Table, Space } from 'antd';
 import {
   UserOutlined,
-  HomeOutlined,
   SafetyOutlined,
   ClockCircleOutlined,
   ApartmentOutlined,
@@ -121,7 +120,7 @@ const AdminDashboard = () => {
               ]}
               dataSource={[
                 { key: '1', type: 'Đặt cọc', details: 'Căn hộ A1202', time: '2 phút trước' },
-                { key: '2', type: 'Tạo tài khoản', details: 'Nguyễn Văn A', time: '15 phút trước' },
+                { key: '2', type: 'Tạo tài khoản', details: 'Huỳnh Lê Phương Nam', time: '15 phút trước' },
                 { key: '3', type: 'Thanh toán', details: 'Hóa đơn dịch vụ', time: '1 giờ trước' }
               ]}
               pagination={false}

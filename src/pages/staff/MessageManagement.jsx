@@ -16,7 +16,7 @@ const MessageManagement = ({ onReplyMessage }) => {
   const [messages] = useState([
     {
       id: '1',
-      sender: 'Nguyễn Văn A',
+      sender: 'Huỳnh Lê Phương Nam',
       content: 'Tôi muốn hỏi về việc đặt cọc căn hộ',
       timestamp: '2025-03-25T10:30:00Z',
       status: 'unread'
@@ -41,7 +41,7 @@ const MessageManagement = ({ onReplyMessage }) => {
       title={
         <Space>
           <MessageOutlined /> 
-          <span>Quản lý tin nhắn</span>
+          <span>Tin nhắn</span>
         </Space>
       } 
       extra={

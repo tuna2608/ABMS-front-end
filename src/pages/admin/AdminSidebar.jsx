@@ -42,10 +42,6 @@ const AdminSidebar = ({ collapsed, activeTab, setActiveTab, toggleCollapsed }) =
         {
           key: "accountsList",
           label: "Danh sách tài khoản"
-        },
-        {
-          key: "pendingAccounts",
-          label: "Duyệt tài khoản"
         }
       ]
     },

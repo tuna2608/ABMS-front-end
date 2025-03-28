@@ -16,7 +16,7 @@ const SidebarMenu = ({ collapsed, setCollapsed, activeMenuItem, setActiveMenuIte
      {
        key: "apartment-list",
        icon: <HomeOutlined />,
-       label: "Danh sách nhà",
+       label: "Danh sách căn hộ",
        onClick: () => setActiveMenuItem("apartment-list"),
      },
      {
