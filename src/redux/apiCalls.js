@@ -81,6 +81,15 @@ export const login = async (dispatch, user) => {
   }
 };
 
+export const editProfile = async (formData) => {
+  try {
+    const res = await userRequest.put(`/user/edit_profile`, formData);
+    return res.data
+  } catch (error) {
+    return error.response
+  }
+};
+
 export const register = async (dispatch, user) => {
   dispatch(registerStart());
   try {
@@ -197,6 +206,8 @@ export const updateUser = async (id, user, dispatch) => {
     dispatch(updateUserFailure());
   }
 };
+
+
 
 export const getImageCloud = async (formData) => {
   try {

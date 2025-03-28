@@ -8,12 +8,12 @@ import {
   Upload,
   message,
 } from "antd";
-import { CameraOutlined, ArrowLeftOutlined } from "@ant-design/icons";
+import { CameraOutlined, ArrowLeftOutlined, UserOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 
 import avtBase from "../../../assets/common/images/avtbase.jpg";
-import { getImageCloud } from "../../../redux/apiCalls";
+import { editProfile, getImageCloud } from "../../../redux/apiCalls";
 
 const { Title } = Typography;
 
@@ -145,69 +145,75 @@ const BackButton = styled(Button)`
 `;
 
 const ProfileEditPage = () => {
-  const [user, setUser] = useState(null);
+  const userCurrent = useSelector((state) => state.user.currentUser);
+
+  const [user, setUser] = useState(userCurrent);
+
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState(null);
-  const [selectedImage, setSelectedImage] = useState(avtBase);
+  const [selectedImage, setSelectedImage] = useState(
+    avtBase || userCurrent.userImgUrl
+  );
   const [selectedFile, setSelectedFile] = useState(null);
-
-  const userCurrent = useSelector((state) => state.user.currentUser);
   // console.log(userCurrent);
 
   const [formData, setFormData] = useState({
+    userId: "",
     fullName: "",
-    email: "",
-    description: "",
-    phone: "",
-    userImgUrl: "",
     age: "",
     birthday: "",
-    idNumber: "",
+    phone: "",
     job: "",
-    user: ""
-  });
+    description: "",
+    idNumber: "",
+    imgUrl: ""
+});
 
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
     if (file) {
       const imageUrl = URL.createObjectURL(file);
-      // console.log(imageUrl);
       setSelectedFile(file);
       setSelectedImage(imageUrl);
-      // const formData = new FormData();
-      // formData.append("file", file);
-      // const res = await getImageCloud(formData);
-      // console.log(res);
     }
   };
   const handleSubmit = async (values) => {
     setLoading(true);
-    console.log("Form values:", values);
+    // console.log("Form values:", values);
 
-    const formData1 = new FormData();
-    formData1.append("file", selectedFile);
-    const res = await getImageCloud(formData1);
-    const messageApi = res.message
-    if(res.status === 403){
-      message.error(messageApi)
-    }
-    else {
-      const userImgUrl = res.data;
-      const formData = {
-        ...values,
-        userImgUrl: userImgUrl,
+    let formattedDate
+    let formData = {
+      ...values,
+      userId: user.userId,
+    };
+    if(values.birthday){
+      formattedDate = values.birthday.format("YYYY-MM-DD");
+      console.log(formattedDate);
+      formData = {
+        ...formData,
+        birthday: formattedDate
       };
-      console.log("Complete form data:", formData);
-      
     }
     
-
-    // Simulate API request
-    // setTimeout(() => {
-    //   setLoading(false);
-    //   // Handle success or show notification
-    // }, 1000);
+    if (selectedFile) {
+      const formData1 = new FormData();
+      formData1.append("file", selectedFile);
+      const res = await getImageCloud(formData1);
+      const messageApi = res.message;
+      if (res.status === 403) {
+        message.error(messageApi);
+      } else {
+        const userImgUrl = res.data;
+        formData = {
+          ...formData,
+          userImgUrl: userImgUrl,
+        };
+      }
+    }
+    console.log("Complete form data:", formData);
+    const resEdit = await editProfile(formData);
+    console.log(resEdit);
+    setLoading(false);
   };
 
   return (
@@ -226,7 +232,7 @@ const ProfileEditPage = () => {
           <AvatarContainer>
             <img
               style={{ width: "50px", height: "50px" }}
-              src={selectedImage || userCurrent.userImgUrl}
+              src={selectedImage}
             />
             <input type="file" accept="image/*" onChange={handleImageChange} />
           </AvatarContainer>
@@ -272,7 +278,12 @@ const ProfileEditPage = () => {
             </FormSection>
 
             <Form.Item>
-              <SaveButton type="primary" htmlType="submit" loading={loading}>
+              <SaveButton
+                type="primary"
+                htmlType="submit"
+                disabled={loading}
+                loading={loading}
+              >
                 SAVE
               </SaveButton>
             </Form.Item>
