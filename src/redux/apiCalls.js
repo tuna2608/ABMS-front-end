@@ -28,6 +28,7 @@ import {
 import {
   addUserStart,
   addUserSuccess,
+  addUserFailure,
   deleteUserFailure,
   deleteUserStart,
   deleteUserSuccess,
@@ -463,5 +464,122 @@ export const getUserInfo = (userId) => async (dispatch) => {
   } catch (error) {
     console.error("Lỗi khi lấy thông tin người dùng:", error);
     return null;
+  }
+};
+
+//duyet
+//tim user bang username va email
+export const searchUserByUsernameOrEmail = async (dispatch, query) => {
+  dispatch(getUserStart());
+  try {
+    const res = await publicRequest.get(`/user/search?query=${query}`);
+    dispatch(getUserSuccess(res.data.data));
+    return res.data;
+  } catch (error) {
+    dispatch(getUserFailure());
+    return error.response;
+  }
+};
+
+//input 
+export const verifyUserInfo = async (dispatch, formData) => {
+  dispatch(verifyStart());
+  try {
+    console.log("Đang gửi formData đến server...");
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}: ${value instanceof File ? value.name : value}`);
+    }
+    const res = await userRequest.post("/user/verify_user", formData);
+    
+    dispatch(verifySuccess());
+    return res.data;
+  } catch (error) {
+    console.error("API error:", error);
+    dispatch(verifyFail());
+    return error.response ? error.response.data : { message: "Unknown error" };
+  }
+};
+
+//duyet
+// export const verifyAndAddUser = async (dispatch, verifyUserResponseDTO) => {
+//   dispatch(addUserStart());
+//   try {
+//     const res = await userRequest.post("/user/add", verifyUserResponseDTO);
+//     dispatch(addUserSuccess(res.data));
+//     return res.data;
+//   } catch (error) {
+//     dispatch(addUserFailure());
+//     return error.response?.data;
+//   }
+// };
+
+
+//show list can duyet
+// export const getResidentList = async (dispatch) => {
+//   dispatch(getUserStart());
+//   try {
+//     const res = await publicRequest.get("/user/list_resident");
+//     dispatch(getUserSuccess(res.data.data));
+//     return res.data;
+//   } catch (error) {
+//     dispatch(getUserFailure());
+//     return error.response?.data;
+//   }
+// };
+
+// Hàm lấy danh sách tài khoản chờ duyệt
+export const getResidentList = async (dispatch) => {
+  dispatch(getUserStart());
+  try {
+    const res = await publicRequest.get("/user/list_resident");
+    
+    console.log("Resident list response:", res.data);
+    if (res.data && res.data.data) {
+      dispatch(getUserSuccess(res.data.data));
+      return res.data;
+    } else if (res.data && Array.isArray(res.data)) {
+      dispatch(getUserSuccess(res.data));
+      return { data: res.data };
+    } else if (res.data && res.data.status === 200 && res.data.message === "Không có cư dân nào cần được duyệt") {
+      dispatch(getUserSuccess([]));
+      return res.data;
+    } else {
+      dispatch(getUserSuccess([]));
+      return { data: [] };
+    }
+  } catch (error) {
+    console.error("Error fetching resident list:", error);
+    dispatch(getUserFailure());
+    return error.response?.data || { error: true, message: "Lỗi khi lấy danh sách cư dân" };
+  }
+};
+
+// Hàm duyệt tài khoản
+export const verifyAndAddUser = async (dispatch, verifyUserResponseDTO) => {
+  dispatch(addUserStart());
+  try {
+    console.log("Data sent to /user/add API:", verifyUserResponseDTO);
+    const res = await userRequest.post("/user/add", verifyUserResponseDTO);
+    console.log("Response from /user/add API:", res.data);
+    dispatch(addUserSuccess(res.data));
+    await getResidentList(dispatch);
+    return {
+      success: true,
+      status: res.status,
+      data: res.data
+    };
+  } catch (error) {
+    console.error("Error in verifyAndAddUser:", error);
+    if (error.response) {
+      console.error("Error response data:", error.response.data);
+      console.error("Error response status:", error.response.status);
+    }
+    dispatch(addUserFailure());
+    return {
+      success: false,
+      status: error.response?.status || 500,
+      message: error.response?.data?.message || "Có lỗi xảy ra khi duyệt tài khoản",
+      data: error.response?.data
+    };
   }
 };
