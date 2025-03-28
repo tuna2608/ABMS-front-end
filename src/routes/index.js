@@ -14,7 +14,6 @@ import BillPage from "../pages/client/BillPage/BillPage";
 import DepositPage from "../pages/client/DepositPage/DepositPage";
 import EditProfilePage from "../pages/common/EditProfilePage/EditProfilePage";
 import StaffHome from "../pages/staff/StaffHome";
-import CardManagement from "../pages/staff/CardManagement";
 import OTPPage from "../pages/common/OTPPage/OTPPage";
 
 export const routes = [
@@ -61,11 +60,6 @@ export const routes = [
     {
         path: '/staffHome',
         page: StaffHome,
-        isShowHeader: true
-    },
-    {
-        path: '/card',
-        page: CardManagement,
         isShowHeader: true
     },
     {

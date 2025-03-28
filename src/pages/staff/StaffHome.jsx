@@ -1,48 +1,13 @@
 import React, { useState } from "react";
 import { 
   Layout, 
-  // Menu, 
   Card, 
-  // List, 
-  // Space, 
-  // Input, 
-  // Select, 
-  Button, 
-  // Pagination,
-  // Typography,
-  // Table,
-  // Form,
-  // Modal,
-  // Tabs,
-  // message,
-
-  // Badge,
-  // Tag,
-  // Statistic,
-  // Row,
-  // Col,
-  // Divider
+  Button
 } from "antd";
 import { 
-  // HomeOutlined, 
-  // DollarOutlined, 
-  // UserOutlined, 
-  // SearchOutlined, 
-  // FilterOutlined,
-  // EnvironmentOutlined,
-  // BankOutlined,
-  // MessageOutlined,
-  // ThunderboltOutlined,
- 
   MenuUnfoldOutlined,
   MenuFoldOutlined
-  // SafetyOutlined,
-  // EyeOutlined,
-  // ClockCircleOutlined,
-  // CheckCircleOutlined,
-  // CloseCircleOutlined
 } from "@ant-design/icons";
-
 
 // Import custom components
 import SidebarMenu from "./SidebarMenu";
@@ -51,11 +16,11 @@ import ApartmentList from "./ApartmentList";
 import UtilityManagement from "./UtilityManagement";
 import AccountManagement from "./AccountManagement";
 import MessageManagement from "./MessageManagement";
+import CardManagement from "./CardManagement";  // Add this import
 import DepositDetailModal from "./DepositDetailModal";
 import ReplyMessageModal from "./ReplyMessageModal";
 
-const {  Content, Header } = Layout;
-// const { Text } = Typography;
+const { Content, Header } = Layout;
 
 const StaffHome = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -65,13 +30,9 @@ const StaffHome = () => {
   const [isReplyModalVisible, setIsReplyModalVisible] = useState(false);
   const [currentMessage, setCurrentMessage] = useState(null);
 
-
-
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
   };
-
- 
 
   const renderContent = () => {
     switch (activeMenuItem) {
@@ -86,6 +47,8 @@ const StaffHome = () => {
             }}
           />
         );
+      case "card-management":  // Add this case
+        return <CardManagement />;
       case "utility-management":
         return <UtilityManagement />;
       case "account-management":
