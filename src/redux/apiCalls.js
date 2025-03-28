@@ -52,19 +52,8 @@ import {
   deleteCartSuccess,
 } from "./cartSlice";
 import { toast } from "react-toastify";
-import {
-  createOrderFailure,
-  createOrderSuccess,
-  getAllOrdersFailure,
-  getAllOrdersStart,
-  getAllOrdersSuccess,
-  getOrdersFailure,
-  getOrdersStart,
-  getOrdersSuccess,
-  resetOrdersSuccess,
-  updateOrderStatusSuccess,
-} from "./orderSlice";
-import { getAllPostsFailure, getAllPostsStart, getAllPostsSuccess, getPostFailure, getPostsFailure, getPostsStart, getPostsSuccess, getPostStart, getPostSuccess } from "./postSlice";
+
+import { getAllPostsFailure, getAllPostsStart, getAllPostsSuccess, getPostFailure, getPostStart, getPostSuccess } from "./postSlice";
 
 import {
   getMessagesStart,
@@ -209,18 +198,16 @@ export const updateUser = async (id, user, dispatch) => {
   }
 };
 
-export const getImageCloud = async (dispatch,formData) => {
-  console.log(formData);
-  dispatch(updateUserStart());
+export const getImageCloud = async (formData) => {
   try {
-    const res = await userRequest.put(`/users/update_image`, {
-      method: "PUT",
-      credentials: "include",
-      body: formData,
-  });
-    dispatch(updateUserSuccess(res.data));
+    const res = await userRequest.post(`/user/update_image`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    return res.data
   } catch (error) {
-    dispatch(updateUserFailure());
+    return error.response
   }
 };
 
@@ -289,12 +276,12 @@ export const decreaseCartQuantity = async (
 // Order
 
 export const getPostsByUId = async (dispatch, userId) => {
-  dispatch(getOrdersStart());
+  dispatch(getPostStart());
   try {
     const res = await publicRequest.get(`orders/find/${userId}`);
-    dispatch(getOrdersSuccess(res.data));
+    dispatch(getPostSuccess(res.data));
   } catch (error) {
-    dispatch(getOrdersFailure());
+    dispatch(getPostFailure());
   }
 };
 
@@ -310,7 +297,7 @@ export const getAllPosts = async (dispatch) => {
   }
 }
 
-export const getPostById = async (dispatch,postId) => {
+export const getPostById = async (dispatch, postId) => {
   dispatch(getPostStart());
   try {
     const res = await publicRequest.get(`/post/${postId}`);
@@ -322,7 +309,7 @@ export const getPostById = async (dispatch,postId) => {
   }
 }
 
-export const getUserByUserName = async (dispatch,username) => {
+export const getUserByUserName = async (dispatch, username) => {
   dispatch(getUserStart());
   try {
     const res = await publicRequest.get(`/user/find?username=${username}`);

@@ -12,7 +12,8 @@ import { CameraOutlined, ArrowLeftOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import { useSelector } from "react-redux";
 
-import avtBase from '../../../assets/common/images/avtbase.jpg'
+import avtBase from "../../../assets/common/images/avtbase.jpg";
+import { getImageCloud } from "../../../redux/apiCalls";
 
 const { Title } = Typography;
 
@@ -148,11 +149,11 @@ const ProfileEditPage = () => {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
   const [imageUrl, setImageUrl] = useState(null);
-  const [selectedImage,setSelectedImage] = useState(avtBase);
+  const [selectedImage, setSelectedImage] = useState(avtBase);
   const [selectedFile, setSelectedFile] = useState(null);
 
   const userCurrent = useSelector((state) => state.user.currentUser);
-  console.log(userCurrent);
+  // console.log(userCurrent);
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -164,35 +165,49 @@ const ProfileEditPage = () => {
     birthday: "",
     idNumber: "",
     job: "",
+    user: ""
   });
 
-  const handleImageChange = (e) =>{
+  const handleImageChange = async (e) => {
     const file = e.target.files[0];
-    if(file){
+    if (file) {
       const imageUrl = URL.createObjectURL(file);
       // console.log(imageUrl);
       setSelectedFile(file);
       setSelectedImage(imageUrl);
+      // const formData = new FormData();
+      // formData.append("file", file);
+      // const res = await getImageCloud(formData);
+      // console.log(res);
     }
-  }
-
-  const handleSubmit = (values) => {
+  };
+  const handleSubmit = async (values) => {
     setLoading(true);
     console.log("Form values:", values);
 
-    // Include the avatar image in the form data
-    const formData = {
-      ...values,
-      user: imageUrl,
-    };
-
-    console.log("Complete form data:", formData);
+    const formData1 = new FormData();
+    formData1.append("file", selectedFile);
+    const res = await getImageCloud(formData1);
+    const messageApi = res.message
+    if(res.status === 403){
+      message.error(messageApi)
+    }
+    else {
+      const userImgUrl = res.data;
+      const formData = {
+        ...values,
+        userImgUrl: userImgUrl,
+      };
+      console.log("Complete form data:", formData);
+      
+    }
+    
 
     // Simulate API request
-    setTimeout(() => {
-      setLoading(false);
-      // Handle success or show notification
-    }, 1000);
+    // setTimeout(() => {
+    //   setLoading(false);
+    //   // Handle success or show notification
+    // }, 1000);
   };
 
   return (
@@ -209,8 +224,11 @@ const ProfileEditPage = () => {
             Edit profile
           </Title>
           <AvatarContainer>
-            <img style={{width: '50px',height: '50px',}} src={selectedImage || userCurrent.userImgUrl}/>
-            <input type="file" accept="image/*" onChange={handleImageChange}/>
+            <img
+              style={{ width: "50px", height: "50px" }}
+              src={selectedImage || userCurrent.userImgUrl}
+            />
+            <input type="file" accept="image/*" onChange={handleImageChange} />
           </AvatarContainer>
           <Form
             form={form}
@@ -238,12 +256,11 @@ const ProfileEditPage = () => {
               </Form.Item>
             </FormSection>
             <FormSection>
-              <Form.Item label="Age:" name="age">
-                <Input />
-              </Form.Item>
-
               <Form.Item label="Birthday:" name="birthday">
                 <DatePicker style={{ width: "100%" }} />
+              </Form.Item>
+              <Form.Item label="Job:" name="job">
+                <Input />
               </Form.Item>
             </FormSection>
             <FormSection>
