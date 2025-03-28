@@ -15,7 +15,7 @@ import {
   // Modal,
   // Tabs,
   // message,
-  FloatButton,
+
   // Badge,
   // Tag,
   // Statistic,
@@ -33,7 +33,7 @@ import {
   // BankOutlined,
   // MessageOutlined,
   // ThunderboltOutlined,
-  CommentOutlined,
+ 
   MenuUnfoldOutlined,
   MenuFoldOutlined
   // SafetyOutlined,
@@ -42,7 +42,7 @@ import {
   // CheckCircleOutlined,
   // CloseCircleOutlined
 } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+
 
 // Import custom components
 import SidebarMenu from "./SidebarMenu";
@@ -65,15 +65,13 @@ const StaffHome = () => {
   const [isReplyModalVisible, setIsReplyModalVisible] = useState(false);
   const [currentMessage, setCurrentMessage] = useState(null);
 
-  const navigate = useNavigate();
+
 
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
   };
 
-  const navigateToChatPage = () => {
-    navigate('/chat-page');
-  };
+ 
 
   const renderContent = () => {
     switch (activeMenuItem) {
@@ -149,13 +147,6 @@ const StaffHome = () => {
         deposit={selectedDeposit}
       />
       
-      <FloatButton
-        icon={<CommentOutlined />}
-        type="primary"
-        tooltip="Chat với khách hàng"
-        onClick={navigateToChatPage}
-        style={{ right: 24 }}
-      />
     </Layout>
   );
 };
