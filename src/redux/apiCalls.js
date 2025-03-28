@@ -485,7 +485,9 @@ export const searchUserByUsernameOrEmail = async (dispatch, query) => {
 export const verifyUserInfo = async (dispatch, formData) => {
   dispatch(verifyStart());
   try {
-    console.log("Đang gửi formData đến server...");
+    if (formData.get('verificationFormType') === '2') {
+      formData.set('contractEndDate', null);
+    } 
     for (let [key, value] of formData.entries()) {
       console.log(`${key}: ${value instanceof File ? value.name : value}`);
     }
@@ -500,50 +502,41 @@ export const verifyUserInfo = async (dispatch, formData) => {
   }
 };
 
-//duyet
-// export const verifyAndAddUser = async (dispatch, verifyUserResponseDTO) => {
-//   dispatch(addUserStart());
-//   try {
-//     const res = await userRequest.post("/user/add", verifyUserResponseDTO);
-//     dispatch(addUserSuccess(res.data));
-//     return res.data;
-//   } catch (error) {
-//     dispatch(addUserFailure());
-//     return error.response?.data;
-//   }
-// };
-
-
-//show list can duyet
-// export const getResidentList = async (dispatch) => {
-//   dispatch(getUserStart());
-//   try {
-//     const res = await publicRequest.get("/user/list_resident");
-//     dispatch(getUserSuccess(res.data.data));
-//     return res.data;
-//   } catch (error) {
-//     dispatch(getUserFailure());
-//     return error.response?.data;
-//   }
-// };
-
+//duyet user
 // Hàm lấy danh sách tài khoản chờ duyệt
 export const getResidentList = async (dispatch) => {
   dispatch(getUserStart());
   try {
     const res = await publicRequest.get("/user/list_resident");
     
-    console.log("Resident list response:", res.data);
+    console.log("API Response from list_resident:", res.data);
+    
+    // Xử lý dữ liệu từ API
     if (res.data && res.data.data) {
-      dispatch(getUserSuccess(res.data.data));
+      // Đảm bảo từng user có đủ trường dữ liệu cần thiết, bao gồm imageFiles
+      const processedData = res.data.data.map(user => ({
+        ...user,
+        // Đảm bảo imageFiles là mảng
+        imageFiles: Array.isArray(user.imageFiles) ? user.imageFiles : []
+      }));
+      
+      dispatch(getUserSuccess(processedData));
       return res.data;
     } else if (res.data && Array.isArray(res.data)) {
-      dispatch(getUserSuccess(res.data));
-      return { data: res.data };
+      // Trường hợp API trả về mảng trực tiếp
+      const processedData = res.data.map(user => ({
+        ...user,
+        imageFiles: Array.isArray(user.imageFiles) ? user.imageFiles : []
+      }));
+      
+      dispatch(getUserSuccess(processedData));
+      return { data: processedData };
     } else if (res.data && res.data.status === 200 && res.data.message === "Không có cư dân nào cần được duyệt") {
+      // Trường hợp không có tài khoản cần duyệt
       dispatch(getUserSuccess([]));
       return res.data;
     } else {
+      // Mặc định trả về mảng rỗng nếu không thể xác định cấu trúc dữ liệu
       dispatch(getUserSuccess([]));
       return { data: [] };
     }

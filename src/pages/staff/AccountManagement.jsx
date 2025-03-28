@@ -1,27 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
-  Card,
-  Space,
-  Input,
-  Form,
-  Select,
-  Button,
-  message,
-  Typography,
-  Row,
-  Col,
-  Upload,
-  DatePicker
+  Card, Space, Input, Form, Select, Button, message, Typography, Row, Col, Upload, DatePicker
 } from "antd";
 import {
-  UserOutlined,
-  MailOutlined,
-  PhoneOutlined,
-  TagOutlined,
-  HomeOutlined,
-  UploadOutlined,
-  SearchOutlined,
-  LockOutlined
+  UserOutlined, MailOutlined, PhoneOutlined, TagOutlined, HomeOutlined, 
+  UploadOutlined, SearchOutlined, LockOutlined
 } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import { searchUserByUsernameOrEmail, verifyUserInfo } from "../../redux/apiCalls";
@@ -37,52 +20,42 @@ const AccountManagement = () => {
   const [submitting, setSubmitting] = useState(false);
   const [fileList, setFileList] = useState([]);
   const [searchPerformed, setSearchPerformed] = useState(false);
+  const [verificationType, setVerificationType] = useState(null);
 
   const dispatch = useDispatch();
-
-  // Get user data from Redux store
   const userData = useSelector((state) => state.users.users);
+
+  useEffect(() => {
+    if (verificationType === 2) {
+      verificationForm.setFieldValue('contractEndDate', null);
+    }
+  }, [verificationType, verificationForm]);
 
   const handleSearch = async (values) => {
     try {
       setSearching(true);
-      const query = values.searchQuery;
-
-      const result = await searchUserByUsernameOrEmail(dispatch, query);
-
-      console.log("Full search result:", result);
+      const result = await searchUserByUsernameOrEmail(dispatch, values.searchQuery);
 
       if (result.status === 200) {
         message.success("Tìm thấy thông tin người dùng!");
         setSearchPerformed(true);
 
-        // Pre-fill verification form with user data if available
         if (result.data) {
           const userData = result.data;
+          const phoneNumber = userData.phoneNumber || userData.phone || userData.telephone || userData.mobileNumber;
 
-          // Log user data details
-          console.log("User Data Details:", JSON.stringify(userData, null, 2));
-
-          // Determine phone number field
-          const phoneNumber =
-            userData.phoneNumber ||
-            userData.phone ||
-            userData.telephone ||
-            userData.mobileNumber;
-
-          // Autofill tất cả dữ liệu từ API
           verificationForm.setFieldsValue({
             fullName: userData.fullName,
             email: userData.email,
             phone: phoneNumber,
-            // Autofill thêm các trường khác nếu API trả về
             apartment: userData.apartmentName || userData.apartment,
             verificationType: userData.verificationType,
             contractStartDate: userData.contractStartDate ? moment(userData.contractStartDate) : null,
             contractEndDate: userData.contractEndDate ? moment(userData.contractEndDate) : null
           });
 
-          // Nếu API trả về danh sách tài liệu
+          setVerificationType(userData.verificationType);
+
           if (userData.documents && userData.documents.length > 0) {
             const existingFiles = userData.documents.map((doc, index) => ({
               uid: `-${index}`,
@@ -90,7 +63,6 @@ const AccountManagement = () => {
               status: 'done',
               url: doc.url
             }));
-
             setFileList(existingFiles);
           }
         }
@@ -109,14 +81,12 @@ const AccountManagement = () => {
     try {
       setSubmitting(true);
 
-      // Kiểm tra xem có file nào được chọn chưa
       if (fileList.length === 0) {
         message.error("Vui lòng tải lên ít nhất một tài liệu xác thực!");
         setSubmitting(false);
         return;
       }
 
-      // Create FormData object
       const formData = new FormData();
       formData.append("verificationFormName", values.fullName);
       formData.append("verificationFormType", values.verificationType);
@@ -124,14 +94,14 @@ const AccountManagement = () => {
       formData.append("phoneNumber", values.phone);
       formData.append("apartmentName", values.apartment);
 
-      // Chỉ lấy ngày, tự động đặt giờ là 00:00:00
       const startDate = values.contractStartDate.format("YYYY-MM-DDT00:00:00");
-      const endDate = values.contractEndDate.format("YYYY-MM-DDT00:00:00");
-
       formData.append("contractStartDate", startDate);
-      formData.append("contractEndDate", endDate);
 
-      // Xử lý file upload
+      if (values.verificationType !== 2 && values.contractEndDate) {
+        const endDate = values.contractEndDate.format("YYYY-MM-DDT00:00:00");
+        formData.append("contractEndDate", endDate);
+      }
+
       fileList.forEach((file) => {
         const fileObject = file.originFileObj || file;
         if (fileObject) {
@@ -139,7 +109,6 @@ const AccountManagement = () => {
         }
       });
 
-      // Gọi API trực tiếp như trong mẫu, nhưng sử dụng qua redux action
       const response = await verifyUserInfo(dispatch, formData);
 
       if (response && response.status === 201) {
@@ -147,6 +116,7 @@ const AccountManagement = () => {
         verificationForm.resetFields();
         setFileList([]);
         setSearchPerformed(false);
+        setVerificationType(null);
       } else {
         throw new Error(response?.message || "Có lỗi xảy ra");
       }
@@ -154,6 +124,14 @@ const AccountManagement = () => {
       message.error("Có lỗi xảy ra khi gửi thông tin: " + (error.message || "Unknown error"));
     } finally {
       setSubmitting(false);
+    }
+  };
+
+  const handleVerificationTypeChange = (value) => {
+    setVerificationType(value);
+    
+    if (value === 2) {
+      verificationForm.setFieldValue('contractEndDate', null);
     }
   };
 
@@ -170,18 +148,9 @@ const AccountManagement = () => {
   };
 
   const renderUserDetails = () => {
-    // Log the entire userData object to see its structure
-    console.log("Full userData object:", userData);
-
     if (!userData) return null;
 
-    // Check for different possible phone number field names
-    const phoneNumber =
-      userData.phoneNumber ||
-      userData.phone ||
-      userData.telephone ||
-      userData.mobileNumber ||
-      'Không có';
+    const phoneNumber = userData.phoneNumber || userData.phone || userData.telephone || userData.mobileNumber || 'Không có';
 
     return (
       <Card
@@ -215,7 +184,7 @@ const AccountManagement = () => {
           {userData.verificationType && (
             <div>
               <Text strong><TagOutlined /> Loại xác thực: </Text>
-              <Text>{userData.verificationType === 1 ? 'Chủ hộ' : 'Người thuê'}</Text>
+              <Text>{userData.verificationType === 2 ? 'Chủ hộ' : 'Người thuê'}</Text>
             </div>
           )}
         </Space>
@@ -339,15 +308,18 @@ const AccountManagement = () => {
                     label="Loại xác thực"
                     rules={[{ required: true, message: 'Vui lòng chọn loại xác thực!' }]}
                   >
-                    <Select placeholder="Chọn loại xác thực">
-                      <Option value={1}>Chủ hộ</Option>
-                      <Option value={2}>Người thuê</Option>
+                    <Select 
+                      placeholder="Chọn loại xác thực"
+                      onChange={handleVerificationTypeChange}
+                    >
+                      <Option value={2}>Chủ hộ</Option>
+                      <Option value={1}>Người thuê</Option>
                     </Select>
                   </Form.Item>
                 </Col>
                 <Col span={12}>
                   <Row gutter={8}>
-                    <Col span={12}>
+                    <Col span={verificationType === 2 ? 24 : 12}>
                       <Form.Item
                         name="contractStartDate"
                         label="Ngày bắt đầu hợp đồng"
@@ -360,19 +332,26 @@ const AccountManagement = () => {
                         />
                       </Form.Item>
                     </Col>
-                    <Col span={12}>
-                      <Form.Item
-                        name="contractEndDate"
-                        label="Ngày kết thúc hợp đồng"
-                        rules={[{ required: true, message: 'Vui lòng chọn ngày kết thúc!' }]}
-                      >
-                        <DatePicker
-                          style={{ width: '100%' }}
-                          format="YYYY-MM-DD"
-                          placeholder="Chọn ngày kết thúc"
-                        />
-                      </Form.Item>
-                    </Col>
+                    {verificationType !== 2 && (
+                      <Col span={12}>
+                        <Form.Item
+                          name="contractEndDate"
+                          label="Ngày kết thúc hợp đồng"
+                          rules={[
+                            { 
+                              required: verificationType === 1, 
+                              message: 'Vui lòng chọn ngày kết thúc!' 
+                            }
+                          ]}
+                        >
+                          <DatePicker
+                            style={{ width: '100%' }}
+                            format="YYYY-MM-DD"
+                            placeholder="Chọn ngày kết thúc"
+                          />
+                        </Form.Item>
+                      </Col>
+                    )}
                   </Row>
                 </Col>
               </Row>
