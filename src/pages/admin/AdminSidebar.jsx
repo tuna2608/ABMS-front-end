@@ -3,20 +3,11 @@ import { Layout, Menu } from 'antd';
 import {
   UserOutlined,
   HomeOutlined,
-  FileAddOutlined,
-  SearchOutlined,
-  MenuUnfoldOutlined,
-  MenuFoldOutlined,
   SettingOutlined,
   BellOutlined,
-  UserAddOutlined,
   SafetyOutlined,
   DollarOutlined,
-  CheckCircleOutlined,
   DashboardOutlined,
-  ClockCircleOutlined,
-  ApartmentOutlined,
-  FileDoneOutlined
 } from "@ant-design/icons";
 
 const { Sider } = Layout;
@@ -42,10 +33,6 @@ const AdminSidebar = ({ collapsed, activeTab, setActiveTab, toggleCollapsed }) =
         {
           key: "accountsList",
           label: "Danh sách tài khoản"
-        },
-        {
-          key: "pendingAccounts",
-          label: "Duyệt tài khoản"
         }
       ]
     },
@@ -62,11 +49,6 @@ const AdminSidebar = ({ collapsed, activeTab, setActiveTab, toggleCollapsed }) =
         {
           key: "postsList",
           label: "Danh sách bài viết"
-        },
-        {
-          key: "createPost",
-          icon: <FileAddOutlined />,
-          label: "Tạo bài viết mới"
         }
       ]
     },

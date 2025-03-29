@@ -1,48 +1,13 @@
 import React, { useState } from "react";
 import { 
   Layout, 
-  // Menu, 
   Card, 
-  // List, 
-  // Space, 
-  // Input, 
-  // Select, 
-  Button, 
-  // Pagination,
-  // Typography,
-  // Table,
-  // Form,
-  // Modal,
-  // Tabs,
-  // message,
-  FloatButton,
-  // Badge,
-  // Tag,
-  // Statistic,
-  // Row,
-  // Col,
-  // Divider
+  Button
 } from "antd";
 import { 
-  // HomeOutlined, 
-  // DollarOutlined, 
-  // UserOutlined, 
-  // SearchOutlined, 
-  // FilterOutlined,
-  // EnvironmentOutlined,
-  // BankOutlined,
-  // MessageOutlined,
-  // ThunderboltOutlined,
-  CommentOutlined,
   MenuUnfoldOutlined,
   MenuFoldOutlined
-  // SafetyOutlined,
-  // EyeOutlined,
-  // ClockCircleOutlined,
-  // CheckCircleOutlined,
-  // CloseCircleOutlined
 } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
 
 // Import custom components
 import SidebarMenu from "./SidebarMenu";
@@ -51,11 +16,11 @@ import ApartmentList from "./ApartmentList";
 import UtilityManagement from "./UtilityManagement";
 import AccountManagement from "./AccountManagement";
 import MessageManagement from "./MessageManagement";
+import CardManagement from "./CardManagement";  // Add this import
 import DepositDetailModal from "./DepositDetailModal";
 import ReplyMessageModal from "./ReplyMessageModal";
 
-const {  Content, Header } = Layout;
-// const { Text } = Typography;
+const { Content, Header } = Layout;
 
 const StaffHome = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -65,14 +30,8 @@ const StaffHome = () => {
   const [isReplyModalVisible, setIsReplyModalVisible] = useState(false);
   const [currentMessage, setCurrentMessage] = useState(null);
 
-  const navigate = useNavigate();
-
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
-  };
-
-  const navigateToChatPage = () => {
-    navigate('/chat-page');
   };
 
   const renderContent = () => {
@@ -88,6 +47,8 @@ const StaffHome = () => {
             }}
           />
         );
+      case "card-management":  // Add this case
+        return <CardManagement />;
       case "utility-management":
         return <UtilityManagement />;
       case "account-management":
@@ -149,13 +110,6 @@ const StaffHome = () => {
         deposit={selectedDeposit}
       />
       
-      <FloatButton
-        icon={<CommentOutlined />}
-        type="primary"
-        tooltip="Chat với khách hàng"
-        onClick={navigateToChatPage}
-        style={{ right: 24 }}
-      />
     </Layout>
   );
 };

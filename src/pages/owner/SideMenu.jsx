@@ -13,7 +13,7 @@ const SideMenu = ({ setCurrentView }) => {
     {
       key: "1",
       icon: <HomeOutlined />,
-      label: "Quản lý căn hộ",
+      label: "Danh sách căn hộ",
       onClick: () => setCurrentView("list"),
     },
     {
