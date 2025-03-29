@@ -48,6 +48,7 @@ import { getPostById, getUserByUserName } from "../../../redux/apiCalls";
 import { useDispatch } from "react-redux";
 import ChatBox from "../../../components/common/Chatbot/Chatbot";
 import { useSelector } from "react-redux";
+import DepositPage from "../DepositPage/DepositPage";
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -185,6 +186,7 @@ const PostDetail = () => {
   const [messageInput, setMessageInput] = useState("");
   const [showAdminRoleModal, setShowAdminRoleModal] = useState(false);
   const [isChatOpen, setIsChatOpen] = useState(false);
+  const [isDepositeOpen,setIsDepositeOpen] = useState(false);
   const [form] = Form.useForm();
   const dispatch = useDispatch();
 
@@ -272,9 +274,8 @@ const PostDetail = () => {
     window.history.back();
   };
 
-  // Hiển thị modal xác nhận chuyển đến trang ChatPage
-  const showAdminRoleConfirm = () => {
-    setShowAdminRoleModal(true);
+  const handleButtonDeposite = () => {
+    setIsDepositeOpen(true);
   };
 
   // Xử lý chuyển đến trang ChatPage
@@ -616,7 +617,7 @@ const PostDetail = () => {
                   style={{ background: 'var(--forange)', color: 'white' }}
                   icon={<MoneyCollectOutlined />} 
                   block
-                  onClick={() => userCurrent ? showAdminRoleConfirm : navigate('/login')}
+                  onClick={() => userCurrent ? setIsDepositeOpen(true) : navigate('/login')}
                 >
                   Đặt cọc
                 </Button>
@@ -685,6 +686,8 @@ const PostDetail = () => {
           </Col>
         </Row>
       </Card>
+
+      <DepositPage isOpen={isDepositeOpen} onCancel={()=>setIsDepositeOpen(false)}/>
       
       {/* Modal gửi email liên hệ */}
       <Modal

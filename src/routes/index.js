@@ -88,11 +88,11 @@ export const routes = [
         page: BillPage,
         isShowHeader: true
     },
-    {
-        path: '/deposit-check',
-        page: DepositPage,
-        isShowHeader: true
-    },
+    // {
+    //     path: '/deposit-check',
+    //     page: DepositPage,
+    //     isShowHeader: true
+    // },
     {
         path: '/notification',
         page: NotificationsPage,
