@@ -8,12 +8,18 @@ import {
   Upload,
   message,
 } from "antd";
-import { CameraOutlined, ArrowLeftOutlined, UserOutlined } from "@ant-design/icons";
+import {
+  CameraOutlined,
+  ArrowLeftOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import dayjs from 'dayjs';
 import styled from "styled-components";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
 import avtBase from "../../../assets/common/images/avtbase.jpg";
 import { editProfile, getImageCloud } from "../../../redux/apiCalls";
+import { useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
 
@@ -147,15 +153,17 @@ const BackButton = styled(Button)`
 const ProfileEditPage = () => {
   const userCurrent = useSelector((state) => state.user.currentUser);
 
-  const [user, setUser] = useState(userCurrent);
+  const [user, setUser] = useState(
+    {...userCurrent,birthday: dayjs(userCurrent.birthday)});
 
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(
-    avtBase || userCurrent.userImgUrl
-  );
+  const [selectedImage, setSelectedImage] = useState(userCurrent.userImgUrl);
   const [selectedFile, setSelectedFile] = useState(null);
   // console.log(userCurrent);
+  console.log(user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
     userId: "",
@@ -166,8 +174,8 @@ const ProfileEditPage = () => {
     job: "",
     description: "",
     idNumber: "",
-    imgUrl: ""
-});
+    imgUrl: "",
+  });
 
   const handleImageChange = async (e) => {
     const file = e.target.files[0];
@@ -181,20 +189,20 @@ const ProfileEditPage = () => {
     setLoading(true);
     // console.log("Form values:", values);
 
-    let formattedDate
+    let formattedDate;
     let formData = {
       ...values,
       userId: user.userId,
     };
-    if(values.birthday){
+    if (values.birthday) {
       formattedDate = values.birthday.format("YYYY-MM-DD");
       console.log(formattedDate);
       formData = {
         ...formData,
-        birthday: formattedDate
+        birthday: formattedDate,
       };
     }
-    
+
     if (selectedFile) {
       const formData1 = new FormData();
       formData1.append("file", selectedFile);
@@ -211,8 +219,17 @@ const ProfileEditPage = () => {
       }
     }
     console.log("Complete form data:", formData);
-    const resEdit = await editProfile(formData);
+    const resEdit = await editProfile(dispatch, formData);
     console.log(resEdit);
+    const messageAPI = resEdit.message;
+    if (resEdit.status === 401) {
+      message.error(messageAPI);
+      return;
+    } else {
+      message.success(messageAPI);
+      navigate("/edit-profile");
+    }
+
     setLoading(false);
   };
 
@@ -239,11 +256,11 @@ const ProfileEditPage = () => {
           <Form
             form={form}
             layout="vertical"
-            initialValues={userCurrent}
+            initialValues={user}
             onFinish={handleSubmit}
           >
             <FormSection>
-              <Form.Item label="Username:" name="user">
+              <Form.Item label="Username:" name="userName">
                 <Input disabled />
               </Form.Item>
 

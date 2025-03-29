@@ -9,6 +9,9 @@ import {
   verifyStart,
   verifySuccess,
   verifyFail,
+  editProfileStart,
+  editProfileSuccess,
+  editProfileFail,
 } from "./authSlice";
 import { publicRequest, userRequest } from "../utilities/requestMethod";
 import {
@@ -81,11 +84,14 @@ export const login = async (dispatch, user) => {
   }
 };
 
-export const editProfile = async (formData) => {
+export const editProfile = async (dispatch,formData) => {
+  dispatch(editProfileStart());
   try {
     const res = await userRequest.put(`/user/edit_profile`, formData);
+    dispatch(editProfileSuccess(res.data.data))
     return res.data
   } catch (error) {
+    dispatch(editProfileFail())
     return error.response
   }
 };
