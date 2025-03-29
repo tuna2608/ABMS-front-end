@@ -58,7 +58,6 @@ export const userSlice = createSlice({
     },
     editProfileSuccess: (state, action) => {
       state.isFetching = false;
-      state.error = false;
       state.currentUser = action.payload;
     },
     editProfileFail: (state) => {
