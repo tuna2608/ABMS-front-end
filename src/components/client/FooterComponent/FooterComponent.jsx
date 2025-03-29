@@ -39,7 +39,7 @@ function FooterComponent() {
       <FooterCol span={6}>
         <Image src={logoMenu} width={200} preview={false} />
         <p>Bản quyền © 2025 ABMS</p>
-        <p>Thiết kế bởi Phương Nam</p>
+        <p>Thiết kế bởi ABMS Team</p>
       </FooterCol>
       <FooterCol span={6}>
         <h3>Về chúng tôi</h3>

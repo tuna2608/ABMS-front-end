@@ -8,11 +8,18 @@ import {
   Upload,
   message,
 } from "antd";
-import { CameraOutlined, ArrowLeftOutlined } from "@ant-design/icons";
+import {
+  CameraOutlined,
+  ArrowLeftOutlined,
+  UserOutlined,
+} from "@ant-design/icons";
+import dayjs from 'dayjs';
 import styled from "styled-components";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-import avtBase from '../../../assets/common/images/avtbase.jpg'
+import avtBase from "../../../assets/common/images/avtbase.jpg";
+import { editProfile, getImageCloud } from "../../../redux/apiCalls";
+import { useNavigate } from "react-router-dom";
 
 const { Title } = Typography;
 
@@ -144,55 +151,86 @@ const BackButton = styled(Button)`
 `;
 
 const ProfileEditPage = () => {
-  const [user, setUser] = useState(null);
+  const userCurrent = useSelector((state) => state.user.currentUser);
+
+  const [user, setUser] = useState(
+    {...userCurrent,birthday: dayjs(userCurrent.birthday)});
+
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [imageUrl, setImageUrl] = useState(null);
-  const [selectedImage,setSelectedImage] = useState(avtBase);
+  const [selectedImage, setSelectedImage] = useState(userCurrent.userImgUrl);
   const [selectedFile, setSelectedFile] = useState(null);
-
-  const userCurrent = useSelector((state) => state.user.currentUser);
-  console.log(userCurrent);
+  // console.log(userCurrent);
+  console.log(user);
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
 
   const [formData, setFormData] = useState({
+    userId: "",
     fullName: "",
-    email: "",
-    description: "",
-    phone: "",
-    userImgUrl: "",
     age: "",
     birthday: "",
-    idNumber: "",
+    phone: "",
     job: "",
+    description: "",
+    idNumber: "",
+    imgUrl: "",
   });
 
-  const handleImageChange = (e) =>{
+  const handleImageChange = async (e) => {
     const file = e.target.files[0];
-    if(file){
+    if (file) {
       const imageUrl = URL.createObjectURL(file);
-      // console.log(imageUrl);
       setSelectedFile(file);
       setSelectedImage(imageUrl);
     }
-  }
-
-  const handleSubmit = (values) => {
+  };
+  const handleSubmit = async (values) => {
     setLoading(true);
-    console.log("Form values:", values);
+    // console.log("Form values:", values);
 
-    // Include the avatar image in the form data
-    const formData = {
+    let formattedDate;
+    let formData = {
       ...values,
-      user: imageUrl,
+      userId: user.userId,
     };
+    if (values.birthday) {
+      formattedDate = values.birthday.format("YYYY-MM-DD");
+      console.log(formattedDate);
+      formData = {
+        ...formData,
+        birthday: formattedDate,
+      };
+    }
 
+    if (selectedFile) {
+      const formData1 = new FormData();
+      formData1.append("file", selectedFile);
+      const res = await getImageCloud(formData1);
+      const messageApi = res.message;
+      if (res.status === 403) {
+        message.error(messageApi);
+      } else {
+        const userImgUrl = res.data;
+        formData = {
+          ...formData,
+          userImgUrl: userImgUrl,
+        };
+      }
+    }
     console.log("Complete form data:", formData);
+    const resEdit = await editProfile(dispatch, formData);
+    console.log(resEdit);
+    const messageAPI = resEdit.message;
+    if (resEdit.status === 401) {
+      message.error(messageAPI);
+      return;
+    } else {
+      message.success(messageAPI);
+      navigate("/edit-profile");
+    }
 
-    // Simulate API request
-    setTimeout(() => {
-      setLoading(false);
-      // Handle success or show notification
-    }, 1000);
+    setLoading(false);
   };
 
   return (
@@ -209,17 +247,20 @@ const ProfileEditPage = () => {
             Edit profile
           </Title>
           <AvatarContainer>
-            <img style={{width: '50px',height: '50px',}} src={selectedImage || userCurrent.userImgUrl}/>
-            <input type="file" accept="image/*" onChange={handleImageChange}/>
+            <img
+              style={{ width: "50px", height: "50px" }}
+              src={selectedImage}
+            />
+            <input type="file" accept="image/*" onChange={handleImageChange} />
           </AvatarContainer>
           <Form
             form={form}
             layout="vertical"
-            initialValues={userCurrent}
+            initialValues={user}
             onFinish={handleSubmit}
           >
             <FormSection>
-              <Form.Item label="Username:" name="user">
+              <Form.Item label="Username:" name="userName">
                 <Input disabled />
               </Form.Item>
 
@@ -238,12 +279,11 @@ const ProfileEditPage = () => {
               </Form.Item>
             </FormSection>
             <FormSection>
-              <Form.Item label="Age:" name="age">
-                <Input />
-              </Form.Item>
-
               <Form.Item label="Birthday:" name="birthday">
                 <DatePicker style={{ width: "100%" }} />
+              </Form.Item>
+              <Form.Item label="Job:" name="job">
+                <Input />
               </Form.Item>
             </FormSection>
             <FormSection>
@@ -255,7 +295,12 @@ const ProfileEditPage = () => {
             </FormSection>
 
             <Form.Item>
-              <SaveButton type="primary" htmlType="submit" loading={loading}>
+              <SaveButton
+                type="primary"
+                htmlType="submit"
+                disabled={loading}
+                loading={loading}
+              >
                 SAVE
               </SaveButton>
             </Form.Item>
