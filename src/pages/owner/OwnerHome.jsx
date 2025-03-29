@@ -113,9 +113,7 @@ Khách hàng có thể mất một phần hoặc toàn bộ tiền đặt cọc 
         width={250}
       >
         <div style={{ height: 64, padding: 16, textAlign: "center" }}>
-          <h2 style={{ margin: 0, fontSize: collapsed ? 14 : 18 }}>
-            {collapsed ? "QL" : "Owner"}
-        </h2>
+          
         </div>
         <SideMenu setCurrentView={setCurrentView} />
       </Sider>
