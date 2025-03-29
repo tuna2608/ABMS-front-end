@@ -1,8 +1,15 @@
 import React, { useState, useRef } from "react";
 import styled from "styled-components";
-import { SearchOutlined, HeartOutlined, CameraOutlined, LeftOutlined, RightOutlined, EnvironmentOutlined } from "@ant-design/icons";
+import {
+  SearchOutlined,
+  HeartOutlined,
+  CameraOutlined,
+  LeftOutlined,
+  RightOutlined,
+  EnvironmentOutlined,
+} from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { Carousel} from "antd";
+import { Carousel } from "antd";
 
 /* Navigation Buttons for Apartment Section */
 const ApartmentNavigation = styled.div`
@@ -33,18 +40,18 @@ const ApartmentNavButton = styled.button`
   pointer-events: auto;
   box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12), 0 3px 6px rgba(0, 0, 0, 0.08);
   position: relative;
-  
+
   &:hover {
     background-color: rgba(30, 58, 138, 1);
     transform: translateY(-2px) scale(1.05);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15), 0 6px 10px rgba(0, 0, 0, 0.1);
   }
-  
+
   &:active {
     transform: translateY(1px) scale(0.98);
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
   }
-  
+
   &::after {
     content: "";
     position: absolute;
@@ -57,7 +64,7 @@ const ApartmentNavButton = styled.button`
     opacity: 0;
     transition: opacity 0.25s ease;
   }
-  
+
   &:hover::after {
     opacity: 1;
   }
@@ -81,7 +88,7 @@ const ImageControlsContainer = styled.div`
   z-index: 30;
   pointer-events: none;
   padding: 0 16px;
-  
+
   button {
     pointer-events: auto;
   }
@@ -93,7 +100,7 @@ const Container = styled.div`
   min-height: 100vh;
   overflow-x: hidden;
   position: relative;
-  
+
   &::after {
     content: "";
     position: absolute;
@@ -101,7 +108,11 @@ const Container = styled.div`
     left: 0;
     right: 0;
     height: 40%;
-    background: radial-gradient(ellipse at bottom right, #ffffff 0%, transparent 70%);
+    background: radial-gradient(
+      ellipse at bottom right,
+      #ffffff 0%,
+      transparent 70%
+    );
     z-index: 0;
     pointer-events: none;
   }
@@ -159,7 +170,7 @@ const HeroImageContainer = styled.div`
   justify-content: center;
   border-radius: 12px;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
-  
+
   img {
     width: 100%;
     height: 100%;
@@ -209,7 +220,7 @@ const RegisterButton = styled.button`
   display: flex;
   align-items: center;
   width: fit-content;
-  
+
   &:hover {
     background-color: #1e40af;
   }
@@ -221,12 +232,14 @@ const CarouselWrapper = styled.div`
   width: 100%;
   max-width: 1200px;
   margin: 0 auto;
-  
+
   .ant-carousel {
     position: static !important;
   }
-  
-  .slick-slider, .slick-list, .slick-track {
+
+  .slick-slider,
+  .slick-list,
+  .slick-track {
     position: static !important;
   }
 `;
@@ -248,15 +261,15 @@ const CarouselNavButton = styled.button`
   cursor: pointer;
   transition: background-color 0.2s;
   pointer-events: auto;
-  
+
   &:hover {
     background-color: rgba(30, 58, 138, 1);
   }
-  
+
   &.prev {
     margin-left: -26px;
   }
-  
+
   &.next {
     margin-right: -10px;
   }
@@ -311,7 +324,7 @@ const SearchButton = styled.button`
   padding: 8px 20px;
   font-weight: 500;
   cursor: pointer;
-  
+
   &:hover {
     background-color: #b45309;
   }
@@ -361,7 +374,7 @@ const ApartmentSection = styled.section`
   box-shadow: 0 4px 16px rgba(0, 0, 0, 0.05);
   background-color: white;
   overflow: visible;
-  
+
   &::before {
     content: "";
     position: absolute;
@@ -382,7 +395,7 @@ const SectionTitle = styled.h2`
   margin: 20px 0 24px 16px;
   font-weight: 600;
   position: relative;
-  
+
   &::after {
     content: "";
     position: absolute;
@@ -409,7 +422,7 @@ const ApartmentCard = styled.div`
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s, box-shadow 0.2s;
-  
+
   &:hover {
     transform: translateY(-4px);
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -423,7 +436,7 @@ const ApartmentImage = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  
+
   img {
     width: 100%;
     height: 100%;
@@ -431,7 +444,7 @@ const ApartmentImage = styled.div`
     display: block;
     transition: transform 0.3s;
   }
-  
+
   &:hover img {
     transform: scale(1.05);
   }
@@ -510,7 +523,7 @@ const HeartButton = styled.button`
   color: #9ca3af;
   cursor: pointer;
   font-size: 16px;
-  
+
   &:hover {
     color: #ef4444;
   }
@@ -530,7 +543,7 @@ const PageDot = styled.div`
   width: 8px;
   height: 8px;
   border-radius: 50%;
-  background-color: ${props => props.active ? '#1e3a8a' : '#d1d5db'};
+  background-color: ${(props) => (props.active ? "#1e3a8a" : "#d1d5db")};
   transition: background-color 0.2s;
 `;
 
@@ -542,17 +555,17 @@ function HomePage() {
   const [price, setPrice] = useState("");
   const [type, setType] = useState("");
   const [rooms, setRooms] = useState("");
-  
+
   // Carousel functionality
   const carouselRef = useRef(null);
-  
+
   // Custom navigation handlers with forced re-rendering
   const handlePrev = () => {
     if (carouselRef.current) {
       carouselRef.current.prev();
     }
   };
-  
+
   const handleNext = () => {
     if (carouselRef.current) {
       carouselRef.current.next();
@@ -562,16 +575,20 @@ function HomePage() {
   // Handle apartment navigation
   const [currentPage, setCurrentPage] = useState(0);
   const propertiesPerPage = 4;
-  
+
   const handlePrevApartment = () => {
-    setCurrentPage(prev => 
-      prev === 0 ? Math.ceil(properties.length / propertiesPerPage) - 1 : prev - 1
+    setCurrentPage((prev) =>
+      prev === 0
+        ? Math.ceil(properties.length / propertiesPerPage) - 1
+        : prev - 1
     );
   };
-  
+
   const handleNextApartment = () => {
-    setCurrentPage(prev => 
-      prev === Math.ceil(properties.length / propertiesPerPage) - 1 ? 0 : prev + 1
+    setCurrentPage((prev) =>
+      prev === Math.ceil(properties.length / propertiesPerPage) - 1
+        ? 0
+        : prev + 1
     );
   };
 
@@ -587,7 +604,7 @@ function HomePage() {
       location: "Vân Giang, Hưng Yên",
       imageCount: 5,
       createdAt: "Đăng hôm nay",
-      image: "https://via.placeholder.com/300x180/e6e6e6/808080?text=Real+Estate"
+      image: "https://placehold.co/300x180/e6e6e6/808080?text=Real+Estate",
     },
     {
       id: 2,
@@ -597,7 +614,7 @@ function HomePage() {
       location: "Đống Đa, Hà Nội",
       imageCount: 7,
       createdAt: "Đăng hôm nay",
-      image: "https://via.placeholder.com/300x180/e6e6e6/808080?text=Property"
+      image: "https://placehold.co/300x180/e6e6e6/808080?text=Property",
     },
     {
       id: 3,
@@ -607,7 +624,7 @@ function HomePage() {
       location: "Ngũ Hành Sơn, Đà Nẵng",
       imageCount: 3,
       createdAt: "Đăng hôm nay",
-      image: "https://via.placeholder.com/300x180/e6e6e6/808080?text=Land"
+      image: "https://placehold.co/300x180/e6e6e6/808080?text=Land",
     },
     {
       id: 4,
@@ -617,7 +634,7 @@ function HomePage() {
       location: "Phú Nhuận, Hồ Chí Minh",
       imageCount: 8,
       createdAt: "Đăng hôm nay",
-      image: "https://via.placeholder.com/300x180/e6e6e6/808080?text=Apartment"
+      image: "https://placehold.co/300x180/e6e6e6/808080?text=Apartment",
     },
     {
       id: 5,
@@ -627,7 +644,7 @@ function HomePage() {
       location: "Nhơn Trạch, Đồng Nai",
       imageCount: 6,
       createdAt: "Đăng hôm nay",
-      image: "https://via.placeholder.com/300x180/e6e6e6/808080?text=Villa"
+      image: "https://placehold.co/300x180/e6e6e6/808080?text=Villa",
     },
     {
       id: 6,
@@ -637,15 +654,18 @@ function HomePage() {
       location: "Quận 7, Hồ Chí Minh",
       imageCount: 4,
       createdAt: "Đăng hôm nay",
-      image: "https://via.placeholder.com/300x180/e6e6e6/808080?text=Apartment"
-    }
+      image: "https://placehold.co/300x180/e6e6e6/808080?text=Apartment",
+    },
   ];
 
   // Get current properties for pagination
   const indexOfLastProperty = (currentPage + 1) * propertiesPerPage;
   const indexOfFirstProperty = indexOfLastProperty - propertiesPerPage;
-  const currentProperties = properties.slice(indexOfFirstProperty, indexOfLastProperty);
-  
+  const currentProperties = properties.slice(
+    indexOfFirstProperty,
+    indexOfLastProperty
+  );
+
   // Calculate total pages for pagination indicator
   const totalPages = Math.ceil(properties.length / propertiesPerPage);
 
@@ -659,7 +679,7 @@ function HomePage() {
     }).toString();
     navigate(`/post?${queryParams}`);
   };
-  
+
   return (
     <Container>
       <Wrapper>
@@ -671,75 +691,101 @@ function HomePage() {
               dots={false}
               autoplay
               autoplaySpeed={5000}
-              style={{ width: '100%', height: '400px' }}
+              style={{ width: "100%", height: "400px" }}
               easing="linear"
               effect="fade"
             >
               <div>
-                <div style={{ display: "flex", flexDirection: "row", height: "400px", width: "100%", maxWidth: "1200px", margin: "0 auto", position: "relative" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    height: "400px",
+                    width: "100%",
+                    maxWidth: "1200px",
+                    margin: "0 auto",
+                    position: "relative",
+                  }}
+                >
                   <HeroContentContainer>
                     <HeroContent>
                       <HeroTitle>Chào mừng bạn đến với trang web</HeroTitle>
                       <HeroDescription>
-                        Website quản lý chung cư A là nền tảng trực tuyến giúp bạn quản lý 
-                        và cư dân chung cư dễ dàng kết nối, trao đổi thông tin và thực hiện 
-                        các thủ tục quan trọng. Hệ thống hỗ trợ đăng ký cư trú, thanh toán 
-                        phí dịch vụ.
+                        Website quản lý chung cư A là nền tảng trực tuyến giúp
+                        bạn quản lý và cư dân chung cư dễ dàng kết nối, trao đổi
+                        thông tin và thực hiện các thủ tục quan trọng. Hệ thống
+                        hỗ trợ đăng ký cư trú, thanh toán phí dịch vụ.
                       </HeroDescription>
-                      <RegisterButton>
-                        Đăng ký →
-                      </RegisterButton>
+                      <RegisterButton>Đăng ký →</RegisterButton>
                     </HeroContent>
                   </HeroContentContainer>
                   <HeroImageContainer>
-                    <img 
+                    <img
                       src="https://images.cenhomes.vn/2020/03/1585033148-can-ho-mau-an-land-complex.jpg"
                       alt="Apartment management system"
                     />
                   </HeroImageContainer>
                 </div>
               </div>
-              
+
               <div>
-                <div style={{ display: "flex", flexDirection: "row", height: "400px", width: "100%", maxWidth: "1200px", margin: "0 auto", position: "relative" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    height: "400px",
+                    width: "100%",
+                    maxWidth: "1200px",
+                    margin: "0 auto",
+                    position: "relative",
+                  }}
+                >
                   <HeroContentContainer>
                     <HeroContent>
                       <HeroTitle>Hệ thống quản lý thông minh</HeroTitle>
                       <HeroDescription>
-                        Với giao diện thân thiện, tích hợp các tính năng hiện đại, website giúp 
-                        tối ưu hóa quy trình quản lý, nâng cao trải nghiệm sống cho cư dân và 
-                        đảm bảo sự minh bạch trong vận hành chung cư.
+                        Với giao diện thân thiện, tích hợp các tính năng hiện
+                        đại, website giúp tối ưu hóa quy trình quản lý, nâng cao
+                        trải nghiệm sống cho cư dân và đảm bảo sự minh bạch
+                        trong vận hành chung cư.
                       </HeroDescription>
-                      <RegisterButton>
-                        Đăng ký →
-                      </RegisterButton>
+                      <RegisterButton>Đăng ký →</RegisterButton>
                     </HeroContent>
                   </HeroContentContainer>
                   <HeroImageContainer>
-                    <img 
+                    <img
                       src="https://images.cenhomes.vn/2020/03/1585033149-can-ho-mau-cosmo-tay-ho.jpg"
                       alt="Smart management system"
                     />
                   </HeroImageContainer>
                 </div>
               </div>
-              
+
               <div>
-                <div style={{ display: "flex", flexDirection: "row", height: "400px", width: "100%", maxWidth: "1200px", margin: "0 auto", position: "relative" }}>
+                <div
+                  style={{
+                    display: "flex",
+                    flexDirection: "row",
+                    height: "400px",
+                    width: "100%",
+                    maxWidth: "1200px",
+                    margin: "0 auto",
+                    position: "relative",
+                  }}
+                >
                   <HeroContentContainer>
                     <HeroContent>
                       <HeroTitle>Trải nghiệm sống hiện đại</HeroTitle>
                       <HeroDescription>
-                        Hệ thống quản lý căn hộ thông minh, giúp bạn theo dõi, quản lý và vận hành 
-                        căn hộ một cách dễ dàng và hiệu quả. Trải nghiệm sự tiện lợi ngay hôm nay!
+                        Hệ thống quản lý căn hộ thông minh, giúp bạn theo dõi,
+                        quản lý và vận hành căn hộ một cách dễ dàng và hiệu quả.
+                        Trải nghiệm sự tiện lợi ngay hôm nay!
                       </HeroDescription>
-                      <RegisterButton>
-                        Đăng ký →
-                      </RegisterButton>
+                      <RegisterButton>Đăng ký →</RegisterButton>
                     </HeroContent>
                   </HeroContentContainer>
                   <HeroImageContainer>
-                    <img 
+                    <img
                       src="https://images.cenhomes.vn/2020/03/1585033155-can-ho-mau-imperia-sky-garden.jpg"
                       alt="Modern apartment interior"
                     />
@@ -747,19 +793,19 @@ function HomePage() {
                 </div>
               </div>
             </Carousel>
-            
+
             {/* Custom Navigation Buttons */}
             <ImageControlsContainer>
-              <CarouselNavButton 
-                className="prev" 
+              <CarouselNavButton
+                className="prev"
                 onClick={handlePrev}
                 type="button"
               >
                 <LeftOutlined />
               </CarouselNavButton>
-              
-              <CarouselNavButton 
-                className="next" 
+
+              <CarouselNavButton
+                className="next"
                 onClick={handleNext}
                 type="button"
               >
@@ -781,11 +827,9 @@ function HomePage() {
                 value={searchText}
                 onChange={(e) => setSearchText(e.target.value)}
               />
-              <SearchButton onClick={handleSearch}>
-                Tìm kiếm
-              </SearchButton>
+              <SearchButton onClick={handleSearch}>Tìm kiếm</SearchButton>
             </SearchBox>
-            
+
             <FilterSection>
               <FilterSelect>
                 <Select value={area} onChange={(e) => setArea(e.target.value)}>
@@ -796,9 +840,12 @@ function HomePage() {
                 </Select>
                 <SelectArrow>▼</SelectArrow>
               </FilterSelect>
-              
+
               <FilterSelect>
-                <Select value={rooms} onChange={(e) => setRooms(e.target.value)}>
+                <Select
+                  value={rooms}
+                  onChange={(e) => setRooms(e.target.value)}
+                >
                   <option value="">Số phòng</option>
                   <option value="1">1 phòng</option>
                   <option value="2">2 phòng</option>
@@ -806,7 +853,7 @@ function HomePage() {
                 </Select>
                 <SelectArrow>▼</SelectArrow>
               </FilterSelect>
-              
+
               <FilterSelect>
                 <Select value={type} onChange={(e) => setType(e.target.value)}>
                   <option value="">Hình thức</option>
@@ -815,9 +862,12 @@ function HomePage() {
                 </Select>
                 <SelectArrow>▼</SelectArrow>
               </FilterSelect>
-              
+
               <FilterSelect>
-                <Select value={price} onChange={(e) => setPrice(e.target.value)}>
+                <Select
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                >
                   <option value="">Giá tiền</option>
                   <option value="3">Dưới 3 triệu</option>
                   <option value="5">Dưới 5 triệu</option>
@@ -832,33 +882,32 @@ function HomePage() {
         {/* Apartment Listings Section */}
         <ApartmentSection>
           <SectionTitle>Căn hộ dành cho bạn</SectionTitle>
-          
+
           <ApartmentGrid>
             {currentProperties.map((property) => (
               <ApartmentCard key={property.id}>
                 <ApartmentImage>
-                  <img 
-                    src={property.image}
-                    alt={property.title}
-                  />
+                  <img src={property.image} alt={property.title} />
                   <ImageCount>
-                    <CameraOutlined style={{ marginRight: 4 }} /> {property.imageCount}
+                    <CameraOutlined style={{ marginRight: 4 }} />{" "}
+                    {property.imageCount}
                   </ImageCount>
                 </ApartmentImage>
-                
+
                 <ApartmentInfo>
                   <ApartmentPrice>
                     <PriceTag>{property.price}</PriceTag>
                     <AreaTag>{property.area}</AreaTag>
                   </ApartmentPrice>
-                  
+
                   <ApartmentTitle>{property.title}</ApartmentTitle>
-                  
+
                   <LocationInfo>
-                    <EnvironmentOutlined style={{ marginRight: 6 }} /> {property.location}
+                    <EnvironmentOutlined style={{ marginRight: 6 }} />{" "}
+                    {property.location}
                   </LocationInfo>
                 </ApartmentInfo>
-                
+
                 <CardFooter>
                   <span>{property.createdAt}</span>
                   <HeartButton>
@@ -868,27 +917,21 @@ function HomePage() {
               </ApartmentCard>
             ))}
           </ApartmentGrid>
-          
+
           {/* Pagination Indicator */}
           <PaginationIndicator>
             {Array.from({ length: totalPages }).map((_, index) => (
-              <PageDot key={index} active={currentPage === index} />
+              <PageDot key={index} $active={currentPage === index} />
             ))}
           </PaginationIndicator>
-          
+
           {/* Apartment Navigation Buttons */}
           <ApartmentNavigation>
-            <ApartmentNavButton 
-              onClick={handlePrevApartment}
-              type="button"
-            >
+            <ApartmentNavButton onClick={handlePrevApartment} type="button">
               <LeftOutlined />
             </ApartmentNavButton>
-            
-            <ApartmentNavButton 
-              onClick={handleNextApartment}
-              type="button"
-            >
+
+            <ApartmentNavButton onClick={handleNextApartment} type="button">
               <RightOutlined />
             </ApartmentNavButton>
           </ApartmentNavigation>

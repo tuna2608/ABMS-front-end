@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { 
   Card, 
   Space, 
@@ -19,6 +19,15 @@ const { Option } = Select;
 const { Search } = Input;
 
 const ApartmentListView = () => {
+  // Add state for pagination
+  const [currentPage, setCurrentPage] = useState(1);
+  const [pageSize] = useState(4);
+
+  // Add onChange handler for Pagination
+  const handlePaginationChange = (page) => {
+    setCurrentPage(page);
+  };
+
   return (
     <Card 
       title={
@@ -71,10 +80,11 @@ const ApartmentListView = () => {
 
       <div style={{ textAlign: 'right', marginTop: 16 }}>
         <Pagination
-          current={1}
-          pageSize={4}
+          current={currentPage}
+          pageSize={pageSize}
           total={0}
           showSizeChanger={false}
+          onChange={handlePaginationChange}
         />
       </div>
     </Card>

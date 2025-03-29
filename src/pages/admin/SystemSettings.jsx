@@ -8,7 +8,6 @@ import {
   Button, 
   Row, 
   Col, 
-  Typography,
   Space 
 } from 'antd';
 import { 
@@ -18,7 +17,6 @@ import {
   SaveOutlined 
 } from '@ant-design/icons';
 
-const { Title, Paragraph } = Typography;
 
 const SystemSettings = () => {
   const [generalForm] = Form.useForm();
@@ -56,6 +54,10 @@ const SystemSettings = () => {
               form={generalForm} 
               layout="vertical"
               onFinish={handleGeneralSettingsSave}
+              initialValues={{
+                systemName: "",
+                language: "vi"
+              }}
             >
               <Form.Item 
                 name="systemName" 
@@ -103,6 +105,10 @@ const SystemSettings = () => {
               form={securityForm} 
               layout="vertical"
               onFinish={handleSecuritySettingsSave}
+              initialValues={{
+                passwordPolicy: false,
+                maxLoginAttempts: 5
+              }}
             >
               <Form.Item 
                 name="passwordPolicy" 
@@ -118,7 +124,7 @@ const SystemSettings = () => {
                 name="maxLoginAttempts" 
                 label="Số Lần Đăng Nhập Sai Tối Đa"
               >
-                <Select defaultValue={5}>
+                <Select>
                   {[3, 5, 7, 10].map(num => (
                     <Select.Option key={num} value={num}>
                       {num} Lần

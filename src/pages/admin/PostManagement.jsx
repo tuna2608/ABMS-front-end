@@ -1,22 +1,22 @@
-import React, { useState } from 'react';
-import { 
-  Card, 
-  Form, 
-  Input, 
-  Select, 
-  Button, 
-  Table, 
-  Space, 
-  Modal, 
-  Upload 
-} from 'antd';
-import { 
-  PlusOutlined, 
-  EditOutlined, 
-  DeleteOutlined, 
+import React, { useState } from "react";
+import {
+  Card,
+  Form,
+  Input,
+  Select,
+  Button,
+  Table,
+  Space,
+  Modal,
+  Upload,
+} from "antd";
+import {
+  PlusOutlined,
+  EditOutlined,
+  DeleteOutlined,
   FileAddOutlined,
-  BellOutlined 
-} from '@ant-design/icons';
+  BellOutlined,
+} from "@ant-design/icons";
 
 const PostManagement = () => {
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -24,28 +24,28 @@ const PostManagement = () => {
 
   const postsColumns = [
     {
-      title: 'Tiêu Đề',
-      dataIndex: 'title',
-      key: 'title',
+      title: "Tiêu Đề",
+      dataIndex: "title",
+      key: "title",
     },
     {
-      title: 'Tác Giả',
-      dataIndex: 'author',
-      key: 'author',
+      title: "Tác Giả",
+      dataIndex: "author",
+      key: "author",
     },
     {
-      title: 'Ngày Tạo',
-      dataIndex: 'createdAt',
-      key: 'createdAt',
+      title: "Ngày Tạo",
+      dataIndex: "createdAt",
+      key: "createdAt",
     },
     {
-      title: 'Trạng Thái',
-      dataIndex: 'status',
-      key: 'status',
+      title: "Trạng Thái",
+      dataIndex: "status",
+      key: "status",
     },
     {
-      title: 'Hành Động',
-      key: 'actions',
+      title: "Hành Động",
+      key: "actions",
       render: () => (
         <Space>
           <Button icon={<EditOutlined />} type="primary" ghost>
@@ -55,12 +55,12 @@ const PostManagement = () => {
             Xóa
           </Button>
         </Space>
-      )
-    }
+      ),
+    },
   ];
 
   return (
-    <Card 
+    <Card
       title={
         <Space>
           <BellOutlined />
@@ -68,9 +68,9 @@ const PostManagement = () => {
         </Space>
       }
       extra={
-        <Button 
-          type="primary" 
-          icon={<FileAddOutlined />} 
+        <Button
+          type="primary"
+          icon={<FileAddOutlined />}
           onClick={() => setIsModalVisible(true)}
         >
           Tạo Bài Viết Mới
@@ -81,22 +81,18 @@ const PostManagement = () => {
 
       <Modal
         title="Tạo Bài Viết Mới"
-        visible={isModalVisible}
+        open={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         footer={null}
         width={800}
       >
         <Form form={postForm} layout="vertical">
-          <Form.Item 
-            name="title" 
-            label="Tiêu Đề" 
-            rules={[{ required: true }]}
-          >
+          <Form.Item name="title" label="Tiêu Đề" rules={[{ required: true }]}>
             <Input placeholder="Nhập tiêu đề bài viết" />
           </Form.Item>
-          <Form.Item 
-            name="category" 
-            label="Chuyên Mục" 
+          <Form.Item
+            name="category"
+            label="Chuyên Mục"
             rules={[{ required: true }]}
           >
             <Select placeholder="Chọn chuyên mục">
@@ -105,18 +101,15 @@ const PostManagement = () => {
               <Select.Option value="announcement">Thông Báo</Select.Option>
             </Select>
           </Form.Item>
-          <Form.Item 
-            name="content" 
-            label="Nội Dung" 
+          <Form.Item
+            name="content"
+            label="Nội Dung"
             rules={[{ required: true }]}
           >
             <Input.TextArea rows={10} placeholder="Nhập nội dung bài viết" />
           </Form.Item>
-          <Form.Item 
-            name="coverImage" 
-            label="Ảnh Bìa"
-          >
-            <Upload 
+          <Form.Item name="coverImage" label="Ảnh Bìa">
+            <Upload
               name="coverImage"
               listType="picture-card"
               className="avatar-uploader"
