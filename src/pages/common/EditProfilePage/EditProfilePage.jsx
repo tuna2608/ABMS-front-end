@@ -158,10 +158,9 @@ const ProfileEditPage = () => {
 
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(userCurrent.userImgUrl);
+  const [selectedImage, setSelectedImage] = useState(avtBase);
   const [selectedFile, setSelectedFile] = useState(null);
   // console.log(userCurrent);
-  console.log(user);
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -192,6 +191,7 @@ const ProfileEditPage = () => {
     let formattedDate;
     let formData = {
       ...values,
+      password: userCurrent.password,
       userId: user.userId,
     };
     if (values.birthday) {
@@ -217,19 +217,22 @@ const ProfileEditPage = () => {
           userImgUrl: userImgUrl,
         };
       }
+    }else {
+      formData = {
+        ...formData,
+        userImgUrl: null,
+      };
     }
     console.log("Complete form data:", formData);
     const resEdit = await editProfile(dispatch, formData);
     console.log(resEdit);
-    const messageAPI = resEdit.message;
-    if (resEdit.status === 401) {
+    const messageAPI = resEdit.data.message;
+    if (resEdit.status === 401 || resEdit.status === 400 || resEdit.status === 403) {
       message.error(messageAPI);
-      return;
     } else {
       message.success(messageAPI);
       navigate("/edit-profile");
     }
-
     setLoading(false);
   };
 
@@ -249,7 +252,7 @@ const ProfileEditPage = () => {
           <AvatarContainer>
             <img
               style={{ width: "50px", height: "50px" }}
-              src={selectedImage}
+              src={user.userImgUrl || selectedImage}
             />
             <input type="file" accept="image/*" onChange={handleImageChange} />
           </AvatarContainer>

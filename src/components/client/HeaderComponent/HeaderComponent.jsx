@@ -102,6 +102,7 @@ const NavItemRole = styled(Button)`
 
 function HeaderComponent() {
   const user = useSelector((state) => state.user.currentUser);
+  
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
@@ -188,7 +189,7 @@ function HeaderComponent() {
               <Dropdown menu={{ items }} placement="bottomRight">
                 <NavItemAVT>
                   <p>{user.userName} - {user.role}</p>
-                  <Image style={{borderRadius: '100%'}} width='40px' height='40px' src={user.userImgUrl}/>
+                  <Image preview={false} style={{borderRadius:'100%'}} width='40px' height='40px' src={user.userImgUrl || avtBase}/>
                 </NavItemAVT>
               </Dropdown>
             ) : (
