@@ -245,12 +245,12 @@ const AccountManagement = () => {
                 <Col span={12}>
                   <Form.Item
                     name="fullName"
-                    label="Họ và tên"
-                    rules={[{ required: true, message: 'Vui lòng nhập họ tên!' }]}
+                    label="Tên hợp đồng"
+                    rules={[{ required: true, message: 'Vui lòng nhập tên hợp đồng!' }]}
                   >
                     <Input
                       prefix={<UserOutlined />}
-                      placeholder="Nhập họ và tên"
+                      placeholder="Nhập tên hợp đồng"
                       disabled={searchPerformed && userData?.fullName}
                       suffix={searchPerformed && userData?.fullName ? <LockOutlined /> : null}
                     />
@@ -309,11 +309,11 @@ const AccountManagement = () => {
                     rules={[{ required: true, message: 'Vui lòng chọn loại xác thực!' }]}
                   >
                     <Select 
-                      placeholder="Chọn loại xác thực"
+                      placeholder="Chọn loại hợp đồng"
                       onChange={handleVerificationTypeChange}
                     >
-                      <Option value={2}>Chủ hộ</Option>
-                      <Option value={1}>Người thuê</Option>
+                      <Option value={2}>Hợp đồng mua căn hộ</Option>
+                      <Option value={1}>Hợp đồng thuê căn hộ</Option>
                     </Select>
                   </Form.Item>
                 </Col>

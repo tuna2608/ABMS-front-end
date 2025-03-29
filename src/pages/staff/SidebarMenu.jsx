@@ -34,7 +34,7 @@ const SidebarMenu = ({ collapsed, setCollapsed, activeMenuItem, setActiveMenuIte
      {
        key: "utility-management",
        icon: <DollarOutlined />,
-       label: "Khoản phí",
+       label: "Chi phí điện nước",
        onClick: () => setActiveMenuItem("utility-management"),
      },
      {
