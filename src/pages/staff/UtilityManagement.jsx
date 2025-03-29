@@ -3,7 +3,6 @@ import {
   Card, 
   Space, 
   Table, 
-  Tabs,
   Button,
   Modal,
   Form,
@@ -12,44 +11,31 @@ import {
 } from "antd";
 import { 
   DollarOutlined, 
-  ThunderboltOutlined, 
-  HomeOutlined,
   PlusOutlined,
   UserOutlined
 } from "@ant-design/icons";
 
-const { TabPane } = Tabs;
 const { RangePicker } = DatePicker;
 
 const UtilityManagement = () => {
-  // Separate data for electricity and water with user details
-  const [electricityRecords] = useState([
+  // Combined data for electricity and water with user details
+  const [utilityRecords] = useState([
     {
       id: '1',
       apartmentId: 'A101',
       apartmentName: 'Chung cư Sunrise',
       users: ['Huỳnh Lê Phương Nam'],
       electricityConsumption: 250,
-      recordDate: '2024-03-15'
-    }
-  ]);
-
-  const [waterRecords] = useState([
-    {
-      id: '1',
-      apartmentId: 'A101',
-      apartmentName: 'Chung cư Sunrise',
-      users: ['Huỳnh Lê Phương Nam'],
       waterConsumption: 15,
       recordDate: '2024-03-15'
     }
   ]);
 
   const [isModalVisible, setIsModalVisible] = useState(false);
-  const [currentUtilityType, setCurrentUtilityType] = useState('electricity');
+  const [currentUtilityType, setCurrentUtilityType] = useState('combined');
 
-  // Electricity-specific columns
-  const electricityColumns = [
+  // Combined utility columns
+  const utilityColumns = [
     {
       title: 'Số Căn hộ',
       dataIndex: 'apartmentId',
@@ -82,53 +68,6 @@ const UtilityManagement = () => {
       render: (value) => `${value} kWh`
     },
     {
-      title: 'Ngày Ghi Nhận',
-      dataIndex: 'recordDate',
-      key: 'recordDate',
-    },
-    {
-      title: 'Hành Động',
-      key: 'actions',
-      render: (_, record) => (
-        <Button 
-          type="primary" 
-          icon={<PlusOutlined />} 
-          onClick={() => showCreateBillModal('electricity')}
-        >
-          Tạo Hóa Đơn
-        </Button>
-      )
-    }
-  ];
-
-  // Water-specific columns
-  const waterColumns = [
-    {
-      title: 'Số Căn hộ',
-      dataIndex: 'apartmentId',
-      key: 'apartmentId',
-    },
-    {
-      title: 'Tên Căn hộ',
-      dataIndex: 'apartmentName',
-      key: 'apartmentName',
-    },
-    {
-      title: 'Người dùng',
-      dataIndex: 'users',
-      key: 'users',
-      render: (users) => (
-        <Space direction="vertical">
-          {users.map((user, index) => (
-            <div key={index}>
-              <UserOutlined style={{ marginRight: 8 }} />
-              {user}
-            </div>
-          ))}
-        </Space>
-      )
-    },
-    {
       title: 'Chỉ Số Nước (m³)',
       dataIndex: 'waterConsumption',
       key: 'waterConsumption',
@@ -146,13 +85,15 @@ const UtilityManagement = () => {
         <Button 
           type="primary" 
           icon={<PlusOutlined />} 
-          onClick={() => showCreateBillModal('water')}
+          onClick={() => showCreateBillModal('combined')}
         >
           Tạo Hóa Đơn
         </Button>
       )
     }
   ];
+
+
 
   // Function to show create bill modal
   const showCreateBillModal = (type) => {
@@ -176,7 +117,7 @@ const UtilityManagement = () => {
       title={
         <Space>
           <DollarOutlined /> 
-          <span>Khoản phí</span>
+          <span>Chi phí điện nước</span>
         </Space>
       } 
     >
@@ -186,46 +127,18 @@ const UtilityManagement = () => {
         <Button type="primary">Lọc</Button>
       </Space>
 
-      {/* Utility Tabs */}
-      <Tabs defaultActiveKey="electric">
-        <TabPane 
-          tab={
-            <span>
-              <ThunderboltOutlined />
-              Điện
-            </span>
-          } 
-          key="electric"
-        >
-          <Table 
-            columns={electricityColumns} 
-            dataSource={electricityRecords} 
-            rowKey="id"
-            pagination={{ pageSize: 5 }}
-          />
-        </TabPane>
-        <TabPane 
-          tab={
-            <span>
-              <HomeOutlined />
-              Nước
-            </span>
-          } 
-          key="water"
-        >
-          <Table 
-            columns={waterColumns} 
-            dataSource={waterRecords} 
-            rowKey="id"
-            pagination={{ pageSize: 5 }}
-          />
-        </TabPane>
-      </Tabs>
+      {/* Utility Tabs with new items prop - Only one tab now */}
+      <Table 
+        columns={utilityColumns} 
+        dataSource={utilityRecords} 
+        rowKey="id"
+        pagination={{ pageSize: 5 }}
+      />
 
-      {/* Create Bill Modal */}
+      {/* Create Bill Modal with open prop instead of visible */}
       <Modal
-        title={`Tạo Hóa Đơn ${currentUtilityType === 'electricity' ? 'Điện' : 'Nước'}`}
-        visible={isModalVisible}
+        title="Tạo Hóa Đơn Điện & Nước"
+        open={isModalVisible}
         onCancel={handleModalCancel}
         footer={null}
       >
@@ -255,14 +168,26 @@ const UtilityManagement = () => {
           </Form.Item>
 
           <Form.Item 
-            name="consumption" 
-            label={`Chỉ Số ${currentUtilityType === 'electricity' ? 'Điện (kWh)' : 'Nước (m³)'}`}
-            rules={[{ required: true, message: `Vui lòng nhập chỉ số ${currentUtilityType === 'electricity' ? 'điện' : 'nước'}` }]}
+            name="electricityConsumption" 
+            label="Chỉ Số Điện (kWh)"
+            rules={[{ required: true, message: 'Vui lòng nhập chỉ số điện' }]}
           >
             <Input 
               type="number" 
-              placeholder={`Nhập chỉ số ${currentUtilityType === 'electricity' ? 'điện' : 'nước'}`} 
-              suffix={currentUtilityType === 'electricity' ? 'kWh' : 'm³'}
+              placeholder="Nhập chỉ số điện" 
+              suffix="kWh"
+            />
+          </Form.Item>
+
+          <Form.Item 
+            name="waterConsumption" 
+            label="Chỉ Số Nước (m³)"
+            rules={[{ required: true, message: 'Vui lòng nhập chỉ số nước' }]}
+          >
+            <Input 
+              type="number" 
+              placeholder="Nhập chỉ số nước" 
+              suffix="m³"
             />
           </Form.Item>
 

@@ -303,7 +303,7 @@ const CardManagement = () => {
 
       <Modal
         title={isEditMode ? "Sửa thông tin thẻ" : "Thêm thẻ mới"}
-        visible={isModalVisible}
+        open={isModalVisible}
         onCancel={() => setIsModalVisible(false)}
         footer={[
           <Button key="back" onClick={() => setIsModalVisible(false)}>
