@@ -11,19 +11,21 @@ import {
 } from "@ant-design/icons";
 
 const { Sider } = Layout;
-const { SubMenu } = Menu;
 
 const AdminSidebar = ({ collapsed, activeTab, setActiveTab, toggleCollapsed }) => {
-  const menuItems = [
+  // Define menu items using the items prop format
+  const items = [
     {
       key: "dashboard",
       icon: <DashboardOutlined />,
-      label: "Bảng điều khiển"
+      label: "Bảng điều khiển",
+      onClick: () => setActiveTab("dashboard")
     },
     {
       key: "deposits",
       icon: <SafetyOutlined />,
-      label: "Quản lý đặt cọc"
+      label: "Quản lý đặt cọc",
+      onClick: () => setActiveTab("deposits")
     },
     {
       key: "accounts",
@@ -32,14 +34,16 @@ const AdminSidebar = ({ collapsed, activeTab, setActiveTab, toggleCollapsed }) =
       children: [
         {
           key: "accountsList",
-          label: "Danh sách tài khoản"
+          label: "Danh sách tài khoản",
+          onClick: () => setActiveTab("accountsList")
         }
       ]
     },
     {
       key: "apartments",
       icon: <HomeOutlined />,
-      label: "Quản lý căn hộ"
+      label: "Quản lý căn hộ",
+      onClick: () => setActiveTab("apartments")
     },
     {
       key: "posts",
@@ -48,19 +52,22 @@ const AdminSidebar = ({ collapsed, activeTab, setActiveTab, toggleCollapsed }) =
       children: [
         {
           key: "postsList",
-          label: "Danh sách bài viết"
+          label: "Danh sách bài viết",
+          onClick: () => setActiveTab("postsList")
         }
       ]
     },
     {
       key: "reports",
       icon: <DollarOutlined />,
-      label: "Báo cáo tài chính"
+      label: "Báo cáo tài chính",
+      onClick: () => setActiveTab("reports")
     },
     {
       key: "settings",
       icon: <SettingOutlined />,
-      label: "Cài đặt hệ thống"
+      label: "Cài đặt hệ thống",
+      onClick: () => setActiveTab("settings")
     }
   ];
 
@@ -73,38 +80,14 @@ const AdminSidebar = ({ collapsed, activeTab, setActiveTab, toggleCollapsed }) =
       width={250}
     >
       <div style={{ height: 64, padding: 16, textAlign: "center" }}>
-        <h2 style={{ margin: 0, fontSize: collapsed ? 14 : 18 }}>
-          {collapsed ? "AD" : "Admin"}
-        </h2>
+        {/* Logo can go here */}
       </div>
       <Menu
         mode="inline"
         selectedKeys={[activeTab]}
         defaultOpenKeys={['accounts', 'posts']}
-      >
-        {menuItems.map(item => {
-          if (item.children) {
-            return (
-              <SubMenu
-                key={item.key}
-                icon={item.icon}
-                title={item.label}
-              >
-                {item.children.map(child => (
-                  <Menu.Item key={child.key} onClick={() => setActiveTab(child.key)}>
-                    {child.icon && child.icon} {child.label}
-                  </Menu.Item>
-                ))}
-              </SubMenu>
-            );
-          }
-          return (
-            <Menu.Item key={item.key} icon={item.icon} onClick={() => setActiveTab(item.key)}>
-              {item.label}
-            </Menu.Item>
-          );
-        })}
-      </Menu>
+        items={items}
+      />
     </Sider>
   );
 };

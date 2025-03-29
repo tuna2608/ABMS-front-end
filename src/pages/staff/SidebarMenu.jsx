@@ -34,7 +34,7 @@ const SidebarMenu = ({ collapsed, setCollapsed, activeMenuItem, setActiveMenuIte
      {
        key: "utility-management",
        icon: <DollarOutlined />,
-       label: "Khoản phí",
+       label: "Chi phí điện nước",
        onClick: () => setActiveMenuItem("utility-management"),
      },
      {
@@ -61,9 +61,7 @@ const SidebarMenu = ({ collapsed, setCollapsed, activeMenuItem, setActiveMenuIte
        theme="light"
      >
        <div style={{ height: 64, padding: 16, textAlign: "center" }}>
-         <h2 style={{ margin: 0, fontSize: collapsed ? 14 : 18 }}>
-           {collapsed ? "ST" : "Staff"}
-         </h2>
+        
        </div>
        <Menu
          mode="inline"

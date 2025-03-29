@@ -11,17 +11,14 @@ import {
   Row, 
   Col, 
   Switch,
-  Typography,
   message
 } from 'antd';
 import { 
   FormOutlined, 
   PlusOutlined, 
-  UploadOutlined 
 } from "@ant-design/icons";
 
 const { TextArea } = Input;
-const { Text } = Typography;
 
 const CreatePostView = () => {
   const [postForm] = Form.useForm();
@@ -186,7 +183,7 @@ const CreatePostView = () => {
       </Form>
 
       <Modal
-        visible={previewVisible}
+        open={previewVisible}
         title="Xem Trước Hình Ảnh"
         footer={null}
         onCancel={() => setPreviewVisible(false)}
