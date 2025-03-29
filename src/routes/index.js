@@ -14,8 +14,8 @@ import BillPage from "../pages/client/BillPage/BillPage";
 import DepositPage from "../pages/client/DepositPage/DepositPage";
 import EditProfilePage from "../pages/common/EditProfilePage/EditProfilePage";
 import StaffHome from "../pages/staff/StaffHome";
-import CardManagement from "../pages/staff/CardManagement";
 import OTPPage from "../pages/common/OTPPage/OTPPage";
+import PaymentSuccess from "../pages/client/Payment/PaymentSuccess";
 
 export const routes = [
     {
@@ -64,11 +64,6 @@ export const routes = [
         isShowHeader: true
     },
     {
-        path: '/card',
-        page: CardManagement,
-        isShowHeader: true
-    },
-    {
         path: '/post',
         page: ApartmentList,
         isShowHeader: true
@@ -93,6 +88,11 @@ export const routes = [
     //     page: DepositPage,
     //     isShowHeader: true
     // },
+    {
+        path: '/payment-success',
+        page: PaymentSuccess,
+        isShowHeader: true
+    },
     {
         path: '/notification',
         page: NotificationsPage,

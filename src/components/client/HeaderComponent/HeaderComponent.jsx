@@ -1,16 +1,45 @@
 import { Badge, Button, Col, Dropdown, Flex, Image, Row } from "antd";
 import React from "react";
-import { BellOutlined } from "@ant-design/icons";
+import { BellOutlined, FacebookFilled, InstagramFilled } from "@ant-design/icons";
 import styled from "styled-components";
 import logoMenu from "../../../assets/common/images/logo-menu.png";
 import { Input } from "antd";
 import { useNavigate } from "react-router-dom";
-import {useDispatch, useSelector} from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { logoutDispatch } from "../../../redux/apiCalls";
 
 const { Search } = Input;
 
+const TopBar = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #f3f3f3;
+  padding: 8px 120px;
+  font-size: 14px;
+  font-weight: 500;
+`;
 
+const TopBarInfo = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  color: var(--cheadline);
+
+  span {
+    margin-right: 16px;
+  }
+`;
+
+const TopBarIcon = styled.a`
+  color: var(--cheadline);
+  font-size: 24px;
+  margin-left: 16px;
+
+  &:hover {
+    color: var(--csecondary);
+  }
+`;
 
 const WrapperHeader = styled(Row)`
   height: 100px;
@@ -19,20 +48,10 @@ const WrapperHeader = styled(Row)`
   align-items: center;
 `;
 
-const TopBar = styled.div`
-  display: flex;
-  gap: 24px;
-  align-items: center;
-  background: white;
-  color: #dc2626;
-  padding: 8px 16px;
-  font-size: 14px;
-  font-weight: 500;
-`;
-
 const Logo = styled(Col)`
   color: white;
   height: 100%;
+
   &:hover {
     cursor: pointer;
   }
@@ -71,32 +90,25 @@ const NavItemAVT = styled.div`
   }
 `;
 
-const TopBarItem = styled.div`
+const NavItemRole = styled(Button)`
+  color: var(--cheadline);
+
   &:hover {
-    cursor: pointer;
+    color: var(--csecondary);
   }
 `;
 
 function HeaderComponent() {
-  
   const user = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();
 
-  
   const navigate = useNavigate();
   const onSearch = (value, _e, info) => console.log(info?.source, value);
+
   const items = [
     {
       key: "1",
-      label: (
-        <div
-          target="_blank"
-          rel="noopener noreferrer"
-          onClick={()=> navigate('/edit-profile')}
-        >
-          Edit profile
-        </div>
-      ),
+      label: <div onClick={() => navigate('/edit-profile')}>Edit profile</div>,
     },
     {
       key: "2",
@@ -111,6 +123,22 @@ function HeaderComponent() {
 
   return (
     <>
+      <TopBar>
+        <TopBarInfo>
+          <span>Phone number: 0775420232</span>
+          <span>Email: pnamhuynhle@gmail.com</span>
+        </TopBarInfo>
+
+        <div>
+          <TopBarIcon href="#">
+            <FacebookFilled />
+          </TopBarIcon>
+          <TopBarIcon href="#">
+            <InstagramFilled />
+          </TopBarIcon>
+        </div>
+      </TopBar>
+      
       <WrapperHeader>
         <Logo span={4} onClick={() => navigate("/")}>
           <Image
@@ -120,38 +148,44 @@ function HeaderComponent() {
             preview={false}
           ></Image>
         </Logo>
+
         <Col span={10}>
-          {(user?.role === 'Owner' ||
-            user?.role === 'Rentor') ? (
-              <Search
-                placeholder="Tìm kiếm dịch vụ bạn muốn ?"
-                allowClear
-                enterButton="Tìm kiếm"
-                size="large"
-                onSearch={onSearch}
-              />
-            ):<></>}
+          {(user?.role === 'Owner' || user?.role === 'Rentor') && (
+            <Search
+              placeholder="Tìm kiếm dịch vụ bạn muốn ?"
+              allowClear
+              enterButton="Tìm kiếm"
+              size="large"
+              onSearch={onSearch}
+            />
+          )}
         </Col>
+
         <Col span={10}>
           <NavbarListItem>
-            <Dropdown
-              menu={{
-                items,
-              }}
-              placement="bottomLeft"
-            >
+            {user?.role === 'Owner' && (
+              <NavItemRole onClick={() => navigate("/ownerHome")}>
+                Kênh chủ căn hộ
+              </NavItemRole>
+            )}
+            {user?.role === 'Rentor' && (
+              <NavItemRole onClick={() => navigate("/rentorHome")}>
+                Kênh người thuê
+              </NavItemRole>
+            )}
+
+            <Dropdown menu={{ items }} placement="bottomLeft">
               <Badge count={13} overflowCount={10}>
                 <NavItem>
                   <BellOutlined />
                 </NavItem>
               </Badge>
             </Dropdown>
+
             {user ? (
               <Dropdown menu={{ items }} placement="bottomRight">
                 <NavItemAVT>
-                  <p>
-                    {user.user} - {user.role}
-                  </p>
+                  <p>{user.user} - {user.role}</p>
                 </NavItemAVT>
               </Dropdown>
             ) : (
@@ -163,16 +197,6 @@ function HeaderComponent() {
           </NavbarListItem>
         </Col>
       </WrapperHeader>
-      <TopBar>
-        {user?.role === "Owner" && (
-          <TopBarItem onClick={() => navigate("/ownerHome")}>
-            Kênh chủ căn hộ
-          </TopBarItem>
-        )}
-        {user?.role === "Rentor" && (
-          <TopBarItem>Kênh người thuê căn hộ</TopBarItem>
-        )}
-      </TopBar>
     </>
   );
 }

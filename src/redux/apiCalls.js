@@ -31,6 +31,7 @@ import {
 import {
   addUserStart,
   addUserSuccess,
+  addUserFailure,
   deleteUserFailure,
   deleteUserStart,
   deleteUserSuccess,
@@ -467,5 +468,115 @@ export const getUserInfo = (userId) => async (dispatch) => {
   } catch (error) {
     console.error("Lỗi khi lấy thông tin người dùng:", error);
     return null;
+  }
+};
+
+//duyet
+//tim user bang username va email
+export const searchUserByUsernameOrEmail = async (dispatch, query) => {
+  dispatch(getUserStart());
+  try {
+    const res = await publicRequest.get(`/user/search?query=${query}`);
+    dispatch(getUserSuccess(res.data.data));
+    return res.data;
+  } catch (error) {
+    dispatch(getUserFailure());
+    return error.response;
+  }
+};
+
+//input 
+export const verifyUserInfo = async (dispatch, formData) => {
+  dispatch(verifyStart());
+  try {
+    if (formData.get('verificationFormType') === '2') {
+      formData.set('contractEndDate', null);
+    } 
+    for (let [key, value] of formData.entries()) {
+      console.log(`${key}: ${value instanceof File ? value.name : value}`);
+    }
+    const res = await userRequest.post("/user/verify_user", formData);
+    
+    dispatch(verifySuccess());
+    return res.data;
+  } catch (error) {
+    console.error("API error:", error);
+    dispatch(verifyFail());
+    return error.response ? error.response.data : { message: "Unknown error" };
+  }
+};
+
+//duyet user
+// Hàm lấy danh sách tài khoản chờ duyệt
+export const getResidentList = async (dispatch) => {
+  dispatch(getUserStart());
+  try {
+    const res = await publicRequest.get("/user/list_resident");
+    
+    console.log("API Response from list_resident:", res.data);
+    
+    // Xử lý dữ liệu từ API
+    if (res.data && res.data.data) {
+      // Đảm bảo từng user có đủ trường dữ liệu cần thiết, bao gồm imageFiles
+      const processedData = res.data.data.map(user => ({
+        ...user,
+        // Đảm bảo imageFiles là mảng
+        imageFiles: Array.isArray(user.imageFiles) ? user.imageFiles : []
+      }));
+      
+      dispatch(getUserSuccess(processedData));
+      return res.data;
+    } else if (res.data && Array.isArray(res.data)) {
+      // Trường hợp API trả về mảng trực tiếp
+      const processedData = res.data.map(user => ({
+        ...user,
+        imageFiles: Array.isArray(user.imageFiles) ? user.imageFiles : []
+      }));
+      
+      dispatch(getUserSuccess(processedData));
+      return { data: processedData };
+    } else if (res.data && res.data.status === 200 && res.data.message === "Không có cư dân nào cần được duyệt") {
+      // Trường hợp không có tài khoản cần duyệt
+      dispatch(getUserSuccess([]));
+      return res.data;
+    } else {
+      // Mặc định trả về mảng rỗng nếu không thể xác định cấu trúc dữ liệu
+      dispatch(getUserSuccess([]));
+      return { data: [] };
+    }
+  } catch (error) {
+    console.error("Error fetching resident list:", error);
+    dispatch(getUserFailure());
+    return error.response?.data || { error: true, message: "Lỗi khi lấy danh sách cư dân" };
+  }
+};
+
+// Hàm duyệt tài khoản
+export const verifyAndAddUser = async (dispatch, verifyUserResponseDTO) => {
+  dispatch(addUserStart());
+  try {
+    console.log("Data sent to /user/add API:", verifyUserResponseDTO);
+    const res = await userRequest.post("/user/add", verifyUserResponseDTO);
+    console.log("Response from /user/add API:", res.data);
+    dispatch(addUserSuccess(res.data));
+    await getResidentList(dispatch);
+    return {
+      success: true,
+      status: res.status,
+      data: res.data
+    };
+  } catch (error) {
+    console.error("Error in verifyAndAddUser:", error);
+    if (error.response) {
+      console.error("Error response data:", error.response.data);
+      console.error("Error response status:", error.response.status);
+    }
+    dispatch(addUserFailure());
+    return {
+      success: false,
+      status: error.response?.status || 500,
+      message: error.response?.data?.message || "Có lỗi xảy ra khi duyệt tài khoản",
+      data: error.response?.data
+    };
   }
 };
