@@ -65,7 +65,7 @@ const PostList = () => {
     async function getPostList() {
       setLoading(true)
       const res = await getAllPosts(dispatch);
-      console.log(res.data);
+      // console.log(res.data);
       setApartments(res.data);
     }
     getPostList();

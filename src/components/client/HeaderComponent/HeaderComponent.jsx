@@ -7,6 +7,7 @@ import { Input } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux'
 import { logoutDispatch } from "../../../redux/apiCalls";
+import avtBase from "../../../assets/common/images/avtbase.jpg";
 
 const { Search } = Input;
 
@@ -98,6 +99,7 @@ const NavItemRole = styled(Button)`
   }
 `;
 
+
 function HeaderComponent() {
   const user = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();
@@ -185,7 +187,8 @@ function HeaderComponent() {
             {user ? (
               <Dropdown menu={{ items }} placement="bottomRight">
                 <NavItemAVT>
-                  <p>{user.user} - {user.role}</p>
+                  <p>{user.userName} - {user.role}</p>
+                  <Image style={{borderRadius: '100%'}} width='40px' height='40px' src={user.userImgUrl}/>
                 </NavItemAVT>
               </Dropdown>
             ) : (
