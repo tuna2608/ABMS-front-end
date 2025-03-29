@@ -10,7 +10,6 @@ import {
 } from "@ant-design/icons";  
 
 const { Sider } = Layout;  
-
 const SidebarMenu = ({ collapsed, setCollapsed, activeMenuItem, setActiveMenuItem }) => {
    const menuItems = [
      {
