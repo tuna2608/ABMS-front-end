@@ -73,9 +73,7 @@ const AdminSidebar = ({ collapsed, activeTab, setActiveTab, toggleCollapsed }) =
       width={250}
     >
       <div style={{ height: 64, padding: 16, textAlign: "center" }}>
-        <h2 style={{ margin: 0, fontSize: collapsed ? 14 : 18 }}>
-          {collapsed ? "AD" : "Admin"}
-        </h2>
+        
       </div>
       <Menu
         mode="inline"
