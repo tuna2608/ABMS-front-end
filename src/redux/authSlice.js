@@ -51,11 +51,24 @@ export const userSlice = createSlice({
     verifyFail: (state) => {
       state.isFetching = false;
       state.error = true;
+    },
+    editProfileStart: (state) => {
+      state.isFetching = true;
+      state.error = false;
+    },
+    editProfileSuccess: (state, action) => {
+      state.isFetching = false;
+      state.error = false;
+      state.currentUser = action.payload;
+    },
+    editProfileFail: (state) => {
+      state.isFetching = false;
+      state.error = true;
     }
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { loginStart, loginSuccess, loginFailure, logout, registerStart, registerSuccess, registerFail, verifyStart, verifyFail, verifySuccess } = userSlice.actions;
+export const { loginStart, loginSuccess, loginFailure, logout, registerStart, registerSuccess, registerFail, verifyStart, verifyFail, verifySuccess,editProfileFail,editProfileSuccess,editProfileStart } = userSlice.actions;
 
 export default userSlice.reducer;

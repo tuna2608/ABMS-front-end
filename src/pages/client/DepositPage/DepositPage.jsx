@@ -27,11 +27,12 @@ const samplePostDetail = {
 
 const DepositPage = ({ 
   postDetail = samplePostDetail, 
+  isOpen,
   onCancel, 
   onSubmit 
 }) => {
   const [termsAgreed, setTermsAgreed] = useState(true);
-  const [modalVisible, setModalVisible] = useState(true);
+  const [modalVisible, setModalVisible] = useState(isOpen);
 
   const handleSubmit = () => {
     if (!termsAgreed) {
@@ -90,7 +91,7 @@ Khách hàng có thể mất một phần hoặc toàn bộ tiền đặt cọc 
   return (
     <Modal
       title="Xác Nhận Yêu Cầu Đặt Cọc"
-      open={modalVisible}
+      open={isOpen}
       width={600}
       onCancel={handleCancel}
       footer={[
