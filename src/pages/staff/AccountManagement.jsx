@@ -1,13 +1,18 @@
 import React, { useState, useEffect } from "react";
 import {
-  Card, Space, Input, Form, Select, Button, message, Typography, Row, Col, Upload, DatePicker
+  Card, Space, Input, Form, Select, Button, message, Typography, Row, Col, Upload, DatePicker, AutoComplete
 } from "antd";
 import {
   UserOutlined, MailOutlined, PhoneOutlined, TagOutlined, HomeOutlined, 
   UploadOutlined, SearchOutlined, LockOutlined
 } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { searchUserByUsernameOrEmail, verifyUserInfo } from "../../redux/apiCalls";
+import { 
+  searchUserByUsernameOrEmail, 
+  verifyUserInfo, 
+  getUnrentedApartments,
+  getApartmentsWithoutHouseholder 
+} from "../../redux/apiCalls";
 import moment from 'moment';
 
 const { Option } = Select;
@@ -21,9 +26,42 @@ const AccountManagement = () => {
   const [fileList, setFileList] = useState([]);
   const [searchPerformed, setSearchPerformed] = useState(false);
   const [verificationType, setVerificationType] = useState(null);
+  const [unrentedApartments, setUnrentedApartments] = useState([]);
+  const [noHouseholderApartments, setNoHouseholderApartments] = useState([]);
 
   const dispatch = useDispatch();
   const userData = useSelector((state) => state.users.users);
+
+  useEffect(() => {
+    const fetchUnrentedApartments = async () => {
+      try {
+        const unrentedResponse = await getUnrentedApartments(dispatch);
+        if (unrentedResponse.success) {
+          setUnrentedApartments(unrentedResponse.data);
+        } else {
+          message.error(unrentedResponse.message);
+        }
+      } catch (error) {
+        console.error("Error in fetching unrented apartments:", error);
+      }
+    };
+
+    const fetchNoHouseholderApartments = async () => {
+      try {
+        const noHouseholderResponse = await getApartmentsWithoutHouseholder(dispatch);
+        if (noHouseholderResponse.success) {
+          setNoHouseholderApartments(noHouseholderResponse.data);
+        } else {
+          message.error(noHouseholderResponse.message);
+        }
+      } catch (error) {
+        console.error("Error in fetching apartments without householder:", error);
+      }
+    };
+
+    fetchUnrentedApartments();
+    fetchNoHouseholderApartments();
+  }, [dispatch]);
 
   useEffect(() => {
     if (verificationType === 2) {
@@ -133,6 +171,34 @@ const AccountManagement = () => {
     if (value === 2) {
       verificationForm.setFieldValue('contractEndDate', null);
     }
+  };
+
+  const handleApartmentSearch = (value) => {
+    // Nếu là mua căn hộ, trả về các căn hộ không có chủ hộ
+    if (verificationType === 2) {
+      const filteredApartments = noHouseholderApartments
+        .filter(apt => 
+          apt.apartmentName.toLowerCase().includes(value.toLowerCase())
+        )
+        .map(apt => ({
+          value: apt.apartmentName,
+          label: `${apt.apartmentName} - ${apt.area}m² - ${apt.floor}`
+        }));
+      
+      return filteredApartments;
+    }
+    
+    // Nếu là thuê, chỉ trả về căn hộ chưa cho thuê
+    const filteredRentApartments = unrentedApartments
+      .filter(apt => 
+        apt.apartmentName.toLowerCase().includes(value.toLowerCase())
+      )
+      .map(apt => ({
+        value: apt.apartmentName,
+        label: `${apt.apartmentName} - ${apt.area}m²`
+      }));
+    
+    return filteredRentApartments;
   };
 
   const uploadProps = {
@@ -296,7 +362,35 @@ const AccountManagement = () => {
                     label="Tên căn hộ"
                     rules={[{ required: true, message: 'Vui lòng nhập tên căn hộ!' }]}
                   >
-                    <Input prefix={<HomeOutlined />} placeholder="Nhập tên căn hộ" />
+                    <AutoComplete
+                      style={{ width: '100%' }}
+                      onSearch={handleApartmentSearch}
+                      placeholder="Nhập tên căn hộ"
+                      filterOption={(inputValue, option) =>
+                        option.value.toLowerCase().includes(inputValue.toLowerCase())
+                      }
+                      disabled={verificationType === null}
+                    >
+                      {verificationType === 2 ? (
+                        noHouseholderApartments.map(apt => (
+                          <AutoComplete.Option 
+                            key={apt.apartmentId} 
+                            value={apt.apartmentName}
+                          >
+                            {apt.apartmentName}
+                          </AutoComplete.Option>
+                        ))
+                      ) : (
+                        unrentedApartments.map(apt => (
+                          <AutoComplete.Option 
+                            key={apt.apartmentId} 
+                            value={apt.apartmentName}
+                          >
+                            {apt.apartmentName}
+                          </AutoComplete.Option>
+                        ))
+                      )}
+                    </AutoComplete>
                   </Form.Item>
                 </Col>
               </Row>

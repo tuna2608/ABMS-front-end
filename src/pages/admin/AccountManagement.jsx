@@ -7,7 +7,7 @@ import {
   EyeOutlined
 } from '@ant-design/icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { getResidentList, verifyAndAddUser } from '../../redux/apiCalls';
+import { getResidentList, verifyAndAddUser, rejectVerificationRequest  } from '../../redux/apiCalls';
 import moment from 'moment';
 
 const { Title, Text } = Typography;
@@ -241,19 +241,35 @@ const AccountManagement = () => {
   };
 
   // Hàm xử lý từ chối tài khoản
-  const handleDeclineAccount = (key) => {
-    Modal.confirm({
-      title: 'Xác nhận từ chối tài khoản',
-      content: 'Bạn có chắc chắn muốn từ chối tài khoản này không?',
-      okText: 'Từ chối',
-      okType: 'danger',
-      cancelText: 'Hủy',
-      onOk() {
-        setPendingAccounts(prevData => prevData.filter(account => account.key !== key));
-        message.success('Đã từ chối tài khoản thành công');
-      },
-    });
-  };
+  // Hàm xử lý từ chối tài khoản
+const handleDeclineAccount = async (key) => {
+  Modal.confirm({
+    title: 'Xác nhận từ chối tài khoản',
+    content: 'Bạn có chắc chắn muốn từ chối tài khoản này không?',
+    okText: 'Từ chối',
+    okType: 'danger',
+    cancelText: 'Hủy',
+    async onOk() {
+      try {
+        const accountToDecline = pendingAccounts.find(account => account.key === key);
+        if (!accountToDecline) {
+          message.error('Không tìm thấy thông tin tài khoản');
+          return;
+        }
+        const response = await rejectVerificationRequest(dispatch, accountToDecline.accountId);
+        if (response.success) {
+          setPendingAccounts(prevData => prevData.filter(account => account.key !== key));
+          message.success('Đã từ chối tài khoản thành công');
+        } else {
+          message.error(response.message || 'Có lỗi xảy ra khi từ chối tài khoản');
+        }
+      } catch (error) {
+        console.error("Error declining account:", error);
+        message.error('Có lỗi xảy ra khi từ chối tài khoản');
+      }
+    },
+  });
+};
 
   return (
     <>
