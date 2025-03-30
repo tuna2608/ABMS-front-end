@@ -208,6 +208,7 @@ const PostDetail = () => {
   const dispatch = useDispatch();
 
   const userCurrent = useSelector((state) => state.user.currentUser);
+
   const navigate = useNavigate();
 
   const postData = useSelector((state) => state.post.post?.data);
@@ -220,13 +221,15 @@ const PostDetail = () => {
 
   // Giả lập việc lấy dữ liệu từ API
   useEffect(() => {
-    // Trong thực tế, sẽ gọi API với id
+    
     async function getPostDetail() {
       setLoading(true);
       const res = await getPostById(dispatch, postId);
       // res.data.postImages.map((image)=>console.log(image))
       const resUser = await getUserByUserName(dispatch, res.data.userName);
       setApartment(res.data);
+      console.log(res.data);
+      
       // console.log(resUser.data[0]);
       setOwner(resUser.data[0]);
       setLoading(false);
@@ -680,7 +683,7 @@ const PostDetail = () => {
               <Divider style={{ margin: "12px 0" }} />
 
               <Space direction="vertical" style={{ width: "100%" }}>
-                {apartment.userId !== userCurrent.userId && (
+                {userCurrent && apartment.userId !== userCurrent.userId && (
                   <Button
                     type="primary"
                     block
@@ -691,7 +694,7 @@ const PostDetail = () => {
                     Nhắn tin liên hệ
                   </Button>
                 )}
-                {apartment.depositUserId !== userCurrent.userId && (
+                {userCurrent && apartment.depositUserId !== userCurrent.userId && (
                   <Button
                     style={{ background: "var(--forange)", color: "white" }}
                     icon={<MoneyCollectOutlined />}
@@ -701,7 +704,7 @@ const PostDetail = () => {
                     Đặt cọc
                   </Button>
                 )}
-                {apartment.depositUserId === userCurrent.userId && (
+                {userCurrent && apartment.depositUserId === userCurrent.userId && (
                   <Button
                     style={{ background: "var(--fred)", color: "white" }}
                     icon={<MoneyCollectOutlined />}

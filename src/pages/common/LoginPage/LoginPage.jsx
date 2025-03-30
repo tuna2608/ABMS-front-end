@@ -54,13 +54,20 @@ const SignInPage = () => {
     const res = await login(dispatch, { usernameOrEmail: email, password });
     // console.log(res);
     const messageAPI = res.message
-    
     if(res.status === 401){
       message.error(messageAPI)
       return;
     }else{
       message.success(messageAPI)
-      navigate('/')
+      console.log(res);
+      const roleUser = res.data.role;
+      if(roleUser === 'Admin'){
+        navigate('/adminHome')
+      }else if(roleUser === 'Staff'){
+        navigate('/staffHome')
+      }else {
+        navigate('/')
+      } 
     }
   };
 
