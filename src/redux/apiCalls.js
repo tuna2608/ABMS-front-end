@@ -229,6 +229,33 @@ export const getImageCloud = async (formData) => {
   }
 };
 
+//dat coc
+export const depositCreate = async (formData) => {
+  try {
+    const res = await publicRequest.post(`/deposit/create`, formData);
+    return res.data
+  } catch (error) {
+    return error.response
+  }
+};
+
+export const depositSuccess = async (formData) => {
+  try {
+    const res = await publicRequest.post(`/payment/deposit_success`, formData);
+    return res.data
+  } catch (error) {
+    return error.response
+  }
+};
+
+export const depositCancel = async (formData) => {
+  try {
+    const res = await publicRequest.post(`/deposit/cancel`, formData);
+    return res.data
+  } catch (error) {
+    return error.response
+  }
+};
 // Cart
 
 export const getCartByUId = async (dispatch, currentUserId) => {
@@ -407,7 +434,8 @@ export const getUserByUserName = async (dispatch, username) => {
 //   } catch (error) { }
 // };
 
-// Chat functions
+
+// -----------------------------------------------------------------------------Chat functions------------------------------------------------------------------------------------------
 // Lấy lịch sử tin nhắn
 export const getMessages = (receiverId, currentUserId) => async (dispatch) => {
   dispatch(getMessagesStart());
@@ -470,8 +498,7 @@ export const getUserInfo = (userId) => async (dispatch) => {
     return null;
   }
 };
-
-//duyet
+//------------------------------------------------------------------------------gửi form duyệt-----------------------------------------------------------------------------------
 //tim user bang username va email
 export const searchUserByUsernameOrEmail = async (dispatch, query) => {
   dispatch(getUserStart());
@@ -505,8 +532,7 @@ export const verifyUserInfo = async (dispatch, formData) => {
     return error.response ? error.response.data : { message: "Unknown error" };
   }
 };
-
-//duyet user
+//------------------------------------------------------------------------------duyệt user--------------------------------------------------------------------------------------
 // Hàm lấy danh sách tài khoản chờ duyệt
 export const getResidentList = async (dispatch) => {
   dispatch(getUserStart());
@@ -577,6 +603,64 @@ export const verifyAndAddUser = async (dispatch, verifyUserResponseDTO) => {
       status: error.response?.status || 500,
       message: error.response?.data?.message || "Có lỗi xảy ra khi duyệt tài khoản",
       data: error.response?.data
+    };
+  }
+};
+
+// Hàm từ chối tài khoản
+export const rejectVerificationRequest = async (dispatch, verificationFormId) => {
+  try {
+    const res = await userRequest.delete(`/user/reject_verification?verificationFormId=${verificationFormId}`);
+    await getResidentList(dispatch);
+    return {
+      success: true,
+      status: res.status,
+      data: res.data
+    };
+  } catch (error) {
+    console.error("Error in rejectVerificationRequest:", error);
+    return {
+      success: false,
+      status: error.response?.status || 500,
+      message: error.response?.data?.message || "Có lỗi xảy ra khi từ chối tài khoản"
+    };
+  }
+};
+//------------------------------------------------------------------------------lọc căn hộ theo trạng thái------------------------------------------------------------------------------------
+//unrented
+export const getUnrentedApartments = async (dispatch) => {
+  try {
+    const res = await publicRequest.get("/apartment/getAll/unrented");
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || ''
+    };
+  } catch (error) {
+    console.error("Error fetching unrented apartments:", error);
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || "Lỗi khi lấy danh sách căn hộ chưa cho thuê"
+    };
+  }
+};
+
+//khong co householder
+export const getApartmentsWithoutHouseholder = async (dispatch) => {
+  try {
+    const res = await publicRequest.get("/apartment/getAll/no-householder");
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || ''
+    };
+  } catch (error) {
+    console.error("Error fetching apartments without householder:", error);
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || "Lỗi khi lấy danh sách căn hộ không có chủ hộ"
     };
   }
 };
