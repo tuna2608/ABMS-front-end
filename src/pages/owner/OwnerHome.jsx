@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 // Import components
 import SideMenu from "./SideMenu";
 import ApartmentListView from "./ApartmentListView";
-import CreatePostView from "./CreatePostView";
+import PostManagementView from "./PostManagementView";
 import ContractView from "./ContractView";
 import PaymentView from "./PaymentView";
 import DocumentUploadView from "./DocumentUploadView";
@@ -78,9 +78,9 @@ Khách hàng có thể mất một phần hoặc toàn bộ tiền đặt cọc 
     switch (currentView) {
       case "list":
         return <ApartmentListView />;
-      case "createPost":
+      case "post":
         return (
-          <CreatePostView 
+          <PostManagementView 
             postTypes={postTypes}
             apartments={apartments}
             depositTerms={depositTerms}

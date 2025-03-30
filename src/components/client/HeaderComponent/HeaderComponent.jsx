@@ -92,13 +92,30 @@ const NavItemAVT = styled.div`
 `;
 
 const NavItemRole = styled(Button)`
-  color: var(--cheadline);
+  color: white;
+  background-color: transparent;
+  border: none;
+  font-size: 16px;
+  transition: color 0.3s;
 
   &:hover {
     color: var(--csecondary);
+    background-color: transparent;
   }
 `;
 
+const PostLink = styled(Button)`
+  color: white;
+  background-color: transparent;
+  border: none;
+  font-size: 16px;
+  transition: color 0.3s;
+
+  &:hover {
+    color: var(--csecondary);
+    background-color: transparent;
+  }
+`;
 
 function HeaderComponent() {
   const user = useSelector((state) => state.user.currentUser);
@@ -188,6 +205,10 @@ function HeaderComponent() {
                 Kênh người thuê
               </NavItemRole>
             )}
+
+            <PostLink onClick={() => navigate("/post")}>
+              Bài viết
+            </PostLink>
 
             <Dropdown menu={{ items }} placement="bottomLeft">
               <Badge count={13} overflowCount={10}>
