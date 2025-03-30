@@ -4,7 +4,6 @@ import {
    HomeOutlined,
    DollarOutlined,
    UserOutlined,
-   MessageOutlined,
    SafetyOutlined,
    CreditCardOutlined  // Add this import
 } from "@ant-design/icons";  
@@ -41,12 +40,6 @@ const SidebarMenu = ({ collapsed, setCollapsed, activeMenuItem, setActiveMenuIte
        icon: <UserOutlined />,
        label: "Quản lý tài khoản",
        onClick: () => setActiveMenuItem("account-management"),
-     },
-     {
-       key: "messages",
-       icon: <MessageOutlined />,
-       label: "Tin nhắn",
-       onClick: () => setActiveMenuItem("messages"),
      },
    ];  
 

@@ -1,170 +1,237 @@
 import React, { useState, useEffect } from 'react';
-import { 
-  Card, 
-  Space, 
-  Button, 
-  Table, 
-  Tag, 
-  Modal, 
-  Form, 
-  Select, 
-  Input, 
-  Upload, 
-  Row, 
-  Col, 
+import {
+  Card,
+  Space,
+  Form,
+  Select,
+  Input,
+  Button,
+  Modal,
+  Upload,
+  Row,
+  Col,
+  Table,
+  InputNumber,
   message,
-  InputNumber
+  Checkbox,
+  Alert,
+  Typography
 } from 'antd';
-import { 
-  FormOutlined, 
-  PlusOutlined, 
-  EditOutlined,
-  DeleteOutlined,
-  EyeOutlined
+import {
+  FormOutlined,
+  PlusOutlined,
+  EyeOutlined,
+  InfoCircleOutlined
 } from "@ant-design/icons";
-import { useDispatch } from 'react-redux';
-import { getAllPosts } from "../../redux/apiCalls";
+import { useSelector, useDispatch } from 'react-redux';
+import { 
+  getOwnApartments, 
+  createPost, 
+  getAllPosts,
+  checkExistingPost
+} from '../../redux/apiCalls';
 
 const { TextArea } = Input;
+const { Text } = Typography;
 
 const PostManagementView = () => {
-  const [isModalVisible, setIsModalVisible] = useState(false);
-  const [currentPost, setCurrentPost] = useState(null);
   const [postForm] = Form.useForm();
-  const [posts, setPosts] = useState([]);
   const [fileList, setFileList] = useState([]);
+  const [previewVisible, setPreviewVisible] = useState(false);
+  const [previewImage, setPreviewImage] = useState('');
+  const [apartments, setApartments] = useState([]);
+  const [posts, setPosts] = useState([]);
+  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [termsAgreed, setTermsAgreed] = useState(false);
+  const [loading, setLoading] = useState(false);
+  const [postExists, setPostExists] = useState(false);
 
   const dispatch = useDispatch();
+  const currentUser = useSelector((state) => state.user.currentUser);
 
-  // Fetch posts on component mount
-  useEffect(() => {
-    async function fetchPosts() {
-      try {
-        const res = await getAllPosts(dispatch);
-        setPosts(res.data);
-      } catch (error) {
-        message.error('Không thể tải danh sách bài viết');
-      }
-    }
-    fetchPosts();
-  }, [dispatch]);
-
-  // Post type options
+  // Options
   const postTypes = [
-    { value: 'apartment_rent', label: 'Cho Thuê Căn Hộ' },
-    { value: 'apartment_sale', label: 'Bán Căn Hộ' },
-    { value: 'roommate', label: 'Tìm Bạn Ở Ghép' },
-    { value: 'community', label: 'Thông Báo Cộng Đồng' }
+    { value: 'Cho thuê', label: 'Cho Thuê Căn Hộ' },
+    { value: 'Bán', label: 'Bán Căn Hộ' }
   ];
 
-  // Status options
-  const statusOptions = [
-    { value: '0', label: 'Đã Đăng', color: 'green' },
-    { value: '1', label: 'Chờ Xét Duyệt', color: 'orange' }
+  const areaOptions = [
+    { value: 'district1', label: 'Quận 1' },
+    { value: 'district2', label: 'Quận 2' },
+    { value: 'district3', label: 'Quận 3' },
+    { value: 'binh_thanh', label: 'Quận Bình Thạnh' },
+    { value: 'thu_duc', label: 'TP. Thủ Đức' }
   ];
 
-  // Image upload handling
+  const directionOptions = [
+    { value: 'east', label: 'Đông' },
+    { value: 'west', label: 'Tây' },
+    { value: 'south', label: 'Nam' },
+    { value: 'north', label: 'Bắc' },
+    { value: 'southeast', label: 'Đông Nam' },
+    { value: 'southwest', label: 'Tây Nam' }
+  ];
+
+  // Terms and Conditions Content
+  const TermsContent = () => (
+    <div style={{ maxHeight: '300px', overflowY: 'auto', padding: '0 10px' }}>
+      <h3>Điều Khoản Và Điều Kiện Đăng Tin</h3>
+      <ol>
+        <li>
+          <strong>Tính Chính Xác Thông Tin</strong>
+          <p>Người đăng tin cam kết cung cấp thông tin chính xác, đầy đủ và trung thực về căn hộ.</p>
+        </li>
+        <li>
+          <strong>Trách Nhiệm Pháp Lý</strong>
+          <p>Mọi thông tin sai lệch sẽ chịu trách nhiệm pháp lý và có thể bị khóa tài khoản.</p>
+        </li>
+        <li>
+          <strong>Quyền Sở Hữu</strong>
+          <p>Người đăng tin phải là chủ sở hữu hợp pháp hoặc được ủy quyền quản lý căn hộ.</p>
+        </li>
+        <li>
+          <strong>Bảo Mật Thông Tin</strong>
+          <p>Thông tin cá nhân và căn hộ sẽ được bảo mật và chỉ sử dụng cho mục đích cho thuê.</p>
+        </li>
+        <li>
+          <strong>Phí Dịch Vụ</strong>
+          <p>Việc đăng tin có thể phải chịu các khoản phí dịch vụ theo quy định của nền tảng.</p>
+        </li>
+      </ol>
+    </div>
+  );
+
+  // Fetch data on component mount
+  useEffect(() => {
+    const fetchData = async () => {
+      if (!currentUser) {
+        message.error('Vui lòng đăng nhập');
+        return;
+      }
+
+      setLoading(true);
+      try {
+        // Fetch apartments
+        const apartmentsResponse = await getOwnApartments(currentUser.userId);
+        if (apartmentsResponse.success) {
+          setApartments(apartmentsResponse.data);
+        }
+
+        // Fetch posts
+        const postsResponse = await getAllPosts();
+        if (postsResponse && postsResponse.data) {
+          setPosts(postsResponse.data);
+        }
+      } catch (error) {
+        console.error("Error fetching data:", error);
+        message.error("Có lỗi xảy ra khi tải dữ liệu");
+      }
+      setLoading(false);
+    };
+
+    fetchData();
+  }, [currentUser]);
+
+  // Image handling
   const handleImageUpload = ({ fileList }) => {
     setFileList(fileList);
   };
 
-  // Form submission handler
-  const handlePostSubmit = (values) => {
-    Modal.confirm({
-      title: 'Xác Nhận Gửi Bài',
-      content: 'Bạn có chắc muốn gửi bài viết này?',
-      onOk() {
-        // Prepare post data matching the expected structure
-        const newPostData = {
-          title: values.title,
-          content: values.content,
-          price: values.price,
-          postType: values.postType,
-          depositCheck: '1', // Default to pending
-          userName: 'Người dùng hiện tại', // TODO: Replace with actual user
-          postImages: fileList.map(file => URL.createObjectURL(file.originFileObj)),
-          apartment: {
-            apartmentName: values.apartmentName,
-            numberOfBedrooms: values.numberOfBedrooms || 0,
-            numberOfBathrooms: values.numberOfBathrooms || 0
-          },
-          views: 0
-        };
+  const handlePreview = async (file) => {
+    if (!file.url && !file.preview) {
+      file.preview = await getBase64(file.originFileObj);
+    }
+    setPreviewImage(file.url || file.preview);
+    setPreviewVisible(true);
+  };
 
-        // If editing existing post
-        if (currentPost) {
-          const updatedPosts = posts.map(post => 
-            post.postId === currentPost.postId 
-              ? { ...post, ...newPostData } 
-              : post
-          );
-          setPosts(updatedPosts);
-          message.success('Bài viết đã được cập nhật!');
-        } else {
-          // Add new post
-          const newPost = {
-            ...newPostData,
-            postId: (posts.length + 1).toString()
-          };
-          setPosts([...posts, newPost]);
-          message.success('Bài viết đã được gửi chờ xét duyệt!');
-        }
-        
-        postForm.resetFields();
-        setFileList([]);
-        setIsModalVisible(false);
-        setCurrentPost(null);
-      }
+  const getBase64 = (file) => {
+    return new Promise((resolve, reject) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = () => resolve(reader.result);
+      reader.onerror = (error) => reject(error);
     });
   };
 
-  // Handle post actions
-  const handlePostAction = (action, record) => {
-    switch(action) {
-      case 'delete':
-        Modal.confirm({
-          title: 'Xóa Bài Viết',
-          content: 'Bạn có chắc muốn xóa bài viết này?',
-          onOk() {
-            setPosts(posts.filter(post => post.postId !== record.postId));
-            message.success('Bài viết đã được xóa');
+  const handleApartmentSelect = async (value) => {
+    const selectedApartment = apartments.find(apt => apt.apartmentId === value);
+    const postType = postForm.getFieldValue('postType');
+
+    if (selectedApartment && postType) {
+      try {
+        const response = await checkExistingPost(
+          selectedApartment.apartmentName,
+          postType
+        );
+
+        if (response.success) {
+          setPostExists(response.exists);
+          if (response.exists) {
+            message.warning('Căn hộ này đã có bài đăng với loại này');
           }
-        });
-        break;
-      case 'view':
-        Modal.info({
-          title: 'Chi Tiết Bài Viết',
-          content: (
-            <div>
-              <p><strong>Tiêu đề:</strong> {record.title}</p>
-              <p><strong>Loại:</strong> {postTypes.find(type => type.value === record.postType)?.label}</p>
-              <p>
-                <strong>Trạng thái:</strong> 
-                <Tag color={statusOptions.find(s => s.value === record.depositCheck)?.color}>
-                  {statusOptions.find(s => s.value === record.depositCheck)?.label}
-                </Tag>
-              </p>
-              <p><strong>Nội dung:</strong> {record.content}</p>
-              <p><strong>Giá:</strong> {new Intl.NumberFormat('vi-VN').format(record.price)} VNĐ/tháng</p>
-              <p><strong>Người đăng:</strong> {record.userName}</p>
-            </div>
-          )
-        });
-        break;
-      case 'edit':
-        // Populate form with existing post data
-        setCurrentPost(record);
-        postForm.setFieldsValue({
-          postType: record.postType,
-          title: record.title,
-          content: record.content,
-          price: record.price,
-          apartmentName: record.apartment?.apartmentName,
-          numberOfBedrooms: record.apartment?.numberOfBedrooms,
-          numberOfBathrooms: record.apartment?.numberOfBathrooms
-        });
-        setIsModalVisible(true);
-        break;
+        }
+      } catch (error) {
+        console.error('Lỗi kiểm tra bài đăng:', error);
+      }
+    }
+  };
+
+  // Post submission handler
+  const handlePostSubmit = async (values) => {
+    // Check terms agreement
+    if (!termsAgreed) {
+      message.error('Vui lòng đồng ý với các điều khoản');
+      return;
+    }
+
+    try {
+      const formData = new FormData();
+      formData.append('title', values.title);
+      formData.append('content', values.content);
+      formData.append('price', values.price);
+      formData.append('depositPrice', values.depositPrice || 0);
+      formData.append('postType', values.postType);
+      formData.append('userName', currentUser.userName);
+
+      // Additional fields
+      formData.append('area', values.area);
+      formData.append('direction', values.direction);
+      formData.append('floor', values.floor);
+      formData.append('numberOfBedrooms', values.numberOfBedrooms);
+      formData.append('numberOfBathrooms', values.numberOfBathrooms);
+      formData.append('apartmentId', values.apartmentId);
+
+      fileList.forEach((file) => {
+        const fileObject = file.originFileObj || file;
+        if (fileObject) {
+          formData.append('imageFile', fileObject);
+        }
+      });
+
+      // Create new post
+      const response = await createPost(formData);
+
+      if (response.success) {
+        message.success('Bài viết đã được tạo thành công!');
+
+        // Refresh posts
+        const postsResponse = await getAllPosts();
+        if (postsResponse && postsResponse.data) {
+          setPosts(postsResponse.data);
+        }
+
+        // Reset form and modal
+        postForm.resetFields();
+        setFileList([]);
+        setIsModalVisible(false);
+        setTermsAgreed(false);
+      } else {
+        message.error(response.message || 'Có lỗi xảy ra khi thực hiện');
+      }
+    } catch (error) {
+      console.error('Lỗi khi thực hiện:', error);
+      message.error('Có lỗi xảy ra');
     }
   };
 
@@ -173,30 +240,28 @@ const PostManagementView = () => {
     {
       title: 'Tiêu Đề',
       dataIndex: 'title',
-      key: 'title',
-      render: (text) => <a>{text}</a>
+      key: 'title'
     },
     {
       title: 'Loại Bài Viết',
       dataIndex: 'postType',
-      key: 'postType',
-      render: (type) => {
-        const postType = postTypes.find(t => t.value === type);
-        return postType ? postType.label : type;
-      }
+      key: 'postType'
     },
     {
-      title: 'Trạng Thái',
-      dataIndex: 'depositCheck',
-      key: 'depositCheck',
-      render: (status) => {
-        const statusInfo = statusOptions.find(s => s.value === status);
-        return statusInfo ? (
-          <Tag color={statusInfo.color}>
-            {statusInfo.label}
-          </Tag>
-        ) : status;
-      }
+      title: 'Giá',
+      dataIndex: 'price',
+      key: 'price',
+      render: (price) => new Intl.NumberFormat('vi-VN').format(price) + ' VNĐ'
+    },
+    {
+      title: 'Khu Vực',
+      dataIndex: 'area',
+      key: 'area'
+    },
+    {
+      title: 'Người Đăng',
+      dataIndex: 'userName',
+      key: 'userName'
     },
     {
       title: 'Thao Tác',
@@ -205,25 +270,26 @@ const PostManagementView = () => {
         <Space>
           <Button 
             icon={<EyeOutlined />} 
-            onClick={() => handlePostAction('view', record)}
             type="text"
+            onClick={() => {
+              Modal.info({
+                title: 'Chi Tiết Bài Viết',
+                content: (
+                  <div>
+                    <p><strong>Tiêu đề:</strong> {record.title}</p>
+                    <p><strong>Nội dung:</strong> {record.content}</p>
+                    <p><strong>Giá:</strong> {new Intl.NumberFormat('vi-VN').format(record.price)} VNĐ</p>
+                    <p><strong>Khu vực:</strong> {record.area}</p>
+                    <p><strong>Hướng:</strong> {record.direction}</p>
+                    <p><strong>Tầng:</strong> {record.floor}</p>
+                    <p><strong>Số phòng ngủ:</strong> {record.numberOfBedrooms}</p>
+                    <p><strong>Số phòng tắm:</strong> {record.numberOfBathrooms}</p>
+                  </div>
+                )
+              });
+            }}
           >
             Xem
-          </Button>
-          <Button 
-            icon={<EditOutlined />} 
-            onClick={() => handlePostAction('edit', record)}
-            type="text"
-          >
-            Chỉnh Sửa
-          </Button>
-          <Button 
-            icon={<DeleteOutlined />} 
-            onClick={() => handlePostAction('delete', record)}
-            type="text" 
-            danger
-          >
-            Xóa
           </Button>
         </Space>
       )
@@ -246,7 +312,7 @@ const PostManagementView = () => {
             postForm.resetFields();
             setFileList([]);
             setIsModalVisible(true);
-            setCurrentPost(null);
+            setTermsAgreed(false);
           }}
         >
           Thêm Bài Viết
@@ -256,21 +322,27 @@ const PostManagementView = () => {
       <Table 
         columns={columns} 
         dataSource={posts}
-        pagination={false}
+        loading={loading}
+        pagination={{
+          total: posts.length,
+          showSizeChanger: true,
+          showQuickJumper: true
+        }}
       />
 
       <Modal
-        title={currentPost ? "Chỉnh Sửa Bài Viết" : "Tạo Bài Viết Mới"}
-        visible={isModalVisible}
+        title="Tạo Bài Viết Mới"
+        open={isModalVisible}
         onOk={() => postForm.submit()}
         onCancel={() => {
           setIsModalVisible(false);
-          setCurrentPost(null);
           postForm.resetFields();
           setFileList([]);
+          setTermsAgreed(false);
         }}
         width={800}
-        okText={currentPost ? "Cập Nhật" : "Gửi Bài Viết"}
+        okText="Tạo Bài Viết"
+        okButtonProps={{ disabled: !termsAgreed }}
         cancelText="Hủy"
       >
         <Form
@@ -278,6 +350,20 @@ const PostManagementView = () => {
           layout="vertical"
           onFinish={handlePostSubmit}
         >
+          <Alert 
+            message="Thông Tin Tiền Cọc" 
+            description={
+              <Text>
+                Tiền cọc sẽ do <strong>ADMIN quản lý</strong>. Bài viết chỉ được 
+                đăng sau khi admin xác nhận.
+              </Text>
+            } 
+            type="warning" 
+            showIcon 
+            icon={<InfoCircleOutlined />} 
+            style={{ marginBottom: 16 }} 
+          />
+
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
@@ -293,25 +379,44 @@ const PostManagementView = () => {
             </Col>
             <Col span={12}>
               <Form.Item
-                name="price"
-                label="Giá Thuê"
-                rules={[{ required: true, message: 'Vui lòng nhập giá thuê' }]}
+                name="apartmentId"
+                label="Căn Hộ"
+                rules={[
+                  { required: true, message: 'Vui lòng chọn căn hộ' },
+                  {
+                    validator: (_, value) => {
+                      if (postExists) {
+                        return Promise.reject(new Error('Căn hộ này đã có bài đăng'));
+                      }
+                      return Promise.resolve();
+                    }
+                  }
+                ]}
               >
-                <InputNumber 
-                  style={{ width: '100%' }}
-                  formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
-                  parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
-                  addonAfter="VNĐ/tháng"
-                  placeholder="Nhập giá thuê"
-                />
+                <Select 
+                  placeholder="Chọn căn hộ"
+                  onChange={handleApartmentSelect}
+                >
+                  {apartments.map(apartment => (
+                    <Select.Option 
+                      key={apartment.apartmentId} 
+                      value={apartment.apartmentId}
+                    >
+                      {apartment.apartmentName}
+                    </Select.Option>
+                  ))}
+                </Select>
               </Form.Item>
             </Col>
           </Row>
-
+          
           <Form.Item
             name="title"
             label="Tiêu Đề"
-            rules={[{ required: true, message: 'Vui lòng nhập tiêu đề' }]}
+            rules={[
+              { required: true, message: 'Vui lòng nhập tiêu đề bài' },
+              { min: 10, message: 'Tiêu đề phải có ít nhất 10 ký tự' }
+            ]}
           >
             <Input placeholder="Nhập tiêu đề bài viết" />
           </Form.Item>
@@ -319,70 +424,207 @@ const PostManagementView = () => {
           <Form.Item
             name="content"
             label="Nội Dung"
-            rules={[{ required: true, message: 'Vui lòng nhập nội dung' }]}
+            rules={[
+              { required: true, message: 'Vui lòng nhập nội dung bài viết' },
+              { min: 20, message: 'Nội dung phải có ít nhất 20 ký tự' }
+            ]}
           >
-            <TextArea 
-              rows={6} 
-              placeholder="Nhập nội dung chi tiết" 
+            <TextArea
+              rows={4}
+              placeholder="Nhập nội dung bài viết"
+              showCount
+              maxLength={1000}
             />
           </Form.Item>
 
           <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                name="area"
+                label="Khu Vực"
+                rules={[{ required: true, message: 'Vui lòng chọn khu vực' }]}
+              >
+                <Select placeholder="Chọn khu vực">
+                  {areaOptions.map(area => (
+                    <Select.Option key={area.value} value={area.value}>
+                      {area.label}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                name="direction"
+                label="Hướng"
+              >
+                <Select placeholder="Chọn hướng">
+                  {directionOptions.map(direction => (
+                    <Select.Option key={direction.value} value={direction.value}>
+                      {direction.label}
+                    </Select.Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Row gutter={16}>  
             <Col span={8}>
               <Form.Item
-                name="apartmentName"
-                label="Tên Căn Hộ"
-                rules={[{ required: true, message: 'Vui lòng nhập tên căn hộ' }]}
+                name="floor"
+                label="Tầng"
+                rules={[
+                  () => ({
+                    validator(_, value) {
+                      if (!value || value >= 1) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(new Error('Tầng phải lớn hơn hoặc bằng 1'));
+                    },
+                  }),
+                ]}
               >
-                <Input placeholder="Nhập tên căn hộ" />
+                <InputNumber 
+                  min={1}
+                  style={{ width: '100%' }}
+                  placeholder="Nhập tầng" 
+                />
               </Form.Item>
             </Col>
             <Col span={8}>
-              <Form.Item
+              <Form.Item  
                 name="numberOfBedrooms"
-                label="Số Phòng Ngủ"
+                label="Phòng Ngủ"
+                rules={[
+                  () => ({
+                    validator(_, value) {
+                      if (!value || value >= 0) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(new Error('Số phòng ngủ phải lớn hơn hoặc bằng 0'));
+                    },
+                  }),
+                ]}
               >
                 <InputNumber 
-                  style={{ width: '100%' }} 
-                  min={0} 
-                  placeholder="Nhập số phòng ngủ" 
+                  min={0}
+                  style={{ width: '100%' }}
+                  placeholder="Số phòng ngủ"
                 />
               </Form.Item>
             </Col>
             <Col span={8}>
               <Form.Item
-                name="numberOfBathrooms"
-                label="Số Phòng Tắm"
+                name="numberOfBathrooms"  
+                label="Phòng Tắm"
+                rules={[
+                  () => ({
+                    validator(_, value) {
+                      if (!value || value >= 0) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(new Error('Số phòng tắm phải lớn hơn hoặc bằng 0'));
+                    },
+                  }),  
+                ]}
               >
-                <InputNumber 
+                <InputNumber
+                  min={0}
                   style={{ width: '100%' }} 
-                  min={0} 
-                  placeholder="Nhập số phòng tắm" 
+                  placeholder="Số phòng tắm"
+                />
+              </Form.Item>
+            </Col>
+          </Row>
+            
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                name="price"
+                label="Giá"
+                rules={[
+                  { required: true, message: 'Vui lòng nhập giá' },
+                  () => ({
+                    validator(_, value) {
+                      if (!value || value >= 0) {
+                        return Promise.resolve();
+                      }
+                      return Promise.reject(new Error('Giá phải lớn hơn hoặc bằng 0'));
+                    },
+                  }),
+                ]}
+              >
+                <InputNumber
+                  min={0}
+                  formatter={(value) => `${value} VNĐ`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
+                  style={{ width: '100%' }}
+                  placeholder="Nhập giá"
+                />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                name="depositPrice"
+                label="Tiền Cọc" 
+                tooltip={{
+                  title: 'Tiền cọc sẽ được giữ và quản lý bởi BestApartment',
+                  icon: <InfoCircleOutlined />,  
+                }}
+              >
+                <InputNumber
+                  min={0}
+                  formatter={(value) => `${value} VNĐ`.replace(/\B(?=(\d{3})+(?!\d))/g, ',')}
+                  parser={(value) => value.replace(/\$\s?|(,*)/g, '')}
+                  style={{ width: '100%' }}
+                  placeholder="Nhập tiền cọc"  
                 />
               </Form.Item>
             </Col>
           </Row>
 
           <Form.Item
-            name="images"
+            name="imageFile"
             label="Hình Ảnh"
+            valuePropName="fileList"
+            getValueFromEvent={handleImageUpload}
           >
             <Upload
+              action="/upload.do"
               listType="picture-card"
               fileList={fileList}
-              onChange={handleImageUpload}
-              multiple
-              beforeUpload={() => false} // Prevent auto upload
+              onPreview={handlePreview}
+              beforeUpload={() => false}
             >
-              {fileList.length < 5 && (
+              {fileList.length >= 8 ? null : (
                 <div>
                   <PlusOutlined />
-                  <div style={{ marginTop: 8 }}>Tải Ảnh</div>
+                  <div style={{ marginTop: 8 }}>Upload</div>
                 </div>
               )}
             </Upload>
           </Form.Item>
+
+          <Form.Item>
+            <Checkbox
+              checked={termsAgreed}
+              onChange={(e) => setTermsAgreed(e.target.checked)}
+            >
+              Tôi đồng ý với các điều khoản và điều kiện đăng tin
+            </Checkbox>
+          </Form.Item>
+
+          <Modal
+            visible={previewVisible}
+            footer={null}
+            onCancel={() => setPreviewVisible(false)}
+          >
+            <img alt="preview" style={{ width: '100%' }} src={previewImage} />
+          </Modal>
         </Form>
+
+        <TermsContent />
       </Modal>
     </Card>
   );
