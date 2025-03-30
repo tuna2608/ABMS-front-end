@@ -23,7 +23,7 @@ import {
   EyeOutlined,
   InfoCircleOutlined
 } from "@ant-design/icons";
-import { useSelector, useDispatch } from 'react-redux';
+import { useSelector} from 'react-redux';
 import { 
   getOwnApartments, 
   createPost, 
@@ -46,7 +46,6 @@ const PostManagementView = () => {
   const [loading, setLoading] = useState(false);
   const [postExists, setPostExists] = useState(false);
 
-  const dispatch = useDispatch();
   const currentUser = useSelector((state) => state.user.currentUser);
 
   // Options
