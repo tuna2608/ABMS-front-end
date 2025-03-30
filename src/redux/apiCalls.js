@@ -291,7 +291,7 @@ export const decreaseCartQuantity = async (
   } catch (error) { }
 };
 
-// Order
+//------------------------------------------------------------------------------tạo bài viết mua bán căn hộ------------------------------------------------------------------------------
 
 export const getPostsByUId = async (dispatch, userId) => {
   dispatch(getPostStart());
@@ -327,6 +327,67 @@ export const getPostById = async (dispatch, postId) => {
   }
 }
 
+//get own apartment by userId
+export const getOwnApartments = async (userId) => {
+  try {
+    const res = await publicRequest.get(`/apartment/get_own_apartment?userId=${userId}`);
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || ''
+    };
+  } catch (error) {
+    console.error("Error fetching own apartments:", error);
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || "Lỗi khi lấy danh sách căn hộ"
+    };
+  }
+};
+
+//create post
+export const createPost = async (formData) => {
+  try {
+    const res = await userRequest.post("/post/add_post", formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    return {
+      success: true,
+      data: res.data.data,
+      message: res.data.message
+    };
+  } catch (error) {
+    console.error("Error creating post:", error);
+    return {
+      success: false,
+      message: error.response?.data?.message || "Có lỗi xảy ra khi tạo bài đăng"
+    };
+  }
+};
+
+//check truoc khi dang bai
+export const checkExistingPost = async (apartmentName, postType) => {
+  try {
+    const res = await publicRequest.get("/post/check-existing-post", {
+      params: { apartmentName, postType }
+    });
+    return {
+      success: true,
+      exists: res.data.exists
+    };
+  } catch (error) {
+    console.error("Error checking existing post:", error);
+    return {
+      success: false,
+      exists: false,
+      message: error.response?.data?.message || "Có lỗi xảy ra khi kiểm tra bài đăng"
+    };
+  }
+};
+//------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 export const getUserByUserName = async (dispatch, username) => {
   dispatch(getUserStart());
   try {
