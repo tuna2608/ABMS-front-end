@@ -10,7 +10,6 @@ const PaymentSuccess = () => {
   
   const [loadingPayment, setLoadingPayment] = useState(false);
   useEffect(() => {
-    setLoadingPayment(true);
     async function callDepositeSuccess() {
       const depositRequest = await JSON.parse(localStorage.getItem("depositRequest"));
       const res = await depositSuccess(depositRequest);
@@ -21,10 +20,8 @@ const PaymentSuccess = () => {
       } else {
         message.success(messageAPI);
       }
-      setLoadingPayment(false)
     }
     callDepositeSuccess();
-    
   }, []);
 
   return (
