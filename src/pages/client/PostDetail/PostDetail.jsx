@@ -687,7 +687,7 @@ const PostDetail = () => {
         </Row>
       </Card>
 
-      <DepositPage isOpen={isDepositeOpen} onCancel={()=>setIsDepositeOpen(false)}/>
+      <DepositPage postDetail={apartment} isOpen={isDepositeOpen} onCancel={()=>setIsDepositeOpen(false)}/>
       
       {/* Modal gửi email liên hệ */}
       <Modal

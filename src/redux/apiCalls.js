@@ -229,6 +229,33 @@ export const getImageCloud = async (formData) => {
   }
 };
 
+//dat coc
+export const depositCreate = async (formData) => {
+  try {
+    const res = await publicRequest.post(`/deposit/create`, formData);
+    return res.data
+  } catch (error) {
+    return error.response
+  }
+};
+
+export const depositSuccess = async (formData) => {
+  try {
+    const res = await publicRequest.post(`/payment/deposit_success`, formData);
+    return res.data
+  } catch (error) {
+    return error.response
+  }
+};
+
+export const depositCancel = async (formData) => {
+  try {
+    const res = await publicRequest.post(`/deposit/cancel`, formData);
+    return res.data
+  } catch (error) {
+    return error.response
+  }
+};
 // Cart
 
 export const getCartByUId = async (dispatch, currentUserId) => {
