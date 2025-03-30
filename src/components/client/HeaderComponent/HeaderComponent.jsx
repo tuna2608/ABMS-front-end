@@ -155,7 +155,16 @@ function HeaderComponent() {
       </TopBar>
       
       <WrapperHeader>
-        <Logo span={4} onClick={() => navigate("/")}>
+        <Logo span={4} onClick={() =>{
+          const roleUser = user.role;
+          if(roleUser === 'Admin'){
+            navigate('/adminHome')
+          }else if(roleUser === 'Staff'){
+            navigate('/staffHome')
+          }else {
+            navigate('/')
+          } 
+        } }>
           <Image
             src={logoMenu}
             width="175px"
