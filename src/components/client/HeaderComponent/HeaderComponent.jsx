@@ -115,6 +115,18 @@ function HeaderComponent() {
     },
     {
       key: "2",
+      label: <div>Kênh chủ căn hộ</div>,
+      disable: (user?.role === 'Rentor') ? "false" : "true",
+      visible: (user?.role === 'Owner') ? "true" : "false"
+    },
+    {
+      key: "3",
+      label: <div>Kênh người thuê căn hộ</div>,
+      disable: (user?.role === 'Rentor') ? "false" : "true",
+      visible: (user?.role === 'Rentor') ? "true" : "false"
+    },
+    {
+      key: "4",
       label: <div onClick={handleLogout}>Logout</div>,
     },
   ];

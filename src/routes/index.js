@@ -16,6 +16,8 @@ import EditProfilePage from "../pages/common/EditProfilePage/EditProfilePage";
 import StaffHome from "../pages/staff/StaffHome";
 import OTPPage from "../pages/common/OTPPage/OTPPage";
 import PaymentSuccess from "../pages/client/Payment/PaymentSuccess";
+import PaymentCancel from "../pages/client/Payment/PaymentCancel";
+
 
 export const routes = [
     {
@@ -89,8 +91,13 @@ export const routes = [
     //     isShowHeader: true
     // },
     {
-        path: '/payment-success',
+        path: '/deposit/success',
         page: PaymentSuccess,
+        isShowHeader: true
+    },
+    {
+        path: '/deposit/cancel',
+        page: PaymentCancel,
         isShowHeader: true
     },
     {
