@@ -91,14 +91,18 @@ const NavItemAVT = styled.div`
   }
 `;
 
-const NavItemRole = styled(Button)`
-  color: var(--cheadline);
+const PostLink = styled(Button)`
+  color: white;
+  background-color: transparent;
+  border: none;
+  font-size: 16px;
+  transition: color 0.3s;
 
   &:hover {
     color: var(--csecondary);
+    background-color: transparent;
   }
 `;
-
 
 function HeaderComponent() {
   const user = useSelector((state) => state.user.currentUser);
@@ -108,33 +112,43 @@ function HeaderComponent() {
   const navigate = useNavigate();
   const onSearch = (value, _e, info) => console.log(info?.source, value);
 
-  const items = [
-    {
-      key: "1",
-      label: <div onClick={() => navigate('/edit-profile')}>Edit profile</div>,
-    },
-    {
-      key: "2",
-      label: <div>Kênh chủ căn hộ</div>,
-      disable: (user?.role === 'Rentor') ? "false" : "true",
-      visible: (user?.role === 'Owner') ? "true" : "false"
-    },
-    {
-      key: "3",
-      label: <div>Kênh người thuê căn hộ</div>,
-      disable: (user?.role === 'Rentor') ? "false" : "true",
-      visible: (user?.role === 'Rentor') ? "true" : "false"
-    },
-    {
-      key: "4",
-      label: <div onClick={handleLogout}>Logout</div>,
-    },
-  ];
-
   function handleLogout() {
     logoutDispatch(dispatch);
     navigate("/login");
   }
+
+  // Define dropdown items based on user role
+  const getDropdownItems = () => {
+    const baseItems = [
+      {
+        key: "1",
+        label: <div onClick={() => navigate('/edit-profile')}>Edit profile</div>,
+      }
+    ];
+    
+    // Add role-specific channel options
+    if (user?.role === 'Owner') {
+      baseItems.push({
+        key: "2",
+        label: <div onClick={() => navigate("/ownerHome")}>Kênh chủ căn hộ</div>,
+      });
+    } else if (user?.role === 'Rentor') {
+      baseItems.push({
+        key: "2",
+        label: <div onClick={() => navigate("/rentorHome")}>Kênh người thuê</div>,
+      });
+    }
+    
+    // Add logout option
+    baseItems.push({
+      key: "4",
+      label: <div onClick={handleLogout}>Logout</div>,
+    });
+    
+    return baseItems;
+  };
+
+  const items = getDropdownItems();
 
   return (
     <>
@@ -187,18 +201,13 @@ function HeaderComponent() {
 
         <Col span={10}>
           <NavbarListItem>
-            {user?.role === 'Owner' && (
-              <NavItemRole onClick={() => navigate("/ownerHome")}>
-                Kênh chủ căn hộ
-              </NavItemRole>
-            )}
-            {user?.role === 'Rentor' && (
-              <NavItemRole onClick={() => navigate("/rentorHome")}>
-                Kênh người thuê
-              </NavItemRole>
-            )}
+            {/* Removed NavItemRole components from here */}
 
-            <Dropdown menu={{ items }} placement="bottomLeft">
+            <PostLink onClick={() => navigate("/post")}>
+              Bài viết
+            </PostLink>
+
+            <Dropdown menu={{ items: items }} placement="bottomLeft">
               <Badge count={13} overflowCount={10}>
                 <NavItem>
                   <BellOutlined />
@@ -207,7 +216,7 @@ function HeaderComponent() {
             </Dropdown>
 
             {user ? (
-              <Dropdown menu={{ items }} placement="bottomRight">
+              <Dropdown menu={{ items: items }} placement="bottomRight">
                 <NavItemAVT>
                   <p>{user.userName} - {user.role}</p>
                   <Image preview={false} style={{borderRadius:'100%'}} width='40px' height='40px' src={user.userImgUrl || avtBase}/>

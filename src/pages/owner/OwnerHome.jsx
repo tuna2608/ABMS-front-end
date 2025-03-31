@@ -10,7 +10,7 @@ import { useNavigate } from "react-router-dom";
 // Import components
 import SideMenu from "./SideMenu";
 import ApartmentListView from "./ApartmentListView";
-import CreatePostView from "./CreatePostView";
+import PostManagementView from "./PostManagementView";
 import ContractView from "./ContractView";
 import PaymentView from "./PaymentView";
 import DocumentUploadView from "./DocumentUploadView";
@@ -78,9 +78,9 @@ Khách hàng có thể mất một phần hoặc toàn bộ tiền đặt cọc 
     switch (currentView) {
       case "list":
         return <ApartmentListView />;
-      case "createPost":
+      case "post":
         return (
-          <CreatePostView 
+          <PostManagementView 
             postTypes={postTypes}
             apartments={apartments}
             depositTerms={depositTerms}
@@ -143,7 +143,10 @@ Khách hàng có thể mất một phần hoặc toàn bộ tiền đặt cọc 
         type="primary"
         tooltip="Chat với khách hàng"
         onClick={navigateToChatPage}
-        style={{ right: 24 }}
+        style={{ 
+          right: 24,
+          background: 'rgba(30, 58, 138, 0.92)', 
+        }}
       />
     </Layout>
   );

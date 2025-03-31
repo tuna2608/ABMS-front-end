@@ -27,7 +27,7 @@ const PaymentSuccess = () => {
   return (
     <div className="payment-success bg-white min-h-screen flex items-center justify-center">
       <Result
-        icon={<CloseCircleOutlined style={{ color: '#52c41a', fontSize: 72 }} />}
+        icon={<CloseCircleOutlined style={{ color: 'red', fontSize: 72 }} />}
         title={
           <h1 className="text-4xl font-bold mb-4 text-center">
             Payment Canceled!
