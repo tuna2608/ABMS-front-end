@@ -19,8 +19,8 @@ const SideMenu = ({ setCurrentView }) => {
     {
       key: "2",
       icon: <FormOutlined />,
-      label: "Tạo bài viết",
-      onClick: () => setCurrentView("createPost"),
+      label: "Quản lý bài viết",
+      onClick: () => setCurrentView("post"),
     },
     {
       key: "3",
