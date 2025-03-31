@@ -45,7 +45,6 @@ const PostManagementView = () => {
   const [termsAgreed, setTermsAgreed] = useState(false);
   const [loading, setLoading] = useState(false);
   const [postExists, setPostExists] = useState(false);
-  const [customPrice, setCustomPrice] = useState(false);
 
   const currentUser = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch(); // We DO need dispatch for getAllPosts
