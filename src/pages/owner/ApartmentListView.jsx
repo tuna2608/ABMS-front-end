@@ -150,7 +150,7 @@ const ApartmentListView = () => {
 
       <Modal
         title="Thêm Căn Hộ Mới"
-        visible={isModalVisible}
+        open={isModalVisible}
         onOk={handleApartmentSubmit}
         onCancel={handleCancel}
         okText="Thêm Căn Hộ"
