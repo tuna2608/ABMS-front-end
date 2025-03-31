@@ -143,7 +143,10 @@ Khách hàng có thể mất một phần hoặc toàn bộ tiền đặt cọc 
         type="primary"
         tooltip="Chat với khách hàng"
         onClick={navigateToChatPage}
-        style={{ right: 24 }}
+        style={{ 
+          right: 24,
+          background: 'rgba(30, 58, 138, 0.92)', 
+        }}
       />
     </Layout>
   );

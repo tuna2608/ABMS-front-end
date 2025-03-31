@@ -88,6 +88,9 @@ const ApartmentListView = () => {
             type="primary" 
             icon={<PlusOutlined />}
             onClick={showAddApartmentModal}
+            // style={{ 
+            //   background: 'rgba(30, 58, 138, 0.92)', 
+            // }}
           >
             Thêm căn hộ mới
           </Button>
