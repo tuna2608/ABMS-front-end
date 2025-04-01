@@ -7,8 +7,8 @@ import orderReducer from "./orderSlice"
 import counterReducer from "./slices/counterSlices"
 import postReducer from './postSlice'
 import chatReducer from './chatSlice'
+import apartmentReducer from './apartmentSlice';
 
-// Persist account
 import {
   persistStore,
   persistReducer,
@@ -35,7 +35,8 @@ const rootReducer = combineReducers({
   users: usersReducer, 
   order: orderReducer,
   counter: counterReducer,
-  chat: chatReducer
+  chat: chatReducer,
+  apartment: apartmentReducer,
 })
 
 const persistedReducer = persistReducer(persistConfig, rootReducer)
@@ -52,12 +53,10 @@ export const store = configureStore({
           PERSIST, 
           PURGE, 
           REGISTER,
-          // Thêm các action type có thể chứa dữ liệu không thể serialize
           'chat/sendMessageStart',
           'chat/sendMessageSuccess',
           'chat/receiveMessage'
         ],
-        // Bỏ qua kiểm tra đối với các đường dẫn cụ thể trong state
         ignoredPaths: ['chat.messages']
       },
     }),
