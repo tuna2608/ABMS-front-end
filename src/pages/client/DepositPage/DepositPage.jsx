@@ -58,7 +58,7 @@ const DepositPage = ({
     // console.log(depositRequest);
 
     const res = await depositCreate(depositRequest);
-    console.log(res);
+    // console.log(res);
     const messageAPI = res.data.message;
     if (res.status === 401 || res.status === 400 || res.status === 403) {
       message.error(messageAPI);

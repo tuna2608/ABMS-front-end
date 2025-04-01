@@ -10,10 +10,22 @@ import {
   DatePicker,
   Flex,
 } from "antd";
-import { DollarOutlined, PlusOutlined, UserOutlined, EditOutlined,DeleteOutlined } from "@ant-design/icons";
+import {
+  DollarOutlined,
+  PlusOutlined,
+  UserOutlined,
+  EditOutlined,
+  DeleteOutlined,
+} from "@ant-design/icons";
 import moment from "moment";
 
 const UtilityManagement = () => {
+  const defaultValue = moment().subtract(1, "months");
+  const [selectedDate, setSelectedDate] = useState(defaultValue);
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  };
 
   // Combined data for electricity and water with user details
   const [utilityRecords] = useState([
@@ -92,10 +104,10 @@ const UtilityManagement = () => {
       title: "Sửa/xóa",
       key: "actions",
       render: (_, record) => (
-        <Flex style={{gap: '10px'}}>
+        <Flex style={{ gap: "10px" }}>
           <Button
             icon={<EditOutlined />}
-            onClick={() => showCreateBillModal("combined")}
+            onClick={() => handleEditBill("combined",record)}
           ></Button>
           <Button
             type="primary"
@@ -106,6 +118,12 @@ const UtilityManagement = () => {
       ),
     },
   ];
+
+  const handleEditBill = (type,record) => {
+    console.log(record);
+    // setCurrentUtilityType(type);
+    // setIsModalVisible(true);
+  };
 
   // Function to show create bill modal
   const showCreateBillModal = (type) => {
@@ -130,6 +148,10 @@ const UtilityManagement = () => {
     setDate(value);
   };
 
+  const handleFilter = () => {
+    console.log(selectedDate.format("YYYY-MM"));
+  };
+
   return (
     <Card
       title={
@@ -140,19 +162,20 @@ const UtilityManagement = () => {
       }
     >
       {/* Date Range Filter */}
-      <Form>
-        <Space style={{ marginBottom: 16 }}>
-        <DatePicker
-        picker="month"
-        value={date}
-        onChange={handleChange}
-        placeholder="Chọn tháng và năm"
-      />
-      <Button  style={{ marginTop: '16px' }}>
-        Loc
-      </Button>
-        </Space>
-      </Form>
+      <Flex style={{ marginBottom: "16px" }} justify="space-between">
+        <Flex align="center" style={{ gap: "20px" }}>
+          <DatePicker
+            picker="month"
+            value={defaultValue}
+            onChange={handleChange}
+            placeholder="Chọn tháng và năm"
+          />
+          <Button style={{}} onClick={handleFilter}>
+            Loc
+          </Button>
+        </Flex>
+        <Button style={{backgroundColor: 'var(--fgreen)', color:'white'}}>Import CSV</Button>
+      </Flex>
 
       {/* Utility Tabs with new items prop - Only one tab now */}
       <Table

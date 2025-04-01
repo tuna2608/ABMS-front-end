@@ -228,8 +228,6 @@ const PostDetail = () => {
       // res.data.postImages.map((image)=>console.log(image))
       const resUser = await getUserByUserName(dispatch, res.data.userName);
       setApartment(res.data);
-      console.log(res.data);
-      
       // console.log(resUser.data[0]);
       setOwner(resUser.data[0]);
       setLoading(false);
@@ -698,7 +696,8 @@ const PostDetail = () => {
                   <Button
                     style={{ background: "var(--forange)", color: "white" }}
                     icon={<MoneyCollectOutlined />}
-                    disabled={apartment.depositCheck !== 'done'}
+                    disabled={apartment.depositCheck === 'done'}
+                    onClick={()=>setIsDepositeOpen(true)}
                     block
                   >
                     Đặt cọc
@@ -708,7 +707,6 @@ const PostDetail = () => {
                   <Button
                     style={{ background: "var(--fred)", color: "white" }}
                     icon={<MoneyCollectOutlined />}
-                    
                     block
                   >
                     Hủy cọc
