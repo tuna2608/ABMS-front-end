@@ -51,11 +51,6 @@ const UtilityManagement = () => {
       key: "apartmentId",
     },
     {
-      title: "Tên Căn hộ",
-      dataIndex: "apartmentName",
-      key: "apartmentName",
-    },
-    {
       title: "Người dùng",
       dataIndex: "users",
       key: "users",
@@ -69,12 +64,6 @@ const UtilityManagement = () => {
           ))}
         </Space>
       ),
-    },
-    {
-      title: "Chỉ Số Điện (kWh)",
-      dataIndex: "electricityConsumption",
-      key: "electricityConsumption",
-      render: (value) => `${value} kWh`,
     },
     {
       title: "Chỉ Số Nước (m³)",
@@ -100,23 +89,7 @@ const UtilityManagement = () => {
         </Button>
       ),
     },
-    {
-      title: "Sửa/xóa",
-      key: "actions",
-      render: (_, record) => (
-        <Flex style={{ gap: "10px" }}>
-          <Button
-            icon={<EditOutlined />}
-            onClick={() => handleEditBill("combined",record)}
-          ></Button>
-          <Button
-            type="primary"
-            icon={<DeleteOutlined />}
-            onClick={() => showCreateBillModal("combined")}
-          ></Button>
-        </Flex>
-      ),
-    },
+
   ];
 
   const handleEditBill = (type,record) => {
@@ -211,14 +184,6 @@ const UtilityManagement = () => {
             ]}
           >
             <Input placeholder="Nhập tên người dùng (ngăn cách bằng dấu phẩy)" />
-          </Form.Item>
-
-          <Form.Item
-            name="electricityConsumption"
-            label="Chỉ Số Điện (kWh)"
-            rules={[{ required: true, message: "Vui lòng nhập chỉ số điện" }]}
-          >
-            <Input type="number" placeholder="Nhập chỉ số điện" suffix="kWh" />
           </Form.Item>
 
           <Form.Item

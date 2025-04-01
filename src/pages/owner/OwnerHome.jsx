@@ -1,11 +1,10 @@
 import React, { useState } from "react";
-import { Layout, Button, FloatButton, Card } from "antd";
+import { Layout, Button,  Card } from "antd";
 import { 
   MenuUnfoldOutlined, 
   MenuFoldOutlined, 
-  CommentOutlined 
 } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
+// import { useNavigate } from "react-router-dom";
 
 // Import components
 import SideMenu from "./SideMenu";
@@ -19,7 +18,7 @@ const { Sider, Content, Header } = Layout;
 const OwnerHome = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [currentView, setCurrentView] = useState("list");
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
   // Sample data (move these from the original component)
   const apartments = [
@@ -70,9 +69,9 @@ Khách hàng có thể mất một phần hoặc toàn bộ tiền đặt cọc 
     setCollapsed(!collapsed);
   };
 
-  const navigateToChatPage = () => {
-    navigate('/chat-page');
-  };
+  // const navigateToChatPage = () => {
+  //   navigate('/chat-page');
+  // };
 
   const renderContent = () => {
     switch (currentView) {
@@ -138,16 +137,15 @@ Khách hàng có thể mất một phần hoặc toàn bộ tiền đặt cọc 
         </Content>
       </Layout>
       
-      <FloatButton
+      {/* <FloatButton
         icon={<CommentOutlined />}
         type="primary"
         tooltip="Chat với khách hàng"
         onClick={navigateToChatPage}
         style={{ 
-          right: 24,
-          background: 'rgba(30, 58, 138, 0.92)', 
+          right: 24, 
         }}
-      />
+      /> */}
     </Layout>
   );
 };
