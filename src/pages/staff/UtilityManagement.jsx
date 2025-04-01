@@ -9,23 +9,20 @@ import {
   Input,
   DatePicker,
   Flex,
+  Dropdown,
+  Menu
 } from "antd";
 import {
   DollarOutlined,
   PlusOutlined,
   UserOutlined,
-  EditOutlined,
-  DeleteOutlined,
+  CalendarOutlined
 } from "@ant-design/icons";
 import moment from "moment";
 
 const UtilityManagement = () => {
-  const defaultValue = moment().subtract(1, "months");
-  const [selectedDate, setSelectedDate] = useState(defaultValue);
-
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
-  };
+  // Initialize with current date
+  const [selectedDate, setSelectedDate] = useState(moment());
 
   // Combined data for electricity and water with user details
   const [utilityRecords] = useState([
@@ -89,14 +86,7 @@ const UtilityManagement = () => {
         </Button>
       ),
     },
-
   ];
-
-  const handleEditBill = (type,record) => {
-    console.log(record);
-    // setCurrentUtilityType(type);
-    // setIsModalVisible(true);
-  };
 
   // Function to show create bill modal
   const showCreateBillModal = (type) => {
@@ -115,15 +105,25 @@ const UtilityManagement = () => {
     setIsModalVisible(false);
   };
 
-  const [date, setDate] = useState(null);
-
-  const handleChange = (value) => {
-    setDate(value);
+  // Handle date change
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
   };
 
+  // Handle filter
   const handleFilter = () => {
-    console.log(selectedDate.format("YYYY-MM"));
+    console.log(selectedDate.format("YYYY-MM-DD"));
   };
+
+  // Render dropdown menu for date picker
+  const datePickerDropdown = (
+    <Menu>
+      <Menu.Item key="today" onClick={() => setSelectedDate(moment())}>
+        <CalendarOutlined style={{ marginRight: 8 }} />
+        Hôm nay
+      </Menu.Item>
+    </Menu>
+  );
 
   return (
     <Card
@@ -137,17 +137,22 @@ const UtilityManagement = () => {
       {/* Date Range Filter */}
       <Flex style={{ marginBottom: "16px" }} justify="space-between">
         <Flex align="center" style={{ gap: "20px" }}>
-          <DatePicker
-            picker="month"
-            value={defaultValue}
-            onChange={handleChange}
-            placeholder="Chọn tháng và năm"
-          />
-          <Button style={{}} onClick={handleFilter}>
-            Loc
+          <Dropdown overlay={datePickerDropdown} trigger={['click']}>
+            <DatePicker
+              value={selectedDate}
+              onChange={handleDateChange}
+              placeholder="Chọn ngày"
+              style={{ width: 200 }}
+              suffixIcon={<CalendarOutlined />}
+            />
+          </Dropdown>
+          <Button onClick={handleFilter}>
+            Lọc
           </Button>
         </Flex>
-        <Button style={{backgroundColor: 'var(--fgreen)', color:'white'}}>Import CSV</Button>
+        <Button style={{backgroundColor: 'var(--fgreen)', color:'white'}}>
+          Import CSV
+        </Button>
       </Flex>
 
       {/* Utility Tabs with new items prop - Only one tab now */}

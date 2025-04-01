@@ -20,6 +20,12 @@ const SidebarMenu = ({ collapsed, setCollapsed, activeMenuItem, setActiveMenuIte
       onClick: () => setActiveMenuItem("apartment-list"),
     },
     {
+      key: "account-management",
+      icon: <UserOutlined />,
+      label: "Quản lý tài khoản",
+      onClick: () => setActiveMenuItem("account-management"),
+    },
+    {
       key: "deposit-management",
       icon: <SafetyOutlined />,
       label: "Quản lý đặt cọc",
@@ -32,23 +38,19 @@ const SidebarMenu = ({ collapsed, setCollapsed, activeMenuItem, setActiveMenuIte
       onClick: () => setActiveMenuItem("card-management"),
     },
     {
-      key: "utility-management",
-      icon: <DollarOutlined />,
-      label: "Chi phí điện nước",
-      onClick: () => setActiveMenuItem("utility-management"),
-    },
-    {
       key: "bill-management",  
       icon: <FileAddOutlined />,
       label: "Quản lý hóa đơn",
       onClick: () => setActiveMenuItem("bill-management"),
     },
     {
-      key: "account-management",
-      icon: <UserOutlined />,
-      label: "Quản lý tài khoản",
-      onClick: () => setActiveMenuItem("account-management"),
+      key: "utility-management",
+      icon: <DollarOutlined />,
+      label: "Chi phí điện nước",
+      onClick: () => setActiveMenuItem("utility-management"),
     },
+    
+    
   ];
 
   return (
