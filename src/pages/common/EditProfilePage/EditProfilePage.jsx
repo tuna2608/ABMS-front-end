@@ -28,17 +28,9 @@ const PageContainer = styled.div`
   display: flex;
   min-height: 100vh;
   background-color: #f5f5f5;
+  padding-top: 5px
 `;
 
-const Sidebar = styled.div`
-  width: 250px;
-  background-color: #7fbfbf;
-  padding: 20px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-`;
 
 const MainContent = styled.div`
   flex: 1;
@@ -123,7 +115,7 @@ const LogoSubtext = styled.div`
 `;
 
 const SaveButton = styled(Button)`
-  background-color: #7fbfbf;
+  background-color: var(--cheadline);
   border-color: #7fbfbf;
   border-radius: 20px;
   padding: 0 40px;
@@ -238,10 +230,7 @@ const ProfileEditPage = () => {
 
   return (
     <PageContainer>
-      <Sidebar>
-        <LogoText>ABMS</LogoText>
-        <LogoSubtext>TECHNOLOGIES</LogoSubtext>
-      </Sidebar>
+      
 
       <MainContent>
         {/* <BackButton icon={<ArrowLeftOutlined />} type="default" /> */}
