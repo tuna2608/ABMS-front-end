@@ -28,7 +28,8 @@ import {
     getOwnApartments,
     createPost,
     getAllPosts,
-    checkExistingPost
+    checkExistingPost,
+    updatePost
 } from '../../redux/apiCalls';
 
 const { TextArea } = Input;
@@ -263,23 +264,51 @@ const PostManagementView = () => {
             depositPrice: record.depositPrice || 0,
             postType: record.postType
         });
+        setFileList([]);
         setIsEditModalOpen(true);
     };
 
     // Handle Edit Form Submit
-    const handleEditSubmit = (values) => {
-        message.success('Thông tin đã được cập nhật (chỉ hiển thị UI, chưa lưu vào API)');
+    const handleEditSubmit = async (values) => {
+        try {
+            const formData = new FormData();
+            formData.append('title', values.title);
+            formData.append('content', values.content);
+            formData.append('price', values.price);
+            formData.append('depositPrice', values.depositPrice || 0);
+            formData.append('depositCheck', values.depositCheck || 'none');
+            formData.append('apartmentName', currentEditPost.apartment.apartmentName);
+            formData.append('postType', values.postType);
+            formData.append('userName', currentUser.userName);
 
-        // Update the local state without API call
-        setPosts(prevPosts =>
-            prevPosts.map(post =>
-                post.postId === currentEditPost.postId
-                    ? { ...post, ...values }
-                    : post
-            )
-        );
+            fileList.forEach((file) => {
+                const fileObject = file.originFileObj || file;
+                if (fileObject) {
+                    formData.append('imageFile', fileObject);
+                }
+            });
 
-        setIsEditModalOpen(false);
+            const response = await updatePost(currentEditPost.postId, formData);
+
+            if (response.success) {
+                message.success('Cập nhật bài viết thành công!');
+
+                const postsResponse = await getAllPosts(dispatch);
+                if (postsResponse && postsResponse.data) {
+                    const userPosts = postsResponse.data.filter(
+                        post => post.userName === currentUser.userName
+                    );
+                    setPosts(userPosts);
+                }
+
+                setIsEditModalOpen(false);
+            } else {
+                message.error(response.message || 'Có lỗi xảy ra khi cập nhật bài viết');
+            }
+        } catch (error) {
+            console.error('Lỗi khi cập nhật bài đăng:', error);
+            message.error('Có lỗi xảy ra khi cập nhật bài đăng');
+        }
     };
 
     // Table columns
@@ -330,32 +359,6 @@ const PostManagementView = () => {
             key: 'actions',
             render: (_, record) => (
                 <Space>
-                    <Button
-                        icon={<EyeOutlined />}
-                        type="text"
-                        onClick={() => {
-                            Modal.info({
-                                title: 'Chi Tiết Bài Viết',
-                                content: (
-                                    <div>
-                                        <p><strong>Tiêu đề:</strong> {record.title}</p>
-                                        <p><strong>Nội dung:</strong> {record.content}</p>
-                                        <p><strong>Giá:</strong> {new Intl.NumberFormat('vi-VN').format(record.price)} VNĐ</p>
-                                        <p><strong>Khu vực:</strong> {record.area}</p>
-                                        <p><strong>Hướng:</strong> {record.direction}</p>
-                                        <p><strong>Tầng:</strong> {record.floor}</p>
-                                        <p><strong>Số phòng ngủ:</strong> {record.numberOfBedrooms}</p>
-                                        <p><strong>Số phòng tắm:</strong> {record.numberOfBathrooms}</p>
-                                        {record.apartment && (
-                                            <p><strong>Căn hộ:</strong> {record.apartment.apartmentName}</p>
-                                        )}
-                                    </div>
-                                )
-                            });
-                        }}
-                    >
-                        Xem
-                    </Button>
                     <Button
                         icon={<FormOutlined />}
                         type="text"
@@ -894,9 +897,42 @@ const PostManagementView = () => {
                             </Col>
                         </Row>
 
+                        <Form.Item
+                            name="imageFile"
+                            label="Hình Ảnh"
+                            valuePropName="fileList"
+                            getValueFromEvent={handleImageUpload}
+                        >
+                            <Upload
+                                action="/upload.do"
+                                listType="picture-card"
+                                fileList={fileList}
+                                onPreview={handlePreview}
+                                beforeUpload={() => false}
+                            >
+                                {fileList.length >= 8 ? null : (
+                                    <div>
+                                        <PlusOutlined />
+                                        <div style={{ marginTop: 8 }}>Upload</div>
+                                    </div>
+                                )}
+                            </Upload>
+                        </Form.Item>
+
+                        <Modal
+                            open={previewOpen}
+                            footer={null}
+                            onCancel={() => setPreviewOpen(false)}
+                        >
+                            <img alt="preview" style={{ width: '100%' }} src={previewImage} />
+                        </Modal>
+
                         <Form.Item>
                             <Space style={{ float: 'right' }}>
-                                <Button onClick={() => setIsEditModalOpen(false)}>
+                                <Button onClick={() => {
+                                    setIsEditModalOpen(false);
+                                    setFileList([]);
+                                }}>
                                     Hủy
                                 </Button>
                                 <Button type="primary" htmlType="submit">
@@ -904,6 +940,14 @@ const PostManagementView = () => {
                                 </Button>
                             </Space>
                         </Form.Item>
+
+                        <Modal
+                            open={previewOpen}
+                            footer={null}
+                            onCancel={() => setPreviewOpen(false)}
+                        >
+                            <img alt="preview" style={{ width: '100%' }} src={previewImage} />
+                        </Modal>
                     </Form>
                 )}
             </Modal>

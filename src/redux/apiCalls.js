@@ -414,6 +414,28 @@ export const checkExistingPost = async (apartmentName, postType) => {
     };
   }
 };
+
+//update post
+export const updatePost = async (postId, formData) => {
+  try {
+    const res = await userRequest.put(`/post/update/${postId}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    return {
+      success: true,
+      data: res.data.data,
+      message: res.data.message
+    };
+  } catch (error) {
+    console.error("Error updating post:", error);
+    return {
+      success: false,
+      message: error.response?.data?.message || "Có lỗi xảy ra khi cập nhật bài đăng"
+    };
+  }
+};
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 export const getUserByUserName = async (dispatch, username) => {
   dispatch(getUserStart());
