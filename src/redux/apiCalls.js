@@ -13,7 +13,7 @@ import {
   editProfileSuccess,
   editProfileFail,
 } from "./authSlice";
-import { publicRequest, userRequest } from "../utilities/requestMethod";
+import { CLIENT_URL, publicRequest, userRequest } from "../utilities/requestMethod";
 import {
   addProductFailure,
   addProductStart,
@@ -245,8 +245,12 @@ export const getImageCloud = async (formData) => {
 
 //dat coc
 export const depositCreate = async (formData) => {
+  const form = {...formData,
+    successUrl: `http://localhost:3000/deposit/success`,
+    cancelUrl: `http://localhost:3000/deposit/cancel`,
+  }
   try {
-    const res = await publicRequest.post(`/deposit/create`, formData);
+    const res = await publicRequest.post(`/deposit/create`, form);
     return res.data
   } catch (error) {
     return error.response
