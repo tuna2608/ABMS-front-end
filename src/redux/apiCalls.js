@@ -71,6 +71,20 @@ import {
   markMessagesAsReadFailure,
   addNewContact
 } from "./chatSlice";
+import {
+  getApartmentsStart,
+  getApartmentsSuccess,
+  getApartmentsFailure,
+  createApartmentStart,
+  createApartmentSuccess,
+  createApartmentFailure,
+  updateApartmentStart,
+  updateApartmentSuccess,
+  updateApartmentFailure,
+  deleteApartmentStart,
+  deleteApartmentSuccess,
+  deleteApartmentFailure,
+} from './apartmentSlice';
 
 // Auth
 export const login = async (dispatch, user) => {
@@ -317,6 +331,64 @@ export const decreaseCartQuantity = async (
     }
   } catch (error) { }
 };
+//------------------------------------------------------------------------------CRUD Căn hộ----------------------------------------------------------------------------------
+export const createApartment = async (dispatch, apartmentDTO) => {
+  dispatch(createApartmentStart());
+  try {
+    const res = await userRequest.post("/apartment/create", apartmentDTO);
+    dispatch(createApartmentSuccess(res.data.data));
+    return {
+      success: true,
+      data: res.data.data,
+      message: res.data.message
+    };
+  } catch (error) {
+    dispatch(createApartmentFailure());
+    return {
+      success: false,
+      message: error.response?.data?.message || "Có lỗi xảy ra khi tạo căn hộ"
+    };
+  }
+};
+
+// Cập nhật căn hộ
+export const updateApartment = async (dispatch, apartmentId, apartmentDTO) => {
+  dispatch(updateApartmentStart());
+  try {
+    const res = await userRequest.put(`/apartment/update/${apartmentId}`, apartmentDTO);
+    dispatch(updateApartmentSuccess(res.data.data));
+    return {
+      success: true,
+      data: res.data.data,
+      message: res.data.message
+    };
+  } catch (error) {
+    dispatch(updateApartmentFailure());
+    return {
+      success: false,
+      message: error.response?.data?.message || "Có lỗi xảy ra khi cập nhật căn hộ"
+    };
+  }
+};
+
+// Xóa căn hộ
+export const deleteApartment = async (dispatch, apartmentId) => {
+  dispatch(deleteApartmentStart());
+  try {
+    const res = await userRequest.delete(`/apartment/delete/${apartmentId}`);
+    dispatch(deleteApartmentSuccess(apartmentId));
+    return {
+      success: true,
+      message: res.data.message
+    };
+  } catch (error) {
+    dispatch(deleteApartmentFailure());
+    return {
+      success: false,
+      message: error.response?.data?.message || "Có lỗi xảy ra khi xóa căn hộ"
+    };
+  }
+};
 
 //------------------------------------------------------------------------------tạo bài viết mua bán căn hộ------------------------------------------------------------------------------
 
@@ -327,6 +399,23 @@ export const getPostsByUId = async (dispatch, userId) => {
     dispatch(getPostSuccess(res.data));
   } catch (error) {
     dispatch(getPostFailure());
+  }
+};
+
+export const getPostsByUserId = async (dispatch, userId) => {
+  try {
+    const res = await publicRequest.get(`/post/user/${userId}`);
+    return {
+      success: true,
+      data: res.data.data,
+      message: res.data.message || "Lấy bài viết thành công"
+    };
+  } catch (error) {
+    console.error("Error fetching posts by user:", error);
+    return {
+      success: false,
+      message: error.response?.data?.message || "Có lỗi xảy ra khi lấy bài viết"
+    };
   }
 };
 
@@ -436,6 +525,25 @@ export const updatePost = async (postId, formData) => {
     };
   }
 };
+
+//delete post
+export const deletePost = async (postId) => {
+  try {
+    const res = await userRequest.delete(`/post/delete/${postId}`);
+    return {
+      success: true,
+      message: 'Xóa bài viết thành công',
+      status: res.data.status
+    };
+  } catch (error) {
+    console.error("Error deleting post:", error);
+    return {
+      success: false,
+      message: error.response?.data?.message || "Có lỗi xảy ra khi xóa bài viết"
+    };
+  }
+};
+
 //------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 export const getUserByUserName = async (dispatch, username) => {
   dispatch(getUserStart());
@@ -621,22 +729,15 @@ export const getResidentList = async (dispatch) => {
   dispatch(getUserStart());
   try {
     const res = await publicRequest.get("/user/list_resident");
-    
-    console.log("API Response from list_resident:", res.data);
-    
-    // Xử lý dữ liệu từ API
     if (res.data && res.data.data) {
-      // Đảm bảo từng user có đủ trường dữ liệu cần thiết, bao gồm imageFiles
       const processedData = res.data.data.map(user => ({
         ...user,
-        // Đảm bảo imageFiles là mảng
         imageFiles: Array.isArray(user.imageFiles) ? user.imageFiles : []
       }));
       
       dispatch(getUserSuccess(processedData));
       return res.data;
     } else if (res.data && Array.isArray(res.data)) {
-      // Trường hợp API trả về mảng trực tiếp
       const processedData = res.data.map(user => ({
         ...user,
         imageFiles: Array.isArray(user.imageFiles) ? user.imageFiles : []
@@ -645,11 +746,9 @@ export const getResidentList = async (dispatch) => {
       dispatch(getUserSuccess(processedData));
       return { data: processedData };
     } else if (res.data && res.data.status === 200 && res.data.message === "Không có cư dân nào cần được duyệt") {
-      // Trường hợp không có tài khoản cần duyệt
       dispatch(getUserSuccess([]));
       return res.data;
     } else {
-      // Mặc định trả về mảng rỗng nếu không thể xác định cấu trúc dữ liệu
       dispatch(getUserSuccess([]));
       return { data: [] };
     }

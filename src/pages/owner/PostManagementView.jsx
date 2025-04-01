@@ -21,7 +21,8 @@ import {
     FormOutlined,
     PlusOutlined,
     EyeOutlined,
-    InfoCircleOutlined
+    InfoCircleOutlined,
+    DeleteOutlined
 } from "@ant-design/icons";
 import { useSelector, useDispatch } from 'react-redux';
 import {
@@ -29,7 +30,9 @@ import {
     createPost,
     getAllPosts,
     checkExistingPost,
-    updatePost
+    updatePost,
+    deletePost,
+    getPostsByUserId
 } from '../../redux/apiCalls';
 
 const { TextArea } = Input;
@@ -212,23 +215,18 @@ const PostManagementView = () => {
                 message.error('Vui lòng đăng nhập');
                 return;
             }
-
             setLoading(true);
             try {
-                // Fetch apartments
                 const apartmentsResponse = await getOwnApartments(currentUser.userId);
                 if (apartmentsResponse.success) {
                     setApartments(apartmentsResponse.data);
                 }
-
-                // Fetch posts
                 try {
-                    const postsResponse = await getAllPosts(dispatch);
-                    if (postsResponse && postsResponse.data) {
-                        const userPosts = postsResponse.data.filter(
-                            post => post.userName === currentUser.userName
-                        );
-                        setPosts(userPosts);
+                    const postsResponse = await getPostsByUserId(dispatch, currentUser.userId);
+                    if (postsResponse.success) {
+                        setPosts(postsResponse.data);
+                    } else {
+                        message.error(postsResponse.message);
                     }
                 } catch (error) {
                     console.error("Error fetching posts:", error);
@@ -240,7 +238,6 @@ const PostManagementView = () => {
             }
             setLoading(false);
         };
-
         fetchData();
     }, [currentUser, dispatch]);
 
@@ -264,8 +261,35 @@ const PostManagementView = () => {
             depositPrice: record.depositPrice || 0,
             postType: record.postType
         });
-        setFileList([]);
         setIsEditModalOpen(true);
+    };
+
+    const handleDeletePost = (record) => {
+        Modal.confirm({
+            title: 'Xác Nhận Xóa Bài Viết',
+            content: 'Bạn có chắc chắn muốn xóa bài viết này?',
+            onOk: async () => {
+                try {
+                    const response = await deletePost(record.postId);
+    
+                    if (response.success) {
+                        message.success('Xóa bài viết thành công!');
+        
+                        const postsResponse = await getPostsByUserId(dispatch, currentUser.userId);
+                        if (postsResponse.success) {
+                            setPosts(postsResponse.data);
+                        } else {
+                            message.error(postsResponse.message);
+                        }
+                    } else {
+                        message.error(response.message);
+                    }
+                } catch (error) {
+                    console.error('Lỗi khi xóa bài đăng:', error);
+                    message.error('Có lỗi xảy ra khi xóa bài đăng');
+                }
+            }
+        });
     };
 
     // Handle Edit Form Submit
@@ -280,28 +304,35 @@ const PostManagementView = () => {
             formData.append('apartmentName', currentEditPost.apartment.apartmentName);
             formData.append('postType', values.postType);
             formData.append('userName', currentUser.userName);
-
-            fileList.forEach((file) => {
-                const fileObject = file.originFileObj || file;
-                if (fileObject) {
-                    formData.append('imageFile', fileObject);
-                }
-            });
-
+    
+            // Check if there are any new files to upload
+            const hasNewFiles = fileList.some(file => file.originFileObj);
+            
+            if (hasNewFiles) {
+                // Only append files that are newly uploaded
+                fileList.forEach((file) => {
+                    if (file.originFileObj) {
+                        formData.append('imageFile', file.originFileObj);
+                    }
+                });
+            } else {
+                // If no new files, append empty array to keep existing images
+                formData.append('imageFile', new Blob([], { type: 'application/octet-stream' }));
+            }
+    
             const response = await updatePost(currentEditPost.postId, formData);
-
+    
             if (response.success) {
                 message.success('Cập nhật bài viết thành công!');
-
-                const postsResponse = await getAllPosts(dispatch);
-                if (postsResponse && postsResponse.data) {
-                    const userPosts = postsResponse.data.filter(
-                        post => post.userName === currentUser.userName
-                    );
-                    setPosts(userPosts);
+                const postsResponse = await getPostsByUserId(dispatch, currentUser.userId);
+                if (postsResponse.success) {
+                    setPosts(postsResponse.data);
+                } else {
+                    message.error(postsResponse.message);
                 }
-
+    
                 setIsEditModalOpen(false);
+                setFileList([]); // Reset fileList after successful update
             } else {
                 message.error(response.message || 'Có lỗi xảy ra khi cập nhật bài viết');
             }
@@ -330,7 +361,7 @@ const PostManagementView = () => {
             render: (price) => new Intl.NumberFormat('vi-VN').format(price) + ' VNĐ'
         },
         {
-            title: 'Khu Vực',
+            title: 'Diện tích',
             dataIndex: 'area',
             key: 'area'
         },
@@ -365,6 +396,14 @@ const PostManagementView = () => {
                         onClick={() => handleEditClick(record)}
                     >
                         Sửa
+                    </Button>
+                    <Button
+                        icon={<DeleteOutlined />}
+                        type="text"
+                        danger
+                        onClick={() => handleDeletePost(record)}
+                    >
+                        Xóa
                     </Button>
                 </Space>
             )
@@ -558,10 +597,10 @@ const PostManagementView = () => {
                         <Col span={12}>
                             <Form.Item
                                 name="area"
-                                label="Khu Vực"
+                                label="Diện tích"
                             >
                                 <Input
-                                    placeholder="Nhập khu vực"
+                                    placeholder="Nhập diện tích"
                                     disabled
                                 />
                             </Form.Item>
@@ -745,99 +784,6 @@ const PostManagementView = () => {
                                 maxLength={1000}
                             />
                         </Form.Item>
-
-                        <Row gutter={16}>
-                            <Col span={12}>
-                                <Form.Item
-                                    name="area"
-                                    label="Khu Vực"
-                                >
-                                    <Input
-                                        placeholder="Nhập khu vực"
-                                        disabled
-                                    />
-                                </Form.Item>
-                            </Col>
-                            <Col span={12}>
-                                <Form.Item
-                                    name="direction"
-                                    label="Hướng"
-                                >
-                                    <Input
-                                        placeholder="Nhập hướng"
-                                        disabled
-                                    />
-                                </Form.Item>
-                            </Col>
-                        </Row>
-
-                        <Row gutter={16}>
-                            <Col span={8}>
-                                <Form.Item
-                                    name="floor"
-                                    label="Tầng"
-                                    rules={[
-                                        () => ({
-                                            validator(_, value) {
-                                                if (!value || value >= 1) {
-                                                    return Promise.resolve();
-                                                }
-                                                return Promise.reject(new Error('Tầng phải lớn hơn hoặc bằng 1'));
-                                            },
-                                        }),
-                                    ]}
-                                >
-                                    <InputNumber
-                                        min={1}
-                                        style={{ width: '100%' }}
-                                        placeholder="Nhập tầng"
-                                    />
-                                </Form.Item>
-                            </Col>
-                            <Col span={8}>
-                                <Form.Item
-                                    name="numberOfBedrooms"
-                                    label="Phòng Ngủ"
-                                    rules={[
-                                        () => ({
-                                            validator(_, value) {
-                                                if (!value || value >= 0) {
-                                                    return Promise.resolve();
-                                                }
-                                                return Promise.reject(new Error('Số phòng ngủ phải lớn hơn hoặc bằng 0'));
-                                            },
-                                        }),
-                                    ]}
-                                >
-                                    <InputNumber
-                                        min={0}
-                                        style={{ width: '100%' }}
-                                        placeholder="Số phòng ngủ"
-                                    />
-                                </Form.Item>
-                            </Col>
-                            <Col span={8}><Form.Item
-                                name="numberOfBathrooms"
-                                label="Phòng Tắm"
-                                rules={[
-                                    () => ({
-                                        validator(_, value) {
-                                            if (!value || value >= 0) {
-                                                return Promise.resolve();
-                                            }
-                                            return Promise.reject(new Error('Số phòng tắm phải lớn hơn hoặc bằng 0'));
-                                        },
-                                    }),
-                                ]}
-                            >
-                                <InputNumber
-                                    min={0}
-                                    style={{ width: '100%' }}
-                                    placeholder="Số phòng tắm"
-                                />
-                            </Form.Item>
-                            </Col>
-                        </Row>
 
                         <Row gutter={16}>
                             <Col span={12}>
