@@ -75,7 +75,6 @@ const StaffHome = () => {
         activeMenuItem={activeMenuItem}
         setActiveMenuItem={setActiveMenuItem}
       />
-      
       <Layout>
         <Header style={{ 
           background: "#fff", 
@@ -97,13 +96,11 @@ const StaffHome = () => {
           {renderContent()}
         </Content>
       </Layout>
-      
       <ReplyMessageModal 
         visible={isReplyModalVisible}
         onCancel={() => setIsReplyModalVisible(false)}
         message={currentMessage}
       />
-      
       <DepositDetailModal 
         visible={isDepositDetailVisible}
         onCancel={() => setIsDepositDetailVisible(false)}
