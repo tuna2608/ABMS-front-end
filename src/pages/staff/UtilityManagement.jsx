@@ -9,6 +9,7 @@ import {
   Input,
   DatePicker,
   Flex,
+  message,
 } from "antd";
 import {
   DollarOutlined,
@@ -18,41 +19,46 @@ import {
   DeleteOutlined,
 } from "@ant-design/icons";
 import moment from "moment";
-import { getAllConsumption } from "../../redux/apiCalls";
+import { createBill, getAllConsumption } from "../../redux/apiCalls";
+import { useDispatch, useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 
 const UtilityManagement = () => {
+  const [currentUser,setCurrentUser] = useState(useSelector((state) => state.user.currentUser))
+  const dispatch = useDispatch();
+  const navigate = useNavigate();
+
   const defaultValue = moment().subtract(1, "months");
   const [selectedDate, setSelectedDate] = useState(defaultValue);
-  const [consumptions,setConsumptions] = useState([
+  const [consumptions, setConsumptions] = useState([
     {
-      id: "1",
-      apartmentName: '101',
-      userName: 'Nguyen anh Tu',
-      consumptionDate: "2024-03-15",
-      lastMonthWaterConsumption: 45.2,
-      waterConsumption: 47.2,
+      id: "",
+      apartmentName: "",
+      userName: "Chua co consumption nao ca",
+      consumptionDate: "",
+      lastMonthWaterConsumption: "",
+      waterConsumption: "",
     },
   ]);
 
-  useEffect(()=>{
-    async function callGetAllConsumption(){
+  useEffect(() => {
+    async function callGetAllConsumption() {
       const res = await getAllConsumption();
-      console.log(res);
+      // console.log(res);
       setConsumptions(res.data);
     }
     callGetAllConsumption();
-  },[])
+  }, []);
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
 
   // Combined data for electricity and water with user details
-  
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentUtilityType, setCurrentUtilityType] = useState("combined");
-  const [currentConsumption,setCurrentConsumption] = useState({});
+  const [currentConsumption, setCurrentConsumption] = useState({});
 
   // Combined utility columns
   const consumptionColumns = [
@@ -60,7 +66,7 @@ const UtilityManagement = () => {
       title: "Số Căn hộ",
       dataIndex: "apartmentName",
       key: "apartmentName",
-      render: (value) => `${value}`
+      render: (value) => `${value}`,
     },
     {
       title: "Chủ căn hộ",
@@ -89,35 +95,35 @@ const UtilityManagement = () => {
       title: "Hành Động",
       key: "actions",
       render: (_, record) => (
-        <>
-          {record.billCreated === false
-          ?(<Button
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={() => showCreateBillModal("combined",record)}
-          >
-            Tạo Hóa Đơn
-          </Button>)
-          : (
-            (<Button
+        <Flex gap={20}>
+          {record.billCreated === false ? (
+            <Button
               type="primary"
-              disabled
+              icon={<PlusOutlined />}
+              onClick={() => handleCreateBill(record)}
             >
-             Hóa đơn này đã tạo
-            </Button>)
-          )
-        }
-        
-        </>
-        
+              Tạo Hóa Đơn
+            </Button>
+          ) : (
+            <Button type="primary" disabled>
+              Hóa đơn này đã tạo
+            </Button>
+          )}
+          <Button
+            type="default"
+            icon={<EditOutlined />}
+            onClick={() => showEditConsumptionModal("combined", record)}
+          >
+          </Button>
+        </Flex>
       ),
     },
   ];
 
   // Function to show create bill modal
-  const showCreateBillModal = (type,record) => {
+  const showEditConsumptionModal = (type, record) => {
     setCurrentUtilityType(type);
-    setCurrentConsumption(record)
+    setCurrentConsumption(record);
     setIsModalVisible(true);
   };
 
@@ -127,12 +133,36 @@ const UtilityManagement = () => {
   };
 
   // Function to handle bill creation
-  const handleCreateBill = (values) => {
+  const handleEditConsumption = (values) => {
     console.log("Bill created:", values);
     setIsModalVisible(false);
   };
 
-  const [date, setDate] = useState(null);
+  const handleCreateBill = async (record) => {
+    // console.log(record);
+    // console.log(currentUser);
+    const month = selectedDate.month() + 1;
+    const formData = {
+      apartmentName: record.apartmentName,
+      billContent: `Hóa đơn tháng ${month}`,
+      lastMonthWaterCons: record.lastMonthWaterConsumption,
+      waterCons: record.waterConsumption,
+      others: 0,
+      managementFee: 0,
+      consumptionId: record.id,
+      createdUserId: currentUser.userId
+    }
+    const res = await createBill(dispatch,formData);
+    // console.log(res);
+    const messageAPI = res.message
+    if(res.status === 401 ||res.status === 400||res.status === 403){
+      message.error(messageAPI)
+      return;
+    }else{
+      message.success(messageAPI)
+      navigate('/bill-management')
+    }
+  };
 
   const handleFilter = () => {
     console.log(selectedDate.format("YYYY-MM"));
@@ -160,7 +190,9 @@ const UtilityManagement = () => {
             Loc
           </Button>
         </Flex>
-        <Button style={{backgroundColor: 'var(--fgreen)', color:'white'}}>Import CSV</Button>
+        <Button style={{ backgroundColor: "var(--fgreen)", color: "white" }}>
+          Import CSV
+        </Button>
       </Flex>
 
       {/* Utility Tabs with new items prop - Only one tab now */}
@@ -180,7 +212,7 @@ const UtilityManagement = () => {
       >
         <Form
           layout="vertical"
-          onFinish={handleCreateBill}
+          onFinish={handleEditConsumption}
           initialValues={{
             billType: currentUtilityType,
             consumption: currentConsumption,
@@ -189,43 +221,38 @@ const UtilityManagement = () => {
           <Form.Item name="billType" label="Loại Hóa Đơn" hidden>
             <Input disabled />
           </Form.Item>
-
           <Form.Item
-            name={['consumption', 'userName']}
+            name={["consumption", "userName"]}
             label="Chu can ho"
             rules={[
               { required: true, message: "Vui lòng nhập tên người dùng" },
             ]}
           >
-            <Input disabled/>
+            <Input disabled />
           </Form.Item>
-
           <Form.Item
-            name={['consumption', 'consumptionDate']}
+            name={["consumption", "consumptionDate"]}
             label="Tháng Ghi Nhận"
           >
-            <Input disabled/>
+            <Input disabled />
           </Form.Item>
-
           <Form.Item
-            name="waterConsumption"
-            label="Chỉ Số Nước (m³)"
+            name={["consumption", "lastMonthWaterConsumption"]}
+            label="Chỉ Số Nước Tháng trước (m³)"
             rules={[{ required: true, message: "Vui lòng nhập chỉ số nước" }]}
           >
-            <Input type="number" placeholder="Nhập chỉ số nước" suffix="m³" />
+            <Input disabled suffix="m³" />
           </Form.Item>
-
           <Form.Item
-            name="billDate"
-            label="Ngày Ghi Nhận"
-            rules={[{ required: true, message: "Vui lòng chọn ngày" }]}
+            name={["consumption", "waterConsumption"]}
+            label="Chỉ Số Nước Mới (m³)"
+            rules={[{ required: true, message: "Vui lòng nhập chỉ số nước" }]}
           >
-            <DatePicker style={{ width: "100%" }} />
+            <Input suffix="m³" />
           </Form.Item>
-
           <Form.Item>
             <Button type="primary" htmlType="submit" block>
-              Tạo Hóa Đơn
+              Edit Consumption
             </Button>
           </Form.Item>
         </Form>
