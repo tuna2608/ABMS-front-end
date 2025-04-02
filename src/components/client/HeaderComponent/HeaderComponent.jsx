@@ -150,6 +150,43 @@ function HeaderComponent() {
 
   const items = getDropdownItems();
 
+  const getDropdownNotis = () => {
+    const baseItems = [
+      {
+        key: "1",
+        label: <div onClick={() => {console.log('tat ca thong bao');
+        }}>Tất cả thông báo</div>,
+      }
+    ];
+    
+    // Add role-specific channel options
+    if (user?.role === 'Owner') {
+      baseItems.push({
+        key: "2",
+        label: <div onClick={() => navigate("/ownerHome")}>Kênh chủ căn hộ</div>,
+      });
+    } else if (user?.role === 'Rentor') {
+      baseItems.push({
+        key: "2",
+        label: <div onClick={() => navigate("/rentorHome")}>Kênh người thuê</div>,
+      });
+    }
+    
+    // Add logout option
+    baseItems.push({
+      key: "4",
+      label: <div onClick={handleLogout}>Thông báo 1 </div>,
+    });
+    baseItems.push({
+      key: "5",
+      label: <div onClick={handleLogout}>Thông báo 2 </div>,
+    });
+    
+    return baseItems;
+  };
+
+  const notis = getDropdownNotis();
+
   return (
     <>
       <TopBar>
@@ -202,12 +239,10 @@ function HeaderComponent() {
         <Col span={10}>
           <NavbarListItem>
             {/* Removed NavItemRole components from here */}
-
             <PostLink onClick={() => navigate("/post")}>
               Bài viết
             </PostLink>
-
-            <Dropdown menu={{ items: items }} placement="bottomLeft">
+            <Dropdown menu={{ items: notis }} placement="bottomLeft">
               <Badge count={13} overflowCount={10}>
                 <NavItem>
                   <BellOutlined />
