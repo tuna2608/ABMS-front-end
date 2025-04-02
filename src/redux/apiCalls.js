@@ -334,6 +334,7 @@ export const getPostsByUId = async (dispatch, userId) => {
   }
 };
 
+//get tat ca bai viet
 export const getAllPosts = async (dispatch) => {
   dispatch(getAllPostsStart());
   try {
@@ -346,6 +347,7 @@ export const getAllPosts = async (dispatch) => {
   }
 }
 
+// get bai viet theo id
 export const getPostById = async (dispatch, postId) => {
   dispatch(getPostStart());
   try {
@@ -355,6 +357,16 @@ export const getPostById = async (dispatch, postId) => {
   } catch (error) {
     dispatch(getPostFailure());
     return error;
+  }
+}
+
+// get tat ca tieu thu 
+export const getAllConsumption = async (dispatch) => {
+  try {
+    const res = await publicRequest.get(`/consumption/getAll`);
+    return res.data;
+  } catch (error) {
+    return error.response;
   }
 }
 
@@ -376,6 +388,9 @@ export const getOwnApartments = async (userId) => {
     };
   }
 };
+
+
+
 
 //create post
 export const createPost = async (formData) => {

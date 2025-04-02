@@ -85,23 +85,11 @@ const StaffHome = () => {
           {renderContent()}
         </Content>
       </Layout>
-<<<<<<< HEAD
-      <ReplyMessageModal 
-        visible={isReplyModalVisible}
-        onCancel={() => setIsReplyModalVisible(false)}
-        message={currentMessage}
-      />
-=======
-      
-     
-      
->>>>>>> e544621f7f0d6f3616900d7335dd8936c93addfa
       <DepositDetailModal 
         visible={isDepositDetailVisible}
         onCancel={() => setIsDepositDetailVisible(false)}
         deposit={selectedDeposit}
       />
-      
     </Layout>
   );
 };
