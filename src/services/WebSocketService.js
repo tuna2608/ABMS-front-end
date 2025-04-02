@@ -9,6 +9,8 @@ class WebSocketService {
     this.stompClient = null;
     this.connected = false;
     this.userId = null;
+    this.notificationListeners = []; // Thêm array lưu trữ các listeners
+    this.notifications = []; // Lưu trữ các thông báo
   }
 
   connect(userId) {
@@ -77,6 +79,54 @@ class WebSocketService {
           console.error('Lỗi khi xử lý tin nhắn:', error);
         }
       });
+      
+      // Đăng ký nhận thông báo cá nhân
+      this.stompClient.subscribe(`/user/${this.userId}/queue/notifications`, (message) => {
+        try {
+          const notification = JSON.parse(message.body);
+          
+          // Thêm thông báo vào danh sách
+          this.notifications.unshift(notification);
+          
+          // Gọi tất cả các listeners đã đăng ký
+          this.notifyListeners(notification);
+          
+          // Hiển thị toast thông báo
+          this.showNotificationToast(notification);
+          
+          // Tạo event để các component khác có thể lắng nghe
+          const newNotificationEvent = new CustomEvent('new-notification', { 
+            detail: { notification }
+          });
+          document.dispatchEvent(newNotificationEvent);
+        } catch (error) {
+          console.error('Lỗi khi xử lý thông báo:', error);
+        }
+      });
+      
+      // Đăng ký nhận thông báo toàn cục
+      this.stompClient.subscribe('/topic/global-notifications', (message) => {
+        try {
+          const notification = JSON.parse(message.body);
+          
+          // Thêm thông báo vào danh sách
+          this.notifications.unshift(notification);
+          
+          // Gọi tất cả các listeners đã đăng ký
+          this.notifyListeners(notification);
+          
+          // Hiển thị toast thông báo
+          this.showNotificationToast(notification, true);
+          
+          // Tạo event để các component khác có thể lắng nghe
+          const globalNotificationEvent = new CustomEvent('global-notification', { 
+            detail: { notification }
+          });
+          document.dispatchEvent(globalNotificationEvent);
+        } catch (error) {
+          console.error('Lỗi khi xử lý thông báo toàn cục:', error);
+        }
+      });
     };
 
     // Xử lý lỗi kết nối
@@ -116,6 +166,100 @@ class WebSocketService {
     });
     
     return true;
+  }
+  
+  // Phương thức hiển thị thông báo
+  showNotificationToast(notification, isGlobal = false) {
+    // Giả sử bạn có một hàm toast global hoặc sử dụng thư viện
+    if (window.toast) {
+      const toastType = notification.notificationType === 'warning' ? 'warning' : 'info';
+      const prefix = isGlobal ? '[THÔNG BÁO CHUNG] ' : '';
+      
+      window.toast[toastType](prefix + notification.notificationContent, {
+        position: "top-right",
+        autoClose: 5000,
+        hideProgressBar: false,
+        closeOnClick: true,
+        pauseOnHover: true,
+        draggable: true,
+      });
+    } else {
+      // Fallback khi không có thư viện toast
+      console.log('Thông báo mới:', notification.notificationContent);
+    }
+  }
+  
+  // Phương thức đánh dấu thông báo đã đọc
+  markNotificationAsRead(notificationId) {
+    if (!this.connected || !this.stompClient) {
+      console.error('Không thể đánh dấu thông báo: WebSocket chưa kết nối');
+      return false;
+    }
+    
+    this.stompClient.publish({
+      destination: '/app/notification.read',
+      body: JSON.stringify({
+        notificationId: notificationId,
+        userId: this.userId
+      })
+    });
+    
+    // Cập nhật trạng thái local
+    const notification = this.notifications.find(n => n.id === notificationId);
+    if (notification) {
+      notification.status = true;
+      this.notifyListeners(); // Thông báo cập nhật
+    }
+    
+    return true;
+  }
+  
+  // Đăng ký listener để nhận cập nhật thông báo
+  addNotificationListener(listener) {
+    this.notificationListeners.push(listener);
+    return () => {
+      this.notificationListeners = this.notificationListeners.filter(l => l !== listener);
+    };
+  }
+  
+  // Gọi tất cả listeners
+  notifyListeners(newNotification = null) {
+    this.notificationListeners.forEach(listener => {
+      listener(this.notifications, newNotification);
+    });
+  }
+  
+  // Lấy danh sách thông báo
+  getNotifications() {
+    return this.notifications;
+  }
+  
+  // Lấy số lượng thông báo chưa đọc
+  getUnreadCount() {
+    return this.notifications.filter(n => !n.status).length;
+  }
+  
+  // Phương thức để lấy thông báo từ server
+  async fetchNotifications() {
+    try {
+      if (!this.userId) {
+        console.error('Chưa có userId để lấy thông báo');
+        return;
+      }
+      
+      const response = await fetch(`/notification/view_all?userId=${this.userId}`);
+      if (!response.ok) {
+        throw new Error('Không thể lấy thông báo');
+      }
+      
+      const data = await response.json();
+      if (data.data) {
+        this.notifications = data.data;
+        this.notifyListeners();
+      }
+    } catch (error) {
+      console.error('Lỗi khi lấy thông báo:', error);
+    }
   }
 }
 
