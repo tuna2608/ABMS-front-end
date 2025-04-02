@@ -11,7 +11,7 @@ import ApartmentDetail from "../pages/client/PostDetail/PostDetail";
 import ChatPage from "../pages/client/ChatPage/ChatPage";
 import NotificationsPage from "../pages/client/NotificationPage/NotificationPage";
 import BillPage from "../pages/client/BillPage/BillPage";
-import DepositPage from "../pages/client/DepositPage/DepositPage";
+import DepositApartments from "../pages/client/DepositApartment/DepositApartment";
 import EditProfilePage from "../pages/common/EditProfilePage/EditProfilePage";
 import StaffHome from "../pages/staff/StaffHome";
 import OTPPage from "../pages/common/OTPPage/OTPPage";
@@ -39,8 +39,8 @@ export const routes = [
         path: '/register',
         page: RegisterPage,
         isShowHeader: false
-    },
-    {
+        },
+        {
         path: '/forgot',
         page: ForgotPasswordPage,
         isShowHeader: false
@@ -85,11 +85,11 @@ export const routes = [
         page: BillPage,
         isShowHeader: true
     },
-    // {
-    //     path: '/deposit-check',
-    //     page: DepositPage,
-    //     isShowHeader: true
-    // },
+    {
+        path: '/deposit-apartment',
+        page: DepositApartments,
+        isShowHeader: true
+    },
     {
         path: '/deposit/success',
         page: PaymentSuccess,

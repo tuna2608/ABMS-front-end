@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import {
   Card,
   Row,
@@ -7,14 +7,14 @@ import {
   Input,
   Select,
   Pagination,
-  Skeleton,
   Typography,
   Badge,
   Tooltip,
   Flex,
   Tag,
   Button,
-  Divider
+  Divider,
+  Empty
 } from "antd";
 import {
   HomeOutlined,
@@ -23,23 +23,15 @@ import {
   SearchOutlined,
   EnvironmentOutlined,
   AreaChartOutlined,
-  EyeOutlined,
-  ArrowRightOutlined,
   CheckCircleOutlined,
-  AppstoreOutlined
+  ClockCircleOutlined
 } from "@ant-design/icons";
-import { useLocation, useNavigate } from "react-router-dom";
-import { useDispatch } from "react-redux";
-import { getAllPosts } from "../../../redux/apiCalls";
 
 const { Search } = Input;
 const { Option } = Select;
 const { Title, Text, Paragraph } = Typography;
 
-// Các danh mục căn hộ
-const categories = ["Tất cả", "Cho thuê", "Bán", "Đã cho thuê", "Đang đặt cọc"];
-
-// Các khu vực
+// Khu vực
 const areas = [
   "Tất cả",
   "Ngũ Hành Sơn",
@@ -50,62 +42,51 @@ const areas = [
   "Hải Châu"
 ];
 
-// Màu trạng thái
-const statusColors = {
-  0: "green",
-  1: "red",
-};
+// Data mẫu chưa có api lấy căn hộ đặt cọc Tú call api rồi thế vào đây nhé
+const sampleBookedApartments = [
+  {
+    postId: "1",
+    title: "Căn hộ cao cấp tại Ngũ Hành Sơn",
+    content: "Căn hộ hiện đại, view biển tuyệt đẹp, đầy đủ nội thất",
+    userName: "Nguyễn Văn A",
+    price: 15000000,
+    depositDate: "15/04/2024",
+    postImages: ["/api/placeholder/400/300"],
+    apartment: {
+      apartmentName: "Khu đô thị Sơn Trà",
+      numberOfBedrooms: 2,
+      numberOfBathrooms: 2
+    }
+  },
+];
 
-const PostList = () => {
-  const location = useLocation();
-  const query = new URLSearchParams(location.search);
-  const [apartments, setApartments] = useState([]);
-  const [loading, setLoading] = useState(false);
+const DepositApartments = ({ 
+  onViewDetails // Prop for handling navigation to details
+}) => {
+  const [bookedApartments] = useState(sampleBookedApartments);
   const [searchText, setSearchText] = useState("");
-  const [selectedCategory, setSelectedCategory] = useState("Tất cả");
   const [selectedArea, setSelectedArea] = useState("Tất cả");
   const [currentPage, setCurrentPage] = useState(1);
 
   const pageSize = 8;
 
-  const dispatch = useDispatch();
-
-  const navigate = useNavigate();
-
-  useEffect(() => {
-    async function getPostList() {
-      setLoading(true);
-      const res = await getAllPosts(dispatch);
-      console.log(res.data);
-      setApartments(res.data);
-      setLoading(false);
-    }
-    getPostList();
-  }, [dispatch]);
-
-  const onSearch = (value) => {
-    setSearchText(value);
-    setCurrentPage(1);
-  };
-
-  const onCategoryChange = (value) => {
-    setSelectedCategory(value);
-    setCurrentPage(1);
-  };
-
-  const onAreaChange = (value) => {
-    setSelectedArea(value);
-    setCurrentPage(1);
-  };
-
   const formatPrice = (price) => {
     return new Intl.NumberFormat("vi-VN").format(price) + " VNĐ/tháng";
   };
 
-  const goToDetails = (postId) => {
-    navigate(`/post-detail/${postId}`);
-    console.log(`Đang chuyển đến trang chi tiết của căn hộ ID: ${postId}`);
-  };
+  // Lọc danh sách căn hộ
+  const filteredApartments = bookedApartments.filter(apartment => {
+    const matchSearch = apartment.title.toLowerCase().includes(searchText.toLowerCase()) ||
+                        apartment.apartment.apartmentName.toLowerCase().includes(searchText.toLowerCase());
+    const matchArea = selectedArea === "Tất cả" || apartment.apartment.apartmentName === selectedArea;
+    return matchSearch && matchArea;
+  });
+
+  // Phân trang
+  const paginatedApartments = filteredApartments.slice(
+    (currentPage - 1) * pageSize, 
+    currentPage * pageSize
+  );
 
   return (
     <div style={{ padding: "20px", backgroundColor: "#f5f5f5", minHeight: "100vh" }}>
@@ -126,7 +107,7 @@ const PostList = () => {
               }}
             >
               <HomeOutlined style={{ marginRight: 12 }} />
-              DANH SÁCH CĂN HỘ CHUNG CƯ
+              CÁC CĂN HỘ ĐÃ ĐẶT CỌC
             </Title>
             <div style={{ 
               position: 'absolute', 
@@ -140,7 +121,7 @@ const PostList = () => {
             }} />
           </div>
           <Text type="secondary" style={{ display: 'block', marginTop: 12 }}>
-            Khám phá các căn hộ chất lượng cao với đầy đủ tiện nghi
+            Quản lý và theo dõi các căn hộ bạn đã đặt cọc
           </Text>
         </div>
 
@@ -149,66 +130,39 @@ const PostList = () => {
         <Flex justify="space-between" align="center" wrap="wrap" gap={16} style={{ marginBottom: 24 }}>
           <Search
             placeholder="Tìm kiếm căn hộ theo tên, khu vực..."
-            onSearch={onSearch}
+            onSearch={(value) => setSearchText(value)}
             style={{ width: 320 }}
             prefix={<SearchOutlined />}
             allowClear
             size="large"
           />
 
-          <Flex gap={16} wrap="wrap">
-            <Flex align="center" gap={8}>
-              <AppstoreOutlined style={{ color: 'rgba(30, 58, 138, 0.92)' }} />
-              <Select
-                defaultValue="Tất cả"
-                style={{ width: 150 }}
-                onChange={onCategoryChange}
-                size="large"
-              >
-                {categories.map((cat) => (
-                  <Option key={cat} value={cat}>
-                    {cat}
-                  </Option>
-                ))}
-              </Select>
-            </Flex>
-            
-            <Flex align="center" gap={8}>
-              <EnvironmentOutlined style={{ color: 'rgba(30, 58, 138, 0.92)' }} />
-              <Select
-                defaultValue="Tất cả"
-                style={{ width: 180 }}
-                onChange={onAreaChange}
-                size="large"
-              >
-                {areas.map((area) => (
-                  <Option key={area} value={area}>
-                    {area}
-                  </Option>
-                ))}
-              </Select>
-            </Flex>
+          <Flex align="center" gap={8}>
+            <EnvironmentOutlined style={{ color: 'rgba(30, 58, 138, 0.92)' }} />
+            <Select
+              defaultValue="Tất cả"
+              style={{ width: 180 }}
+              onChange={(value) => setSelectedArea(value)}
+              size="large"
+            >
+              {areas.map((area) => (
+                <Option key={area} value={area}>
+                  {area}
+                </Option>
+              ))}
+            </Select>
           </Flex>
         </Flex>
 
-        <Row gutter={[24, 24]}>
-          {loading
-            ? // Hiển thị skeleton loading
-              Array(4)
-                .fill(null)
-                .map((_, index) => (
-                  <Col xs={24} sm={12} md={8} lg={6} key={`loading-${index}`}>
-                    <Card style={{ borderRadius: '8px', overflow: 'hidden', height: '100%' }}>
-                      <Skeleton.Image
-                        style={{ width: "100%", height: 200 }}
-                        active
-                      />
-                      <Skeleton active paragraph={{ rows: 3 }} />
-                    </Card>
-                  </Col>
-                ))
-            : // Hiển thị danh sách căn hộ dạng card
-              apartments.map((apartment) => (
+        {filteredApartments.length === 0 ? (
+          <Empty 
+            description="Bạn chưa có căn hộ nào được đặt cọc" 
+            style={{ marginTop: 40 }}
+          />
+        ) : (
+          <>
+            <Row gutter={[24, 24]}>
+              {paginatedApartments.map((apartment) => (
                 <Col xs={24} sm={12} md={8} lg={6} key={apartment.postId}>
                   <Card
                     hoverable
@@ -238,13 +192,12 @@ const PostList = () => {
                           }}
                         />
                         <Badge
-                          count={apartment.depositCheck}
+                          count="Đã cọc"
                           style={{
                             position: "absolute",
                             top: 10,
                             right: 10,
-                            backgroundColor:
-                              statusColors[apartment.depositCheck],
+                            backgroundColor: "#52c41a",
                           }}
                         />
                         <div
@@ -264,11 +217,6 @@ const PostList = () => {
                         </div>
                       </div>
                     }
-                    onClick={() => {
-                      if (apartment.depositCheck == null) {
-                        goToDetails(apartment.postId);
-                      }
-                    }}
                     actions={[
                       <Tooltip title="Diện tích">
                         <Space>
@@ -282,10 +230,10 @@ const PostList = () => {
                           {`${apartment.apartment.numberOfBedrooms}PN, ${apartment.apartment.numberOfBathrooms}VS`}
                         </Space>
                       </Tooltip>,
-                      <Tooltip title="Lượt xem">
+                      <Tooltip title="Ngày đặt cọc">
                         <Space>
-                          <EyeOutlined key="view" />
-                          {apartment.views}
+                          <ClockCircleOutlined key="deposit-date" />
+                          {apartment.depositDate || "Chưa rõ"}
                         </Space>
                       </Tooltip>,
                     ]}
@@ -317,15 +265,13 @@ const PostList = () => {
                                     {apartment.apartment.apartmentName}
                                   </Text>
                                 </Flex>
-                                {apartment.depositCheck === "done" && (
-                                  <Tag
-                                    icon={<CheckCircleOutlined />}
-                                    color="error"
-                                    style={{padding:'4px 8px', fontSize: '14px'}}
-                                  >
-                                    Đã cọc
-                                  </Tag>
-                                )}
+                                <Tag
+                                  icon={<CheckCircleOutlined />}
+                                  color="success"
+                                  style={{padding:'4px 8px', fontSize: '14px'}}
+                                >
+                                  Đã Cọc
+                                </Tag>
                               </Flex>
                             </div>
                             <div>
@@ -340,16 +286,12 @@ const PostList = () => {
                                 size="small"
                                 style={{ 
                                   borderRadius: '4px', 
-                                  background: apartment.depositCheck !== "done" ? 'rgba(30, 58, 138, 0.92)' : '#d9d9d9',
+                                  background: 'rgba(30, 58, 138, 0.92)',
                                   width: '100%'
                                 }}
-                                onClick={(e) => {
-                                  e.stopPropagation();
-                                  goToDetails(apartment.postId);
-                                }}
-                                disabled={apartment.depositCheck === "done"}
+                                onClick={() => onViewDetails && onViewDetails(apartment.postId)}
                               >
-                                Xem chi tiết <ArrowRightOutlined />
+                                Xem chi tiết
                               </Button>
                             </div>
                           </Space>
@@ -359,21 +301,23 @@ const PostList = () => {
                   </Card>
                 </Col>
               ))}
-        </Row>
+            </Row>
 
-        <div style={{ textAlign: "center", marginTop: 32 }}>
-          <Pagination
-            current={currentPage}
-            pageSize={pageSize}
-            total={apartments.length}
-            onChange={(page) => setCurrentPage(page)}
-            showSizeChanger={false}
-            showTotal={(total) => `Tổng cộng ${total} căn hộ`}
-          />
-        </div>
+            <div style={{ textAlign: "center", marginTop: 32 }}>
+              <Pagination
+                current={currentPage}
+                pageSize={pageSize}
+                total={filteredApartments.length}
+                onChange={(page) => setCurrentPage(page)}
+                showSizeChanger={false}
+                showTotal={(total) => `Tổng cộng ${total} căn hộ đã đặt cọc`}
+              />
+            </div>
+          </>
+        )}
       </Card>
     </div>
   );
 };
 
-export default PostList;
+export default DepositApartments;
