@@ -9,20 +9,23 @@ import {
   Input,
   DatePicker,
   Flex,
-  Dropdown,
-  Menu
 } from "antd";
 import {
   DollarOutlined,
   PlusOutlined,
   UserOutlined,
-  CalendarOutlined
+  EditOutlined,
+  DeleteOutlined,
 } from "@ant-design/icons";
 import moment from "moment";
 
 const UtilityManagement = () => {
-  // Initialize with current date
-  const [selectedDate, setSelectedDate] = useState(moment());
+  const defaultValue = moment().subtract(1, "months");
+  const [selectedDate, setSelectedDate] = useState(defaultValue);
+
+  const handleDateChange = (date) => {
+    setSelectedDate(date);
+  };
 
   // Combined data for electricity and water with user details
   const [utilityRecords] = useState([
@@ -48,6 +51,11 @@ const UtilityManagement = () => {
       key: "apartmentId",
     },
     {
+      title: "Tên Căn hộ",
+      dataIndex: "apartmentName",
+      key: "apartmentName",
+    },
+    {
       title: "Người dùng",
       dataIndex: "users",
       key: "users",
@@ -61,6 +69,12 @@ const UtilityManagement = () => {
           ))}
         </Space>
       ),
+    },
+    {
+      title: "Chỉ Số Điện (kWh)",
+      dataIndex: "electricityConsumption",
+      key: "electricityConsumption",
+      render: (value) => `${value} kWh`,
     },
     {
       title: "Chỉ Số Nước (m³)",
@@ -86,7 +100,30 @@ const UtilityManagement = () => {
         </Button>
       ),
     },
+    {
+      title: "Sửa/xóa",
+      key: "actions",
+      render: (_, record) => (
+        <Flex style={{ gap: "10px" }}>
+          <Button
+            icon={<EditOutlined />}
+            onClick={() => handleEditBill("combined",record)}
+          ></Button>
+          <Button
+            type="primary"
+            icon={<DeleteOutlined />}
+            onClick={() => showCreateBillModal("combined")}
+          ></Button>
+        </Flex>
+      ),
+    },
   ];
+
+  const handleEditBill = (type,record) => {
+    console.log(record);
+    // setCurrentUtilityType(type);
+    // setIsModalVisible(true);
+  };
 
   // Function to show create bill modal
   const showCreateBillModal = (type) => {
@@ -105,25 +142,15 @@ const UtilityManagement = () => {
     setIsModalVisible(false);
   };
 
-  // Handle date change
-  const handleDateChange = (date) => {
-    setSelectedDate(date);
+  const [date, setDate] = useState(null);
+
+  const handleChange = (value) => {
+    setDate(value);
   };
 
-  // Handle filter
   const handleFilter = () => {
-    console.log(selectedDate.format("YYYY-MM-DD"));
+    console.log(selectedDate.format("YYYY-MM"));
   };
-
-  // Render dropdown menu for date picker
-  const datePickerDropdown = (
-    <Menu>
-      <Menu.Item key="today" onClick={() => setSelectedDate(moment())}>
-        <CalendarOutlined style={{ marginRight: 8 }} />
-        Hôm nay
-      </Menu.Item>
-    </Menu>
-  );
 
   return (
     <Card
@@ -137,22 +164,17 @@ const UtilityManagement = () => {
       {/* Date Range Filter */}
       <Flex style={{ marginBottom: "16px" }} justify="space-between">
         <Flex align="center" style={{ gap: "20px" }}>
-          <Dropdown overlay={datePickerDropdown} trigger={['click']}>
-            <DatePicker
-              value={selectedDate}
-              onChange={handleDateChange}
-              placeholder="Chọn ngày"
-              style={{ width: 200 }}
-              suffixIcon={<CalendarOutlined />}
-            />
-          </Dropdown>
-          <Button onClick={handleFilter}>
-            Lọc
+          <DatePicker
+            picker="month"
+            value={defaultValue}
+            onChange={handleChange}
+            placeholder="Chọn tháng và năm"
+          />
+          <Button style={{}} onClick={handleFilter}>
+            Loc
           </Button>
         </Flex>
-        <Button style={{backgroundColor: 'var(--fgreen)', color:'white'}}>
-          Import CSV
-        </Button>
+        <Button style={{backgroundColor: 'var(--fgreen)', color:'white'}}>Import CSV</Button>
       </Flex>
 
       {/* Utility Tabs with new items prop - Only one tab now */}
@@ -189,6 +211,14 @@ const UtilityManagement = () => {
             ]}
           >
             <Input placeholder="Nhập tên người dùng (ngăn cách bằng dấu phẩy)" />
+          </Form.Item>
+
+          <Form.Item
+            name="electricityConsumption"
+            label="Chỉ Số Điện (kWh)"
+            rules={[{ required: true, message: "Vui lòng nhập chỉ số điện" }]}
+          >
+            <Input type="number" placeholder="Nhập chỉ số điện" suffix="kWh" />
           </Form.Item>
 
           <Form.Item

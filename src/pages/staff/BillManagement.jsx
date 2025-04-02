@@ -17,8 +17,7 @@ import {
   FileAddOutlined, 
   DeleteOutlined, 
   EditOutlined, 
-  FilePdfOutlined,
-  CalendarOutlined 
+  FilePdfOutlined 
 } from '@ant-design/icons';
 import moment from 'moment';
 
@@ -38,12 +37,11 @@ const BillManagement = () => {
     },
   ]);
 
-  // Initialize with current date
-  const [selectedDate, setSelectedDate] = useState(moment());
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentBill, setCurrentBill] = useState(null);
   const [form] = Form.useForm();
 
+  // Modal for creating/editing bill
   const showBillModal = (bill = null) => {
     setCurrentBill(bill);
     setIsModalVisible(true);
@@ -180,38 +178,6 @@ const BillManagement = () => {
     },
   ];
 
-  // Custom date picker with today option
-  const CustomDatePicker = () => {
-    const handleDateChange = (date) => {
-      setSelectedDate(date);
-    };
-
-    const renderExtraFooter = () => (
-      <div 
-        style={{ 
-          padding: '0 8px', 
-          textAlign: 'center', 
-          cursor: 'pointer',
-          color: '#1890ff'
-        }}
-        onClick={() => setSelectedDate(moment())}
-      >
-      </div>
-    );
-
-    return (
-      <DatePicker
-        value={selectedDate}
-        onChange={handleDateChange}
-        style={{ width: 200 }}
-        placeholder="Chọn ngày"
-        renderExtraFooter={renderExtraFooter}
-        allowClear={false}
-        suffixIcon={<CalendarOutlined />}
-      />
-    );
-  };
-
   return (
     <Card 
       title={
@@ -233,8 +199,10 @@ const BillManagement = () => {
       {/* Filtering Section */}
       <Flex style={{ marginBottom: "16px" }} justify="space-between">
         <Flex align="center" style={{ gap: "20px" }}>
-          <CustomDatePicker />
-          
+          <DatePicker
+            picker="month"
+            placeholder="Chọn tháng"
+          />
           <Select 
             placeholder="Trạng Thái" 
             style={{ width: 120 }}
@@ -325,25 +293,7 @@ const BillManagement = () => {
             label="Ngày Đến Hạn"
             rules={[{ required: true, message: "Vui lòng chọn ngày đến hạn" }]}
           >
-            <DatePicker 
-              style={{ width: '100%' }} 
-              placeholder="Chọn ngày đến hạn"
-              renderExtraFooter={() => (
-                <div 
-                  style={{ 
-                    padding: '0 8px', 
-                    textAlign: 'center', 
-                    cursor: 'pointer',
-                    color: '#1890ff'
-                  }}
-                  onClick={() => {
-                    form.setFieldsValue({ dueDate: moment() });
-                  }}
-                >
-                  
-                </div>
-              )}
-            />
+            <DatePicker style={{ width: '100%' }} />
           </Form.Item>
 
           <Form.Item
