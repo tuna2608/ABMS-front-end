@@ -865,3 +865,82 @@ export const getApartmentsWithoutHouseholder = async (dispatch) => {
     };
   }
 };
+//------------------------------------------------------------------------------thông báo------------------------------------------------------------------------------------
+//lay noti tu id
+  export const fetchNotifications = async (userId) => {
+    try {
+      const res = await userRequest.get(`/notification/view_all?userId=${userId}`);
+      return {
+        success: true,
+        data: res.data.data || [],
+        message: res.data.message || 'Lấy thông báo thành công'
+      };
+    } catch (error) {
+      console.error("Error fetching notifications:", error);
+      return {
+        success: false,
+        data: [],
+        message: error.response?.data?.message || 'Có lỗi xảy ra khi lấy thông báo'
+      };
+    }
+  };
+
+  // xoa noti
+export const deleteNotification = async (notificationId, userId) => {
+  try {
+    const res = await userRequest.delete(`/notification/delete?notificationId=${notificationId}&userId=${userId}`);
+    return {
+      success: true,
+      message: res.data.message || 'Xóa thông báo thành công'
+    };
+  } catch (error) {
+    console.error("Error deleting notification:", error);
+    return {
+      success: false,
+      message: error.response?.data?.message || 'Có lỗi xảy ra khi xóa thông báo'
+    };
+  }
+};
+
+// gui noti
+export const sendNotification = async (notificationData) => {
+  try {
+    const res = await userRequest.post('/notification/send', {
+      content: notificationData.content,
+      type: notificationData.type,
+      userId: notificationData.userId
+    });
+    return {
+      success: true,
+      data: res.data.data,
+      message: res.data.message || 'Gửi thông báo thành công'
+    };
+  } catch (error) {
+    console.error("Error sending notification:", error);
+    return {
+      success: false,
+      message: error.response?.data?.message || 'Có lỗi xảy ra khi gửi thông báo'
+    };
+  }
+};
+
+// broadcast noti (noti toàn cuc, chi admin hoac staff)
+export const broadcastNotification = async (notificationData, role) => {
+  try {
+    const res = await userRequest.post(`/notification/broadcast-all?role=${role}`, {
+      content: notificationData.content,
+      type: notificationData.type
+    });
+    return {
+      success: true,
+      data: res.data.data,
+      message: res.data.message || 'Gửi thông báo toàn cục thành công'
+    };
+  } catch (error) {
+    console.error("Error broadcasting notification:", error);
+    return {
+      success: false,
+      message: error.response?.data?.message || 'Có lỗi xảy ra khi gửi thông báo toàn cục'
+    };
+  }
+};
