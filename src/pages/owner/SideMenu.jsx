@@ -52,7 +52,7 @@ const SideMenu = ({ setCurrentView }) => {
       key: "7",
       icon: <MessageOutlined />,
       label: "Tin nhắn",
-      onClick: () => setCurrentView("chat-page"),
+      onClick: () => setCurrentView("chatpage"),
     },
   ];
 
