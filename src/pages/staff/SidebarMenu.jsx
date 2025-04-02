@@ -49,8 +49,6 @@ const SidebarMenu = ({ collapsed, setCollapsed, activeMenuItem, setActiveMenuIte
       label: "Chi phí điện nước",
       onClick: () => setActiveMenuItem("utility-management"),
     },
-    
-    
   ];
 
   return (

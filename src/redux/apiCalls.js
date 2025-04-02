@@ -439,10 +439,20 @@ export const getPostById = async (dispatch, postId) => {
   }
 }
 
+//------------------------------------------------------------------------------CRUD consumption Bill------------------------------------------------------------------------------
 // get tat ca tieu thu 
 export const getAllConsumption = async (dispatch) => {
   try {
     const res = await publicRequest.get(`/consumption/getAll`);
+    return res.data;
+  } catch (error) {
+    return error.response;
+  }
+}
+
+export const createBill = async (dispatch,formData) => {
+  try {
+    const res = await publicRequest.post(`/bill/create`,formData);
     return res.data;
   } catch (error) {
     return error.response;

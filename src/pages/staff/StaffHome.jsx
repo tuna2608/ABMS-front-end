@@ -1,13 +1,6 @@
 import React, { useState } from "react";
-import {
-  Layout,
-  Card,
-  Button
-} from "antd";
-import {
-  MenuUnfoldOutlined,
-  MenuFoldOutlined
-} from "@ant-design/icons";
+import { Layout, Card, Button } from "antd";
+import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
 
 // Import custom components
 import SidebarMenu from "./SidebarMenu";
@@ -16,7 +9,7 @@ import ApartmentList from "./ApartmentList";
 import UtilityManagement from "./UtilityManagement";
 import AccountManagement from "./AccountManagement";
 import CardManagement from "./CardManagement";
-import BillManagement from "./BillManagement";  
+import BillManagement from "./BillManagement";
 import DepositDetailModal from "./DepositDetailModal";
 
 const { Content, Header } = Layout;
@@ -46,7 +39,7 @@ const StaffHome = () => {
         );
       case "card-management":
         return <CardManagement />;
-      case "bill-management": 
+      case "bill-management":
         return <BillManagement />;
       case "utility-management":
         return <UtilityManagement />;
@@ -58,7 +51,7 @@ const StaffHome = () => {
   };
 
   return (
-    <Layout style={{ minHeight: '100vh' }}>
+    <Layout style={{ minHeight: "100vh" }}>
       <SidebarMenu
         collapsed={collapsed}
         setCollapsed={setCollapsed}
@@ -66,29 +59,31 @@ const StaffHome = () => {
         setActiveMenuItem={setActiveMenuItem}
       />
       <Layout>
-        <Header 
+        <Header
           style={{
             background: "#fff",
             padding: 0,
             display: "flex",
             alignItems: "center",
-            justifyContent: "space-between"
+            justifyContent: "space-between",
           }}
         >
           <Button
             type="text"
             icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
             onClick={toggleCollapsed}
-            style={{ fontSize: '16px', width: 64, height: 64 }}
+            style={{ fontSize: "16px", width: 64, height: 64 }}
           />
           <div style={{ marginRight: 20 }}></div>
         </Header>
 
-        <Content style={{ margin: "24px 16px", padding: 24, background: "#fff" }}>
+        <Content
+          style={{ margin: "24px 16px", padding: 24, background: "#fff" }}
+        >
           {renderContent()}
         </Content>
       </Layout>
-      <DepositDetailModal 
+      <DepositDetailModal
         visible={isDepositDetailVisible}
         onCancel={() => setIsDepositDetailVisible(false)}
         deposit={selectedDeposit}
