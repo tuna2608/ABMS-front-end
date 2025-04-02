@@ -396,13 +396,20 @@ export const deleteApartment = async (dispatch, apartmentId) => {
 
 //------------------------------------------------------------------------------tạo bài viết mua bán căn hộ------------------------------------------------------------------------------
 
-export const getPostsByUId = async (dispatch, userId) => {
-  dispatch(getPostStart());
+export const getPostsByUserId = async (dispatch, userId) => {
   try {
-    const res = await publicRequest.get(`orders/find/${userId}`);
-    dispatch(getPostSuccess(res.data));
+    const res = await publicRequest.get(`/post/user/${userId}`);
+    return {
+      success: true,
+      data: res.data.data,
+      message: res.data.message || "Lấy bài viết thành công"
+    };
   } catch (error) {
-    dispatch(getPostFailure());
+    console.error("Error fetching posts by user:", error);
+    return {
+      success: false,
+      message: error.response?.data?.message || "Có lỗi xảy ra khi lấy bài viết"
+    };
   }
 };
 
