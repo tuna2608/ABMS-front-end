@@ -59,7 +59,6 @@ const SignInPage = () => {
       return;
     }else{
       message.success(messageAPI)
-      console.log(res);
       const roleUser = res.data.role;
       if(roleUser === 'Admin'){
         navigate('/adminHome')
