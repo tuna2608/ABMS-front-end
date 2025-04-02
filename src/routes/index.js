@@ -10,7 +10,6 @@ import ApartmentList from "../pages/client/PostList/PostList";
 import ApartmentDetail from "../pages/client/PostDetail/PostDetail";
 import ChatPage from "../pages/client/ChatPage/ChatPage";
 import NotificationsPage from "../pages/client/NotificationPage/NotificationPage";
-import BillPage from "../pages/client/BillPage/BillPage";
 import DepositApartments from "../pages/client/DepositApartment/DepositApartment";
 import EditProfilePage from "../pages/common/EditProfilePage/EditProfilePage";
 import StaffHome from "../pages/staff/StaffHome";
@@ -79,11 +78,6 @@ export const routes = [
         path: '/chat-page',
         page: ChatPage,
         isShowHeader: false
-    },
-    {
-        path: '/bill',
-        page: BillPage,
-        isShowHeader: true
     },
     {
         path: '/deposit-apartment',
