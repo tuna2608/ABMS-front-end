@@ -1,6 +1,6 @@
 import { Badge, Button, Col, Dropdown, Flex, Image, Row } from "antd";
 import React from "react";
-import { BellOutlined, FacebookFilled, InstagramFilled } from "@ant-design/icons";
+import { FacebookFilled, InstagramFilled } from "@ant-design/icons";
 import styled from "styled-components";
 import logoMenu from "../../../assets/common/images/logo-menu.png";
 import { Input } from "antd";
@@ -8,6 +8,7 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux'
 import { logoutDispatch } from "../../../redux/apiCalls";
 import avtBase from "../../../assets/common/images/avtbase.jpg";
+import NotificationWrapper from "./NotificationWrapper"; // Import the new component
 
 const { Search } = Input;
 
@@ -63,13 +64,17 @@ const NavbarListItem = styled(Flex)`
   justify-content: end;
 `;
 
-const NavItem = styled(Button)`
-  width: 50px;
-  height: 50px;
-  border-radius: 100%;
-  background-color: white;
-  color: var(--cheadline);
-  font-size: 20px;
+const PostLink = styled(Button)`
+  color: white;
+  background-color: transparent;
+  border: none;
+  font-size: 16px;
+  transition: color 0.3s;
+
+  &:hover {
+    color: var(--csecondary);
+    background-color: transparent;
+  }
 `;
 
 const NavItemAVT = styled.div`
@@ -88,19 +93,6 @@ const NavItemAVT = styled.div`
     cursor: pointer;
     background-color: var(--csecondary);
     color: white;
-  }
-`;
-
-const PostLink = styled(Button)`
-  color: white;
-  background-color: transparent;
-  border: none;
-  font-size: 16px;
-  transition: color 0.3s;
-
-  &:hover {
-    color: var(--csecondary);
-    background-color: transparent;
   }
 `;
 
@@ -201,19 +193,11 @@ function HeaderComponent() {
 
         <Col span={10}>
           <NavbarListItem>
-            {/* Removed NavItemRole components from here */}
-
             <PostLink onClick={() => navigate("/post")}>
               Bài viết
             </PostLink>
 
-            <Dropdown menu={{ items: items }} placement="bottomLeft">
-              <Badge count={13} overflowCount={10}>
-                <NavItem>
-                  <BellOutlined />
-                </NavItem>
-              </Badge>
-            </Dropdown>
+            <NotificationWrapper /> {/* Replace the previous Badge and BellOutlined */}
 
             {user ? (
               <Dropdown menu={{ items: items }} placement="bottomRight">
