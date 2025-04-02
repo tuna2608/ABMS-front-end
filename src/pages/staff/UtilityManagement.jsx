@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Card,
   Space,
@@ -18,63 +18,65 @@ import {
   DeleteOutlined,
 } from "@ant-design/icons";
 import moment from "moment";
+import { getAllConsumption } from "../../redux/apiCalls";
 
 const UtilityManagement = () => {
   const defaultValue = moment().subtract(1, "months");
   const [selectedDate, setSelectedDate] = useState(defaultValue);
+  const [consumptions,setConsumptions] = useState([
+    {
+      id: "1",
+      apartmentName: '101',
+      userName: 'Nguyen anh Tu',
+      consumptionDate: "2024-03-15",
+      lastMonthWaterConsumption: 45.2,
+      waterConsumption: 47.2,
+    },
+  ]);
+
+  useEffect(()=>{
+    async function callGetAllConsumption(){
+      const res = await getAllConsumption();
+      console.log(res);
+      setConsumptions(res.data);
+    }
+    callGetAllConsumption();
+  },[])
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
 
   // Combined data for electricity and water with user details
-  const [utilityRecords] = useState([
-    {
-      id: "1",
-      apartmentId: "A101",
-      apartmentName: "Chung cư Sunrise",
-      users: ["Huỳnh Lê Phương Nam"],
-      electricityConsumption: 250,
-      waterConsumption: 15,
-      recordDate: "2024-03-15",
-    },
-  ]);
+  
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentUtilityType, setCurrentUtilityType] = useState("combined");
 
   // Combined utility columns
-  const utilityColumns = [
+  const consumptionColumns = [
     {
       title: "Số Căn hộ",
-      dataIndex: "apartmentId",
-      key: "apartmentId",
-    },
-    {
-      title: "Tên Căn hộ",
       dataIndex: "apartmentName",
       key: "apartmentName",
+      render: (value) => `${value}`
     },
     {
-      title: "Người dùng",
-      dataIndex: "users",
-      key: "users",
-      render: (users) => (
-        <Space direction="vertical">
-          {users.map((user, index) => (
-            <div key={index}>
-              <UserOutlined style={{ marginRight: 8 }} />
-              {user}
-            </div>
-          ))}
-        </Space>
-      ),
+      title: "Chủ căn hộ",
+      dataIndex: "userName",
+      key: "userName",
+      render: (value) => `${value}`,
     },
     {
-      title: "Chỉ Số Điện (kWh)",
-      dataIndex: "electricityConsumption",
-      key: "electricityConsumption",
-      render: (value) => `${value} kWh`,
+      title: "Tháng Ghi Nhận",
+      dataIndex: "consumptionDate",
+      key: "consumptionDate",
+    },
+    {
+      title: "Chỉ Số Nước Tháng trước (m³)",
+      dataIndex: "lastMonthWaterConsumption",
+      key: "lastMonthWaterConsumption",
+      render: (value) => `${value} m³`,
     },
     {
       title: "Chỉ Số Nước (m³)",
@@ -83,38 +85,30 @@ const UtilityManagement = () => {
       render: (value) => `${value} m³`,
     },
     {
-      title: "Ngày Ghi Nhận",
-      dataIndex: "recordDate",
-      key: "recordDate",
-    },
-    {
       title: "Hành Động",
       key: "actions",
       render: (_, record) => (
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={() => showCreateBillModal("combined")}
-        >
-          Tạo Hóa Đơn
-        </Button>
-      ),
-    },
-    {
-      title: "Sửa/xóa",
-      key: "actions",
-      render: (_, record) => (
-        <Flex style={{ gap: "10px" }}>
-          <Button
-            icon={<EditOutlined />}
-            onClick={() => handleEditBill("combined",record)}
-          ></Button>
-          <Button
+        <>
+          {record.billCreated === false
+          ?(<Button
             type="primary"
-            icon={<DeleteOutlined />}
+            icon={<PlusOutlined />}
             onClick={() => showCreateBillModal("combined")}
-          ></Button>
-        </Flex>
+          >
+            Tạo Hóa Đơn
+          </Button>)
+          : (
+            (<Button
+              type="primary"
+              disabled
+            >
+             Hóa đơn này đã tạo
+            </Button>)
+          )
+        }
+        
+        </>
+        
       ),
     },
   ];
@@ -144,10 +138,6 @@ const UtilityManagement = () => {
 
   const [date, setDate] = useState(null);
 
-  const handleChange = (value) => {
-    setDate(value);
-  };
-
   const handleFilter = () => {
     console.log(selectedDate.format("YYYY-MM"));
   };
@@ -167,7 +157,7 @@ const UtilityManagement = () => {
           <DatePicker
             picker="month"
             value={defaultValue}
-            onChange={handleChange}
+            onChange={handleDateChange}
             placeholder="Chọn tháng và năm"
           />
           <Button style={{}} onClick={handleFilter}>
@@ -179,8 +169,8 @@ const UtilityManagement = () => {
 
       {/* Utility Tabs with new items prop - Only one tab now */}
       <Table
-        columns={utilityColumns}
-        dataSource={utilityRecords}
+        columns={consumptionColumns}
+        dataSource={consumptions}
         rowKey="id"
         pagination={{ pageSize: 5 }}
       />
