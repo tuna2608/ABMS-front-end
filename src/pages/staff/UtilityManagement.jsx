@@ -52,6 +52,7 @@ const UtilityManagement = () => {
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentUtilityType, setCurrentUtilityType] = useState("combined");
+  const [currentConsumption,setCurrentConsumption] = useState({});
 
   // Combined utility columns
   const consumptionColumns = [
@@ -93,7 +94,7 @@ const UtilityManagement = () => {
           ?(<Button
             type="primary"
             icon={<PlusOutlined />}
-            onClick={() => showCreateBillModal("combined")}
+            onClick={() => showCreateBillModal("combined",record)}
           >
             Tạo Hóa Đơn
           </Button>)
@@ -113,15 +114,10 @@ const UtilityManagement = () => {
     },
   ];
 
-  const handleEditBill = (type,record) => {
-    console.log(record);
-    // setCurrentUtilityType(type);
-    // setIsModalVisible(true);
-  };
-
   // Function to show create bill modal
-  const showCreateBillModal = (type) => {
+  const showCreateBillModal = (type,record) => {
     setCurrentUtilityType(type);
+    setCurrentConsumption(record)
     setIsModalVisible(true);
   };
 
@@ -187,6 +183,7 @@ const UtilityManagement = () => {
           onFinish={handleCreateBill}
           initialValues={{
             billType: currentUtilityType,
+            consumption: currentConsumption,
           }}
         >
           <Form.Item name="billType" label="Loại Hóa Đơn" hidden>
@@ -194,21 +191,20 @@ const UtilityManagement = () => {
           </Form.Item>
 
           <Form.Item
-            name="users"
-            label="Người Dùng"
+            name={['consumption', 'userName']}
+            label="Chu can ho"
             rules={[
               { required: true, message: "Vui lòng nhập tên người dùng" },
             ]}
           >
-            <Input placeholder="Nhập tên người dùng (ngăn cách bằng dấu phẩy)" />
+            <Input disabled/>
           </Form.Item>
 
           <Form.Item
-            name="electricityConsumption"
-            label="Chỉ Số Điện (kWh)"
-            rules={[{ required: true, message: "Vui lòng nhập chỉ số điện" }]}
+            name={['consumption', 'consumptionDate']}
+            label="Tháng Ghi Nhận"
           >
-            <Input type="number" placeholder="Nhập chỉ số điện" suffix="kWh" />
+            <Input disabled/>
           </Form.Item>
 
           <Form.Item
