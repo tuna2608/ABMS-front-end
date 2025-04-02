@@ -5,7 +5,9 @@ import {
   FormOutlined, 
   FileProtectOutlined, 
   WalletOutlined, 
-  UploadOutlined 
+  UploadOutlined,
+  FileAddOutlined,
+  MessageOutlined
 } from "@ant-design/icons";
 
 const SideMenu = ({ setCurrentView }) => {
@@ -36,9 +38,21 @@ const SideMenu = ({ setCurrentView }) => {
     },
     {
       key: "5",
+      icon: <FileAddOutlined />,
+      label: "Quản lý hóa đơn",
+      onClick: () => setCurrentView("bill-management"),
+    },
+    {
+      key: "6",
       icon: <UploadOutlined />,
       label: "Tải lên tài liệu",
       onClick: () => setCurrentView("upload"),
+    },
+    {
+      key: "7",
+      icon: <MessageOutlined />,
+      label: "Tin nhắn",
+      onClick: () => setCurrentView("chat-page"),
     },
   ];
 

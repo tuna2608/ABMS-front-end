@@ -35,7 +35,6 @@ import {
   ClockCircleOutlined,
   DollarOutlined,
   HomeOutlined,
-  LeftOutlined,
   DownloadOutlined,
   CalendarOutlined,
   SendOutlined,
@@ -271,7 +270,6 @@ const BillPage = () => {
       <Header style={{ background: '#fff', padding: '0 24px', boxShadow: '0 1px 4px rgba(0,21,41,.08)' }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', height: '100%' }}>
           <Space>
-            <Button icon={<LeftOutlined />}>Quay lại</Button>
             <Title level={4} style={{ margin: 0 }}>
               <DollarOutlined style={{ marginRight: 10 }} />
               Quản lý hóa đơn

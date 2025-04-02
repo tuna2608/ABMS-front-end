@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Card, Row, Col, Statistic, Table, Space, Button, Input, Select, Tag } from 'antd';
+import { Card, Row, Col, Statistic, Table, Space, Button, Input, Select } from 'antd';
 import { SafetyOutlined, SearchOutlined } from "@ant-design/icons";
 
 const { Option } = Select;
@@ -46,7 +46,13 @@ const DepositManagement = () => {
         </Space>
       } 
       extra={
-        <Button type="primary" onClick={() => {}}>
+        <Button 
+        type="primary" 
+        onClick={() => {}}
+        style={{ 
+          background: 'rgba(30, 58, 138, 0.92)',
+        }}
+        >
           Tạo giao dịch đặt cọc mới
         </Button>
       }
