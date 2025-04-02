@@ -688,6 +688,9 @@ const PostDetail = () => {
                     onClick={() =>
                       userCurrent ? setIsChatOpen(true) : navigate("/login")
                     }
+                    style={{ 
+                      background: 'rgba(30, 58, 138, 0.92)',
+                    }}
                   >
                     Nhắn tin liên hệ
                   </Button>

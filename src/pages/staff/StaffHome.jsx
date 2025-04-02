@@ -1,10 +1,10 @@
 import React, { useState } from "react";
-import { 
-  Layout, 
-  Card, 
+import {
+  Layout,
+  Card,
   Button
 } from "antd";
-import { 
+import {
   MenuUnfoldOutlined,
   MenuFoldOutlined
 } from "@ant-design/icons";
@@ -15,9 +15,9 @@ import DepositManagement from "./DepositManagement";
 import ApartmentList from "./ApartmentList";
 import UtilityManagement from "./UtilityManagement";
 import AccountManagement from "./AccountManagement";
-import CardManagement from "./CardManagement";  // Add this import
+import CardManagement from "./CardManagement";
+import BillManagement from "./BillManagement";  
 import DepositDetailModal from "./DepositDetailModal";
-
 
 const { Content, Header } = Layout;
 
@@ -26,7 +26,6 @@ const StaffHome = () => {
   const [activeMenuItem, setActiveMenuItem] = useState("apartment-list");
   const [selectedDeposit, setSelectedDeposit] = useState(null);
   const [isDepositDetailVisible, setIsDepositDetailVisible] = useState(false);
-
 
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
@@ -38,15 +37,17 @@ const StaffHome = () => {
         return <ApartmentList />;
       case "deposit-management":
         return (
-          <DepositManagement 
+          <DepositManagement
             onViewDepositDetail={(deposit) => {
               setSelectedDeposit(deposit);
               setIsDepositDetailVisible(true);
             }}
           />
         );
-      case "card-management":  // Add this case
+      case "card-management":
         return <CardManagement />;
+      case "bill-management": 
+        return <BillManagement />;
       case "utility-management":
         return <UtilityManagement />;
       case "account-management":
@@ -58,20 +59,22 @@ const StaffHome = () => {
 
   return (
     <Layout style={{ minHeight: '100vh' }}>
-      <SidebarMenu 
-        collapsed={collapsed} 
-        setCollapsed={setCollapsed} 
+      <SidebarMenu
+        collapsed={collapsed}
+        setCollapsed={setCollapsed}
         activeMenuItem={activeMenuItem}
         setActiveMenuItem={setActiveMenuItem}
       />
       <Layout>
-        <Header style={{ 
-          background: "#fff", 
-          padding: 0, 
-          display: "flex", 
-          alignItems: "center",
-          justifyContent: "space-between"
-        }}>
+        <Header 
+          style={{
+            background: "#fff",
+            padding: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "space-between"
+          }}
+        >
           <Button
             type="text"
             icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
@@ -80,28 +83,17 @@ const StaffHome = () => {
           />
           <div style={{ marginRight: 20 }}></div>
         </Header>
-        
+
         <Content style={{ margin: "24px 16px", padding: 24, background: "#fff" }}>
           {renderContent()}
         </Content>
       </Layout>
-<<<<<<< HEAD
-      <ReplyMessageModal 
-        visible={isReplyModalVisible}
-        onCancel={() => setIsReplyModalVisible(false)}
-        message={currentMessage}
-      />
-=======
-      
-     
-      
->>>>>>> e544621f7f0d6f3616900d7335dd8936c93addfa
-      <DepositDetailModal 
+
+      <DepositDetailModal
         visible={isDepositDetailVisible}
         onCancel={() => setIsDepositDetailVisible(false)}
         deposit={selectedDeposit}
       />
-      
     </Layout>
   );
 };

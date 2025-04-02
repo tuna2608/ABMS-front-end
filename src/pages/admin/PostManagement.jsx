@@ -72,6 +72,9 @@ const PostManagement = () => {
           type="primary"
           icon={<FileAddOutlined />}
           onClick={() => setIsModalVisible(true)}
+          style={{ 
+            background: 'rgba(30, 58, 138, 0.92)',
+          }}
         >
           Tạo Bài Viết Mới
         </Button>

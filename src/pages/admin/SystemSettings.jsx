@@ -83,6 +83,9 @@ const SystemSettings = () => {
                   type="primary" 
                   htmlType="submit" 
                   icon={<SaveOutlined />}
+                  style={{ 
+                    background: 'rgba(30, 58, 138, 0.92)',
+                  }}
                 >
                   Lưu Cài Đặt Chung
                 </Button>
@@ -138,6 +141,9 @@ const SystemSettings = () => {
                   type="primary" 
                   htmlType="submit" 
                   icon={<SaveOutlined />}
+                  style={{ 
+                    background: 'rgba(30, 58, 138, 0.92)',
+                  }}
                 >
                   Lưu Cài Đặt Bảo Mật
                 </Button>
