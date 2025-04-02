@@ -89,7 +89,7 @@ const UtilityManagement = () => {
       key: "actions",
       render: (_, record) => (
         <>
-          {record.isCreateBill === 'false'
+          {record.billCreated === false
           ?(<Button
             type="primary"
             icon={<PlusOutlined />}
