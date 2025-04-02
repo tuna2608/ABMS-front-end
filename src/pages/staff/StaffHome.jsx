@@ -88,8 +88,7 @@ const StaffHome = () => {
           {renderContent()}
         </Content>
       </Layout>
-
-      <DepositDetailModal
+      <DepositDetailModal 
         visible={isDepositDetailVisible}
         onCancel={() => setIsDepositDetailVisible(false)}
         deposit={selectedDeposit}
