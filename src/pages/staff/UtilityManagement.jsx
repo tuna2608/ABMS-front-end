@@ -158,7 +158,7 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
         return;
       } else {
         message.success(messageAPI);       
-          navigate('/bill-management');
+          navigate('/staffHome/bill-management');
       }
     } catch (error) {
       message.error("Có lỗi xảy ra khi tạo hóa đơn");

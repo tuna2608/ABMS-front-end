@@ -5,6 +5,7 @@ import AdminHome from "../pages/admin/AdminHome";
 import ForgotPasswordPage from "../pages/common/ForgotPasswordPage/ForgotPasswordPage";
 import RegisterPage from "../pages/common/RegisterPage/Register";
 import OwnerHome from "../pages/owner/OwnerHome";
+import RentorHome from "../pages/rentor/RentorHome";
 import Chatbot from "../components/common/Chatbot/Chatbot";
 import ApartmentList from "../pages/client/PostList/PostList";
 import ApartmentDetail from "../pages/client/PostDetail/PostDetail";
@@ -57,6 +58,11 @@ export const routes = [
     {
         path: '/ownerHome/*',
         page: OwnerHome,
+        isShowHeader: true
+    },
+    {
+        path: '/rentorHome/*',
+        page: RentorHome,
         isShowHeader: true
     },
     {
