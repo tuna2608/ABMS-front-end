@@ -17,6 +17,7 @@ import StaffHome from "../pages/staff/StaffHome";
 import OTPPage from "../pages/common/OTPPage/OTPPage";
 import PaymentSuccess from "../pages/client/Payment/PaymentSuccess";
 import PaymentCancel from "../pages/client/Payment/PaymentCancel";
+import FormManagement from "../pages/client/Form/FormManagement";
 // import BillDetailsPage from "../pages/rentor/BillDetailsPage";
 
 
@@ -85,6 +86,11 @@ export const routes = [
         path: '/chat-page',
         page: ChatPage,
         isShowHeader: false
+    },
+    {
+        path: '/form',
+        page: FormManagement,
+        isShowHeader: true
     },
     {
         path: '/deposit-apartment',

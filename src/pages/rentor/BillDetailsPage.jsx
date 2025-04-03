@@ -1,70 +1,50 @@
 import React, { useState, useEffect } from 'react';
-import { Card, Descriptions, Tag, Button, Typography, Divider, Space } from 'antd';
-import { FileTextOutlined, PrinterOutlined, DownloadOutlined } from '@ant-design/icons';
+import { Card, Descriptions, Tag, Typography, Divider, Space } from 'antd';
+import { FileTextOutlined } from '@ant-design/icons';
 
-const { Title, Text } = Typography;
+const { Title } = Typography;
 
-// Function to format currency without using toLocaleString
-const formatCurrency = (amount) => {
-  return new Intl.NumberFormat('vi-VN', {
-    style: 'decimal',
-    minimumFractionDigits: 0,
-    maximumFractionDigits: 0
-  }).format(amount) + ' VND';
-};
-
-const BillDetailsPage = ({ billId }) => {
-  const [billDetails, setBillDetails] = useState(null);
+const BillDetailsPage = ({ consumptionId }) => {
+  const [consumptionData, setConsumptionData] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     // Simulated data fetch - replace with actual API call
-    const fetchBillDetails = async () => {
+    const fetchConsumptionData = async () => {
       try {
-        // This would typically be an API call to fetch bill details
-        const mockBillDetails = {
-          bill_id: billId,
-          bill_content: 'Hóa đơn tiền nhà tháng 4/2025',
-          bill_date: '2025-04-01',
-          create_bill_us: 'Hệ thống tự động',
-          management_fee: 500000,
-          monthly_paid: 5000000,
-          others: 200000,
-          status: 'Chưa thanh toán',
-          total: 5700000,
-          water_bill: 150000,
-          apartment_id: 'A101',
-          consumption_id: 'CONS2504',
-          payment_id: null,
-          user_id: 'USER123'
+        // Mock data based on your database screenshot
+        // In production, this would be replaced with an API call
+        const mockData = {
+          consumption_id: 5,
+          consumption_date: '2025-03-01',
+          is_bill_created: 1,
+          last_month_water_consumption: 54,
+          upload_consumption_user_id: 5,
+          water_consumption: 55.9,
+          apartment_id: 5
         };
 
-        setBillDetails(mockBillDetails);
+        setConsumptionData(mockData);
         setLoading(false);
       } catch (error) {
-        console.error('Error fetching bill details:', error);
+        console.error('Error fetching consumption data:', error);
         setLoading(false);
       }
     };
 
-    fetchBillDetails();
-  }, [billId]);
+    fetchConsumptionData();
+  }, [consumptionId]);
 
-  const handlePrint = () => {
-    window.print();
-  };
-
-  const handleDownload = () => {
-    // Implement PDF download logic
-    alert('Chức năng tải xuống đang được phát triển');
+  const getBillStatus = (isBillCreated) => {
+    return isBillCreated === 1 ? 'Đã tạo hóa đơn' : 'Chưa tạo hóa đơn';
   };
 
   const getStatusColor = (status) => {
     switch (status) {
-      case 'Chưa thanh toán':
-        return 'red';
-      case 'Đã thanh toán':
-        return 'green';
+      case 'Chưa tạo hóa đơn':
+        return 'orange';
+      case 'Đã tạo hóa đơn':
+        return 'blue';
       default:
         return 'default';
     }
@@ -80,24 +60,8 @@ const BillDetailsPage = ({ billId }) => {
         <Space>
           <FileTextOutlined />
           <Title level={4} style={{ margin: 0 }}>
-            Chi Tiết Hóa Đơn - {billDetails.bill_id}
+            Chi Tiết Hóa Đơn - {consumptionData.consumption_id}
           </Title>
-        </Space>
-      }
-      extra={
-        <Space>
-          <Button 
-            icon={<PrinterOutlined />} 
-            onClick={handlePrint}
-          >
-            In hóa đơn
-          </Button>
-          <Button 
-            icon={<DownloadOutlined />} 
-            onClick={handleDownload}
-          >
-            Tải xuống
-          </Button>
         </Space>
       }
     >
@@ -106,49 +70,35 @@ const BillDetailsPage = ({ billId }) => {
         column={2} 
         size="small"
       >
-        <Descriptions.Item label="Mã Hóa Đơn">
-          {billDetails.bill_id}
+        <Descriptions.Item label="Mã Tiêu Thụ">
+          {consumptionData.consumption_id}
         </Descriptions.Item>
-        <Descriptions.Item label="Nội Dung">
-          {billDetails.bill_content}
-        </Descriptions.Item>
-        <Descriptions.Item label="Ngày Tạo">
-          {billDetails.bill_date}
-        </Descriptions.Item>
-        <Descriptions.Item label="Người Tạo">
-          {billDetails.create_bill_us}
+        <Descriptions.Item label="Ngày Ghi Nhận">
+          {consumptionData.consumption_date}
         </Descriptions.Item>
         <Descriptions.Item label="Mã Căn Hộ">
-          {billDetails.apartment_id}
+          {consumptionData.apartment_id}
         </Descriptions.Item>
-        <Descriptions.Item label="Mã Người Dùng">
-          {billDetails.user_id}
+        <Descriptions.Item label="Người Tạo">
+          {consumptionData.upload_consumption_user_id}
         </Descriptions.Item>
       </Descriptions>
 
-      <Divider orientation="left">Chi Tiết Thanh Toán</Divider>
-
+      <Divider orientation="left">Chi Tiết Tiêu Thụ Nước</Divider>
+      
       <Descriptions 
         bordered 
         column={2} 
         size="small"
       >
-        <Descriptions.Item label="Tiền Thuê Nhà">
-          {formatCurrency(billDetails.monthly_paid)}
+        <Descriptions.Item label="Chỉ Số Tháng Trước">
+          {consumptionData.last_month_water_consumption} m³
         </Descriptions.Item>
-        <Descriptions.Item label="Phí Quản Lý">
-          {formatCurrency(billDetails.management_fee)}
+        <Descriptions.Item label="Chỉ Số Tháng Này">
+          {consumptionData.water_consumption} m³
         </Descriptions.Item>
-        <Descriptions.Item label="Tiền Nước">
-          {formatCurrency(billDetails.water_bill)}
-        </Descriptions.Item>
-        <Descriptions.Item label="Các Khoản Khác">
-          {formatCurrency(billDetails.others)}
-        </Descriptions.Item>
-        <Descriptions.Item label="Tổng Cộng" span={2}>
-          <Text strong style={{ color: 'red', fontSize: '1.2em' }}>
-            {formatCurrency(billDetails.total)}
-          </Text>
+        <Descriptions.Item label="Lượng Nước Tiêu Thụ">
+          {(consumptionData.water_consumption - consumptionData.last_month_water_consumption).toFixed(1)} m³
         </Descriptions.Item>
       </Descriptions>
 
@@ -159,18 +109,10 @@ const BillDetailsPage = ({ billId }) => {
         column={1} 
         size="small"
       >
-        <Descriptions.Item label="Trạng Thái Thanh Toán">
-          <Tag color={getStatusColor(billDetails.status)}>
-            {billDetails.status}
+        <Descriptions.Item label="Trạng Thái Hóa Đơn">
+          <Tag color={getStatusColor(getBillStatus(consumptionData.is_bill_created))}>
+            {getBillStatus(consumptionData.is_bill_created)}
           </Tag>
-        </Descriptions.Item>
-        {billDetails.payment_id && (
-          <Descriptions.Item label="Mã Thanh Toán">
-            {billDetails.payment_id}
-          </Descriptions.Item>
-        )}
-        <Descriptions.Item label="Mã Tiêu Thụ">
-          {billDetails.consumption_id}
         </Descriptions.Item>
       </Descriptions>
     </Card>
