@@ -21,6 +21,7 @@ import {
     FormOutlined,
     PlusOutlined,
     EyeOutlined,
+    LoadingOutlined,
     InfoCircleOutlined,
     DeleteOutlined
 } from "@ant-design/icons";
@@ -34,6 +35,7 @@ import {
     deletePost,
     getPostsByUserId
 } from '../../redux/apiCalls';
+import { generateAIPostContent } from '../../services/CreatePostAIService';
 
 const { TextArea } = Input;
 const { Text } = Typography;
@@ -49,6 +51,7 @@ const PostManagementView = () => {
     const [termsAgreed, setTermsAgreed] = useState(false);
     const [loading, setLoading] = useState(false);
     const [postExists, setPostExists] = useState(false);
+    const [aiLoading, setAiLoading] = useState(false);
 
     const currentUser = useSelector((state) => state.user.currentUser);
     const dispatch = useDispatch();
@@ -271,22 +274,25 @@ const PostManagementView = () => {
             onOk: async () => {
                 try {
                     const response = await deletePost(record.postId);
-    
+
                     if (response.success) {
                         message.success('Xóa bài viết thành công!');
-        
+
                         const postsResponse = await getPostsByUserId(dispatch, currentUser.userId);
                         if (postsResponse.success) {
                             setPosts(postsResponse.data);
                         } else {
                             message.error(postsResponse.message);
+                            setPosts(postsResponse.data || []);
                         }
                     } else {
                         message.error(response.message);
+                        setPosts([]);
                     }
                 } catch (error) {
                     console.error('Lỗi khi xóa bài đăng:', error);
                     message.error('Có lỗi xảy ra khi xóa bài đăng');
+                    setPosts([]);
                 }
             }
         });
@@ -304,10 +310,10 @@ const PostManagementView = () => {
             formData.append('apartmentName', currentEditPost.apartment.apartmentName);
             formData.append('postType', values.postType);
             formData.append('userName', currentUser.userName);
-    
+
             // Check if there are any new files to upload
             const hasNewFiles = fileList.some(file => file.originFileObj);
-            
+
             if (hasNewFiles) {
                 // Only append files that are newly uploaded
                 fileList.forEach((file) => {
@@ -319,9 +325,9 @@ const PostManagementView = () => {
                 // If no new files, append empty array to keep existing images
                 formData.append('imageFile', new Blob([], { type: 'application/octet-stream' }));
             }
-    
+
             const response = await updatePost(currentEditPost.postId, formData);
-    
+
             if (response.success) {
                 message.success('Cập nhật bài viết thành công!');
                 const postsResponse = await getPostsByUserId(dispatch, currentUser.userId);
@@ -330,7 +336,7 @@ const PostManagementView = () => {
                 } else {
                     message.error(postsResponse.message);
                 }
-    
+
                 setIsEditModalOpen(false);
                 setFileList([]); // Reset fileList after successful update
             } else {
@@ -339,6 +345,37 @@ const PostManagementView = () => {
         } catch (error) {
             console.error('Lỗi khi cập nhật bài đăng:', error);
             message.error('Có lỗi xảy ra khi cập nhật bài đăng');
+        }
+    };
+
+    // Add this new handler before the return statement
+    const handleGenerateAIContent = async () => {
+        const formValues = postForm.getFieldsValue();
+        if (!formValues.apartmentId) {
+            message.warning('Vui lòng chọn căn hộ trước khi tạo nội dung');
+            return;
+        }
+
+        try {
+            setAiLoading(true);
+            const selectedApartment = apartments.find(apt => apt.apartmentId === formValues.apartmentId);
+            const aiContent = await generateAIPostContent({
+                postType: formValues.postType || 'Cho thuê',
+                numberOfBedrooms: selectedApartment.number_of_bedrooms,
+                numberOfBathrooms: selectedApartment.number_of_bathrooms,
+                area: selectedApartment.area,
+                floor: selectedApartment.floor,
+                direction: selectedApartment.direction
+            });
+
+            postForm.setFieldValue('content', aiContent);
+
+            message.success('Đã tạo nội dung thành công!');
+        } catch (error) {
+            console.error('Lỗi khi tạo nội dung AI:', error);
+            message.error('Không thể tạo nội dung AI: ' + error.message);
+        } finally {
+            setAiLoading(false);
         }
     };
 
@@ -428,8 +465,8 @@ const PostManagementView = () => {
                         setIsModalOpen(true);
                         setTermsAgreed(false);
                     }}
-                    style={{ 
-                      background: 'rgba(30, 58, 138, 0.92)',
+                    style={{
+                        background: 'rgba(30, 58, 138, 0.92)',
                     }}
                 >
                     Thêm Bài Viết
@@ -438,11 +475,11 @@ const PostManagementView = () => {
         >
             <Table
                 columns={columns}
-                dataSource={posts}
+                dataSource={posts || []} // Add fallback empty array
                 loading={loading}
                 rowKey="postId"
                 pagination={{
-                    total: posts.length,
+                    total: posts?.length || 0,
                     showSizeChanger: true,
                     showQuickJumper: true
                 }}
@@ -546,12 +583,25 @@ const PostManagementView = () => {
                             { min: 20, message: 'Nội dung phải có ít nhất 20 ký tự' }
                         ]}
                     >
-                        <TextArea
-                            rows={4}
-                            placeholder="Nhập nội dung bài viết"
-                            showCount
-                            maxLength={1000}
-                        />
+                        <div>
+                            <Form.Item name="content" noStyle>
+                                <TextArea
+                                    rows={6}
+                                    placeholder="Nhập nội dung bài viết hoặc sử dụng nút 'Tạo nội dung bằng AI'"
+                                    showCount
+                                    maxLength={255}
+                                />
+                            </Form.Item>
+                            <Button
+                                onClick={handleGenerateAIContent}
+                                style={{ marginTop: 8 }}
+                                icon={aiLoading ? <LoadingOutlined /> : <FormOutlined />}
+                                loading={aiLoading}
+                            // disabled={!postForm.getFieldValue('apartmentId')}
+                            >
+                                {aiLoading ? 'Đang tạo nội dung...' : 'Tạo nội dung bằng AI'}
+                            </Button>
+                        </div>
                     </Form.Item>
 
                     <Row gutter={16}>
@@ -780,13 +830,25 @@ const PostManagementView = () => {
                                 { min: 20, message: 'Nội dung phải có ít nhất 20 ký tự' }
                             ]}
                         >
-                            <TextArea
-                                rows={4}
-                                placeholder="Nhập nội dung bài viết"
-                                showCount
-                                maxLength={1000}
-                            />
+                            <div>
+                                <Form.Item
+                                    name="content"
+                                    label="Nội Dung"
+                                    rules={[
+                                        { required: true, message: 'Vui lòng nhập nội dung bài viết' },
+                                        { min: 20, message: 'Nội dung phải có ít nhất 20 ký tự' }
+                                    ]}
+                                >
+                                    <TextArea
+                                        rows={4}
+                                        placeholder="Nhập nội dung bài viết"
+                                        showCount
+                                        maxLength={1000}
+                                    />
+                                </Form.Item>
+                            </div>
                         </Form.Item>
+
 
                         <Row gutter={16}>
                             <Col span={12}>
