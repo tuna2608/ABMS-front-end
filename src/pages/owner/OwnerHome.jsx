@@ -10,7 +10,6 @@ import PostManagementView from "./PostManagementView";
 import BillPage from "./OwnerBillManagement";
 import ContractView from "./ContractView";
 import PaymentView from "./PaymentView";
-import FormManagement from "./FormManagement";
 import ChatPage from "../client/ChatPage/ChatPage";
 
 const { Sider, Content, Header } = Layout;
@@ -104,8 +103,6 @@ Khách hàng có thể mất một phần hoặc toàn bộ tiền đặt cọc 
         return <PaymentView />;
       case "bill-management":
         return <BillPage />;
-        case "form-management": // Add case for form-management
-        return <FormManagement />;
       case "chatpage":
         return <ChatPage />;
       default:
@@ -154,7 +151,6 @@ Khách hàng có thể mất một phần hoặc toàn bộ tiền đặt cọc 
             <Route path="/contract-management" element={renderContent()} />
             <Route path="/payment-management" element={renderContent()} />
             <Route path="/bill-management" element={renderContent()} />
-            <Route path="/form-management" element={renderContent()} />
             <Route path="/messages" element={renderContent()} />
             <Route path="*" element={<Navigate to="/ownerHome/list" replace />} />
           </Routes>
