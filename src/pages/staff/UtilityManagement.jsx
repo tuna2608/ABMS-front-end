@@ -14,9 +14,7 @@ import {
 import {
   DollarOutlined,
   PlusOutlined,
-  UserOutlined,
   EditOutlined,
-  DeleteOutlined,
 } from "@ant-design/icons";
 import moment from "moment";
 import { createBill, getAllConsumption } from "../../redux/apiCalls";
@@ -24,7 +22,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const UtilityManagement = ({ setActiveMenuItem }) => {
-  const [currentUser, setCurrentUser] = useState(useSelector((state) => state.user.currentUser));
+  const [currentUser] = useState(useSelector((state) => state.user.currentUser));
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -159,15 +157,8 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
         message.error(messageAPI);
         return;
       } else {
-        message.success(messageAPI);
-        
-        // Cách 1: Sử dụng setActiveMenuItem nếu được truyền từ StaffHome
-        if (setActiveMenuItem) {
-          setActiveMenuItem("bill-management");
-        } else {
-          // Cách 2: Sử dụng navigate để chuyển hướng URL
+        message.success(messageAPI);       
           navigate('/bill-management');
-        }
       }
     } catch (error) {
       message.error("Có lỗi xảy ra khi tạo hóa đơn");
