@@ -2,7 +2,6 @@ import React, { useState } from 'react';
 import { 
   Card, 
   Space, 
-  Button, 
   Select, 
   Input,
   List, 
@@ -13,7 +12,6 @@ import {
   SearchOutlined, 
   FilterOutlined, 
   EnvironmentOutlined,
-  PlusOutlined
 } from "@ant-design/icons";
 
 const { Option } = Select;
@@ -22,7 +20,6 @@ const { Search } = Input;
 const ApartmentListView = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(4);
-  const [ setIsModalVisible] = useState(false);
 
   // Apartment status and area options
   const statusOptions = [
@@ -43,11 +40,6 @@ const ApartmentListView = () => {
     setCurrentPage(page);
   };
 
-  // Show modal for adding new apartment
-  const showAddApartmentModal = () => {
-    setIsModalVisible(true);
-  };
-
 
   return (
     <>
@@ -58,18 +50,6 @@ const ApartmentListView = () => {
             <span>Danh sách căn hộ</span>
           </Space>
         } 
-        extra={
-          <Button 
-            type="primary" 
-            icon={<PlusOutlined />}
-            onClick={showAddApartmentModal}
-            style={{ 
-              background: 'rgba(30, 58, 138, 0.92)', 
-            }}
-          >
-            Thêm căn hộ mới
-          </Button>
-        }
       >
         <Space style={{ marginBottom: 20 }} size="large" wrap>
           <Search
