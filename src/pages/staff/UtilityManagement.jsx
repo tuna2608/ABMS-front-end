@@ -27,12 +27,13 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
   const navigate = useNavigate();
 
   const defaultValue = moment().subtract(1, "months");
+
   const [selectedDate, setSelectedDate] = useState(defaultValue);
   const [consumptions, setConsumptions] = useState([
     {
-      id: "",
+      id: "Chua co consumption nao ca",
       apartmentName: "",
-      userName: "Chua co consumption nao ca",
+      userName: "",
       consumptionDate: "",
       lastMonthWaterConsumption: "",
       waterConsumption: "",
@@ -46,7 +47,7 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
       setConsumptions(res.data);
     }
     callGetAllConsumption();
-  }, []);
+  }, [defaultValue]);
 
   const handleDateChange = (date) => {
     setSelectedDate(date);

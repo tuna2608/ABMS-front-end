@@ -467,7 +467,7 @@ export const getAllConsumption = async (dispatch) => {
     return error.response;
   }
 }
-
+//create bill
 export const createBill = async (dispatch,formData) => {
   try {
     const res = await publicRequest.post(`/bill/create`,formData);
@@ -476,6 +476,16 @@ export const createBill = async (dispatch,formData) => {
     return error.response;
   }
 }
+//get all bill
+export const getAllBill = async (dispatch) => {
+  try {
+    const res = await publicRequest.get(`/bill/viewAll`);
+    return res.data;
+  } catch (error) {
+    return error.response;
+  }
+}
+
 
 //get own apartment by userId
 export const getOwnApartments = async (userId) => {
