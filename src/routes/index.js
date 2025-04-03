@@ -55,7 +55,7 @@ export const routes = [
         isShowHeader: true
     },
     {
-        path: '/ownerHome',
+        path: '/ownerHome/*',
         page: OwnerHome,
         isShowHeader: true
     },

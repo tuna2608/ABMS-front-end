@@ -1,6 +1,7 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Layout, Button, Card } from "antd";
 import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
+import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 
 // Import components
 import SideMenu from "./SideMenu";
@@ -16,6 +17,7 @@ const { Sider, Content, Header } = Layout;
 const OwnerHome = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [currentView, setCurrentView] = useState("list");
+  const location = useLocation();
 
   // Sample data (move these from the original component)
   const apartments = [
@@ -40,7 +42,31 @@ const OwnerHome = () => {
     { value: "khac", label: "Tài liệu khác" },
   ];
 
-  const depositTerms = `ĐIỀU KHOẢN HOÀN TRẢ TIỀN ĐẶT CỌC...`; // Keep existing deposit terms
+  const depositTerms = `ĐIỀU KHOẢN HOÀN TRẢ TIỀN ĐẶT CỌC...`;
+  
+  // Sync URL with the current view
+  useEffect(() => {
+    const path = location.pathname.split('/').pop();
+    // Map URL paths to view keys
+    const pathToView = {
+      'list': 'list',
+      'post-management': 'post',
+      'contract-management': 'contract',
+      'payment-management': 'payment',
+      'bill-management': 'bill-management',
+      'document-upload': 'upload',
+      'messages': 'chatpage'
+    };
+    
+    const newView = pathToView[path];
+    if (newView) {
+      setCurrentView(newView);
+    } else if (location.pathname === "/ownerHome" || location.pathname === "/ownerHome/") {
+      // Redirect to default view if at root
+      window.history.pushState({}, "", "/ownerHome/list");
+      setCurrentView("list");
+    }
+  }, [location.pathname]);
 
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
@@ -112,7 +138,17 @@ const OwnerHome = () => {
         <Content
           style={{ margin: "24px 16px", padding: 24, background: "#fff" }}
         >
-          {renderContent()}
+          <Routes>
+            <Route path="/" element={<Navigate to="/ownerHome/list" replace />} />
+            <Route path="/list" element={renderContent()} />
+            <Route path="/post-management" element={renderContent()} />
+            <Route path="/contract-management" element={renderContent()} />
+            <Route path="/payment-management" element={renderContent()} />
+            <Route path="/bill-management" element={renderContent()} />
+            <Route path="/document-upload" element={renderContent()} />
+            <Route path="/messages" element={renderContent()} />
+            <Route path="*" element={<Navigate to="/ownerHome/list" replace />} />
+          </Routes>
         </Content>
       </Layout>
     </Layout>
