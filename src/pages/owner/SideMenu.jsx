@@ -6,7 +6,6 @@ import {
   FormOutlined,
   FileProtectOutlined,
   WalletOutlined,
-  UploadOutlined,
   FileAddOutlined,
   MessageOutlined
 } from "@ant-design/icons";
@@ -71,9 +70,9 @@ const SideMenu = ({ setCurrentView }) => {
     },
     {
       key: "6",
-      icon: <UploadOutlined />,
-      label: "Tải lên tài liệu",
-      onClick: () => handleMenuClick("upload", "document-upload"),
+      icon: <FileAddOutlined />,
+      label: "Quản lý đơn từ",
+      onClick: () => handleMenuClick("form-management", "form-management"),
     },
     {
       key: "7",
