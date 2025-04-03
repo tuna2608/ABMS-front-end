@@ -14,17 +14,15 @@ import {
 import {
   DollarOutlined,
   PlusOutlined,
-  UserOutlined,
   EditOutlined,
-  DeleteOutlined,
 } from "@ant-design/icons";
 import moment from "moment";
 import { createBill, getAllConsumption } from "../../redux/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
-const UtilityManagement = () => {
-  const [currentUser,setCurrentUser] = useState(useSelector((state) => state.user.currentUser))
+const UtilityManagement = ({ setActiveMenuItem }) => {
+  const [currentUser] = useState(useSelector((state) => state.user.currentUser));
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -53,8 +51,6 @@ const UtilityManagement = () => {
   const handleDateChange = (date) => {
     setSelectedDate(date);
   };
-
-  // Combined data for electricity and water with user details
 
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentUtilityType, setCurrentUtilityType] = useState("combined");
@@ -152,15 +148,21 @@ const UtilityManagement = () => {
       consumptionId: record.id,
       createdUserId: currentUser.userId
     }
-    const res = await createBill(dispatch,formData);
-    // console.log(res);
-    const messageAPI = res.message
-    if(res.status === 401 ||res.status === 400||res.status === 403){
-      message.error(messageAPI)
-      return;
-    }else{
-      message.success(messageAPI)
-      navigate('/bill-management')
+    
+    try {
+      const res = await createBill(dispatch, formData);
+      const messageAPI = res.message;
+      
+      if (res.status === 401 || res.status === 400 || res.status === 403) {
+        message.error(messageAPI);
+        return;
+      } else {
+        message.success(messageAPI);       
+          navigate('/staffHome/bill-management');
+      }
+    } catch (error) {
+      message.error("Có lỗi xảy ra khi tạo hóa đơn");
+      console.error("Error creating bill:", error);
     }
   };
 
@@ -187,7 +189,7 @@ const UtilityManagement = () => {
             placeholder="Chọn tháng và năm"
           />
           <Button style={{}} onClick={handleFilter}>
-            Loc
+            Lọc
           </Button>
         </Flex>
         <Button style={{ backgroundColor: "var(--fgreen)", color: "white" }}>
@@ -223,7 +225,7 @@ const UtilityManagement = () => {
           </Form.Item>
           <Form.Item
             name={["consumption", "userName"]}
-            label="Chu can ho"
+            label="Chủ căn hộ"
             rules={[
               { required: true, message: "Vui lòng nhập tên người dùng" },
             ]}

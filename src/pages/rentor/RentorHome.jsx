@@ -6,43 +6,19 @@ import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 // Import components
 import SideMenu from "./SideMenu";
 import ApartmentListView from "./ApartmentListView";
-import PostManagementView from "./PostManagementView";
-import BillPage from "./OwnerBillManagement";
+import MyBillsPage from "./MyBillsPage";
 import ContractView from "./ContractView";
 import PaymentView from "./PaymentView";
-import DocumentUploadView from "./DocumentUploadView";
+import DocumentsView from "./DocumentsView";
 import ChatPage from "../client/ChatPage/ChatPage";
+import MaintenanceRequestView from "./MaintenanceRequestView";
 
 const { Sider, Content, Header } = Layout;
-const OwnerHome = () => {
+
+const RentorHome = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [currentView, setCurrentView] = useState("list");
   const location = useLocation();
-
-  // Sample data (move these from the original component)
-  const apartments = [
-    {
-      id: 1,
-      title: "Căn hộ 2PN Vinhomes Central Park",
-      price: 5800000,
-    },
-    {
-      id: 2,
-      title: "Căn hộ 3PN Masteri Thảo Điền",
-      price: 7200000,
-    },
-  ];
-
-  const postTypes = ["Cho thuê", "Bán"];
-
-  const documentTypes = [
-    { value: "sodo", label: "Sơ đồ căn hộ" },
-    { value: "thongtin", label: "Thông tin pháp lý" },
-    { value: "hinh", label: "Hình ảnh" },
-    { value: "khac", label: "Tài liệu khác" },
-  ];
-
-  const depositTerms = `ĐIỀU KHOẢN HOÀN TRẢ TIỀN ĐẶT CỌC...`;
   
   // Sync URL with the current view
   useEffect(() => {
@@ -50,20 +26,20 @@ const OwnerHome = () => {
     // Map URL paths to view keys
     const pathToView = {
       'list': 'list',
-      'post-management': 'post',
-      'contract-management': 'contract',
-      'payment-management': 'payment',
-      'bill-management': 'bill-management',
-      'document-upload': 'upload',
+      'my-bills': 'my-bills',
+      'contract': 'contract',
+      'payment': 'payment',
+      'documents': 'documents',
+      'maintenance': 'maintenance',
       'messages': 'chatpage'
     };
     
     const newView = pathToView[path];
     if (newView) {
       setCurrentView(newView);
-    } else if (location.pathname === "/ownerHome" || location.pathname === "/ownerHome/") {
+    } else if (location.pathname === "/rentorHome" || location.pathname === "/rentorHome/") {
       // Redirect to default view if at root
-      window.history.pushState({}, "", "/ownerHome/list");
+      window.history.pushState({}, "", "/rentorHome/list");
       setCurrentView("list");
     }
   }, [location.pathname]);
@@ -76,27 +52,16 @@ const OwnerHome = () => {
     switch (currentView) {
       case "list":
         return <ApartmentListView />;
-      case "post":
-        return (
-          <PostManagementView
-            postTypes={postTypes}
-            apartments={apartments}
-            depositTerms={depositTerms}
-          />
-        );
+      case "my-bills":
+        return <MyBillsPage />;
       case "contract":
         return <ContractView />;
       case "payment":
         return <PaymentView />;
-      case "bill-management":
-        return <BillPage />;
-      case "upload":
-        return (
-          <DocumentUploadView
-            apartments={apartments}
-            documentTypes={documentTypes}
-          />
-        );
+      case "documents":
+        return <DocumentsView />;
+      case "maintenance":
+        return <MaintenanceRequestView />;
       case "chatpage":
         return <ChatPage />;
       default:
@@ -139,15 +104,15 @@ const OwnerHome = () => {
           style={{ margin: "24px 16px", padding: 24, background: "#fff" }}
         >
           <Routes>
-            <Route path="/" element={<Navigate to="/ownerHome/list" replace />} />
+            <Route path="/" element={<Navigate to="/rentorHome/list" replace />} />
             <Route path="/list" element={renderContent()} />
-            <Route path="/post-management" element={renderContent()} />
-            <Route path="/contract-management" element={renderContent()} />
-            <Route path="/payment-management" element={renderContent()} />
-            <Route path="/bill-management" element={renderContent()} />
-            <Route path="/document-upload" element={renderContent()} />
+            <Route path="/my-bills" element={renderContent()} />
+            <Route path="/contract" element={renderContent()} />
+            <Route path="/payment" element={renderContent()} />
+            <Route path="/documents" element={renderContent()} />
+            <Route path="/maintenance" element={renderContent()} />
             <Route path="/messages" element={renderContent()} />
-            <Route path="*" element={<Navigate to="/ownerHome/list" replace />} />
+            <Route path="*" element={<Navigate to="/rentorHome/list" replace />} />
           </Routes>
         </Content>
       </Layout>
@@ -155,4 +120,4 @@ const OwnerHome = () => {
   );
 };
 
-export default OwnerHome;
+export default RentorHome;
