@@ -36,7 +36,8 @@ const StaffHome = () => {
       "card-management", 
       "bill-management", 
       "utility-management", 
-      "account-management"
+      "account-management",
+      "form-management" // Add form-management to valid menu items
     ];
     
     if (validMenuItems.includes(pathSegment)) {
