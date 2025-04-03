@@ -6,12 +6,21 @@ import moment from "moment";
 const { Option } = Select;
 const { Step } = Steps;
 
+// Hàm format tiền tệ
+const formatCurrency = (value) => {
+  // Kiểm tra nếu value không phải là số
+  if (typeof value !== 'number') return '0 VND';
+  
+  // Format số tiền theo định dạng Việt Nam
+  return new Intl.NumberFormat('vi-VN').format(value) + ' VND';
+};
+
 const PaymentView = () => {
   const [paymentModalVisible, setPaymentModalVisible] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("bank");
   const [selectedBill, setSelectedBill] = useState(null);
   const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
-  const [ setIsPaymentComplete] = useState(false);
+  const [setIsPaymentComplete] = useState(false);
   const [paymentStep, setPaymentStep] = useState(0);
   const [form] = Form.useForm();
 
@@ -65,7 +74,7 @@ const PaymentView = () => {
       title: "Số tiền",
       dataIndex: "amount",
       key: "amount",
-      render: (amount) => `${amount.toLocaleString()} VND`,
+      render: (amount) => formatCurrency(amount),
     },
     {
       title: "Trạng thái",
@@ -235,7 +244,7 @@ const PaymentView = () => {
       <Result
         status="success"
         title="Thanh toán thành công"
-        subTitle={`Bạn đã thanh toán ${selectedBill.amount.toLocaleString()} VND cho ${selectedBill.billContent}`}
+        subTitle={`Bạn đã thanh toán ${formatCurrency(selectedBill.amount)} cho ${selectedBill.billContent}`}
         extra={[
           <Button 
             type="primary" 

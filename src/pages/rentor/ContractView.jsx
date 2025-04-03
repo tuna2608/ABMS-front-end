@@ -6,17 +6,22 @@ import {
   Modal, 
   Descriptions, 
   Tag, 
-
 } from "antd";
 import { 
   FileProtectOutlined, 
   DownloadOutlined, 
-
 } from "@ant-design/icons";
 
 import moment from "moment";
 
-
+// Hàm format tiền tệ
+const formatCurrency = (value) => {
+  // Kiểm tra nếu value không phải là số
+  if (typeof value !== 'number') return '0';
+  
+  // Format số tiền theo định dạng Việt Nam
+  return new Intl.NumberFormat('vi-VN').format(value) + ' VND';
+};
 
 // ContractView Component
 const ContractView = () => {
@@ -153,16 +158,16 @@ const ContractView = () => {
             {moment(selectedContract.endDate).format("DD/MM/YYYY")}
           </Descriptions.Item>
           <Descriptions.Item label="Tiền thuê">
-            {selectedContract.rentAmount.toLocaleString()} VND/tháng
+            {formatCurrency(selectedContract.rentAmount)}/tháng
           </Descriptions.Item>
           <Descriptions.Item label="Phí quản lý">
-            {selectedContract.additionalFees.management.toLocaleString()} VND/tháng
+            {formatCurrency(selectedContract.additionalFees?.management)}/tháng
           </Descriptions.Item>
           <Descriptions.Item label="Phí giữ xe">
-            {selectedContract.additionalFees.parking.toLocaleString()} VND/tháng
+            {formatCurrency(selectedContract.additionalFees?.parking)}/tháng
           </Descriptions.Item>
           <Descriptions.Item label="Phí dịch vụ">
-            {selectedContract.additionalFees.service.toLocaleString()} VND/tháng
+            {formatCurrency(selectedContract.additionalFees?.service)}/tháng
           </Descriptions.Item>
           <Descriptions.Item label="Vị trí bãi đỗ xe">
             {selectedContract.parkingSlot}
@@ -188,4 +193,5 @@ const ContractView = () => {
     </Card>
   );
 };
+
 export default ContractView;

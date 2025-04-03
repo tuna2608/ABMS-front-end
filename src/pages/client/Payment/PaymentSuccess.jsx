@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Result, Button } from "antd";
 import {message} from 'antd'
 import { CheckCircleOutlined } from "@ant-design/icons";
@@ -8,7 +8,6 @@ import { depositSuccess } from "../../../redux/apiCalls";
 const PaymentSuccess = () => {
   const navigate = useNavigate();
   
-  const [loadingPayment, setLoadingPayment] = useState(false);
   useEffect(() => {
     async function callDepositeSuccess() {
       const depositRequest = await JSON.parse(localStorage.getItem("depositRequest"));

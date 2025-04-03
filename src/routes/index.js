@@ -17,6 +17,7 @@ import StaffHome from "../pages/staff/StaffHome";
 import OTPPage from "../pages/common/OTPPage/OTPPage";
 import PaymentSuccess from "../pages/client/Payment/PaymentSuccess";
 import PaymentCancel from "../pages/client/Payment/PaymentCancel";
+// import BillDetailsPage from "../pages/rentor/BillDetailsPage";
 
 
 export const routes = [
@@ -110,6 +111,11 @@ export const routes = [
         page: Chatbot,
         isShowHeader: false
     },
+    // {
+    //     path: '/bill-details',
+    //     page: BillDetailsPage,
+    //     isShowHeader: true
+    // },
     {
         path: '/edit-profile',
         page: EditProfilePage,
