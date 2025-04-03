@@ -230,25 +230,11 @@ function HeaderComponent() {
 
         <Col span={10}>
           <NavbarListItem>
-<<<<<<< HEAD
             <PostLink onClick={() => navigate("/post")}>
               Bài viết
             </PostLink>
 
             <NotificationWrapper /> {/* Replace the previous Badge and BellOutlined */}
-=======
-            {/* Removed NavItemRole components from here */}
-            <PostLink onClick={() => navigate("/post")}>
-              Bài viết
-            </PostLink>
-            <Dropdown menu={{ items: notis }} placement="bottomLeft">
-              <Badge count={13} overflowCount={10}>
-                <NavItem>
-                  <BellOutlined />
-                </NavItem>
-              </Badge>
-            </Dropdown>
->>>>>>> d17a5f6b04413e912c8594f71fe024674beffac0
 
             {user ? (
               <Dropdown menu={{ items: items }} placement="bottomRight">

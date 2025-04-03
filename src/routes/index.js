@@ -16,7 +16,6 @@ import StaffHome from "../pages/staff/StaffHome";
 import OTPPage from "../pages/common/OTPPage/OTPPage";
 import PaymentSuccess from "../pages/client/Payment/PaymentSuccess";
 import PaymentCancel from "../pages/client/Payment/PaymentCancel";
-import BillManagement from "../pages/staff/BillManagement";
 
 
 export const routes = [
@@ -108,11 +107,6 @@ export const routes = [
     {
         path: '/edit-profile',
         page: EditProfilePage,
-        isShowHeader: true
-    },
-    {
-        path: '/bill-management',
-        page: BillManagement,
         isShowHeader: true
     },
     {

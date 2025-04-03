@@ -42,7 +42,7 @@ const StaffHome = () => {
       case "bill-management":
         return <BillManagement />;
       case "utility-management":
-        return <UtilityManagement />;
+        return <UtilityManagement setActiveMenuItem={setActiveMenuItem} />;
       case "account-management":
         return <AccountManagement />;
       default:
