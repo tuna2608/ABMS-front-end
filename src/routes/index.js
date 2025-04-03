@@ -5,6 +5,7 @@ import AdminHome from "../pages/admin/AdminHome";
 import ForgotPasswordPage from "../pages/common/ForgotPasswordPage/ForgotPasswordPage";
 import RegisterPage from "../pages/common/RegisterPage/Register";
 import OwnerHome from "../pages/owner/OwnerHome";
+import RentorHome from "../pages/rentor/RentorHome";
 import Chatbot from "../components/common/Chatbot/Chatbot";
 import ApartmentList from "../pages/client/PostList/PostList";
 import ApartmentDetail from "../pages/client/PostDetail/PostDetail";
@@ -16,7 +17,6 @@ import StaffHome from "../pages/staff/StaffHome";
 import OTPPage from "../pages/common/OTPPage/OTPPage";
 import PaymentSuccess from "../pages/client/Payment/PaymentSuccess";
 import PaymentCancel from "../pages/client/Payment/PaymentCancel";
-import BillManagement from "../pages/staff/BillManagement";
 
 
 export const routes = [
@@ -51,17 +51,22 @@ export const routes = [
         isShowHeader: false
     },
     {
-        path: '/adminHome',
+        path: '/adminHome/*',
         page: AdminHome,
         isShowHeader: true
     },
     {
-        path: '/ownerHome',
+        path: '/ownerHome/*',
         page: OwnerHome,
         isShowHeader: true
     },
     {
-        path: '/staffHome',
+        path: '/rentorHome/*',
+        page: RentorHome,
+        isShowHeader: true
+    },
+    {
+        path: '/staffHome/*',
         page: StaffHome,
         isShowHeader: true
     },
@@ -108,11 +113,6 @@ export const routes = [
     {
         path: '/edit-profile',
         page: EditProfilePage,
-        isShowHeader: true
-    },
-    {
-        path: '/bill-management',
-        page: BillManagement,
         isShowHeader: true
     },
     {

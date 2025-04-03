@@ -318,7 +318,7 @@ const NotificationWrapper = () => {
 
     return (
         <Dropdown
-            overlay={notificationDropdownContent}
+            overlay={notificationDropdownContent}s
             trigger={['click']}
             placement="bottomRight"
             onVisibleChange={handleVisibleChange}
