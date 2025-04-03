@@ -49,7 +49,7 @@ const BillManagement = () => {
   useEffect(() => {
     async function callGetAllBill() {
       const res = await getAllBill();
-      console.log(res);
+      // console.log(res);
       setBills(res.data);
     }
     callGetAllBill();
