@@ -1,9 +1,10 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Layout, Button } from 'antd';
 import { 
   MenuUnfoldOutlined, 
   MenuFoldOutlined
 } from "@ant-design/icons";
+import { Routes, Route, Navigate, useLocation, useNavigate } from 'react-router-dom';
 
 import AdminSidebar from './AdminSidebar';
 import AdminDashboard from './AdminDashboard';
@@ -19,6 +20,15 @@ const { Content, Header } = Layout;
 const AdminHome = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [activeTab, setActiveTab] = useState("dashboard");
+  const location = useLocation();
+  const navigate = useNavigate();
+  
+  // Handle default route redirection
+  useEffect(() => {
+    if (location.pathname === "/adminHome" || location.pathname === "/adminHome/") {
+      navigate("/adminHome/dashboard");
+    }
+  }, [location.pathname, navigate]);
 
   const toggleCollapsed = () => {
     setCollapsed(!collapsed);
@@ -31,15 +41,15 @@ const AdminHome = () => {
       case "deposits":
         return <DepositManagement />;
       case "accountsList":
-        return <AccountManagement />;
+        return <AccountManagement view="list" />;
       case "pendingAccounts":
-        return <AccountManagement />;
+        return <AccountManagement view="pending" />;
       case "apartments":
         return <ApartmentManagement />;
       case "postsList":
-        return <PostManagement />;
+        return <PostManagement view="list" />;
       case "createPost":
-        return <PostManagement />;
+        return <PostManagement view="create" />;
       case "reports":
         return <FinancialReports />;
       case "settings":
@@ -74,7 +84,17 @@ const AdminHome = () => {
           borderRadius: 4, 
           minHeight: 280 
         }}>
-          {renderActiveContent()}
+          <Routes>
+            <Route path="/" element={<Navigate to="/adminHome/dashboard" replace />} />
+            <Route path="/dashboard" element={renderActiveContent()} />
+            <Route path="/deposits" element={renderActiveContent()} />
+            <Route path="/accounts/list" element={renderActiveContent()} />
+            <Route path="/apartments" element={renderActiveContent()} />
+            <Route path="/posts/list" element={renderActiveContent()} />
+            <Route path="/reports" element={renderActiveContent()} />
+            <Route path="/settings" element={renderActiveContent()} />
+            <Route path="*" element={<Navigate to="/adminHome/dashboard" replace />} />
+          </Routes>
         </Content>
       </Layout>
     </Layout>

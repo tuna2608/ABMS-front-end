@@ -1,5 +1,6 @@
-import React from 'react';
+import React, { useEffect, useMemo } from 'react';
 import { Layout, Menu } from 'antd';
+import { useNavigate, useLocation } from 'react-router-dom';
 import {
   UserOutlined,
   HomeOutlined,
@@ -13,19 +14,53 @@ import {
 const { Sider } = Layout;
 
 const AdminSidebar = ({ collapsed, activeTab, setActiveTab, toggleCollapsed }) => {
+  const navigate = useNavigate();
+  const location = useLocation();
+  
+  // Use useMemo to create the pathToTab mapping - this ensures it's only created once
+  const pathToTab = useMemo(() => ({
+    'dashboard': 'dashboard',
+    'deposits': 'deposits',
+    'accounts': 'accountsList',
+    'accounts/list': 'accountsList',
+    'accounts/pending': 'pendingAccounts',
+    'apartments': 'apartments',
+    'posts': 'postsList',
+    'posts/list': 'postsList',
+    'posts/create': 'createPost',
+    'reports': 'reports',
+    'settings': 'settings'
+  }), []);
+  
+  // Effect to sync URL with active tab
+  useEffect(() => {
+    const path = location.pathname.replace('/adminHome/', '');
+    const tab = pathToTab[path];
+    
+    if (tab) {
+      setActiveTab(tab);
+    }
+  }, [location.pathname, setActiveTab, pathToTab]);
+  
+  // Handle menu item click with navigation
+  const handleMenuClick = (tabKey, urlPath) => {
+    setActiveTab(tabKey);
+    navigate(`/adminHome/${urlPath}`);
+  };
+
   // Define menu items using the items prop format
   const items = [
     {
       key: "dashboard",
       icon: <DashboardOutlined />,
       label: "Bảng điều khiển",
-      onClick: () => setActiveTab("dashboard")
+      onClick: () => handleMenuClick("dashboard", "dashboard")
     },
     {
       key: "deposits",
       icon: <SafetyOutlined />,
       label: "Quản lý đặt cọc",
-      onClick: () => setActiveTab("deposits")
+      onClick: () => handleMenuClick("deposits", "deposits")
     },
     {
       key: "accounts",
@@ -35,15 +70,15 @@ const AdminSidebar = ({ collapsed, activeTab, setActiveTab, toggleCollapsed }) =
         {
           key: "accountsList",
           label: "Danh sách tài khoản",
-          onClick: () => setActiveTab("accountsList")
-        }
+          onClick: () => handleMenuClick("accountsList", "accounts/list")
+        },
       ]
     },
     {
       key: "apartments",
       icon: <HomeOutlined />,
       label: "Quản lý căn hộ",
-      onClick: () => setActiveTab("apartments")
+      onClick: () => handleMenuClick("apartments", "apartments")
     },
     {
       key: "posts",
@@ -53,21 +88,21 @@ const AdminSidebar = ({ collapsed, activeTab, setActiveTab, toggleCollapsed }) =
         {
           key: "postsList",
           label: "Danh sách bài viết",
-          onClick: () => setActiveTab("postsList")
-        }
+          onClick: () => handleMenuClick("postsList", "posts/list")
+        },
       ]
     },
     {
       key: "reports",
       icon: <DollarOutlined />,
       label: "Báo cáo tài chính",
-      onClick: () => setActiveTab("reports")
+      onClick: () => handleMenuClick("reports", "reports")
     },
     {
       key: "settings",
       icon: <SettingOutlined />,
       label: "Cài đặt hệ thống",
-      onClick: () => setActiveTab("settings")
+      onClick: () => handleMenuClick("settings", "settings")
     }
   ];
 
@@ -80,14 +115,13 @@ const AdminSidebar = ({ collapsed, activeTab, setActiveTab, toggleCollapsed }) =
       width={250}
     >
       <div style={{ height: 64, padding: 16, textAlign: "center" }}>
-        {/* Logo can go here */}
       </div>
       <Menu
         mode="inline"
         selectedKeys={[activeTab]}
         defaultOpenKeys={['accounts', 'posts']}
         items={items}
-      />
+      />  
     </Sider>
   );
 };
