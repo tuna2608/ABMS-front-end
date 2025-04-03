@@ -336,6 +336,24 @@ export const decreaseCartQuantity = async (
   } catch (error) { }
 };
 //------------------------------------------------------------------------------CRUD Căn hộ----------------------------------------------------------------------------------
+export const getApartments = async () => {
+  try {
+    const res = await publicRequest.get("/apartment/getAll");
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || ''
+    };
+  } catch (error) {
+    console.error("Error fetching apartments:", error);
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || "Lỗi khi lấy danh sách căn hộ"
+    };
+  }
+}
+
 export const createApartment = async (dispatch, apartmentDTO) => {
   dispatch(createApartmentStart());
   try {
