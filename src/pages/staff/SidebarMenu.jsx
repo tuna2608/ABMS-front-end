@@ -7,7 +7,7 @@ import {
   UserOutlined,
   SafetyOutlined,
   CreditCardOutlined,
-  FileAddOutlined
+  FormOutlined // Thêm icon cho quản lý đơn từ
 } from "@ant-design/icons";
 
 const { Sider } = Layout;
@@ -46,10 +46,10 @@ const SidebarMenu = ({ collapsed, setCollapsed, activeMenuItem, setActiveMenuIte
       onClick: () => handleMenuClick("card-management"),
     },
     {
-      key: "bill-management",
-      icon: <FileAddOutlined />,
-      label: "Quản lý hóa đơn",
-      onClick: () => handleMenuClick("bill-management"),
+      key: "form-management",
+      icon: <FormOutlined />,
+      label: "Quản lý đơn từ",
+      onClick: () => handleMenuClick("form-management"),
     },
     {
       key: "utility-management",
@@ -57,6 +57,7 @@ const SidebarMenu = ({ collapsed, setCollapsed, activeMenuItem, setActiveMenuIte
       label: "Chi phí điện nước",
       onClick: () => handleMenuClick("utility-management"),
     },
+    
   ];
 
   return (
@@ -69,8 +70,7 @@ const SidebarMenu = ({ collapsed, setCollapsed, activeMenuItem, setActiveMenuIte
       theme="light"
     >
       <div style={{ height: 64, padding: 16, textAlign: "center" }}>
-
-      </div>
+       </div>
       <Menu
         mode="inline"
         defaultSelectedKeys={['apartment-list']}

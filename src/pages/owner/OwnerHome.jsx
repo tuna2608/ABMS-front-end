@@ -10,7 +10,7 @@ import PostManagementView from "./PostManagementView";
 import BillPage from "./OwnerBillManagement";
 import ContractView from "./ContractView";
 import PaymentView from "./PaymentView";
-import DocumentUploadView from "./DocumentUploadView";
+import FormManagement from "./FormManagement";
 import ChatPage from "../client/ChatPage/ChatPage";
 
 const { Sider, Content, Header } = Layout;
@@ -35,12 +35,6 @@ const OwnerHome = () => {
 
   const postTypes = ["Cho thuê", "Bán"];
 
-  const documentTypes = [
-    { value: "sodo", label: "Sơ đồ căn hộ" },
-    { value: "thongtin", label: "Thông tin pháp lý" },
-    { value: "hinh", label: "Hình ảnh" },
-    { value: "khac", label: "Tài liệu khác" },
-  ];
 
   const depositTerms = `ĐIỀU KHOẢN HOÀN TRẢ TIỀN ĐẶT CỌC...`;
   
@@ -90,13 +84,8 @@ const OwnerHome = () => {
         return <PaymentView />;
       case "bill-management":
         return <BillPage />;
-      case "upload":
-        return (
-          <DocumentUploadView
-            apartments={apartments}
-            documentTypes={documentTypes}
-          />
-        );
+        case "form-management": // Add case for form-management
+        return <FormManagement />;
       case "chatpage":
         return <ChatPage />;
       default:
@@ -145,7 +134,7 @@ const OwnerHome = () => {
             <Route path="/contract-management" element={renderContent()} />
             <Route path="/payment-management" element={renderContent()} />
             <Route path="/bill-management" element={renderContent()} />
-            <Route path="/document-upload" element={renderContent()} />
+            <Route path="/form-management" element={renderContent()} />
             <Route path="/messages" element={renderContent()} />
             <Route path="*" element={<Navigate to="/ownerHome/list" replace />} />
           </Routes>

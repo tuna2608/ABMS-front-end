@@ -9,9 +9,8 @@ import ApartmentListView from "./ApartmentListView";
 import MyBillsPage from "./MyBillsPage";
 import ContractView from "./ContractView";
 import PaymentView from "./PaymentView";
-import DocumentsView from "./DocumentsView";
 import ChatPage from "../client/ChatPage/ChatPage";
-import MaintenanceRequestView from "./MaintenanceRequestView";
+import FormManagement from "../owner/FormManagement";
 
 const { Sider, Content, Header } = Layout;
 
@@ -19,25 +18,28 @@ const RentorHome = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [currentView, setCurrentView] = useState("list");
   const location = useLocation();
-  
+
   // Sync URL with the current view
   useEffect(() => {
-    const path = location.pathname.split('/').pop();
+    const path = location.pathname.split("/").pop();
     // Map URL paths to view keys
     const pathToView = {
-      'list': 'list',
-      'my-bills': 'my-bills',
-      'contract': 'contract',
-      'payment': 'payment',
-      'documents': 'documents',
-      'maintenance': 'maintenance',
-      'messages': 'chatpage'
+      list: "list",
+      "my-bills": "my-bills",
+      contract: "contract",
+      payment: "payment",
+      documents: "documents",
+      maintenance: "maintenance",
+      messages: "chatpage",
     };
-    
+
     const newView = pathToView[path];
     if (newView) {
       setCurrentView(newView);
-    } else if (location.pathname === "/rentorHome" || location.pathname === "/rentorHome/") {
+    } else if (
+      location.pathname === "/rentorHome" ||
+      location.pathname === "/rentorHome/"
+    ) {
       // Redirect to default view if at root
       window.history.pushState({}, "", "/rentorHome/list");
       setCurrentView("list");
@@ -58,10 +60,8 @@ const RentorHome = () => {
         return <ContractView />;
       case "payment":
         return <PaymentView />;
-      case "documents":
-        return <DocumentsView />;
-      case "maintenance":
-        return <MaintenanceRequestView />;
+      case "form-management": // Add case for form-management
+        return <FormManagement />;
       case "chatpage":
         return <ChatPage />;
       default:
@@ -104,15 +104,20 @@ const RentorHome = () => {
           style={{ margin: "24px 16px", padding: 24, background: "#fff" }}
         >
           <Routes>
-            <Route path="/" element={<Navigate to="/rentorHome/list" replace />} />
+            <Route
+              path="/"
+              element={<Navigate to="/rentorHome/list" replace />}
+            />
             <Route path="/list" element={renderContent()} />
             <Route path="/my-bills" element={renderContent()} />
             <Route path="/contract" element={renderContent()} />
             <Route path="/payment" element={renderContent()} />
-            <Route path="/documents" element={renderContent()} />
-            <Route path="/maintenance" element={renderContent()} />
+            <Route path="/form-management" element={renderContent()} />
             <Route path="/messages" element={renderContent()} />
-            <Route path="*" element={<Navigate to="/rentorHome/list" replace />} />
+            <Route
+              path="*"
+              element={<Navigate to="/rentorHome/list" replace />}
+            />
           </Routes>
         </Content>
       </Layout>

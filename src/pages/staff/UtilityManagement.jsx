@@ -166,7 +166,6 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
       console.error("Error creating bill:", error);
     }
   };
-
   const handleFilter = () => {
     console.log(selectedDate.format("YYYY-MM"));
   };
