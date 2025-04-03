@@ -7,7 +7,6 @@ import {
   UserOutlined,
   SafetyOutlined,
   CreditCardOutlined,
-  FormOutlined // Thêm icon cho quản lý đơn từ
 } from "@ant-design/icons";
 
 const { Sider } = Layout;
@@ -44,12 +43,6 @@ const SidebarMenu = ({ collapsed, setCollapsed, activeMenuItem, setActiveMenuIte
       icon: <CreditCardOutlined />,
       label: "Quản lý thẻ",
       onClick: () => handleMenuClick("card-management"),
-    },
-    {
-      key: "form-management",
-      icon: <FormOutlined />,
-      label: "Quản lý đơn từ",
-      onClick: () => handleMenuClick("form-management"),
     },
     {
       key: "utility-management",

@@ -11,7 +11,7 @@ import AdminDashboard from './AdminDashboard';
 import DepositManagement from './DepositManagement';
 import AccountManagement from './AccountManagement';
 import ApartmentManagement from './ApartmentManagement';
-import PostManagement from './PostManagement';
+import PostManagementView from '../client/PostsManagement/PostManagementView';
 import FinancialReports from './FinancialReports';
 import SystemSettings from './SystemSettings';
 
@@ -47,9 +47,7 @@ const AdminHome = () => {
       case "apartments":
         return <ApartmentManagement />;
       case "postsList":
-        return <PostManagement view="list" />;
-      case "createPost":
-        return <PostManagement view="create" />;
+        return <PostManagementView view="list" />;
       case "reports":
         return <FinancialReports />;
       case "settings":

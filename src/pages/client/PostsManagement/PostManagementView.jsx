@@ -34,8 +34,8 @@ import {
     updatePost,
     deletePost,
     getPostsByUserId
-} from '../../redux/apiCalls';
-import { generateAIPostContent } from '../../services/CreatePostAIService';
+} from '../../../redux/apiCalls';
+import { generateAIPostContent } from '../../../services/CreatePostAIService';
 
 const { TextArea } = Input;
 const { Text } = Typography;
