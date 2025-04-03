@@ -234,7 +234,7 @@ function HeaderComponent() {
               Bài viết
             </PostLink>
 
-            <NotificationWrapper /> {/* Replace the previous Badge and BellOutlined */}
+            <NotificationWrapper />
 
             {user ? (
               <Dropdown menu={{ items: items }} placement="bottomRight">

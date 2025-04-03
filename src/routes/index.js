@@ -17,6 +17,8 @@ import StaffHome from "../pages/staff/StaffHome";
 import OTPPage from "../pages/common/OTPPage/OTPPage";
 import PaymentSuccess from "../pages/client/Payment/PaymentSuccess";
 import PaymentCancel from "../pages/client/Payment/PaymentCancel";
+import FormManagement from "../pages/client/Form/FormManagement";
+// import BillDetailsPage from "../pages/rentor/BillDetailsPage";
 
 
 export const routes = [
@@ -86,6 +88,11 @@ export const routes = [
         isShowHeader: false
     },
     {
+        path: '/form',
+        page: FormManagement,
+        isShowHeader: true
+    },
+    {
         path: '/deposit-apartment',
         page: DepositApartments,
         isShowHeader: true
@@ -110,6 +117,11 @@ export const routes = [
         page: Chatbot,
         isShowHeader: false
     },
+    // {
+    //     path: '/bill-details',
+    //     page: BillDetailsPage,
+    //     isShowHeader: true
+    // },
     {
         path: '/edit-profile',
         page: EditProfilePage,

@@ -10,7 +10,6 @@ import MyBillsPage from "./MyBillsPage";
 import ContractView from "./ContractView";
 import PaymentView from "./PaymentView";
 import ChatPage from "../client/ChatPage/ChatPage";
-import FormManagement from "../owner/FormManagement";
 
 const { Sider, Content, Header } = Layout;
 
@@ -60,8 +59,6 @@ const RentorHome = () => {
         return <ContractView />;
       case "payment":
         return <PaymentView />;
-      case "form-management": // Add case for form-management
-        return <FormManagement />;
       case "chatpage":
         return <ChatPage />;
       default:
@@ -112,7 +109,6 @@ const RentorHome = () => {
             <Route path="/my-bills" element={renderContent()} />
             <Route path="/contract" element={renderContent()} />
             <Route path="/payment" element={renderContent()} />
-            <Route path="/form-management" element={renderContent()} />
             <Route path="/messages" element={renderContent()} />
             <Route
               path="*"
