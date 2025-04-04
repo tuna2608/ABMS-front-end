@@ -45,6 +45,12 @@ const SidebarMenu = ({ collapsed, setCollapsed, activeMenuItem, setActiveMenuIte
       onClick: () => handleMenuClick("card-management"),
     },
     {
+      key: "bill-management",
+      icon: <DollarOutlined />,
+      label: "Quản lý hóa đơn",
+      onClick: () => handleMenuClick("bill-management"),
+    },
+    {
       key: "utility-management",
       icon: <DollarOutlined />,
       label: "Chi phí điện nước",
