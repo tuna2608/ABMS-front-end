@@ -90,7 +90,6 @@ const PostManagementView = () => {
             </ol>
         </div>
     );
-
     // Image handling methods
     const getBase64 = (file) => {
         return new Promise((resolve, reject) => {
