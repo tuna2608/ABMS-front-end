@@ -24,36 +24,49 @@ import { getAllBill } from "../../redux/apiCalls";
 
 const BillManagement = () => {
   const defaultValue = moment().subtract(1, "months");
-
-  const [bills, setBills] = useState([
-    {
-      billId: 1,
-      billContent: "Hóa đơn tháng 3",
-      monthlyPaid: 0.0,
-      waterBill: 17000.008,
-      others: 0.0,
-      total: 17000.008,
-      lastMonthWaterConsumption: 47.0,
-      waterConsumption: 48.7,
-      billDate: "2025-04-03 T14:58:42.457087",
-      status: "unpaid",
-      username: "Admin Tú",
-      apartmentName: "102",
-    },
-  ]);
-
+  const [loading,setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentBill, setCurrentBill] = useState(null);
   const [form] = Form.useForm();
+  const [bills, setBills] = useState([
+    // {
+    //   billId: 1,
+    //   billContent: "Hóa đơn tháng 3",
+    //   monthlyPaid: 0.0,
+    //   waterBill: 17000.008,
+    //   others: 0.0,
+    //   total: 17000.008,
+    //   lastMonthWaterConsumption: 47.0,
+    //   waterConsumption: 48.7,
+    //   billDate: "2025-04-03 T14:58:42.457087",
+    //   status: "unpaid",
+    //   username: "Admin Tú",
+    //   apartmentName: "102",
+    // },
+  ]);
 
   useEffect(() => {
-    async function callGetAllBill() {
-      const res = await getAllBill();
-      // console.log(res);
-      setBills(res.data);
-    }
     callGetAllBill();
   }, []);
+
+  async function callGetAllBill() {
+    setLoading(true);
+    try {
+      const res = await getAllBill();
+      // console.log(res.data.length === 0);
+      if (res.success) {
+        setBills(res.data);
+      } else {
+        message.error(res.message);
+      }
+    } catch (error) {
+      message("Không thể lấy danh sách hóa đơn!");
+    } finally {
+      setLoading(false);
+    }
+    // setBills(res.data);
+  }
+  
 
   // Modal for creating/editing bill
   const showBillModal = (bill = null) => {
@@ -174,15 +187,13 @@ const BillManagement = () => {
             onClick={() => showBillModal(record)}
             type="primary"
             ghost
-          >
-          </Button>
+          ></Button>
           <Button
             icon={<DeleteOutlined />}
             onClick={() => handleDeleteBill(record.id)}
             type="primary"
             ghost
-          >
-          </Button>
+          ></Button>
           <Button icon={<FilePdfOutlined />} type="default">
             Xuất PDF
           </Button>

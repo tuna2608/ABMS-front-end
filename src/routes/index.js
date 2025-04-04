@@ -98,12 +98,12 @@ export const routes = [
         isShowHeader: true
     },
     {
-        path: '/deposit/success',
+        path: '/payment/success',
         page: PaymentSuccess,
         isShowHeader: true
     },
     {
-        path: '/deposit/cancel',
+        path: '/payment/cancel',
         page: PaymentCancel,
         isShowHeader: true
     },
