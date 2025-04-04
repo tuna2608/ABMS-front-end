@@ -228,7 +228,7 @@ export const updateUser = async (id, user, dispatch) => {
   }
 };
 
-
+//------------------------------------------------------------------------------
 
 export const getImageCloud = async (formData) => {
   try {
@@ -246,8 +246,8 @@ export const getImageCloud = async (formData) => {
 //dat coc
 export const depositCreate = async (formData) => {
   const form = {...formData,
-    successUrl: `http://localhost:3000/deposit/success`,
-    cancelUrl: `http://localhost:3000/deposit/cancel`,
+    successUrl: `http://localhost:3000/payment/success`,
+    cancelUrl: `http://localhost:3000/payment/cancel`,
   }
   try {
     const res = await publicRequest.post(`/deposit/create`, form);
@@ -462,9 +462,39 @@ export const getPostById = async (dispatch, postId) => {
 export const getAllConsumption = async (dispatch) => {
   try {
     const res = await publicRequest.get(`/consumption/getAll`);
-    return res.data;
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || ''
+    };
   } catch (error) {
-    return error.response;
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || "Lỗi khi lấy danh sách lượng tiêu thụ"
+    };
+  }
+}
+
+// import file excel to save to database
+export const importFile = async (formData) => {
+  try {
+    const res = await publicRequest.post(`/consumption/upload_file `,formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || ''
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || "Lỗi khi lấy danh sách lượng tiêu thụ"
+    };
   }
 }
 //create bill
@@ -476,17 +506,79 @@ export const createBill = async (dispatch,formData) => {
     return error.response;
   }
 }
-//get all bill
+// get tat ca hoa don
 export const getAllBill = async (dispatch) => {
   try {
     const res = await publicRequest.get(`/bill/viewAll`);
-    return res.data;
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || ''
+    };
   } catch (error) {
-    return error.response;
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || "Lỗi khi lấy danh sách hóa đơn"
+    };
   }
 }
 
+// get tat ca bill theo owner
+export const getAllBillOwner = async (dispatch,ownerId) => {
+  try {
+    const res = await publicRequest.get(`/bill/view_own_bill_list/${ownerId}`);
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || ''
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || "Lỗi khi lấy danh sách hóa đơn"
+    };
+  }
+}
 
+// thanh toan hoa don bill
+export const paymentBill = async (formData) => {
+  try {
+    const res = await publicRequest.post(`/order/create`,formData);
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || ''
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || "Lỗi khi lấy danh sách hóa đơn"
+    };
+  }
+}
+
+//payment Bill success
+export const paymentBillSuccess = async (formData) => {
+  try {
+    const res = await publicRequest.post(`/payment/success`,formData);
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || ''
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || "Lỗi khi lấy danh sách hóa đơn"
+    };
+  }
+}
+
+//-------------------------------------------------------------------------------------
 //get own apartment by userId
 export const getOwnApartments = async (userId) => {
   try {
@@ -505,8 +597,6 @@ export const getOwnApartments = async (userId) => {
     };
   }
 };
-
-
 
 
 //create post

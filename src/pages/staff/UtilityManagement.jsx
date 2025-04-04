@@ -10,44 +10,45 @@ import {
   DatePicker,
   Flex,
   message,
+  Empty,
 } from "antd";
-import {
-  DollarOutlined,
-  PlusOutlined,
-  EditOutlined,
-} from "@ant-design/icons";
+import { DollarOutlined, PlusOutlined, EditOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { createBill, getAllConsumption } from "../../redux/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const UtilityManagement = ({ setActiveMenuItem }) => {
-  const [currentUser] = useState(useSelector((state) => state.user.currentUser));
+  const [currentUser] = useState(
+    useSelector((state) => state.user.currentUser)
+  );
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
-
   const defaultValue = moment().subtract(1, "months");
-
   const [selectedDate, setSelectedDate] = useState(defaultValue);
-  const [consumptions, setConsumptions] = useState([
-    {
-      id: "Chua co consumption nao ca",
-      apartmentName: "",
-      userName: "",
-      consumptionDate: "",
-      lastMonthWaterConsumption: "",
-      waterConsumption: "",
-    },
-  ]);
+  const [consumptions, setConsumptions] = useState([]);
 
   useEffect(() => {
-    async function callGetAllConsumption() {
-      const res = await getAllConsumption();
-      // console.log(res);
-      setConsumptions(res.data);
-    }
     callGetAllConsumption();
-  }, [defaultValue]);
+  }, []);
+
+  async function callGetAllConsumption() {
+    setLoading(true);
+    try {
+      const res = await getAllConsumption();
+      // console.log(res.data.length === 0);
+      if (res.success) {
+        setConsumptions(res.data);
+      } else {
+        message.error(res.message);
+      }
+    } catch (error) {
+      message("Không thể lấy danh sách lượng tiêu thụ!");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -110,8 +111,7 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
             type="default"
             icon={<EditOutlined />}
             onClick={() => showEditConsumptionModal("combined", record)}
-          >
-          </Button>
+          ></Button>
         </Flex>
       ),
     },
@@ -147,19 +147,19 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
       others: 0,
       managementFee: 0,
       consumptionId: record.id,
-      createdUserId: currentUser.userId
-    }
-    
+      createdUserId: currentUser.userId,
+    };
+
     try {
       const res = await createBill(dispatch, formData);
       const messageAPI = res.message;
-      
+
       if (res.status === 401 || res.status === 400 || res.status === 403) {
         message.error(messageAPI);
         return;
       } else {
-        message.success(messageAPI);       
-          navigate('/staffHome/bill-management');
+        message.success(messageAPI);
+        navigate("/staffHome/bill-management");
       }
     } catch (error) {
       message.error("Có lỗi xảy ra khi tạo hóa đơn");
@@ -169,6 +169,10 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
   const handleFilter = () => {
     console.log(selectedDate.format("YYYY-MM"));
   };
+
+  const handleImportFile = () => {
+
+  }
 
   return (
     <Card
@@ -192,18 +196,23 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
             Lọc
           </Button>
         </Flex>
-        <Button style={{ backgroundColor: "var(--fgreen)", color: "white" }}>
+        <Button style={{ backgroundColor: "var(--fgreen)", color: "white" }}
+        onClick={handleImportFile}>
           Import CSV
         </Button>
       </Flex>
 
       {/* Utility Tabs with new items prop - Only one tab now */}
-      <Table
-        columns={consumptionColumns}
-        dataSource={consumptions}
-        rowKey="id"
-        pagination={{ pageSize: 5 }}
-      />
+      {consumptions.length === 0 ? (
+        <Empty />
+      ) : (
+        <Table
+          columns={consumptionColumns}
+          dataSource={consumptions}
+          rowKey="id"
+          pagination={{ pageSize: 5 }}
+        />
+      )}
 
       {/* Create Bill Modal with open prop instead of visible */}
       <Modal
