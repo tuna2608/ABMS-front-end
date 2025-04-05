@@ -17,7 +17,7 @@ import StaffHome from "../pages/staff/StaffHome";
 import OTPPage from "../pages/common/OTPPage/OTPPage";
 import PaymentSuccess from "../pages/client/Payment/PaymentSuccess";
 import PaymentCancel from "../pages/client/Payment/PaymentCancel";
-import FormManagement from "../pages/client/Form/FormManagement";
+import FormManagement from "../pages/client/FormManagement/FormManagement";
 // import BillDetailsPage from "../pages/rentor/BillDetailsPage";
 
 

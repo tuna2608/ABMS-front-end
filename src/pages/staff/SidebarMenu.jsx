@@ -7,7 +7,6 @@ import {
   UserOutlined,
   SafetyOutlined,
   CreditCardOutlined,
-  FormOutlined // Thêm icon cho quản lý đơn từ
 } from "@ant-design/icons";
 
 const { Sider } = Layout;
