@@ -34,8 +34,8 @@ import {
     updatePost,
     deletePost,
     getPostsByUserId
-} from '../../redux/apiCalls';
-import { generateAIPostContent } from '../../services/CreatePostAIService';
+} from '../../../redux/apiCalls';
+import { generateAIPostContent } from '../../../services/CreatePostAIService';
 
 const { TextArea } = Input;
 const { Text } = Typography;
@@ -90,7 +90,6 @@ const PostManagementView = () => {
             </ol>
         </div>
     );
-
     // Image handling methods
     const getBase64 = (file) => {
         return new Promise((resolve, reject) => {
@@ -465,9 +464,7 @@ const PostManagementView = () => {
                         setIsModalOpen(true);
                         setTermsAgreed(false);
                     }}
-                    style={{
-                        background: 'rgba(30, 58, 138, 0.92)',
-                    }}
+                    
                 >
                     Thêm Bài Viết
                 </Button>
