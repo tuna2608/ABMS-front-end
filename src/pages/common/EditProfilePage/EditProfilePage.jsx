@@ -13,13 +13,14 @@ import {
   ArrowLeftOutlined,
   UserOutlined,
 } from "@ant-design/icons";
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 
 import avtBase from "../../../assets/common/images/avtbase.jpg";
 import { editProfile, getImageCloud } from "../../../redux/apiCalls";
 import { useNavigate } from "react-router-dom";
+import moment from "moment";
 
 const { Title } = Typography;
 
@@ -28,9 +29,8 @@ const PageContainer = styled.div`
   display: flex;
   min-height: 100vh;
   background-color: #f5f5f5;
-  padding-top: 5px
+  padding-top: 5px;
 `;
-
 
 const MainContent = styled.div`
   flex: 1;
@@ -145,8 +145,11 @@ const BackButton = styled(Button)`
 const ProfileEditPage = () => {
   const userCurrent = useSelector((state) => state.user.currentUser);
 
-  const [user, setUser] = useState(
-    {...userCurrent,birthday: dayjs(userCurrent.birthday)});
+  const defaultValue = moment();
+  const [user, setUser] = useState({
+    ...userCurrent,
+    birthday: (userCurrent) ? dayjs(userCurrent.birthday) : dayjs(defaultValue),
+  });
 
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
@@ -209,7 +212,7 @@ const ProfileEditPage = () => {
           userImgUrl: userImgUrl,
         };
       }
-    }else {
+    } else {
       formData = {
         ...formData,
         userImgUrl: null,
@@ -219,7 +222,11 @@ const ProfileEditPage = () => {
     const resEdit = await editProfile(dispatch, formData);
     console.log(resEdit);
     const messageAPI = resEdit.data.message;
-    if (resEdit.status === 401 || resEdit.status === 400 || resEdit.status === 403) {
+    if (
+      resEdit.status === 401 ||
+      resEdit.status === 400 ||
+      resEdit.status === 403
+    ) {
       message.error(messageAPI);
     } else {
       message.success(messageAPI);
@@ -230,8 +237,6 @@ const ProfileEditPage = () => {
 
   return (
     <PageContainer>
-      
-
       <MainContent>
         {/* <BackButton icon={<ArrowLeftOutlined />} type="default" /> */}
         <FormContainer>
@@ -245,6 +250,7 @@ const ProfileEditPage = () => {
             />
             <input type="file" accept="image/*" onChange={handleImageChange} />
           </AvatarContainer>
+          <Title>Coin: {user.accountBallance}</Title>
           <Form
             form={form}
             layout="vertical"

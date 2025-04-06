@@ -14,7 +14,7 @@ import {
 } from "antd";
 import { DollarOutlined, PlusOutlined, EditOutlined } from "@ant-design/icons";
 import moment from "moment";
-import { createBill, getAllConsumption } from "../../redux/apiCalls";
+import { createBillConsumption, getAllConsumption } from "../../redux/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -98,7 +98,7 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
             <Button
               type="primary"
               icon={<PlusOutlined />}
-              onClick={() => handleCreateBill(record)}
+              onClick={() => handleCreateBillConsumption(record)}
             >
               Tạo Hóa Đơn
             </Button>
@@ -135,25 +135,25 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
     setIsModalVisible(false);
   };
 
-  const handleCreateBill = async (record) => {
+  const handleCreateBillConsumption = async (record) => {
     // console.log(record);
     // console.log(currentUser);
-    const month = selectedDate.month() + 1;
+    const month = defaultValue.month() + 1;
+    const year = defaultValue.year();
     const formData = {
       apartmentName: record.apartmentName,
-      billContent: `Hóa đơn tháng ${month}`,
-      lastMonthWaterCons: record.lastMonthWaterConsumption,
-      waterCons: record.waterConsumption,
-      others: 0,
-      managementFee: 0,
+      billContent: `Hóa đơn nước tháng ${month}/${year}`,
+      userName: record.userName,
       consumptionId: record.id,
       createdUserId: currentUser.userId,
+      surcharge: 0,
+      period: `Tháng ${month}/${year}`,
+      amount: 0,
     };
 
     try {
-      const res = await createBill(dispatch, formData);
+      const res = await createBillConsumption(dispatch, formData);
       const messageAPI = res.message;
-
       if (res.status === 401 || res.status === 400 || res.status === 403) {
         message.error(messageAPI);
         return;
@@ -170,9 +170,7 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
     console.log(selectedDate.format("YYYY-MM"));
   };
 
-  const handleImportFile = () => {
-
-  }
+  const handleImportFile = () => {};
 
   return (
     <Card
@@ -196,8 +194,10 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
             Lọc
           </Button>
         </Flex>
-        <Button style={{ backgroundColor: "var(--fgreen)", color: "white" }}
-        onClick={handleImportFile}>
+        <Button
+          style={{ backgroundColor: "var(--fgreen)", color: "white" }}
+          onClick={handleImportFile}
+        >
           Import CSV
         </Button>
       </Flex>

@@ -19,51 +19,63 @@ import {
   CheckOutlined,
 } from "@ant-design/icons";
 import moment from "moment";
-import {  useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { getAllBillRentor, paymentBill } from "../../redux/apiCalls";
 
 const MyBillsPage = () => {
-  const [currentUser] = useState(useSelector((state) => state.user.currentUser));
+  const [currentUser] = useState(
+    useSelector((state) => state.user.currentUser)
+  );
   const navigate = useNavigate();
 
   const defaultValue = moment().subtract(1, "months");
   const [selectedDate, setSelectedDate] = useState(defaultValue);
   const [billModalVisible, setBillModalVisible] = useState(false);
   const [selectedBill, setSelectedBill] = useState(null);
-  
+  const [loading, setLoading] = useState(false);
+  const dispatch = useDispatch();
+
   // Mock data for bills
-  const [bills] = useState([
-    {
-      id: 1,
-      apartmentName: "Căn hộ 2PN Vinhomes Central Park",
-      billContent: "Hóa đơn tháng 3",
-      billDate: "03/2025",
-      waterUsage: 12,
-      waterCost: 240000,
-      managementFee: 700000,
-      others: 100000,
-      totalAmount: 1040000,
-      status: "Chưa thanh toán",
-      dueDate: "15/04/2025"
-    },
+  const [bills, setBills] = useState([
+    // {
+    //   billId: 1,
+    //   billContent: "Hóa đơn tháng 3",
+    //   amount: 15000.0,
+    //   lastMonthWaterConsumption: 40.0,
+    //   waterConsumption: 41.5,
+    //   billDate: "2025-04-06T04:54:00.588012",
+    //   status: "unpaid",
+    //   username: "Chủ căn hộ Tú1",
+    //   apartmentName: "A201",
+    //   billType: "water",
+    //   surcharge: 0.0,
+    //   createBillUserId: 5,
+    //   apartmentStatus: "rented",
+    // },
   ]);
 
   // Function to fetch bills data
   useEffect(() => {
-    // In a real app, this would be an API call like:
-    // const fetchBills = async () => {
-    //   try {
-    //     const response = await getBills(currentUser.userId);
-    //     setBills(response.data);
-    //   } catch (error) {
-    //     console.error("Error fetching bills:", error);
-    //     message.error("Không thể tải dữ liệu hóa đơn");
-    //   }
-    // };
-    // fetchBills();
-    
-    // Mock data is already set in state
+    callGetAllBillRentor(currentUser.userId);
   }, [currentUser]);
+
+  async function callGetAllBillRentor(userId) {
+    setLoading(true);
+    try {
+      const res = await getAllBillRentor(dispatch, userId);
+      // console.log(res.data.length === 0);
+      if (res.success) {
+        setBills(res.data);
+      } else {
+        message.error(res.message);
+      }
+    } catch (error) {
+      message("Không thể lấy danh sách hóa đơn!");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
@@ -82,10 +94,29 @@ const MyBillsPage = () => {
     setBillModalVisible(true);
   };
 
-  const handlePayBill = (billId) => {
-    // In a real app, this would trigger a payment process
-    message.success(`Chuyển đến trang thanh toán cho hóa đơn #${billId}`);
-    navigate("/rentorHome/payment", { state: { billId: billId } });
+  const handlePayment = async (record) => {
+    const formData = {
+      productName: record.billContent,
+      description: (record.billType === "monthPaid") ? "Bill thue nha" : record.billContent,
+      returnUrl: "http://localhost:3000/payment/success",
+      cancelUrl: "http://localhost:3000/payment/cancel",
+      price: record.amount,
+      billId: record.billId,
+    };
+    try {
+      const res = await paymentBill(formData);
+      console.log(res);
+      if (res.success) {
+        localStorage.setItem("paymentBillRequest", JSON.stringify(formData));
+        const url = res?.data?.checkoutUrl;
+        window.location.href = url;
+      } else {
+        message.error(res.message);
+      }
+    } catch (error) {
+      message("Không thể thực hiện thanh toán!");
+    } finally {
+    }
   };
 
   // Bill table columns
@@ -107,24 +138,30 @@ const MyBillsPage = () => {
     },
     {
       title: "Tổng tiền",
-      dataIndex: "totalAmount",
-      key: "totalAmount",
-      render: (value) => `${value.toLocaleString()} VND`,
+      dataIndex: "amount",
+      key: "amount",
+      render: (amount) => `${amount} VND`,
+    },
+    {
+      title: "Loại Hóa Đơn",
+      dataIndex: "billType",
+      key: "billType",
+      render: (billType) => {
+        const colorMap = {
+          water: "blue",
+          monthPaid: "purple",
+          Rent: "green",
+        };
+        return <Tag color={colorMap[billType] || "default"}>{billType}</Tag>;
+      },
     },
     {
       title: "Trạng thái",
       dataIndex: "status",
       key: "status",
       render: (status) => (
-        <Tag color={status === "Đã thanh toán" ? "green" : "volcano"}>
-          {status}
-        </Tag>
+        <Tag color={status === "paid" ? "green" : "volcano"}>{status}</Tag>
       ),
-    },
-    {
-      title: "Ngày đến hạn",
-      dataIndex: "dueDate",
-      key: "dueDate",
     },
     {
       title: "Hành động",
@@ -138,12 +175,12 @@ const MyBillsPage = () => {
           >
             Xem chi tiết
           </Button>
-          {record.status === "Chưa thanh toán" && (
+          {record.status === "unpaid" && (
             <Button
               type="primary"
               style={{ backgroundColor: "green" }}
               icon={<CheckOutlined />}
-              onClick={() => handlePayBill(record.id)}
+              onClick={() => handlePayment(record)}
             >
               Thanh toán
             </Button>
@@ -170,9 +207,7 @@ const MyBillsPage = () => {
           onChange={handleDateChange}
           placeholder="Chọn tháng và năm"
         />
-        <Button onClick={handleFilter}>
-          Lọc
-        </Button>
+        <Button onClick={handleFilter}>Lọc</Button>
       </Flex>
 
       {/* Bills Table */}
@@ -203,7 +238,7 @@ const MyBillsPage = () => {
               type="primary"
               onClick={() => {
                 setBillModalVisible(false);
-                handlePayBill(selectedBill.id);
+                // handlePay(selectedBill.id);
               }}
             >
               Thanh toán ngay
@@ -240,12 +275,18 @@ const MyBillsPage = () => {
                 {selectedBill.dueDate}
               </Descriptions.Item>
               <Descriptions.Item label="Trạng thái">
-                <Tag color={selectedBill.status === "Đã thanh toán" ? "green" : "volcano"}>
+                <Tag
+                  color={
+                    selectedBill.status === "Đã thanh toán"
+                      ? "green"
+                      : "volcano"
+                  }
+                >
                   {selectedBill.status}
                 </Tag>
               </Descriptions.Item>
             </Descriptions>
-            
+
             <Flex justify="center" style={{ marginTop: "24px" }}>
               <Statistic
                 title="Tổng cộng"
