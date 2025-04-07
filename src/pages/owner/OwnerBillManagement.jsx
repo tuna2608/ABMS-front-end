@@ -45,7 +45,13 @@ import {
 import locale from "antd/es/date-picker/locale/vi_VN";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
-import { getAllBillOwner, paymentBill } from "../../redux/apiCalls";
+import {
+  createBillMonthPaid,
+  getAllBillOwner,
+  getOwnApartmentRented,
+  paymentBill,
+} from "../../redux/apiCalls";
+import { useNavigate } from "react-router-dom";
 
 const { Header, Content } = Layout;
 const { Title, Text } = Typography;
@@ -66,26 +72,30 @@ const BillPage = () => {
   const [currentBill, setCurrentBill] = useState(null);
   const [selectedDate, setSelectedDate] = useState(defaultValue);
   const [loading, setLoading] = useState(false);
+  const [myApartment, setMyApartment] = useState();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [bills, setBills] = useState([
     // {
     //   billId: 1,
     //   billContent: "Hóa đơn tháng 3",
-    //   monthlyPaid: 0.0,
-    //   waterBill: 17000.008,
-    //   others: 0.0,
-    //   total: 17000.008,
-    //   lastMonthWaterConsumption: 47.0,
-    //   waterConsumption: 48.7,
-    //   billDate: "2025-04-03 T14:58:42.457087",
+    //   amount: 15000.0,
+    //   lastMonthWaterConsumption: 40.0,
+    //   waterConsumption: 41.5,
+    //   billDate: "2025-04-06T04:54:00.588012",
     //   status: "unpaid",
-    //   username: "Admin Tú",
-    //   apartmentName: "102",
+    //   username: "Chủ căn hộ Tú1",
+    //   apartmentName: "A201",
+    //   billType: "water",
+    //   surcharge: 0.0,
+    //   createBillUserId: 5,
+    //   apartmentStatus: "rented",
     // },
   ]);
 
   useEffect(() => {
     callGetAllBillOwner(currentUser.userId);
+    callGetMyApartment(currentUser.userId);
   }, [currentUser]);
 
   async function callGetAllBillOwner(userId) {
@@ -105,13 +115,21 @@ const BillPage = () => {
     }
   }
 
+  async function callGetMyApartment(userId) {
+    try {
+      const res = await getOwnApartmentRented(userId);
+      if (res.success) {
+        setMyApartment(res.data);
+      } else {
+      }
+    } catch (error) {
+      message.error("Không thể lấy danh sách căn hộ đã cho thuê");
+    } finally {
+    }
+  }
+
   // Table columns for bill list
   const billColumns = [
-    {
-      title: "Mã Hóa Đơn",
-      dataIndex: "billId",
-      key: "billId",
-    },
     {
       title: "Nội dung",
       dataIndex: "billContent",
@@ -127,24 +145,24 @@ const BillPage = () => {
       dataIndex: "billDate",
       key: "billDate",
     },
-    //{
-    //   title: "Loại Hóa Đơn",
-    //   dataIndex: "billType",
-    //   key: "billType",
-    //   render: (billType) => {
-    //     const colorMap = {
-    //       Nước: "blue",
-    //       Maintenance: "green",
-    //       Rent: "purple",
-    //     };
-    //     return <Tag color={colorMap[billType] || "default"}>{billType}</Tag>;
-    //   },
-    // },
+    {
+      title: "Loại Hóa Đơn",
+      dataIndex: "billType",
+      key: "billType",
+      render: (billType) => {
+        const colorMap = {
+          water: "blue",
+          Maintenance: "green",
+          Rent: "purple",
+        };
+        return <Tag color={colorMap[billType] || "default"}>{billType}</Tag>;
+      },
+    },
     {
       title: "Số Tiền",
-      dataIndex: "total",
-      key: "total",
-      render: (total) => `${total} VND`,
+      dataIndex: "amount",
+      key: "amount",
+      render: (amount) => `${amount} VND`,
     },
     {
       title: "Trạng thái",
@@ -205,38 +223,42 @@ const BillPage = () => {
               onClick={() => showBillDetails(record.billCode)}
             />
           </Tooltip>
-          <Button
-            type="primary"
-            icon={<PayCircleOutlined />}
-            disabled={record.status === "paid"}
-            onClick={() => handlePayment(record)}
-          >
-            Thanh toan
-          </Button>
+          {record.apartmentStatus === "Unrent" && (
+            <Button
+              type="primary"
+              icon={<PayCircleOutlined />}
+              disabled={record.status === "paid"}
+              onClick={() => handlePayment(record)}
+            >
+              Thanh toan
+            </Button>
+          )}
           <Tooltip title="In hóa đơn">
             <Button type="text" icon={<PrinterOutlined />} />
           </Tooltip>
-          <Tooltip title="Gửi hóa đơn">
+          {/* <Tooltip title="Gửi hóa đơn">
             <Button
               type="text"
               icon={<SendOutlined />}
               disabled={record.status === "paid" || record.status === "sent"}
             />
-          </Tooltip>
-          <Tooltip title="Xóa">
-            <Popconfirm
-              title="Bạn có chắc chắn muốn xóa hóa đơn này?"
-              okText="Có"
-              cancelText="Không"
-            >
-              <Button
-                type="text"
-                danger
-                icon={<DeleteOutlined />}
-                disabled={record.status === "paid"}
-              />
-            </Popconfirm>
-          </Tooltip>
+          </Tooltip> */}
+          {currentUser.userId === record.createBillUserId && (
+            <Tooltip title="Xóa">
+              <Popconfirm
+                title="Bạn có chắc chắn muốn xóa hóa đơn này?"
+                okText="Có"
+                cancelText="Không"
+              >
+                <Button
+                  type="text"
+                  danger
+                  icon={<DeleteOutlined />}
+                  disabled={record.status === "paid"}
+                />
+              </Popconfirm>
+            </Tooltip>
+          )}
         </Space>
       ),
     },
@@ -248,7 +270,7 @@ const BillPage = () => {
       description: record.billContent,
       returnUrl: "http://localhost:3000/payment/success",
       cancelUrl: "http://localhost:3000/payment/cancel",
-      price: record.total,
+      price: record.amount,
       billId: record.billId,
     };
     console.log(formData);
@@ -256,14 +278,14 @@ const BillPage = () => {
       const res = await paymentBill(formData);
       console.log(res);
       if (res.success) {
-        localStorage.setItem('paymentBillRequest',JSON.stringify(formData));
+        localStorage.setItem("paymentBillRequest", JSON.stringify(formData));
         const url = res?.data?.checkoutUrl;
         window.location.href = url;
       } else {
         message.error(res.message);
       }
     } catch (error) {
-      message("Không thể thực hiện thanh toán!");
+      message.error("Không thể thực hiện thanh toán!");
     } finally {
     }
   };
@@ -291,10 +313,35 @@ const BillPage = () => {
   };
 
   // Handle create bill submit
-  const handleCreateBill = (values) => {
+  const handleCreateBill = async (values) => {
     console.log("Form values:", values);
-    setCreateBillVisible(false);
-    // In a real application, you would send this data to your API
+
+    const month = defaultValue.month() + 1;
+    const year = defaultValue.year();
+    const formData = {
+      apartmentName: values.apartment,
+      billContent: `${values.billType} ${values.period} ${month}/${year}`,
+      userName: currentUser.userName,
+      consumptionId: null,
+      createdUserId: currentUser.userId,
+      surcharge: 0,
+      period: values.period,
+      amount: values.amount,
+    };
+    console.log(formData);
+    const res = await createBillMonthPaid(dispatch,formData);
+    if(res.success){
+      message.success(res.message);
+      navigate("/ownerHome/bill-management");
+      setCreateBillVisible(false);
+    }else{
+      message.error(res.message);
+    }
+    try {
+    } catch (error) {
+      message("Không thể tạo hóa đơn")
+    }finally{
+    }
   };
 
   // Handle batch actions
@@ -581,26 +628,27 @@ const BillPage = () => {
                 ]}
               >
                 <Select placeholder="Chọn loại hóa đơn">
-                  <Option value="management">Phí quản lý</Option>
-                  <Option value="electricity">Điện</Option>
-                  <Option value="water">Nước</Option>
-                  <Option value="others">Khác</Option>
+                  <Option value="Hóa đơn thuê nhà">Tiền thuê theo tháng</Option>
+                  <Option value="Hóa đơn khác">Khác</Option>
                 </Select>
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
-                name="period"
-                label="Kỳ hóa đơn"
-                rules={[
-                  { required: true, message: "Vui lòng chọn kỳ hóa đơn" },
-                ]}
+                name="apartment"
+                label="Căn hộ"
+                rules={[{ required: true, message: "Vui lòng chọn căn hộ" }]}
               >
-                <Select placeholder="Chọn kỳ hóa đơn">
-                  <Option value="01/2025">Tháng 01/2025</Option>
-                  <Option value="02/2025">Tháng 02/2025</Option>
-                  <Option value="03/2025">Tháng 03/2025</Option>
-                  <Option value="Q1/2025">Quý 1/2025</Option>
+                <Select placeholder="Chọn căn hộ">
+                  {myApartment &&
+                    myApartment.map((apartment) => (
+                      <Option
+                        key={apartment.apartmentId}
+                        value={apartment.apartmentName}
+                      >
+                        {apartment.apartmentName}
+                      </Option>
+                    ))}
                 </Select>
               </Form.Item>
             </Col>
@@ -608,37 +656,32 @@ const BillPage = () => {
           <Row gutter={16}>
             <Col span={12}>
               <Form.Item
-                name="apartment"
-                label="Căn hộ"
-                rules={[{ required: true, message: "Vui lòng chọn căn hộ" }]}
+                name="amount"
+                label="Số tiền"
+                rules={[{ required: true, message: "Vui lòng nhập số tiền" }]}
               >
-                <Select
-                  placeholder="Chọn căn hộ"
-                  showSearch
-                  optionFilterProp="children"
-                ></Select>
+                <Input placeholder="Số tiền" />
               </Form.Item>
             </Col>
             <Col span={12}>
               <Form.Item
-                name="dueDate"
-                label="Hạn thanh toán"
+                name="period"
+                label="Hóa đơn theo kỳ hạn:"
                 rules={[
-                  { required: true, message: "Vui lòng chọn hạn thanh toán" },
+                  { required: true, message: "Vui lòng chọn kỳ hóa đơn" },
                 ]}
               >
-                <DatePicker
-                  style={{ width: "100%" }}
-                  format="DD/MM/YYYY"
-                  locale={locale}
-                />
+                <Select placeholder="Chọn kỳ hóa đơn">
+                  <Option value="Tháng">Tháng</Option>
+                  <Option value="Quý">Quý</Option>
+                </Select>
               </Form.Item>
             </Col>
           </Row>
 
-          <Divider orientation="left">Chi tiết hóa đơn</Divider>
+          {/* <Divider orientation="left">Chi tiết hóa đơn</Divider> */}
 
-          <Form.List name="items">
+          {/* <Form.List name="items">
             {(fields, { add, remove }) => (
               <>
                 {fields.map(({ key, name, ...restField }) => (
@@ -726,15 +769,15 @@ const BillPage = () => {
                 </Form.Item>
               </>
             )}
-          </Form.List>
+          </Form.List> */}
 
           <Row gutter={16}>
-            <Col span={12}>
+            {/* <Col span={12}>
               <Form.Item name="note" label="Ghi chú">
                 <Input.TextArea rows={4} placeholder="Nhập ghi chú (nếu có)" />
               </Form.Item>
-            </Col>
-            <Col span={12}>
+            </Col> */}
+            {/* <Col span={12}>
               <Card>
                 <Statistic
                   title="Tổng tiền hóa đơn"
@@ -759,7 +802,7 @@ const BillPage = () => {
                   </Col>
                 </Row>
               </Card>
-            </Col>
+            </Col> */}
           </Row>
         </Form>
       </Modal>

@@ -24,25 +24,26 @@ import { getAllBill } from "../../redux/apiCalls";
 
 const BillManagement = () => {
   const defaultValue = moment().subtract(1, "months");
-  const [loading,setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [currentBill, setCurrentBill] = useState(null);
   const [form] = Form.useForm();
   const [bills, setBills] = useState([
-    // {
-    //   billId: 1,
-    //   billContent: "Hóa đơn tháng 3",
-    //   monthlyPaid: 0.0,
-    //   waterBill: 17000.008,
-    //   others: 0.0,
-    //   total: 17000.008,
-    //   lastMonthWaterConsumption: 47.0,
-    //   waterConsumption: 48.7,
-    //   billDate: "2025-04-03 T14:58:42.457087",
-    //   status: "unpaid",
-    //   username: "Admin Tú",
-    //   apartmentName: "102",
-    // },
+    {
+      billId: 1,
+      billContent: "Hóa đơn tháng 3",
+      amount: 15000.0,
+      lastMonthWaterConsumption: 40.0,
+      waterConsumption: 41.5,
+      billDate: "2025-04-06T04:54:00.588012",
+      status: "unpaid",
+      username: "Chủ căn hộ Tú1",
+      apartmentName: "A201",
+      billType: "water",
+      surcharge: 0.0,
+      createBillUserId: 5,
+      apartmentStatus: "rented",
+    },
   ]);
 
   useEffect(() => {
@@ -66,7 +67,6 @@ const BillManagement = () => {
     }
     // setBills(res.data);
   }
-  
 
   // Modal for creating/editing bill
   const showBillModal = (bill = null) => {
@@ -126,11 +126,6 @@ const BillManagement = () => {
   // Columns for bill table
   const columns = [
     {
-      title: "Mã Hóa Đơn",
-      dataIndex: "billId",
-      key: "billId",
-    },
-    {
       title: "Nội dung",
       dataIndex: "billContent",
       key: "billContent",
@@ -145,24 +140,24 @@ const BillManagement = () => {
       dataIndex: "billDate",
       key: "billDate",
     },
-    //{
-    //   title: "Loại Hóa Đơn",
-    //   dataIndex: "billType",
-    //   key: "billType",
-    //   render: (billType) => {
-    //     const colorMap = {
-    //       Nước: "blue",
-    //       Maintenance: "green",
-    //       Rent: "purple",
-    //     };
-    //     return <Tag color={colorMap[billType] || "default"}>{billType}</Tag>;
-    //   },
-    // },
+    {
+      title: "Loại Hóa Đơn",
+      dataIndex: "billType",
+      key: "billType",
+      render: (billType) => {
+        const colorMap = {
+          water: "blue",
+          Maintenance: "green",
+          Rent: "purple",
+        };
+        return <Tag color={colorMap[billType] || "default"}>{billType}</Tag>;
+      },
+    },
     {
       title: "Số Tiền",
-      dataIndex: "total",
-      key: "total",
-      render: (total) => `${total} VND`,
+      dataIndex: "amount",
+      key: "amount",
+      render: (amount) => `${amount} VND`,
     },
     {
       title: "Trạng Thái",

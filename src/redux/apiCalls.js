@@ -498,12 +498,30 @@ export const importFile = async (formData) => {
   }
 }
 //create bill
-export const createBill = async (dispatch,formData) => {
+export const createBillConsumption = async (dispatch,formData) => {
   try {
-    const res = await publicRequest.post(`/bill/create`,formData);
+    const res = await publicRequest.post(`/bill/createBillConsumption`,formData);
     return res.data;
   } catch (error) {
     return error.response;
+  }
+}
+
+//create bill
+export const createBillMonthPaid = async (dispatch,formData) => {
+  try {
+    const res = await publicRequest.post(`/bill/createBillMonthPaid`,formData);
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || ''
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || "Lỗi khi tạo hóa đơn"
+    };
   }
 }
 // get tat ca hoa don
@@ -542,6 +560,25 @@ export const getAllBillOwner = async (dispatch,ownerId) => {
   }
 }
 
+// get tat ca bill theo rentor
+export const getAllBillRentor = async (dispatch,rentorId) => {
+  try {
+    const res = await publicRequest.get(`/bill/getRentorBills/${rentorId}`);
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || ''
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || "Lỗi khi lấy danh sách hóa đơn"
+    };
+  }
+}
+
+
 // thanh toan hoa don bill
 export const paymentBill = async (formData) => {
   try {
@@ -555,7 +592,7 @@ export const paymentBill = async (formData) => {
     return {
       success: false,
       data: [],
-      message: error.response?.data?.message || "Lỗi khi lấy danh sách hóa đơn"
+      message: error.response?.data?.message || "Lỗi khi thanh toan hóa đơn"
     };
   }
 }
@@ -577,6 +614,25 @@ export const paymentBillSuccess = async (formData) => {
     };
   }
 }
+
+//get own apartment by userId
+export const getOwnApartmentRented = async (userId) => {
+  try {
+    const res = await publicRequest.get(`/apartment/getOwnerApartmentRented/${userId}`);
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || ''
+    };
+  } catch (error) {
+    console.error("Error fetching own apartments:", error);
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || "Lỗi khi lấy danh sách căn hộ"
+    };
+  }
+};
 
 //-------------------------------------------------------------------------------------
 //get own apartment by userId
