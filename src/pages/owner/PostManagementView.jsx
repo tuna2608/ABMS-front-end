@@ -15,7 +15,8 @@ import {
     message,
     Checkbox,
     Alert,
-    Typography
+    Typography,
+    Tag
 } from 'antd';
 import {
     FormOutlined,
@@ -398,9 +399,30 @@ const PostManagementView = () => {
             render: (price) => new Intl.NumberFormat('vi-VN').format(price) + ' VNĐ'
         },
         {
-            title: 'Diện tích',
-            dataIndex: 'area',
-            key: 'area'
+            title: 'Trạng Thái Đặt Cọc',
+            dataIndex: 'depositCheck',
+            key: 'depositCheck',
+            render: (status) => {
+                let color = 'default';
+                let text = 'Chưa Đặt Cọc';
+    
+                switch (status) {
+                    case 'ongoing':
+                        color = 'processing';
+                        text = 'Đang Đặt Cọc';
+                        break;
+                    case 'done':
+                        color = 'success';
+                        text = 'Đã Đặt Cọc';
+                        break;
+                    case 'none':
+                    default:
+                        color = 'default';
+                        text = 'Chưa Đặt Cọc';
+                }
+    
+                return <Tag color={color}>{text}</Tag>;
+            }
         },
         {
             title: 'Số Căn Hộ',
@@ -822,6 +844,7 @@ const PostManagementView = () => {
                             <Input placeholder="Nhập tiêu đề bài viết" />
                         </Form.Item>
 
+
                         <Form.Item
                             name="content"
                             label="Nội Dung"
@@ -830,24 +853,14 @@ const PostManagementView = () => {
                                 { min: 20, message: 'Nội dung phải có ít nhất 20 ký tự' }
                             ]}
                         >
-                            <div>
-                                <Form.Item
-                                    name="content"
-                                    label="Nội Dung"
-                                    rules={[
-                                        { required: true, message: 'Vui lòng nhập nội dung bài viết' },
-                                        { min: 20, message: 'Nội dung phải có ít nhất 20 ký tự' }
-                                    ]}
-                                >
-                                    <TextArea
-                                        rows={4}
-                                        placeholder="Nhập nội dung bài viết"
-                                        showCount
-                                        maxLength={1000}
-                                    />
-                                </Form.Item>
-                            </div>
+                            <TextArea
+                                rows={4}
+                                placeholder="Nhập nội dung bài viết"
+                                showCount
+                                maxLength={1000}
+                            />
                         </Form.Item>
+
 
 
                         <Row gutter={16}>
