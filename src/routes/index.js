@@ -3,6 +3,7 @@ import NotFoundPage from "../pages/common/NotFoundPage/NotFoundPage";
 import LoginPage from "../pages/common/LoginPage/LoginPage";
 import AdminHome from "../pages/admin/AdminHome";
 import ForgotPasswordPage from "../pages/common/ForgotPasswordPage/ForgotPasswordPage";
+import NewPasswordPage from "../pages/common/NewPasswordPage/NewPasswordPage";
 import RegisterPage from "../pages/common/RegisterPage/Register";
 import OwnerHome from "../pages/owner/OwnerHome";
 import RentorHome from "../pages/rentor/RentorHome";
@@ -43,8 +44,13 @@ export const routes = [
         isShowHeader: false
         },
         {
-        path: '/forgot',
+        path: '/forgot-password',
         page: ForgotPasswordPage,
+        isShowHeader: false
+    },
+    {
+        path: '/new-password',
+        page: NewPasswordPage,
         isShowHeader: false
     },
     {
