@@ -40,7 +40,6 @@ const ApartmentListView = () => {
     setCurrentPage(page);
   };
 
-
   return (
     <>
       <Card 
