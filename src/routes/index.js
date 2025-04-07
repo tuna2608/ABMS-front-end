@@ -16,6 +16,7 @@ import DepositApartments from "../pages/client/DepositApartment/DepositApartment
 import EditProfilePage from "../pages/common/EditProfilePage/EditProfilePage";
 import StaffHome from "../pages/staff/StaffHome";
 import OTPPage from "../pages/common/OTPPage/OTPPage";
+import OTPVerificationPage from "../pages/common/OTPVerificationPage/OTPVerificationPage";
 import PaymentSuccess from "../pages/client/Payment/PaymentSuccess";
 import PaymentCancel from "../pages/client/Payment/PaymentCancel";
 import FormManagement from "../pages/client/FormManagement/FormManagement";
@@ -56,6 +57,11 @@ export const routes = [
     {
         path: '/verify-otp',
         page: OTPPage,
+        isShowHeader: false
+    },
+    {
+        path: '/verify-forgot-otp',
+        page: OTPVerificationPage,
         isShowHeader: false
     },
     {

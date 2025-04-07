@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { Form, Image } from "antd";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import {
   LinkNav,
@@ -11,7 +12,6 @@ import InputForm from "../../../components/common/InputForm/InputForm";
 import ButtonComponent from "../../../components/common/ButtonComponent/ButtonComponent";
 import imgLogin from "../../../assets/common/images/logo-login.png";
 import bgLogin from "../../../assets/common/images/bg-login.jpg";
-import { useNavigate } from "react-router-dom";
 import { WrapperTextLight } from "../LoginPage/style";
 
 const TitlePage = styled.h2`
@@ -23,10 +23,13 @@ const TextContent = styled.p`
 `;
 
 const NewPasswordPage = () => {
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
 
-  const handleUpdatePassword = (values) => {
-    console.log(values);
+  const handleResetPassword = (values) => {
+    // Chuyển về trang login khi đặt lại mật khẩu thành công
+    navigate('/login');
   };
 
   return (
@@ -72,53 +75,42 @@ const NewPasswordPage = () => {
         }}
       >
         <WrapperContainerLeft>
-          <TitlePage>Đặt lại mật khẩu</TitlePage>
+          <TitlePage>Đặt Lại Mật Khẩu</TitlePage>
           <TextContent>
-            Nhập mật khẩu mới và xác nhận mật khẩu
+            Vui lòng nhập mật khẩu mới
           </TextContent>
           <Form
             name="newPassword"
-            onFinish={handleUpdatePassword}
+            onFinish={handleResetPassword}
             autoComplete="off"
             style={{ maxWidth: 600 }}
           >
             <Form.Item
               name="newPassword"
-              rules={[
-                { required: true, message: "Vui lòng nhập mật khẩu mới!" },
-                { min: 6, message: "Mật khẩu phải có ít nhất 6 ký tự" }
-              ]}
+              rules={[{ required: true, message: "Vui lòng nhập mật khẩu mới!" }]}
             >
               <InputForm
                 placeholder="Mật khẩu mới"
+                value={newPassword}
                 type="password"
+                onChange={(e) => setNewPassword(e.target.value)}
               />
             </Form.Item>
-
             <Form.Item
               name="confirmPassword"
-              dependencies={['newPassword']}
-              rules={[
-                { required: true, message: "Vui lòng xác nhận mật khẩu!" },
-                ({ getFieldValue }) => ({
-                  validator(_, value) {
-                    if (!value || getFieldValue('newPassword') === value) {
-                      return Promise.resolve();
-                    }
-                    return Promise.reject(new Error('Mật khẩu xác nhận không khớp!'));
-                  },
-                }),
-              ]}
+              rules={[{ required: true, message: "Vui lòng xác nhận mật khẩu!" }]}
             >
               <InputForm
                 placeholder="Xác nhận mật khẩu"
+                value={confirmPassword}
                 type="password"
+                onChange={(e) => setConfirmPassword(e.target.value)}
               />
             </Form.Item>
 
             <Form.Item>
               <ButtonComponent
-                textButton="Đặt lại mật khẩu"
+                textButton="Đặt Lại Mật Khẩu"
                 htmlType="submit"
                 size={40}
                 styleButton={{
@@ -137,7 +129,9 @@ const NewPasswordPage = () => {
             </Form.Item>
           </Form>
           <LinkNav>
-            <WrapperTextLight onClick={() => navigate("/login")}>Quay lại trang đăng nhập</WrapperTextLight>
+            <WrapperTextLight onClick={() => navigate("/otp-verification")}>
+              Quay lại
+            </WrapperTextLight>
           </LinkNav>
         </WrapperContainerLeft>
         <WrapperContainerRight>
