@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useState } from "react";
 import { 
   Card, 
   Table, 
@@ -11,15 +11,13 @@ import {
   FileProtectOutlined, 
   DownloadOutlined, 
 } from "@ant-design/icons";
-
+import styled from 'styled-components';
 import moment from "moment";
+
 
 // Hàm format tiền tệ
 const formatCurrency = (value) => {
-  // Kiểm tra nếu value không phải là số
   if (typeof value !== 'number') return '0';
-  
-  // Format số tiền theo định dạng Việt Nam
   return new Intl.NumberFormat('vi-VN').format(value) + ' VND';
 };
 
@@ -29,42 +27,7 @@ const ContractView = () => {
   const [selectedContract, setSelectedContract] = useState(null);
   const [isContractModalVisible, setIsContractModalVisible] = useState(false);
 
-  // Mock contracts data
-  useEffect(() => {
-    const mockContracts = [
-      {
-        id: 1,
-        apartmentName: "Căn hộ 2PN Vinhomes Central Park",
-        contractNumber: "HĐ-2023-001",
-        startDate: "2023-06-01",
-        endDate: "2024-06-01",
-        rentAmount: 15000000,
-        status: "active",
-        parkingSlot: "A12",
-        additionalFees: {
-          management: 3000000,
-          parking: 1000000,
-          service: 2000000
-        }
-      },
-      {
-        id: 2,
-        apartmentName: "Căn hộ 1PN Masteri Thảo Điền",
-        contractNumber: "HĐ-2023-002",
-        startDate: "2023-09-15",
-        endDate: "2024-09-15",
-        rentAmount: 12000000,
-        status: "expired",
-        parkingSlot: "B24",
-        additionalFees: {
-          management: 2500000,
-          parking: 800000,
-          service: 1800000
-        }
-      }
-    ];
-    setContracts(mockContracts);
-  }, []);
+
 
   const contractColumns = [
     {
@@ -183,11 +146,14 @@ const ContractView = () => {
   };
 
   return (
-    <Card title="Hợp đồng của tôi">
+    <Card 
+      title="Hợp đồng của tôi"
+    >
       <Table 
         dataSource={contracts} 
         columns={contractColumns}
         rowKey="id"
+        locale={{ emptyText: 'Không có dữ liệu' }}
       />
       {renderContractModal()}
     </Card>
