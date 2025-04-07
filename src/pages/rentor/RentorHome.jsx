@@ -9,7 +9,7 @@ import ApartmentListView from "./ApartmentListView";
 import MyBillsPage from "./MyBillsPage";
 import ContractView from "./ContractView";
 import PaymentView from "./PaymentView";
-import ChatPage from "../client/ChatPage/ChatPage";
+import zaloLogo from '../../assets/common/images/logo-zalo-vector-7.jpg';
 
 const { Sider, Content, Header } = Layout;
 
@@ -29,7 +29,6 @@ const RentorHome = () => {
       payment: "payment",
       documents: "documents",
       maintenance: "maintenance",
-      messages: "chatpage",
     };
 
     const newView = pathToView[path];
@@ -59,34 +58,52 @@ const RentorHome = () => {
         return <ContractView />;
       case "payment":
         return <PaymentView />;
-      case "chatpage":
-        return <ChatPage />;
       default:
-        return <Card title="Không tìm thấy nội dung" />;
+        return <ApartmentListView />;
     }
+  };
+
+  // Define Zalo button style
+  const zaloButtonStyle = {
+    position: 'fixed',
+    bottom: '30px',
+    right: '30px',
+    width: '60px',
+    height: '60px',
+    borderRadius: '50%',
+    backgroundColor: '#0068FF', // Zalo blue color
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+    cursor: 'pointer',
+    zIndex: 1000,
+    border: 'none'
+  };
+
+  // Handler for Zalo button click
+  const handleZaloClick = () => {
+    window.open('https://zalo.me/g/xyhqkf988', '_blank');
   };
 
   return (
     <Layout style={{ minHeight: "100vh" }}>
       <Sider
+        trigger={null}
         collapsible
         collapsed={collapsed}
-        onCollapse={setCollapsed}
-        trigger={null}
-        theme="light"
-        width={250}
+        style={{ background: "#fff" }}
       >
         <div style={{ height: 64, padding: 16, textAlign: "center" }}></div>
-        <SideMenu setCurrentView={setCurrentView} />
+        <SideMenu currentView={currentView} />
       </Sider>
       <Layout>
         <Header
           style={{
-            background: "#fff",
             padding: 0,
+            background: "#fff",
             display: "flex",
             alignItems: "center",
-            justifyContent: "space-between",
           }}
         >
           <Button
@@ -95,28 +112,31 @@ const RentorHome = () => {
             onClick={toggleCollapsed}
             style={{ fontSize: "16px", width: 64, height: 64 }}
           />
-          <div style={{ marginRight: 20 }}></div>
         </Header>
         <Content
-          style={{ margin: "24px 16px", padding: 24, background: "#fff" }}
+          style={{
+            margin: "24px 16px",
+            padding: 24,
+            minHeight: 280,
+            background: "#fff",
+          }}
         >
-          <Routes>
-            <Route
-              path="/"
-              element={<Navigate to="/rentorHome/list" replace />}
-            />
-            <Route path="/list" element={renderContent()} />
-            <Route path="/my-bills" element={renderContent()} />
-            <Route path="/contract" element={renderContent()} />
-            <Route path="/payment" element={renderContent()} />
-            <Route path="/messages" element={renderContent()} />
-            <Route
-              path="*"
-              element={<Navigate to="/rentorHome/list" replace />}
-            />
-          </Routes>
+          {renderContent()}
         </Content>
       </Layout>
+      
+      {/* Zalo Floating Button */}
+      <Button
+        style={zaloButtonStyle}
+        onClick={handleZaloClick}
+        aria-label="Join Zalo Group"
+      >
+        <img 
+  src={zaloLogo}
+  alt="Zalo"
+  style={{ width: '30px', height: '30px' }}
+/>
+      </Button>
     </Layout>
   );
 };
