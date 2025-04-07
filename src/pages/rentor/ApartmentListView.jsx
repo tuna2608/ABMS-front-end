@@ -42,15 +42,13 @@ const ApartmentListView = () => {
     setCurrentPage(page);
   };
 
-
-
   return (
     <>
       <Card 
         title={
           <Space>
             <HomeOutlined /> 
-            <span>Danh sách căn hộ</span>
+            <span>Danh sách căn hộ của tôi</span>
           </Space>
         } 
       >
