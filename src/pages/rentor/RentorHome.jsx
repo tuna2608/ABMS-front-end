@@ -9,7 +9,7 @@ import ApartmentListView from "./ApartmentListView";
 import MyBillsPage from "./MyBillsPage";
 import ContractView from "./ContractView";
 import PaymentView from "./PaymentView";
-import ChatPage from "../client/ChatPage/ChatPage";
+import zaloLogo from '../../assets/common/images/logo-zalo-vector-7.jpg';
 
 const { Sider, Content, Header } = Layout;
 
@@ -59,11 +59,30 @@ const RentorHome = () => {
         return <ContractView />;
       case "payment":
         return <PaymentView />;
-      case "chatpage":
-        return <ChatPage />;
       default:
         return <Card title="Không tìm thấy nội dung" />;
     }
+  };
+
+  const zaloButtonStyle = {
+    position: 'fixed',
+    bottom: '30px',
+    right: '30px',
+    width: '60px',
+    height: '60px',
+    borderRadius: '50%',
+    backgroundColor: '#0068FF',
+    display: 'flex',
+    justifyContent: 'center',
+    alignItems: 'center',
+    boxShadow: '0 4px 8px rgba(0, 0, 0, 0.2)',
+    cursor: 'pointer',
+    zIndex: 1000,
+    border: 'none'
+  };
+
+  const handleZaloClick = () => {
+    window.open('https://zalo.me/g/xyhqkf988', '_blank');
   };
 
   return (
@@ -109,7 +128,6 @@ const RentorHome = () => {
             <Route path="/my-bills" element={renderContent()} />
             <Route path="/contract" element={renderContent()} />
             <Route path="/payment" element={renderContent()} />
-            <Route path="/messages" element={renderContent()} />
             <Route
               path="*"
               element={<Navigate to="/rentorHome/list" replace />}
@@ -117,6 +135,18 @@ const RentorHome = () => {
           </Routes>
         </Content>
       </Layout>
+
+      <Button
+        style={zaloButtonStyle}
+        onClick={handleZaloClick}
+        aria-label="Join Zalo Group"
+      >
+        <img 
+          src={zaloLogo} 
+          alt="Zalo" 
+          style={{ width: '30px', height: '30px' }} 
+        />
+      </Button>
     </Layout>
   );
 };

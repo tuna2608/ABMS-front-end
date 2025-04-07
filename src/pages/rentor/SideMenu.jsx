@@ -4,7 +4,6 @@ import {
   HomeOutlined,
   FileTextOutlined,
   DollarOutlined,
-  MessageOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
@@ -46,15 +45,6 @@ const SideMenu = ({ setCurrentView }) => {
       onClick: () => {
         setCurrentView("payment");
         navigate("/rentorHome/payment");
-      },
-    },
-    {
-      key: "chatpage",
-      icon: <MessageOutlined />,
-      label: "Tin nhắn",
-      onClick: () => {
-        setCurrentView("chatpage");
-        navigate("/rentorHome/messages");
       },
     },
   ];
