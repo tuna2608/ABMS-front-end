@@ -11,7 +11,7 @@ import AdminDashboard from './AdminDashboard';
 import DepositManagement from './DepositManagement';
 import AccountManagement from './AccountManagement';
 import ApartmentManagement from './ApartmentManagement';
-import PostManagementView from '../client/PostsManagement/PostManagementView';
+import PostManagementView from '../owner/PostManagementView';
 import FinancialReports from './FinancialReports';
 import SystemSettings from './SystemSettings';
 

@@ -6,7 +6,7 @@ import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 // Import components
 import SideMenu from "./SideMenu";
 import ApartmentListView from "./ApartmentListView";
-import PostManagementView from "../client/PostsManagement/PostManagementView";
+import PostManagementView from "./PostManagementView";
 import BillPage from "./OwnerBillManagement";
 import ContractView from "./ContractView";
 import PaymentView from "./PaymentView";
