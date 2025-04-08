@@ -29,21 +29,21 @@ const BillManagement = () => {
   const [currentBill, setCurrentBill] = useState(null);
   const [form] = Form.useForm();
   const [bills, setBills] = useState([
-    {
-      billId: 1,
-      billContent: "Hóa đơn tháng 3",
-      amount: 15000.0,
-      lastMonthWaterConsumption: 40.0,
-      waterConsumption: 41.5,
-      billDate: "2025-04-06T04:54:00.588012",
-      status: "unpaid",
-      username: "Chủ căn hộ Tú1",
-      apartmentName: "A201",
-      billType: "water",
-      surcharge: 0.0,
-      createBillUserId: 5,
-      apartmentStatus: "rented",
-    },
+    // {
+    //   billId: 1,
+    //   billContent: "Hóa đơn tháng 3",
+    //   amount: 15000.0,
+    //   lastMonthWaterConsumption: 40.0,
+    //   waterConsumption: 41.5,
+    //   billDate: "2025-04-06T04:54:00.588012",
+    //   status: "unpaid",
+    //   username: "Chủ căn hộ Tú1",
+    //   apartmentName: "A201",
+    //   billType: "water",
+    //   surcharge: 0.0,
+    //   createBillUserId: 5,
+    //   apartmentStatus: "rented",
+    // },
   ]);
 
   useEffect(() => {
