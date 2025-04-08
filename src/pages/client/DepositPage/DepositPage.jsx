@@ -140,7 +140,6 @@ Khách hàng có thể mất một phần hoặc toàn bộ tiền đặt cọc 
             disabled
           />
         </Col>
-
         <Col span={12}>
           <h3>Giá Thuê</h3>
           <InputNumber
