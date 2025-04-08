@@ -86,7 +86,6 @@ const PostManagementView = () => {
             }
         });
     };
-
     // Fetch data on component mount
     useEffect(() => {
         const fetchData = async () => {
