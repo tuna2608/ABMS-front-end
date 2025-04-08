@@ -118,6 +118,17 @@ const FileUploadContainer = styled(Upload)`
   }
 `;
 
+const ChangeButton = styled(Button)`
+  margin-top: 10px;
+  background-color: #4b7bec;
+  color: white;
+  border: none;
+
+  &:hover {
+    background-color: #3a5ec7;
+  }
+`;
+
 const SaveButton = styled(Button)`
   width: 100%;
   height: 50px;
@@ -159,8 +170,25 @@ const ProfileEditPage = () => {
   const [loading, setLoading] = useState(false);
   const [selectedImage, setSelectedImage] = useState(user.userImgUrl || avtBase);
   const [selectedFile, setSelectedFile] = useState(null);
+  const [isInitialUpload, setIsInitialUpload] = useState(!user.userImgUrl);
 
   const dispatch = useDispatch();
+
+  const triggerFileInput = () => {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.onchange = (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        const imageUrl = URL.createObjectURL(file);
+        setSelectedFile(file);
+        setSelectedImage(imageUrl);
+        setIsInitialUpload(false);
+      }
+    };
+    fileInput.click();
+  };
 
   const handleSubmit = async (values) => {
     setLoading(true);
@@ -210,8 +238,7 @@ const ProfileEditPage = () => {
       message.error(messageAPI);
     } else {
       message.success(messageAPI);
-      // You might want to replace this with appropriate navigation
-      // navigate("/edit-profile");
+      setIsInitialUpload(false);
     }
     setLoading(false);
   };
@@ -236,22 +263,30 @@ const ProfileEditPage = () => {
                 alt="Profile Avatar" 
               />
             </AvatarWrapper>
-            <FileUploadContainer
-              name="avatar"
-              accept="image/*"
-              beforeUpload={(file) => {
-                const imageUrl = URL.createObjectURL(file);
-                setSelectedFile(file);
-                setSelectedImage(imageUrl);
-                return false; // Prevent default upload
-              }}
-            >
-              <div className="ant-upload">
-                <p className="ant-upload-text">
-                  Click or drag file to upload profile picture
-                </p>
-              </div>
-            </FileUploadContainer>
+            
+            {isInitialUpload ? (
+              <FileUploadContainer
+                name="avatar"
+                accept="image/*"
+                beforeUpload={(file) => {
+                  const imageUrl = URL.createObjectURL(file);
+                  setSelectedFile(file);
+                  setSelectedImage(imageUrl);
+                  setIsInitialUpload(false);
+                  return false; // Prevent default upload
+                }}
+              >
+                <div className="ant-upload">
+                  <p className="ant-upload-text">
+                    Click or drag file to upload profile picture
+                  </p>
+                </div>
+              </FileUploadContainer>
+            ) : (
+              <ChangeButton onClick={triggerFileInput}>
+                Change Picture
+              </ChangeButton>
+            )}
           </AvatarContainer>
 
           <CoinBadge>
