@@ -172,7 +172,7 @@ const ContractView = () => {
 
   return (  
     <Card 
-      title="Quản lý hoá đơn "
+      title="Quản lý hợp đồng "
       extra={
         <DownloadButton 
           icon={<DownloadOutlined />} 
