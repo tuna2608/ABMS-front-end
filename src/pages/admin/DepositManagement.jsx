@@ -49,9 +49,6 @@ const DepositManagement = () => {
         <Button 
         type="primary" 
         onClick={() => {}}
-        style={{ 
-          background: 'rgba(30, 58, 138, 0.92)',
-        }}
         >
           Tạo giao dịch đặt cọc mới
         </Button>

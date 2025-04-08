@@ -1,28 +1,61 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect } from "react";
 import { Result, Button } from "antd";
-import {message} from 'antd'
+import { message } from "antd";
 import { CheckCircleOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { depositSuccess } from "../../../redux/apiCalls";
+import { depositSuccess, paymentBillSuccess } from "../../../redux/apiCalls";
 
 const PaymentSuccess = () => {
   const navigate = useNavigate();
+  const depositRequest = JSON.parse(localStorage.getItem("depositRequest"));
+  console.log(depositRequest);
   
-  const [loadingPayment, setLoadingPayment] = useState(false);
+  const paymentBillRequest = JSON.parse(
+    localStorage.getItem("paymentBillRequest")
+  );
+  console.log(paymentBillRequest);
+  
+
   useEffect(() => {
-    async function callDepositeSuccess() {
-      const depositRequest = await JSON.parse(localStorage.getItem("depositRequest"));
-      const res = await depositSuccess(depositRequest);
-      const messageAPI = res.data.message;
-      console.log(res);
-      if (res.status === 401 || res.status === 400 || res.status === 403) {
-        message.error(messageAPI);
-      } else {
-        message.success(messageAPI);
-      }
+    if (depositRequest) {
+      console.log(depositRequest);
+      callDepositeSuccess();
+      localStorage.removeItem("depositRequest");
     }
-    callDepositeSuccess();
+    if (paymentBillRequest) {
+      console.log(paymentBillRequest);
+      callPaymentBillSuccess();
+      localStorage.removeItem("paymentBillRequest");
+    }
   }, []);
+
+  async function callDepositeSuccess() {
+    const res = await depositSuccess(depositRequest);
+    const messageAPI = res.data.message;
+    console.log(res);
+    if (res.status === 401 || res.status === 400 || res.status === 403) {
+      message.error(messageAPI);
+    } else {
+      message.success(messageAPI);
+    }
+  }
+
+  async function callPaymentBillSuccess() {
+    const formData = {
+      billId: paymentBillRequest.billId,
+      description: paymentBillRequest.description,
+    };
+    try {
+      const res = paymentBillSuccess(formData);
+      if(res.success){
+        message.success(res.message);
+      }else{
+        message.error(res.message);
+      }
+    } catch (error) {
+      message.error('Không thể thanh toán hóa đơn thành công')
+    }
+  }
 
   return (
     <div className="payment-success bg-white min-h-screen flex items-center justify-center">

@@ -10,7 +10,6 @@ import PostManagementView from "./PostManagementView";
 import BillPage from "./OwnerBillManagement";
 import ContractView from "./ContractView";
 import PaymentView from "./PaymentView";
-import FormManagement from "./FormManagement";
 import ChatPage from "../client/ChatPage/ChatPage";
 
 const { Sider, Content, Header } = Layout;
@@ -36,7 +35,27 @@ const OwnerHome = () => {
   const postTypes = ["Cho thuê", "Bán"];
 
 
-  const depositTerms = `ĐIỀU KHOẢN HOÀN TRẢ TIỀN ĐẶT CỌC...`;
+  const depositTerms = `ĐIỀU KHOẢN HOÀN TRẢ TIỀN ĐẶT CỌC
+
+1. Quy Định Hoàn Trả Tiền Đặt Cọc
+- Chủ nhà sẽ hoàn trả 90% số tiền đặt cọc sau khi:
+  a) Người thuê thực hiện đúng các cam kết trong hợp đồng
+  b) Không có hư hỏng vượt quá mức sử dụng bình thường
+  c) Thông báo và bàn giao lại mặt bằng đúng thời hạn
+
+2. Điều Kiện Mất Tiền Đặt Cọc
+Khách hàng có thể mất một phần hoặc toàn bộ tiền đặt cọc nếu:
+- Vi phạm các điều khoản trong hợp đồng thuê
+- Hủy hợp đồng trước thời hạn không có lý do chính đáng
+- Gây hư hỏng tài sản vượt quá mức độ sử dụng bình thường
+
+3. Thời Gian Và Phương Thức Hoàn Trả
+- Thời gian hoàn trả: 10 ngày làm việc sau khi kết thúc hợp đồng
+- Phương thức: Chuyển khoản ngân hàng theo thông tin do người thuê cung cấp
+
+4. Cam Kết
+- Chúng tôi cam kết minh bạch và rõ ràng trong việc hoàn trả tiền đặt cọc
+- Mọi thắc mắc vui lòng liên hệ trực tiếp với chủ nhà để được giải đáp`;
   
   // Sync URL with the current view
   useEffect(() => {
@@ -84,8 +103,6 @@ const OwnerHome = () => {
         return <PaymentView />;
       case "bill-management":
         return <BillPage />;
-        case "form-management": // Add case for form-management
-        return <FormManagement />;
       case "chatpage":
         return <ChatPage />;
       default:
@@ -134,7 +151,6 @@ const OwnerHome = () => {
             <Route path="/contract-management" element={renderContent()} />
             <Route path="/payment-management" element={renderContent()} />
             <Route path="/bill-management" element={renderContent()} />
-            <Route path="/form-management" element={renderContent()} />
             <Route path="/messages" element={renderContent()} />
             <Route path="*" element={<Navigate to="/ownerHome/list" replace />} />
           </Routes>

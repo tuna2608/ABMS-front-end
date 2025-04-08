@@ -689,7 +689,7 @@ const PostDetail = () => {
                       userCurrent ? setIsChatOpen(true) : navigate("/login")
                     }
                     style={{ 
-                      background: 'rgba(30, 58, 138, 0.92)',
+                      background: '#4b7bec',
                     }}
                   >
                     Nhắn tin liên hệ

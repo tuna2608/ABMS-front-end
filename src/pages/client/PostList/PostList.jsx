@@ -119,7 +119,7 @@ const PostList = () => {
               level={2} 
               style={{ 
                 margin: 0, 
-                color: 'rgba(30, 58, 138, 0.92)',
+                color: '#4b7bec',
                 position: 'relative',
                 display: 'inline-block',
                 padding: '0 16px'
@@ -135,7 +135,7 @@ const PostList = () => {
               transform: 'translateX(-50%)', 
               width: '80px', 
               height: '3px', 
-              backgroundColor: 'rgba(30, 58, 138, 0.92)', 
+              backgroundColor: '#4b7bec', 
               borderRadius: '2px' 
             }} />
           </div>
@@ -158,7 +158,7 @@ const PostList = () => {
 
           <Flex gap={16} wrap="wrap">
             <Flex align="center" gap={8}>
-              <AppstoreOutlined style={{ color: 'rgba(30, 58, 138, 0.92)' }} />
+              <AppstoreOutlined style={{ color: '#4b7bec' }} />
               <Select
                 defaultValue="Tất cả"
                 style={{ width: 150 }}
@@ -174,7 +174,7 @@ const PostList = () => {
             </Flex>
             
             <Flex align="center" gap={8}>
-              <EnvironmentOutlined style={{ color: 'rgba(30, 58, 138, 0.92)' }} />
+              <EnvironmentOutlined style={{ color: '#4b7bec' }} />
               <Select
                 defaultValue="Tất cả"
                 style={{ width: 180 }}
@@ -293,7 +293,7 @@ const PostList = () => {
                     <Card.Meta
                       title={
                         <Tooltip title={apartment.title}>
-                          <div style={{ fontSize: '16px', fontWeight: 600, color: 'rgba(30, 58, 138, 0.92)' }}>
+                          <div style={{ fontSize: '16px', fontWeight: 600, color: '#4b7bec' }}>
                             {apartment.title.length > 28
                               ? `${apartment.title.substring(0, 28)}...`
                               : apartment.title}
@@ -312,7 +312,7 @@ const PostList = () => {
                             <div>
                               <Flex justify="space-between" align="center">
                                 <Flex align="center">
-                                  <EnvironmentOutlined style={{ color: 'rgba(30, 58, 138, 0.92)', marginRight: 5 }} />
+                                  <EnvironmentOutlined style={{ color: '#4b7bec', marginRight: 5 }} />
                                   <Text type="secondary">
                                     {apartment.apartment.apartmentName}
                                   </Text>
@@ -340,7 +340,7 @@ const PostList = () => {
                                 size="small"
                                 style={{ 
                                   borderRadius: '4px', 
-                                  background: apartment.depositCheck !== "done" ? 'rgba(30, 58, 138, 0.92)' : '#d9d9d9',
+                                  background: apartment.depositCheck !== "done" ? '#4b7bec' : '#d9d9d9',
                                   width: '100%'
                                 }}
                                 onClick={(e) => {

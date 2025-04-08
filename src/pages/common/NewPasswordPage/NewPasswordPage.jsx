@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
 import { Form, Image } from "antd";
+import { useNavigate } from "react-router-dom";
 import styled from "styled-components";
 import {
   LinkNav,
@@ -10,10 +10,8 @@ import {
 } from "./style";
 import InputForm from "../../../components/common/InputForm/InputForm";
 import ButtonComponent from "../../../components/common/ButtonComponent/ButtonComponent";
-import { resetPassword } from "../../../services/UserService";
 import imgLogin from "../../../assets/common/images/logo-login.png";
 import bgLogin from "../../../assets/common/images/bg-login.jpg";
-import { useNavigate } from "react-router-dom";
 import { WrapperTextLight } from "../LoginPage/style";
 
 const TitlePage = styled.h2`
@@ -24,21 +22,14 @@ const TextContent = styled.p`
   color: var(--cparagraph);
 `;
 
-
-
-const ForgotPasswordPage = () => {
-  const [email, setEmail] = useState("");
+const NewPasswordPage = () => {
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
   const navigate = useNavigate();
 
-  const { mutate, isPending, isError, error } = useMutation({
-    mutationFn: resetPassword,
-    onSuccess: () => {
-      console.log("Password reset link sent!");
-    },
-  });
-
   const handleResetPassword = (values) => {
-    mutate(values);
+    // Chuyển về trang login khi đặt lại mật khẩu thành công
+    navigate('/login');
   };
 
   return (
@@ -84,33 +75,43 @@ const ForgotPasswordPage = () => {
         }}
       >
         <WrapperContainerLeft>
-          <TitlePage>Quên mật khẩu</TitlePage>
+          <TitlePage>Đặt Lại Mật Khẩu</TitlePage>
           <TextContent>
-            Nhập email để nhận OTP đặt lại mật khẩu
+            Vui lòng nhập mật khẩu mới
           </TextContent>
           <Form
-            name="forgotPassword"
+            name="newPassword"
             onFinish={handleResetPassword}
             autoComplete="off"
             style={{ maxWidth: 600 }}
           >
             <Form.Item
-              name="email"
-              rules={[{ required: true, message: "Vui lòng nhập email!" }]}
+              name="newPassword"
+              rules={[{ required: true, message: "Vui lòng nhập mật khẩu mới!" }]}
             >
               <InputForm
-                placeholder="Email"
-                value={email}
-                type="email"
-                onChange={(e) => setEmail(e.target.value)}
+                placeholder="Mật khẩu mới"
+                value={newPassword}
+                type="password"
+                onChange={(e) => setNewPassword(e.target.value)}
+              />
+            </Form.Item>
+            <Form.Item
+              name="confirmPassword"
+              rules={[{ required: true, message: "Vui lòng xác nhận mật khẩu!" }]}
+            >
+              <InputForm
+                placeholder="Xác nhận mật khẩu"
+                value={confirmPassword}
+                type="password"
+                onChange={(e) => setConfirmPassword(e.target.value)}
               />
             </Form.Item>
 
             <Form.Item>
               <ButtonComponent
-                textButton="Gửi yêu cầu"
+                textButton="Đặt Lại Mật Khẩu"
                 htmlType="submit"
-                disabled={isPending}
                 size={40}
                 styleButton={{
                   backgroundColor: "var(--cbutton)",
@@ -125,11 +126,12 @@ const ForgotPasswordPage = () => {
                   fontWeight: "600",
                 }}
               />
-              {isError && <p className="error-message">{error.message}</p>}
             </Form.Item>
           </Form>
           <LinkNav>
-            <WrapperTextLight onClick={() => navigate("/login")}>Quay lại trang đăng nhập</WrapperTextLight>
+            <WrapperTextLight onClick={() => navigate("/otp-verification")}>
+              Quay lại
+            </WrapperTextLight>
           </LinkNav>
         </WrapperContainerLeft>
         <WrapperContainerRight>
@@ -140,4 +142,4 @@ const ForgotPasswordPage = () => {
   );
 };
 
-export default ForgotPasswordPage;
+export default NewPasswordPage;

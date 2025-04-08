@@ -3,6 +3,7 @@ import NotFoundPage from "../pages/common/NotFoundPage/NotFoundPage";
 import LoginPage from "../pages/common/LoginPage/LoginPage";
 import AdminHome from "../pages/admin/AdminHome";
 import ForgotPasswordPage from "../pages/common/ForgotPasswordPage/ForgotPasswordPage";
+import NewPasswordPage from "../pages/common/NewPasswordPage/NewPasswordPage";
 import RegisterPage from "../pages/common/RegisterPage/Register";
 import OwnerHome from "../pages/owner/OwnerHome";
 import RentorHome from "../pages/rentor/RentorHome";
@@ -15,8 +16,11 @@ import DepositApartments from "../pages/client/DepositApartment/DepositApartment
 import EditProfilePage from "../pages/common/EditProfilePage/EditProfilePage";
 import StaffHome from "../pages/staff/StaffHome";
 import OTPPage from "../pages/common/OTPPage/OTPPage";
+import OTPVerificationPage from "../pages/common/OTPVerificationPage/OTPVerificationPage";
 import PaymentSuccess from "../pages/client/Payment/PaymentSuccess";
 import PaymentCancel from "../pages/client/Payment/PaymentCancel";
+import FormManagement from "../pages/client/FormManagement/FormManagement";
+// import BillDetailsPage from "../pages/rentor/BillDetailsPage";
 
 
 export const routes = [
@@ -41,13 +45,23 @@ export const routes = [
         isShowHeader: false
         },
         {
-        path: '/forgot',
+        path: '/forgot-password',
         page: ForgotPasswordPage,
+        isShowHeader: false
+    },
+    {
+        path: '/new-password',
+        page: NewPasswordPage,
         isShowHeader: false
     },
     {
         path: '/verify-otp',
         page: OTPPage,
+        isShowHeader: false
+    },
+    {
+        path: '/verify-forgot-otp',
+        page: OTPVerificationPage,
         isShowHeader: false
     },
     {
@@ -86,17 +100,22 @@ export const routes = [
         isShowHeader: false
     },
     {
+        path: '/form',
+        page: FormManagement,
+        isShowHeader: true
+    },
+    {
         path: '/deposit-apartment',
         page: DepositApartments,
         isShowHeader: true
     },
     {
-        path: '/deposit/success',
+        path: '/payment/success',
         page: PaymentSuccess,
         isShowHeader: true
     },
     {
-        path: '/deposit/cancel',
+        path: '/payment/cancel',
         page: PaymentCancel,
         isShowHeader: true
     },
@@ -110,6 +129,11 @@ export const routes = [
         page: Chatbot,
         isShowHeader: false
     },
+    // {
+    //     path: '/bill-details',
+    //     page: BillDetailsPage,
+    //     isShowHeader: true
+    // },
     {
         path: '/edit-profile',
         page: EditProfilePage,

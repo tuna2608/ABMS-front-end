@@ -69,12 +69,6 @@ const SideMenu = ({ setCurrentView }) => {
       onClick: () => handleMenuClick("bill-management", "bill-management"),
     },
     {
-      key: "6",
-      icon: <FileAddOutlined />,
-      label: "Quản lý đơn từ",
-      onClick: () => handleMenuClick("form-management", "form-management"),
-    },
-    {
       key: "7",
       icon: <MessageOutlined />,
       label: "Tin nhắn",

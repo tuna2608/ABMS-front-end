@@ -4,8 +4,6 @@ import {
   HomeOutlined,
   FileTextOutlined,
   DollarOutlined,
-  MessageOutlined,
-  FileAddOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
@@ -47,24 +45,6 @@ const SideMenu = ({ setCurrentView }) => {
       onClick: () => {
         setCurrentView("payment");
         navigate("/rentorHome/payment");
-      },
-    },
-    {
-      key: "form-management",
-      icon: <FileAddOutlined />,
-      label: "Quản lý đơn từ",
-      onClick: () => {
-        setCurrentView("form-management");
-        navigate("/rentorHome/form-management");
-      },
-    },
-    {
-      key: "chatpage",
-      icon: <MessageOutlined />,
-      label: "Tin nhắn",
-      onClick: () => {
-        setCurrentView("chatpage");
-        navigate("/rentorHome/messages");
       },
     },
   ];

@@ -1,0 +1,229 @@
+import React, { useState } from 'react';
+import { Form, Input, Select, Button, Upload, Typography, Card, Divider, Row, Col } from 'antd';
+import { UploadOutlined, SendOutlined, DownloadOutlined } from '@ant-design/icons';
+import styled from 'styled-components';
+
+const { Title, Text, Paragraph } = Typography;
+const { Option } = Select;
+const { TextArea } = Input;
+
+// Styled Components
+const StyledCard = styled(Card)`
+  margin: 24px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+`;
+
+const HeaderSection = styled.div`
+  background: linear-gradient(to right, #4b7bec, #3867d6);
+  padding: 24px;
+  color: white;
+  border-radius: 8px 8px 0 0;
+`;
+
+const FormSection = styled.div`
+  padding: 24px;
+`;
+
+const NoteSection = styled.div`
+  background-color: #f8f9fa;
+  padding: 16px;
+  margin-bottom: 24px;
+  border-radius: 4px;
+  border-left: 4px solid #3867d6;
+`;
+
+const StyledDivider = styled(Divider)`
+  margin: 24px 0;
+  background-color: #3867d6;
+  height: 2px;
+`;
+
+const FormFooter = styled.div`
+  display: flex;
+  justify-content: flex-start;
+  margin-top: 24px;
+`;
+
+const SubmitButton = styled(Button)`
+  background-color: #4b7bec;
+  border-color: #3867d6;
+  
+  &:hover {
+    background-color: #3867d6;
+    border-color: #3867d6;
+  }
+`;
+
+const ApplicationTypeLabel = styled.div`
+  font-weight: bold;
+  margin-bottom: 8px;
+`;
+
+
+const UploadArea = styled(Upload.Dragger)`
+  margin-bottom: 16px;
+`;
+
+const SupportedFormats = styled.div`
+  text-align: center;
+  margin-bottom: 16px;
+  color: rgba(0, 0, 0, 0.45);
+`;
+
+const DownloadButton = styled(Button)`
+  margin-top: 8px;
+  color: #3867d6;
+  border-color: #3867d6;
+  display: block;
+  margin: 0 auto;
+  
+  &:hover {
+    color: #4b7bec;
+    border-color: #4b7bec;
+  }
+`;
+
+// Main Component
+const FormManagement = () => {
+  const [form] = Form.useForm();
+  const [ setApplicationType] = useState('apartment_renovation');
+
+  const handleApplicationTypeChange = (value) => {
+    setApplicationType(value);
+  };
+
+  const onFinish = (values) => {
+    console.log('Form values:', values);
+    // Handle form submission
+  };
+
+  const applicationTypes = [
+    { value: 'apartment_renovation', label: 'Đăng ký thi công nội thất' },
+    { value: 'apartment_transfer', label: 'Đơn chuyển căn hộ' },
+    { value: 'maintenance_request', label: 'Đơn yêu cầu bảo trì' },
+    { value: 'complaint_form', label: 'Đơn khiếu nại' },
+    { value: 'facility_booking', label: 'Đơn đăng ký sử dụng tiện ích' },
+  ];
+
+  return (
+    <StyledCard>
+      <HeaderSection>
+        <Title level={2} style={{ color: 'white', margin: 0 }}>
+          Gửi đơn cho Ban Quản lý Chung cư
+        </Title>
+      </HeaderSection>
+
+      <FormSection>
+        <NoteSection>
+          <Paragraph>
+            <Text strong>Lưu ý:</Text> Khi gửi đơn/email đến các phòng ban
+          </Paragraph>
+          <Paragraph>
+            Bộ phận xử lý đơn sẽ trả lời đơn/email của cư dân trong vòng 48h (trừ đơn rút tiền, đơn phúc tra, chuyển căn hộ...).
+          </Paragraph>
+          <Paragraph>
+            Để hạn chế SPAM, sẽ giảm thời gian trả lời đơn/email có tính chất SPAM theo nguyên tắc: Khi cư dân gửi N đơn/email (N&gt;1) cho cùng một yêu cầu thì thời gian trả lời trong vòng N*48h.
+          </Paragraph>
+          <Paragraph>
+            Vì vậy cư dân cần nhắc trước khi gửi đơn/email với cùng một nội dung để nhận được trả lời/giải quyết nhanh nhất theo quy định.
+          </Paragraph>
+        </NoteSection>
+
+
+
+        <Form
+          form={form}
+          layout="vertical"
+          onFinish={onFinish}
+          initialValues={{ application_type: 'apartment_renovation' }}
+        >
+          <Row gutter={24}>
+            <Col span={24}>
+              <ApplicationTypeLabel>Loại đơn:</ApplicationTypeLabel>
+              <Form.Item name="application_type">
+                <Select onChange={handleApplicationTypeChange}>
+                  {applicationTypes.map(type => (
+                    <Option key={type.value} value={type.value}>
+                      {type.label}
+                    </Option>
+                  ))}
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <StyledDivider />
+
+          <Title level={4}>THÔNG TIN CƯ DÂN</Title>
+
+          <Row gutter={24}>
+            <Col span={24} md={12}>
+              <Form.Item
+                label="Số căn hộ"
+                name="apartment_number"
+                rules={[{ required: true, message: 'Vui lòng nhập số căn hộ' }]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+
+            <Col span={24} md={12}>
+              <Form.Item
+                label="Họ và tên"
+                name="resident_name"
+                rules={[{ required: true, message: 'Vui lòng nhập họ và tên' }]}
+              >
+                <Input />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Row gutter={24}>
+            <Col span={24}>
+              <Form.Item
+                label="Lý do"
+                name="reason"
+                rules={[{ required: true, message: 'Vui lòng nhập lý do' }]}
+              >
+                <TextArea rows={6} />
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <Row gutter={24}>
+            <Col span={24}>
+              <Form.Item
+                label="Tệp đính kèm"
+                name="attachment"
+              >
+                <UploadArea>
+                  <p className="ant-upload-drag-icon">
+                    <UploadOutlined />
+                  </p>
+                  <p className="ant-upload-text">Kéo thả file vào đây hoặc click để chọn file</p>
+                </UploadArea>
+                
+                <SupportedFormats>
+                  Hỗ trợ định dạng: .xlsx, .pdf, .docx, .doc, .xls, .jpg, .png, .zip
+                </SupportedFormats>
+                
+                <DownloadButton icon={<DownloadOutlined />}>
+                  Tải mẫu đơn tại đây
+                </DownloadButton>
+              </Form.Item>
+            </Col>
+          </Row>
+
+          <FormFooter>
+            <SubmitButton type="primary" htmlType="submit" icon={<SendOutlined />}>
+              Gửi
+            </SubmitButton>
+          </FormFooter>
+        </Form>
+      </FormSection>
+    </StyledCard>
+  );
+};
+
+export default FormManagement;

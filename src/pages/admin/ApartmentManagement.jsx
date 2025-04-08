@@ -345,9 +345,6 @@ const ApartmentManagement = () => {
           type="primary"
           icon={<PlusOutlined />}
           onClick={() => setIsModalVisible(true)}
-          style={{
-            background: 'rgba(30, 58, 138, 0.92)',
-          }}
         >
           Thêm Căn Hộ Mới
         </Button>
