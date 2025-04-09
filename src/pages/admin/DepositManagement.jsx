@@ -33,10 +33,9 @@ const DepositManagement = () => {
   // Calculate deposit statistics
   const depositStats = {
     total: deposits.length,
-    pending: deposits.filter(d => d.status === 'pending').length,
-    confirmed: deposits.filter(d => d.status === 'confirmed').length,
-    completed: deposits.filter(d => d.status === 'done').length,
-    cancelled: deposits.filter(d => d.status === 'cancelled').length,
+    ongoing: deposits.filter(d => d.status === 'ongoing').length,
+    done: deposits.filter(d => d.status === 'done').length,
+    none: deposits.filter(d => d.status === 'none').length,
     totalAmount: deposits.reduce((sum, deposit) => sum + deposit.depositPrice, 0)
   };
 
@@ -45,16 +44,18 @@ const DepositManagement = () => {
     (depositFilterStatus === 'all' || item.status === depositFilterStatus) &&
     (searchText === '' || 
      item.depositId.toString().includes(searchText) || 
-     item.apartmentName.toLowerCase().includes(searchText.toLowerCase()))
+     item.apartmentName.toLowerCase().includes(searchText.toLowerCase()) ||
+     item.postOwnerName.toLowerCase().includes(searchText.toLowerCase()) ||
+     item.depositUserName.toLowerCase().includes(searchText.toLowerCase()))
   );
 
   // Status color mapping
   const getStatusColor = (status) => {
     switch(status) {
-      case 'done': return 'green';
-      case 'pending': return 'orange';
-      case 'cancelled': return 'red';
-      default: return 'blue';
+      case 'done': return 'success';
+      case 'ongoing': return 'processing';
+      case 'none': return 'default';
+      default: return 'default';
     }
   };
 
@@ -72,8 +73,8 @@ const DepositManagement = () => {
       render: (status) => (
         <Tag color={getStatusColor(status)}>
           {status === 'done' ? 'Hoàn Thành' : 
-           status === 'pending' ? 'Chờ Xác Nhận' : 
-           status === 'cancelled' ? 'Đã Hủy' : status}
+           status === 'ongoing' ? 'Đang Đặt Cọc' : 
+           status === 'none' ? 'Chưa Đặt Cọc' : status}
         </Tag>
       )
     },
@@ -88,26 +89,25 @@ const DepositManagement = () => {
       key: 'depositUserName',
     },
     {
-      title: 'Bài Đăng',
-      dataIndex: 'postTitle',
-      key: 'postTitle',
-    },
-    {
       title: 'Căn Hộ',
       dataIndex: 'apartmentName',
       key: 'apartmentName',
     },
     {
-      title: 'Giá Đặt Cọc',
-      dataIndex: 'depositPrice',
-      key: 'depositPrice',
-      render: (price) => formatCurrency(price)
+      title: 'Mã Thanh Toán',
+      dataIndex: 'paymentId',
+      key: 'paymentId',
     },
     {
       title: 'Ngày Thanh Toán',
       dataIndex: 'paymentDate',
       key: 'paymentDate',
-      render: (date) => new Date(date).toLocaleString()
+      render: (date) => new Date(date).toLocaleString('vi-VN')
+    },
+    {
+      title: 'Thông Tin Thanh Toán',
+      dataIndex: 'paymentInfo',
+      key: 'paymentInfo',
     }
   ];
 
@@ -140,39 +140,30 @@ const DepositManagement = () => {
             />
           </Card>
         </Col>
-        <Col xs={24} sm={12} md={8} lg={5}>
-          <Card onClick={() => setDepositFilterStatus('pending')} hoverable>
+        <Col xs={24} sm={12} md={8} lg={6}>
+          <Card onClick={() => setDepositFilterStatus('ongoing')} hoverable>
             <Statistic 
-              title="Chờ xác nhận" 
-              value={depositStats.pending}
+              title="Đang Đặt Cọc" 
+              value={depositStats.ongoing}
               valueStyle={{ color: '#1890ff' }}
             />
           </Card>
         </Col>
-        <Col xs={24} sm={12} md={8} lg={5}>
-          <Card onClick={() => setDepositFilterStatus('confirmed')} hoverable>
-            <Statistic 
-              title="Đã xác nhận" 
-              value={depositStats.confirmed}
-              valueStyle={{ color: '#fa8c16' }}
-            />
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} md={8} lg={5}>
+        <Col xs={24} sm={12} md={8} lg={6}>
           <Card onClick={() => setDepositFilterStatus('done')} hoverable>
             <Statistic 
-              title="Hoàn thành" 
-              value={depositStats.completed}
+              title="Hoàn Thành" 
+              value={depositStats.done}
               valueStyle={{ color: '#52c41a' }}
             />
           </Card>
         </Col>
-        <Col xs={24} sm={12} md={8} lg={5}>
-          <Card onClick={() => setDepositFilterStatus('cancelled')} hoverable>
+        <Col xs={24} sm={12} md={8} lg={6}>
+          <Card onClick={() => setDepositFilterStatus('none')} hoverable>
             <Statistic 
-              title="Đã hủy" 
-              value={depositStats.cancelled}
-              valueStyle={{ color: '#ff4d4f' }}
+              title="Chưa Đặt Cọc" 
+              value={depositStats.none}
+              valueStyle={{ color: '#d9d9d9' }}
             />
           </Card>
         </Col>
@@ -207,10 +198,9 @@ const DepositManagement = () => {
             onChange={setDepositFilterStatus}
           >
             <Option value="all">Tất cả trạng thái</Option>
-            <Option value="pending">Chờ xác nhận</Option>
-            <Option value="confirmed">Đã xác nhận</Option>
-            <Option value="done">Hoàn thành</Option>
-            <Option value="cancelled">Đã hủy</Option>
+            <Option value="ongoing">Đang Đặt Cọc</Option>
+            <Option value="done">Hoàn Thành</Option>
+            <Option value="none">Chưa Đặt Cọc</Option>
           </Select>
         </Space>
       </Space>
