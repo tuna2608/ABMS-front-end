@@ -16,6 +16,7 @@ import {
   FileProtectOutlined, 
   DownloadOutlined,
   ContainerOutlined,
+  SearchOutlined,
   HomeOutlined
 } from "@ant-design/icons";
 import styled from 'styled-components';
@@ -23,6 +24,7 @@ import moment from "moment";
 import { useSelector } from "react-redux";
 import { getContractOwners, getApartments } from "../../redux/apiCalls";
 
+const { Search } = Input;
 const { TabPane } = Tabs;
 
 // Styled Download Button
@@ -289,6 +291,12 @@ const ContractView = () => {
               </Select.Option>
             ))}
           </Select>
+          <Search
+            placeholder="Tìm kiếm hợp đồng"
+            allowClear
+            onSearch={value => setSearchText(value)}
+            style={{ width: 300 }}
+          />
           <DownloadButton
             icon={<DownloadOutlined />}
             onClick={handleDownloadTemplate}
@@ -313,5 +321,6 @@ const ContractView = () => {
     </Card>
   );
 };
+
 
 export default ContractView;
