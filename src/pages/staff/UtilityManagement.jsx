@@ -12,7 +12,12 @@ import {
   message,
   Empty,
 } from "antd";
-import { DollarOutlined, PlusOutlined, EditOutlined } from "@ant-design/icons";
+import { 
+  DollarOutlined, 
+  PlusOutlined, 
+  EditOutlined, 
+  DownloadOutlined 
+} from "@ant-design/icons";
 import moment from "moment";
 import { createBillConsumption, getAllConsumption } from "../../redux/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
@@ -37,7 +42,6 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
     setLoading(true);
     try {
       const res = await getAllConsumption();
-      // console.log(res.data.length === 0);
       if (res.success) {
         setConsumptions(res.data);
       } else {
@@ -52,6 +56,24 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
 
   const handleDateChange = (date) => {
     setSelectedDate(date);
+  };
+
+  // Hàm tải mẫu đơn
+  const handleDownloadTemplate = () => {
+    // Thay thế URL này bằng link Google Drive trực tiếp có thể tải xuống
+    const templateUrl = 'https://drive.google.com/drive/folders/1F5E7XpvsAoIrVOXZ0KBq3t3ryOsy28QA?usp=drive_link';
+    
+    try {
+      // Mở link tải xuống trong tab mới
+      window.open(templateUrl, '_blank');
+      
+      // Hiển thị thông báo thành công
+      message.success('Đang tải mẫu đơn. Vui lòng kiểm tra trình duyệt của bạn.');
+    } catch (error) {
+      // Xử lý lỗi nếu có
+      message.error('Có lỗi xảy ra khi tải mẫu đơn. Vui lòng thử lại.');
+      console.error('Download error:', error);
+    }
   };
 
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -136,8 +158,6 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
   };
 
   const handleCreateBillConsumption = async (record) => {
-    // console.log(record);
-    // console.log(currentUser);
     const month = defaultValue.month() + 1;
     const year = defaultValue.year();
     const formData = {
@@ -166,6 +186,7 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
       console.error("Error creating bill:", error);
     }
   };
+
   const handleFilter = () => {
     console.log(selectedDate.format("YYYY-MM"));
   };
@@ -194,15 +215,23 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
             Lọc
           </Button>
         </Flex>
-        <Button
-          style={{ backgroundColor: "var(--fgreen)", color: "white" }}
-          onClick={handleImportFile}
-        >
-          Import CSV
-        </Button>
+        <Flex gap={10}>
+          <Button
+            icon={<DownloadOutlined />}
+            style={{ backgroundColor: "var(--fblue)", color: "white" }}
+            onClick={handleDownloadTemplate}
+          >
+            Tải mẫu đơn
+          </Button>
+          <Button
+            style={{ backgroundColor: "var(--fgreen)", color: "white" }}
+            onClick={handleImportFile}
+          >
+            Import CSV
+          </Button>
+        </Flex>
       </Flex>
 
-      {/* Utility Tabs with new items prop - Only one tab now */}
       {consumptions.length === 0 ? (
         <Empty />
       ) : (
