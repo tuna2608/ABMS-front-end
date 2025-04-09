@@ -55,29 +55,29 @@ const DepositPage = ({
       postId: postDetail.postId,
       depositPrice: postDetail.depositPrice,
     };
-    // console.log(depositRequest);
 
-    const res = await depositCreate(depositRequest);
-    // console.log(res);
-    const messageAPI = res.data.message;
-    if (res.status === 401 || res.status === 400 || res.status === 403) {
-      message.error(messageAPI);
-    } else {
-      message.success(messageAPI);
-      localStorage.setItem('depositRequest',JSON.stringify(depositRequest));
-      const url = res?.data?.checkoutUrl;
-      window.location.href = url;
-    }
-
-    // Modal.success({
-    //   title: "Yêu Cầu Đặt Cọc Thành Công",
-    //   content: `Yêu cầu đặt cọc cho ${postDetail.title} đã được gửi. Vui lòng chờ xác nhận.`,
-    //   onOk: () => {
-    //     setModalVisible(false);
-    //     if (onSubmit) onSubmit(depositRequest);
-    //     if (onCancel) onCancel();
-    //   },
-    // });
+    try {
+      const res = await depositCreate(depositRequest);
+      if(res.success){
+        message.success(res.message);
+        const data = res.data;
+        const formData ={
+          ...depositRequest,
+          depositId: data.depositId
+        }
+        localStorage.setItem("depositRequest", JSON.stringify(formData));
+        const url = res?.data?.checkoutUrl;
+        window.location.href = url;
+      }else{
+        
+      }
+      const messageAPI = res.data.message;
+      if (res.status === 401 || res.status === 400 || res.status === 403) {
+        message.error(messageAPI);
+      } else {
+        
+      }
+    } catch (error) {}
   };
 
   const handleCancel = () => {

@@ -285,7 +285,7 @@ const BillPage = () => {
         message.error(res.message);
       }
     } catch (error) {
-      message.error("Không thể thực hiện thanh toán!");
+      message.error("Không thể thực hiện thanh toán hóa đơn!");
     } finally {
     }
   };

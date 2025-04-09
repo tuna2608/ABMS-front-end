@@ -85,12 +85,19 @@ export const register = async (dispatch, user) => {
   dispatch(registerStart());
   try {
     const res = await publicRequest.post("/api/register", user);
-    // console.log(res);
     dispatch(registerSuccess(res.data.data));
-    return res.data
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || ''
+    };
   } catch (error) {
     dispatch(registerFail());
-    return error.response
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || "Lỗi khi đăng ký tài khoản"
+    };
   }
 };
 
@@ -155,7 +162,6 @@ export const sendOtpForgotPassword = async (formData) => {
   }
 }
 
-
 //dat coc ---------------
 export const depositCreate = async (formData) => {
   const form = {...formData,
@@ -164,27 +170,51 @@ export const depositCreate = async (formData) => {
   }
   try {
     const res = await publicRequest.post(`/deposit/create`, form);
-    return res.data
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || ''
+    };
   } catch (error) {
-    return error.response
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || "Lỗi khi chuyển sang trang đặt cọc"
+    };
   }
 };
 
 export const depositSuccess = async (formData) => {
   try {
     const res = await publicRequest.post(`/payment/deposit_success`, formData);
-    return res.data
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || ''
+    };
   } catch (error) {
-    return error.response
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || "Lỗi khi thực hiện đặt cọc thành công"
+    };
   }
 };
 
 export const depositCancel = async (formData) => {
   try {
     const res = await publicRequest.post(`/deposit/cancel`, formData);
-    return res.data
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || ''
+    };
   } catch (error) {
-    return error.response
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || "Lỗi khi thực hiện hủy đặt cọc"
+    };
   }
 };
 
