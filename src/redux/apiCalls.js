@@ -1118,3 +1118,44 @@ export const broadcastNotification = async (notificationData, role) => {
     };
   }
 };
+
+//------------------------------------------------------CRUD Deposit View---------------------------------------------------------------------------------
+
+// Lấy danh sách deposit 
+export const getAllDeposits = async () => {
+  try {
+    const res = await publicRequest.get(`/deposit/getall`);
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || 'Lấy danh sách deposit thành công'
+    };
+  } catch (error) {
+    console.error("Error fetching deposits:", error);
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || 'Có lỗi xảy ra khi lấy danh sách deposit'
+    };
+  }
+};
+
+//---------------------------------------------------CRUD Contract View---------------------------------------------------------------------------------
+//lấy danh sách hợp đồng theo căn hộ
+export const getContractOwners = async (apartmentName) => {
+  try {
+    const res = await publicRequest.get(`/user/list_contract_owner?apartmentName=${apartmentName}`);
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || 'Lấy danh sách hợp đồng thành công'
+    };
+  } catch (error) {
+    console.error("Error fetching contract owners:", error);
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || 'Có lỗi xảy ra khi lấy danh sách hợp đồng'
+    };
+  }
+};
