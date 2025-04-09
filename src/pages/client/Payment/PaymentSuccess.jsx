@@ -13,7 +13,7 @@ const PaymentSuccess = () => {
   const paymentBillRequest = JSON.parse(
     localStorage.getItem("paymentBillRequest")
   );
-  console.log(paymentBillRequest);
+  // console.log(paymentBillRequest);
   
 
   useEffect(() => {
@@ -44,6 +44,7 @@ const PaymentSuccess = () => {
     const formData = {
       billId: paymentBillRequest.billId,
       description: paymentBillRequest.description,
+      amount: paymentBillRequest.amount,
     };
     try {
       const res = paymentBillSuccess(formData);

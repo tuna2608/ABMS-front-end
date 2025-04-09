@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useMutation } from "@tanstack/react-query";
-import { Form, Image } from "antd";
+import { Form, Image, message } from "antd";
 import styled from "styled-components";
 import {
   LinkNav,
@@ -10,11 +10,11 @@ import {
 } from "./style";
 import InputForm from "../../../components/common/InputForm/InputForm";
 import ButtonComponent from "../../../components/common/ButtonComponent/ButtonComponent";
-import { resetPassword } from "../../../services/UserService";
 import imgLogin from "../../../assets/common/images/logo-login.png";
 import bgLogin from "../../../assets/common/images/bg-login.jpg";
 import { useNavigate } from "react-router-dom";
 import { WrapperTextLight } from "../LoginPage/style";
+import { sendOtpForgotPassword } from "../../../redux/apiCalls";
 
 const TitlePage = styled.h2`
   color: var(--cheadline);
@@ -24,21 +24,28 @@ const TextContent = styled.p`
   color: var(--cparagraph);
 `;
 
-
-
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState("");
+  const [loading,setLoading] = useState(false)
   const navigate = useNavigate();
 
-  const { mutate, isPending, isError, error } = useMutation({
-    mutationFn: resetPassword,
-    onSuccess: () => {
-      console.log("Password reset link sent!");
-    },
-  });
-
-  const handleResetPassword = (values) => {
-    mutate(values);
+  const handleResetPassword = async (values) => {
+    setLoading(true);
+    const formData = {
+      email: values.email
+    }
+    try {
+      const res = await sendOtpForgotPassword(formData);
+      if(res.success){
+        navigate('/verify-forgot-otp')
+      }else{
+        message.error(res.message);
+      }
+    } catch (error) {
+      message.error("Không thể send otp forgot password")
+    }finally{
+      setLoading(false)
+    }
   };
 
   return (
@@ -110,7 +117,7 @@ const ForgotPasswordPage = () => {
               <ButtonComponent
                 textButton="Gửi yêu cầu"
                 htmlType="submit"
-                disabled={isPending}
+                disabled={false}
                 size={40}
                 styleButton={{
                   backgroundColor: "var(--cbutton)",
@@ -125,7 +132,7 @@ const ForgotPasswordPage = () => {
                   fontWeight: "600",
                 }}
               />
-              {isError && <p className="error-message">{error.message}</p>}
+              {/* {isError && <p className="error-message">{error.message}</p>} */}
             </Form.Item>
           </Form>
           <LinkNav>

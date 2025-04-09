@@ -29,11 +29,6 @@ export const routes = [
         page: HomePage,
         isShowHeader: true
     },
-    // {
-    //     path: '/headofhousehold',
-    //     page: HeadOfHousehold,
-    //     isShowHeader: false
-    // },
     {
         path: '/login',
         page: LoginPage,

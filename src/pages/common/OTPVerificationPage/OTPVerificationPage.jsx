@@ -157,8 +157,8 @@ const OTPVerificationPage = () => {
   };
 
   const handleVerifyOTP = () => {
-    // Chuyển sang trang đặt lại mật khẩu
-    navigate('/new-password');
+    console.log(otp);
+    // navigate('/new-password');
   };
 
   return (
