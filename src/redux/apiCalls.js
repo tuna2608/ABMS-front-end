@@ -40,9 +40,6 @@ import {
   addNewContact
 } from "./chatSlice";
 import {
-  getApartmentsStart,
-  getApartmentsSuccess,
-  getApartmentsFailure,
   createApartmentStart,
   createApartmentSuccess,
   createApartmentFailure,
@@ -150,13 +147,12 @@ export const sendOtpForgotPassword = async (formData) => {
   }
 }
 
-
 //------------------------------------------------------Deposit View---------------------------------------------------------------------------------
 
 // Lấy danh sách deposit 
 export const getAllDeposits = async () => {
   try {
-    const res = await publicRequest.get(`/deposit/getall`);
+    const res = await publicRequest.get(`/deposit/getAll`);
     return {
       success: true,
       data: res.data.data || [],
