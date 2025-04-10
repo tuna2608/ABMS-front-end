@@ -1,8 +1,7 @@
 import React, { useState } from 'react';
 import { Card, Table, Button, Space, Modal, message } from 'antd';
 import { 
-  DeleteOutlined, 
-  EyeOutlined 
+  DeleteOutlined 
 } from '@ant-design/icons';
 
 // Sample payment data based on database schema
@@ -37,11 +36,6 @@ const PaymentManagement = () => {
         message.success('Đã xóa khoản thanh toán');
       }
     });
-  };
-
-  // View payment details
-  const handleViewDetails = (payment) => {
-    setSelectedPayment(payment);
   };
 
   // Columns configuration
@@ -83,14 +77,6 @@ const PaymentManagement = () => {
       render: (_, record) => (
         <Space>
           <Button 
-            icon={<EyeOutlined />} 
-            onClick={() => handleViewDetails(record)}
-            type="primary"
-            ghost
-          >
-            Xem
-          </Button>
-          <Button 
             icon={<DeleteOutlined />} 
             danger
             onClick={() => handleDelete(record.payment_id)}
@@ -106,7 +92,7 @@ const PaymentManagement = () => {
     <Card 
     title={
         <Space>
-          <EyeOutlined />
+          <DeleteOutlined />
           <span>Danh sách thanh toán</span>
         </Space>
       }
@@ -126,30 +112,6 @@ const PaymentManagement = () => {
           locale={{ emptyText: 'Không có thanh toán nào' }}
         />
       )}
-
-      {/* Payment Details Modal */}
-      <Modal
-        title="Chi Tiết Thanh Toán"
-        open={!!selectedPayment}
-        onCancel={() => setSelectedPayment(null)}
-        footer={[
-          <Button key="close" onClick={() => setSelectedPayment(null)}>
-            Đóng
-          </Button>
-        ]}
-      >
-        {selectedPayment && (
-          <div>
-            <p><strong>Mã Thanh Toán:</strong> {selectedPayment.payment_id}</p>
-            <p><strong>Mã Kiểm Tra:</strong> {selectedPayment.payment_check}</p>
-            <p><strong>Người Dùng:</strong> {selectedPayment.user_id}</p>
-            <p><strong>Số Tiền:</strong> {selectedPayment.price.toLocaleString()} VND</p>
-            <p><strong>Loại Thanh Toán:</strong> {selectedPayment.payment_type}</p>
-            <p><strong>Ngày Thanh Toán:</strong> {selectedPayment.payment_date}</p>
-            <p><strong>Thông Tin Thanh Toán:</strong> {selectedPayment.payment_info}</p>
-          </div>
-        )}
-      </Modal>
     </Card>
   );
 };

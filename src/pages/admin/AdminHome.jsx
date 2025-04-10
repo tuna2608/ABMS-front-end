@@ -13,6 +13,7 @@ import AccountManagement from './AccountManagement';
 import ApartmentManagement from './ApartmentManagement';
 import PostManagementView from '../admin/PostManagement';
 import PaymentManagement from './PaymentManagement';
+import CoinManagement from './CoinManagement';
 import FinancialReports from './FinancialReports';
 import SystemSettings from './SystemSettings';
 
@@ -51,6 +52,8 @@ const AdminHome = () => {
         return <PostManagementView view="list" />;
         case "payments":
   return <PaymentManagement />;
+  case "coin":
+  return <CoinManagement />;
       case "reports":
         return <FinancialReports />;
       case "settings":
@@ -93,6 +96,7 @@ const AdminHome = () => {
             <Route path="/apartments" element={renderActiveContent()} />
             <Route path="/posts/list" element={renderActiveContent()} />
             <Route path="/payments" element={renderActiveContent()} />
+            <Route path="/coin" element={renderActiveContent()} />
             <Route path="/reports" element={renderActiveContent()} />
             <Route path="/settings" element={renderActiveContent()} />
             <Route path="*" element={<Navigate to="/adminHome/dashboard" replace />} />
