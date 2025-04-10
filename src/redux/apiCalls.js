@@ -3,6 +3,9 @@ import {
   loginFailure,
   loginStart,
   loginSuccess,
+  signupStart,
+  signupSuccess,
+  signupFail,
   registerStart,
   registerSuccess,
   registerFail,
@@ -24,9 +27,6 @@ import {
   resetUsersSuccess,
 } from "./userSlice";
 import { toast } from "react-toastify";
-
-import { getAllPostsFailure, getAllPostsStart, getAllPostsSuccess, getPostFailure, getPostStart, getPostSuccess } from "./postSlice";
-
 import {
   getMessagesStart,
   getMessagesSuccess,
@@ -50,6 +50,7 @@ import {
   deleteApartmentSuccess,
   deleteApartmentFailure,
 } from './apartmentSlice';
+import { getAllPostsFailure, getAllPostsStart, getAllPostsSuccess, getPostFailure, getPostStart, getPostSuccess } from "./postSlice";
 
 // Auth ------------------------------------------------------------------
 export const login = async (dispatch, user) => {

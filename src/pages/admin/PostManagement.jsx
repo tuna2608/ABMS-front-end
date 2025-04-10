@@ -114,7 +114,7 @@ const PostManagement = () => {
 
                 if (response.success) {
                     message.success('Xóa bài viết thành công!');
-                    // Gọi lại fetchPosts để lấy danh sách mới nhất
+                    console.log('Xóa bài viết thành công:', record.postId);
                     fetchPosts();
                 } else {
                     message.error(response.message);

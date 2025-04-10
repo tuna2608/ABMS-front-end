@@ -1,17 +1,19 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { useDispatch } from "react-redux";
 import {
   WrapperContainer,
   WrapperContainerLeft,
   WrapperContainerRight,
 } from "./style";
-import { Form, Image } from "antd";
+import { Form, Image, message } from "antd";
 import imgLogin from "./../../../assets/common/images/logo-login.png";
 import styled from "styled-components";
 import ButtonComponent from "../../../components/common/ButtonComponent/ButtonComponent";
 import bgLogin from "../../../assets/common/images/bg-login.jpg";
 import { LinkNav } from "../ForgotPasswordPage/style";
 import { WrapperTextLight } from "../LoginPage/style";
+import { verifyForgotPasswordOTP, forgotPassword } from "../../../redux/apiCalls";
 
 const TextContent = styled.p`
   color: var(--cparagraph);
@@ -69,10 +71,24 @@ const ResendButton = styled.span`
 
 const OTPVerificationPage = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch();
   const [otp, setOtp] = useState(["", "", "", "", "", ""]);
   const [timer, setTimer] = useState(60);
   const [canResend, setCanResend] = useState(false);
   const inputRefs = useRef([]);
+  const [email, setEmail] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    // Retrieve email from localStorage
+    const storedEmail = localStorage.getItem('forgotPasswordEmail');
+    if (storedEmail) {
+      setEmail(storedEmail);
+    } else {
+      // If no email is stored, redirect back to forgot password page
+      navigate('/forgot-password');
+    }
+  }, [navigate]);
 
   // Add focus management for OTP inputs
   const handleOtpChange = (e, index) => {
@@ -141,24 +157,76 @@ const OTPVerificationPage = () => {
     return () => clearInterval(interval);
   }, [timer]);
 
-  const handleResendOTP = () => {
-    if (canResend) {
-      // Reset OTP
-      setOtp(["", "", "", "", "", ""]);
-      // Reset timer
-      setTimer(60);
-      setCanResend(false);
-      // Focus on first input
-      inputRefs.current[0].focus();
-      
-      // Here you would call your API to resend the OTP
-      console.log("Resending OTP...");
+  const handleResendOTP = async () => {
+    if (canResend && email) {
+      setIsLoading(true);
+      try {
+        const result = await forgotPassword(dispatch, email);
+        
+        const messageAPI = result?.message;
+        if (result.success) {
+          message.success(messageAPI || "Mã OTP đã được gửi lại");
+          // Reset OTP
+          setOtp(["", "", "", "", "", ""]);
+          // Reset timer
+          setTimer(60);
+          setCanResend(false);
+          // Focus on first input
+          inputRefs.current[0].focus();
+        } else {
+          message.error(messageAPI || "Có lỗi xảy ra khi gửi lại mã OTP");
+        }
+      } catch (error) {
+        message.error("Có lỗi xảy ra. Vui lòng thử lại.");
+      } finally {
+        setIsLoading(false);
+      }
     }
   };
 
-  const handleVerifyOTP = () => {
-    console.log(otp);
-    // navigate('/new-password');
+  const handleVerifyOTP = async () => {
+    // Combine OTP digits
+    const otpCode = otp.join('');
+    
+    if (otpCode.length !== 6) {
+      message.error("Vui lòng nhập đầy đủ mã OTP");
+      return;
+    }
+  
+    setIsLoading(true);
+    try {
+      console.log('Verifying OTP:', { email, otp: otpCode });
+  
+      const result = await verifyForgotPasswordOTP(dispatch, { 
+        email, 
+        otp: otpCode 
+      });
+      
+      console.log('Verify OTP Result:', result);
+      
+      // Get message from result
+      const messageAPI = result?.message;
+
+      // Modify the success condition to be more flexible
+      if (result.success || result.status === 200) {
+        message.success(messageAPI || "Xác thực OTP thành công");
+        // Store email for new password page
+        localStorage.setItem('resetPasswordEmail', email);
+        // Remove old email storage
+        localStorage.removeItem('forgotPasswordEmail');
+        
+        // Use multiple navigation methods for redundancy
+        window.location.href = '/new-password';  // Force full page reload
+        navigate('/new-password');  // React Router navigation
+      } else {
+        message.error(messageAPI || "Xác thực OTP không thành công");
+      }
+    } catch (error) {
+      console.error('Full Verification Error:', error);
+      message.error("Có lỗi xảy ra. Vui lòng thử lại.");
+    } finally {
+      setIsLoading(false);
+    }
   };
 
   return (
@@ -226,6 +294,7 @@ const OTPVerificationPage = () => {
             <ResendButton 
               className={!canResend ? "disabled" : ""}
               onClick={handleResendOTP}
+              disabled={isLoading}
             >
               {canResend ? "Gửi lại" : `Gửi lại sau (${timer}s)`}
             </ResendButton>
@@ -235,7 +304,7 @@ const OTPVerificationPage = () => {
             <Form.Item>
               <ButtonComponent
                 onClick={handleVerifyOTP}
-                disabled={otp.some((digit) => !digit)}
+                disabled={otp.some((digit) => !digit) || isLoading}
                 size={40}
                 styleButton={{
                   backgroundColor: "var(--cbutton)",

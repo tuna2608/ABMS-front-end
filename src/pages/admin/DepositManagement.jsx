@@ -21,6 +21,7 @@ const { Option } = Select;
 const DepositManagement = () => {
   const [loading, setLoading] = useState(false);
   const [depositFilterStatus, setDepositFilterStatus] = useState("all");
+  const [searchText, setSearchText] = useState("");
 
   const [deposits, setDeposits] = useState([
     {
@@ -60,14 +61,27 @@ const DepositManagement = () => {
     return new Intl.NumberFormat("vi-VN").format(amount) + " VNĐ";
   };
 
-  // Deposit statistics
+  // Fetch deposits
+  useEffect(() => {
+    const fetchDeposits = async () => {
+      const result = await getAllDeposits();
+      if (result.success) {
+        setDeposits(result.data);
+        setLoading(false);
+      } else {
+        setLoading(false);
+      }
+    };
+    fetchDeposits();
+  }, []);
+
+  // Calculate deposit statistics
   const depositStats = {
-    total: 3,
-    pending: 1,
-    confirmed: 1,
-    completed: 1,
-    cancelled: 0,
-    totalAmount: 418200000,
+    total: deposits.length,
+    ongoing: deposits.filter(d => d.status === 'ongoing').length,
+    done: deposits.filter(d => d.status === 'done').length,
+    none: deposits.filter(d => d.status === 'none').length,
+    totalAmount: deposits.reduce((sum, deposit) => sum + deposit.depositPrice, 0)
   };
 
   const depositColumns = [
@@ -133,6 +147,7 @@ const DepositManagement = () => {
         </Button>
       }
     >
+      {/* Phần còn lại của component giữ nguyên như cũ */}
       <Row gutter={[16, 16]} style={{ marginBottom: 20 }}>
         <Col xs={24} sm={12} md={8} lg={4}>
           <Card onClick={() => setDepositFilterStatus("all")} hoverable>
@@ -200,6 +215,8 @@ const DepositManagement = () => {
           placeholder="Tìm kiếm mã giao dịch, căn hộ"
           style={{ width: 300 }}
           allowClear
+          value={searchText}
+          onChange={(e) => setSearchText(e.target.value)}
         />
 
         <Space>
@@ -209,10 +226,9 @@ const DepositManagement = () => {
             onChange={setDepositFilterStatus}
           >
             <Option value="all">Tất cả trạng thái</Option>
-            <Option value="pending">Chờ xác nhận</Option>
-            <Option value="confirmed">Đã xác nhận</Option>
-            <Option value="completed">Hoàn thành</Option>
-            <Option value="cancelled">Đã hủy</Option>
+            <Option value="ongoing">Đang Đặt Cọc</Option>
+            <Option value="done">Hoàn Thành</Option>
+            <Option value="none">Chưa Đặt Cọc</Option>
           </Select>
         </Space>
       </Space>

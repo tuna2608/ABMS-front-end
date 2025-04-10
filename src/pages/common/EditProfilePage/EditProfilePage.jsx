@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   Form,
   Input,
@@ -8,38 +8,37 @@ import {
   Upload,
   message,
 } from "antd";
-import {
-  CameraOutlined,
-  ArrowLeftOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
 import dayjs from "dayjs";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 
 import avtBase from "../../../assets/common/images/avtbase.jpg";
 import { editProfile, getImageCloud } from "../../../redux/apiCalls";
-import { useNavigate } from "react-router-dom";
 import moment from "moment";
 
 const { Title } = Typography;
 
-// Styled Components
+// Refined Styled Components
 const PageContainer = styled.div`
   display: flex;
   min-height: 100vh;
-  background-color: #f5f5f5;
-  padding-top: 5px;
+  background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+  padding: 40px 0;
+  align-items: center;
+  justify-content: center;
 `;
 
 const MainContent = styled.div`
-  flex: 1;
-  padding: 20px;
+  width: 100%;
+  max-width: 800px;
   background-color: white;
+  border-radius: 20px;
+  box-shadow: 0 15px 35px rgba(50,50,93,.1), 0 5px 15px rgba(0,0,0,.07);
+  padding: 40px;
 `;
 
 const FormContainer = styled.div`
-  max-width: 1000px;
+  max-width: 700px;
   margin: 0 auto;
 `;
 
@@ -48,98 +47,114 @@ const FormSection = styled.div`
   grid-template-columns: 1fr 1fr;
   gap: 20px;
   margin-bottom: 20px;
+
+  @media (max-width: 768px) {
+    grid-template-columns: 1fr;
+  }
 `;
 
 const FullWidthSection = styled.div`
   grid-column: span 2;
+
+  @media (max-width: 768px) {
+    grid-column: span 1;
+  }
 `;
 
 const AvatarContainer = styled.div`
   display: flex;
-  justify-content: center;
-  margin-bottom: 40px;
+  flex-direction: column;
+  align-items: center;
+  margin-bottom: 30px;
 `;
 
-const Avatar = styled.div`
-  position: relative;
-  width: 150px;
-  height: 150px;
+const AvatarWrapper = styled.div`
+  width: 180px;
+  height: 180px;
   border-radius: 50%;
-  background-color: #456470;
-  display: flex;
-  align-items: center;
-  justify-content: center;
+  border: 4px solid #e6e6e6;
   overflow: hidden;
-  cursor: pointer;
-`;
-
-const AvatarImage = styled.div`
-  width: 80%;
-  height: 80%;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: white;
-  border-radius: 8px;
-  transform: rotate(-5deg);
-  overflow: hidden;
+  background: linear-gradient(145deg, #f0f5fc, #d6e1f3);
+  box-shadow: 8px 8px 16px #d1dce6, -8px -8px 16px #ffffff;
+  margin-bottom: 20px;
 `;
 
-const AvatarUploadButton = styled.div`
-  position: absolute;
-  bottom: 5px;
-  right: 5px;
-  background-color: #456470;
-  border-radius: 50%;
-  width: 35px;
-  height: 35px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  z-index: 10;
-  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+const AvatarImage = styled.img`
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 `;
 
-const LogoText = styled.div`
-  font-size: 40px;
-  font-weight: bold;
-  color: #3a5068;
-  margin-top: 40px;
-  letter-spacing: 2px;
-`;
+const FileUploadContainer = styled(Upload)`
+  width: 100%;
+  max-width: 300px;
 
-const LogoSubtext = styled.div`
-  color: #3a5068;
-  font-size: 14px;
-  letter-spacing: 1px;
-`;
+  .ant-upload {
+    position: relative;
+    width: 100%;
+    padding: 15px;
+    border: 2px dashed #4b7bec;
+    border-radius: 10px;
+    text-align: center;
+    transition: all 0.3s ease;
+    background-color: #f4f7fa;
+  }
 
-const SaveButton = styled(Button)`
-  background-color: var(--cheadline);
-  border-color: #7fbfbf;
-  border-radius: 20px;
-  padding: 0 40px;
-  height: 40px;
-  float: right;
-  margin-top: 20px;
+  .ant-upload:hover {
+    border-color: #3a5ec7;
+    background-color: #eaf0f6;
+  }
 
-  &:hover {
-    background-color: #6eacac;
-    border-color: #6eacac;
+  .ant-upload-text {
+    color: #4b7bec;
+    font-weight: 500;
+  }
+
+  .ant-upload-list {
+    display: none;
   }
 `;
 
-const BackButton = styled(Button)`
-  position: absolute;
-  top: 20px;
-  right: 20px;
-  border-radius: 50%;
-  width: 45px;
-  height: 45px;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  border: 2px solid #d9d9d9;
+const ChangeButton = styled(Button)`
+  margin-top: 10px;
+  background-color: #4b7bec;
+  color: white;
+  border: none;
+
+  &:hover {
+    background-color: #3a5ec7;
+  }
+`;
+
+const SaveButton = styled(Button)`
+  width: 100%;
+  height: 50px;
+  border-radius: 25px;
+  background-color: #4b7bec;
+  border-color: #4b7bec;
+  font-weight: 600;
+  transition: all 0.3s ease;
+
+  &:hover {
+    background-color: #3a5ec7;
+    border-color: #3a5ec7;
+    transform: translateY(-3px);
+    box-shadow: 0 7px 14px rgba(50,50,93,.1), 0 3px 6px rgba(0,0,0,.08);
+  }
+`;
+
+const CoinBadge = styled.div`
+  background-color: #f7f9fc;
+  border: 1px solid #e6e6e6;
+  border-radius: 20px;
+  padding: 10px 20px;
+  margin-bottom: 20px;
+  text-align: center;
+  font-weight: 600;
+  color: #4b7bec;
 `;
 
 const ProfileEditPage = () => {
@@ -153,35 +168,30 @@ const ProfileEditPage = () => {
 
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(avtBase);
+  const [selectedImage, setSelectedImage] = useState(user.userImgUrl || avtBase);
   const [selectedFile, setSelectedFile] = useState(null);
-  // console.log(userCurrent);
+  const [isInitialUpload, setIsInitialUpload] = useState(!user.userImgUrl);
+
   const dispatch = useDispatch();
-  const navigate = useNavigate();
 
-  const [formData, setFormData] = useState({
-    userId: "",
-    fullName: "",
-    age: "",
-    birthday: "",
-    phone: "",
-    job: "",
-    description: "",
-    idNumber: "",
-    imgUrl: "",
-  });
-
-  const handleImageChange = async (e) => {
-    const file = e.target.files[0];
-    if (file) {
-      const imageUrl = URL.createObjectURL(file);
-      setSelectedFile(file);
-      setSelectedImage(imageUrl);
-    }
+  const triggerFileInput = () => {
+    const fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.onchange = (event) => {
+      const file = event.target.files[0];
+      if (file) {
+        const imageUrl = URL.createObjectURL(file);
+        setSelectedFile(file);
+        setSelectedImage(imageUrl);
+        setIsInitialUpload(false);
+      }
+    };
+    fileInput.click();
   };
+
   const handleSubmit = async (values) => {
     setLoading(true);
-    // console.log("Form values:", values);
 
     let formattedDate;
     let formData = {
@@ -191,7 +201,6 @@ const ProfileEditPage = () => {
     };
     if (values.birthday) {
       formattedDate = values.birthday.format("YYYY-MM-DD");
-      console.log(formattedDate);
       formData = {
         ...formData,
         birthday: formattedDate,
@@ -218,9 +227,8 @@ const ProfileEditPage = () => {
         userImgUrl: null,
       };
     }
-    console.log("Complete form data:", formData);
+
     const resEdit = await editProfile(dispatch, formData);
-    console.log(resEdit);
     const messageAPI = resEdit.data.message;
     if (
       resEdit.status === 401 ||
@@ -230,7 +238,7 @@ const ProfileEditPage = () => {
       message.error(messageAPI);
     } else {
       message.success(messageAPI);
-      navigate("/edit-profile");
+      setIsInitialUpload(false);
     }
     setLoading(false);
   };
@@ -238,19 +246,53 @@ const ProfileEditPage = () => {
   return (
     <PageContainer>
       <MainContent>
-        {/* <BackButton icon={<ArrowLeftOutlined />} type="default" /> */}
         <FormContainer>
-          <Title level={2} style={{ color: "#1d3557", marginBottom: 40 }}>
-            Edit profile
+          <Title level={2} style={{ 
+            color: "#4b7bec", 
+            marginBottom: 30, 
+            textAlign: 'center', 
+            fontWeight: 700 
+          }}>
+            Edit Profile
           </Title>
+          
           <AvatarContainer>
-            <img
-              style={{ width: "50px", height: "50px" }}
-              src={user.userImgUrl || selectedImage}
-            />
-            <input type="file" accept="image/*" onChange={handleImageChange} />
+            <AvatarWrapper>
+              <AvatarImage 
+                src={selectedImage} 
+                alt="Profile Avatar" 
+              />
+            </AvatarWrapper>
+            
+            {isInitialUpload ? (
+              <FileUploadContainer
+                name="avatar"
+                accept="image/*"
+                beforeUpload={(file) => {
+                  const imageUrl = URL.createObjectURL(file);
+                  setSelectedFile(file);
+                  setSelectedImage(imageUrl);
+                  setIsInitialUpload(false);
+                  return false; // Prevent default upload
+                }}
+              >
+                <div className="ant-upload">
+                  <p className="ant-upload-text">
+                    Click or drag file to upload profile picture
+                  </p>
+                </div>
+              </FileUploadContainer>
+            ) : (
+              <ChangeButton onClick={triggerFileInput}>
+                Change Picture
+              </ChangeButton>
+            )}
           </AvatarContainer>
-          <Title>Coin: {user.accountBallance}</Title>
+
+          <CoinBadge>
+            Available Coins: {user.accountBallance}
+          </CoinBadge>
+
           <Form
             form={form}
             layout="vertical"
@@ -276,6 +318,7 @@ const ProfileEditPage = () => {
                 <Input />
               </Form.Item>
             </FormSection>
+            
             <FormSection>
               <Form.Item label="Birthday:" name="birthday">
                 <DatePicker style={{ width: "100%" }} />
@@ -284,6 +327,7 @@ const ProfileEditPage = () => {
                 <Input />
               </Form.Item>
             </FormSection>
+            
             <FormSection>
               <FullWidthSection>
                 <Form.Item label="Description" name="description">
@@ -299,7 +343,7 @@ const ProfileEditPage = () => {
                 disabled={loading}
                 loading={loading}
               >
-                SAVE
+                SAVE CHANGES
               </SaveButton>
             </Form.Item>
           </Form>

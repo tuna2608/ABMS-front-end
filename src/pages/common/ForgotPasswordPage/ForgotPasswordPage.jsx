@@ -93,7 +93,7 @@ const ForgotPasswordPage = () => {
         <WrapperContainerLeft>
           <TitlePage>Quên mật khẩu</TitlePage>
           <TextContent>
-            Nhập email để nhận OTP đặt lại mật khẩu
+            Nhập email để nhận liên kết đặt lại mật khẩu
           </TextContent>
           <Form
             name="forgotPassword"
