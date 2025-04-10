@@ -119,16 +119,20 @@ const ContractView = () => {
   };
 
   const handleDownloadTemplate = () => {
-    // URL Google Drive mẫu (link public)
-    const templateUrl = '';
+    // Thay thế URL này bằng link Google Drive trực tiếp có thể tải xuống
+    const templateUrl = 'https://drive.google.com/drive/folders/1bdFLx_qJY5ybWLUngrfMsDHwjae4mM9E?usp=drive_link';
     
-    // Tạo một thẻ a ẩn để tải file
-    const link = document.createElement('a');
-    link.href = templateUrl;
-    link.download = 'Mau_Don_Hop_Dong.pdf';
-    document.body.appendChild(link);
-    link.click();
-    document.body.removeChild(link);
+    try {
+      // Mở link tải xuống trong tab mới
+      window.open(templateUrl, '_blank');
+      
+      // Hiển thị thông báo thành công
+      message.success('Đang tải mẫu đơn. Vui lòng kiểm tra trình duyệt của bạn.');
+    } catch (error) {
+      // Xử lý lỗi nếu có
+      message.error('Có lỗi xảy ra khi tải mẫu đơn. Vui lòng thử lại.');
+      console.error('Download error:', error);
+    }
   };
 
   const contractColumns = [

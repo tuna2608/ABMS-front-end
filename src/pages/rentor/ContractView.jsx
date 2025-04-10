@@ -5,7 +5,8 @@ import {
   Button, 
   Modal, 
   Descriptions, 
-  Tag, 
+  Tag,
+  message
 } from "antd";
 import { 
   FileProtectOutlined, 
@@ -13,7 +14,6 @@ import {
 } from "@ant-design/icons";
 import styled from 'styled-components';
 import moment from "moment";
-
 
 // Hàm format tiền tệ
 const formatCurrency = (value) => {
@@ -27,7 +27,23 @@ const ContractView = () => {
   const [selectedContract, setSelectedContract] = useState(null);
   const [isContractModalVisible, setIsContractModalVisible] = useState(false);
 
-
+  // Hàm tải hợp đồng
+  const handleDownloadContract = () => {
+    // Thay thế URL này bằng link Google Drive trực tiếp có thể tải xuống
+    const contractUrl = 'https://drive.google.com/drive/folders/1pBZ7EDr0qQPSM532vx9984FIx0-lQWCm?usp=drive_link';
+    
+    try {
+      // Mở link tải xuống trong tab mới
+      window.open(contractUrl, '_blank');
+      
+      // Hiển thị thông báo thành công
+      message.success('Đang tải hợp đồng. Vui lòng kiểm tra trình duyệt của bạn.');
+    } catch (error) {
+      // Xử lý lỗi nếu có
+      message.error('Có lỗi xảy ra khi tải hợp đồng. Vui lòng thử lại.');
+      console.error('Download error:', error);
+    }
+  };
 
   const contractColumns = [
     {
@@ -96,6 +112,7 @@ const ContractView = () => {
             key="download" 
             type="primary" 
             icon={<DownloadOutlined />}
+            onClick={handleDownloadContract}
           >
             Tải hợp đồng
           </Button>,

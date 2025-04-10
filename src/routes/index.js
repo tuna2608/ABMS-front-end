@@ -20,6 +20,9 @@ import OTPVerificationPage from "../pages/common/OTPVerificationPage/OTPVerifica
 import PaymentSuccess from "../pages/client/Payment/PaymentSuccess";
 import PaymentCancel from "../pages/client/Payment/PaymentCancel";
 import FormManagement from "../pages/client/FormManagement/FormManagement";
+import UpdateContract from "../pages/client/Update&VerifyContract/UpdateContract";
+import VerifyContract from "../pages/client/Update&VerifyContract/VerifyContract";
+import InputBankForm from "../pages/client/InputBankForm/InputBankForm";
 // import BillDetailsPage from "../pages/rentor/BillDetailsPage";
 
 
@@ -128,6 +131,21 @@ export const routes = [
         path: '/chatbot',
         page: Chatbot,
         isShowHeader: false
+    },
+    {
+        path: '/verify-contract',
+        page: VerifyContract,
+        isShowHeader: true
+    },
+    {
+        path: '/update-contract',
+        page: UpdateContract,
+        isShowHeader: true
+    },
+    {
+        path: '/bank-form',
+        page: InputBankForm,
+        isShowHeader: true
     },
     // {
     //     path: '/bill-details',
