@@ -5,6 +5,8 @@ const initialState = {
   isFetching: false,
   error: false,
   userRegister: null,
+  forgotPasswordEmail: null,
+  forgotPasswordStep: null, // 'initial', 'otp_sent', 'otp_verified'
 };
 
 export const userSlice = createSlice({
@@ -12,19 +14,20 @@ export const userSlice = createSlice({
   initialState,
   reducers: {
     loginStart: (state) => {
-      state.isFetching = true
+      state.isFetching = true;
+      state.error = false;
     },
     loginSuccess: (state, action) => {
       state.isFetching = false;
       state.currentUser = action.payload;
+      state.error = false;
     },
     loginFailure: (state) => {
       state.isFetching = false;
       state.error = true;
     },
     logout: (state) => {
-      state = initialState;
-      return state;
+      Object.assign(state, initialState);
     },
     registerStart: (state) => {
       state.isFetching = true;
@@ -46,7 +49,6 @@ export const userSlice = createSlice({
     verifySuccess: (state) => {
       state.isFetching = false;
       state.error = false;
-      state.user = initialState;
     },
     verifyFail: (state) => {
       state.isFetching = false;
@@ -59,8 +61,36 @@ export const userSlice = createSlice({
     editProfileSuccess: (state, action) => {
       state.isFetching = false;
       state.currentUser = action.payload;
+      state.error = false;
     },
     editProfileFail: (state) => {
+      state.isFetching = false;
+      state.error = true;
+    },
+    // Forgot Password Actions
+    forgotPasswordStart: (state, action) => {
+      state.isFetching = true;
+      state.error = false;
+      state.forgotPasswordEmail = action.payload;
+      state.forgotPasswordStep = 'initial';
+    },
+    forgotPasswordOtpSent: (state) => {
+      state.isFetching = false;
+      state.error = false;
+      state.forgotPasswordStep = 'otp_sent';
+    },
+    forgotPasswordOtpVerified: (state) => {
+      state.isFetching = false;
+      state.error = false;
+      state.forgotPasswordStep = 'otp_verified';
+    },
+    forgotPasswordReset: (state) => {
+      state.isFetching = false;
+      state.error = false;
+      state.forgotPasswordEmail = null;
+      state.forgotPasswordStep = null;
+    },
+    forgotPasswordFailure: (state) => {
       state.isFetching = false;
       state.error = true;
     }
@@ -68,6 +98,26 @@ export const userSlice = createSlice({
 });
 
 // Action creators are generated for each case reducer function
-export const { loginStart, loginSuccess, loginFailure, logout, registerStart, registerSuccess, registerFail, verifyStart, verifyFail, verifySuccess,editProfileFail,editProfileSuccess,editProfileStart } = userSlice.actions;
+export const { 
+  loginStart, 
+  loginSuccess, 
+  loginFailure, 
+  logout, 
+  registerStart, 
+  registerSuccess, 
+  registerFail, 
+  verifyStart, 
+  verifyFail, 
+  verifySuccess,
+  editProfileFail,
+  editProfileSuccess,
+  editProfileStart,
+  // New forgot password actions
+  forgotPasswordStart,
+  forgotPasswordOtpSent,
+  forgotPasswordOtpVerified,
+  forgotPasswordReset,
+  forgotPasswordFailure
+} = userSlice.actions;
 
 export default userSlice.reducer;

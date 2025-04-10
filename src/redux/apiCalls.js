@@ -12,6 +12,11 @@ import {
   editProfileStart,
   editProfileSuccess,
   editProfileFail,
+  forgotPasswordStart,
+  forgotPasswordOtpSent,
+  forgotPasswordOtpVerified,
+  forgotPasswordReset,
+  forgotPasswordFailure
 } from "./authSlice";
 import { CLIENT_URL, publicRequest, userRequest } from "../utilities/requestMethod";
 import {
@@ -141,6 +146,42 @@ export const verifyOTP = async (dispatch, user) => {
 export const logoutDispatch = async (dispatch) => {
   dispatch(logout());
   dispatch(resetUsersSuccess())
+};
+// Forgot Password APIs
+export const forgotPassword = async (dispatch, email) => {
+  dispatch(forgotPasswordStart(email));
+  try {
+    const res = await publicRequest.post("/api/forgot_password", { email });
+    dispatch(forgotPasswordOtpSent());
+    return res.data;
+  } catch (error) {
+    dispatch(forgotPasswordFailure());
+    return error.response.data;
+  }
+};
+
+export const verifyForgotPasswordOTP = async (dispatch, user) => {
+  dispatch(verifyStart());
+  try {
+    const res = await publicRequest.post("/api/verify_otp", user);
+    dispatch(forgotPasswordOtpVerified());
+    return res.data;
+  } catch (error) {
+    dispatch(verifyFail());
+    return error.response.data;
+  }
+};
+
+export const resetPassword = async (dispatch, resetPasswordDTO) => {
+  dispatch(verifyStart());
+  try {
+    const res = await publicRequest.post("/api/reset_password", resetPasswordDTO);
+    dispatch(forgotPasswordReset());
+    return res.data;
+  } catch (error) {
+    dispatch(verifyFail());
+    return error.response.data;
+  }
 };
 
 // Product
@@ -1115,6 +1156,47 @@ export const broadcastNotification = async (notificationData, role) => {
     return {
       success: false,
       message: error.response?.data?.message || 'Có lỗi xảy ra khi gửi thông báo toàn cục'
+    };
+  }
+};
+
+//------------------------------------------------------CRUD Deposit View---------------------------------------------------------------------------------
+
+// Lấy danh sách deposit 
+export const getAllDeposits = async () => {
+  try {
+    const res = await publicRequest.get(`/deposit/getall`);
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || 'Lấy danh sách deposit thành công'
+    };
+  } catch (error) {
+    console.error("Error fetching deposits:", error);
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || 'Có lỗi xảy ra khi lấy danh sách deposit'
+    };
+  }
+};
+
+//---------------------------------------------------CRUD Contract View---------------------------------------------------------------------------------
+//lấy danh sách hợp đồng theo căn hộ
+export const getContractOwners = async (apartmentName) => {
+  try {
+    const res = await publicRequest.get(`/user/list_contract_owner?apartmentName=${apartmentName}`);
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || 'Lấy danh sách hợp đồng thành công'
+    };
+  } catch (error) {
+    console.error("Error fetching contract owners:", error);
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || 'Có lỗi xảy ra khi lấy danh sách hợp đồng'
     };
   }
 };

@@ -200,7 +200,7 @@ const SignInPage = () => {
             </Form.Item>
           </Form>
           <LinkNav>
-            <WrapperTextLight onClick={() => navigate("/forgot")}>
+            <WrapperTextLight onClick={() => navigate("/forgot-password")}>
               Quên mật khẩu
             </WrapperTextLight>
           </LinkNav>
