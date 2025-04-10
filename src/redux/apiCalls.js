@@ -23,18 +23,6 @@ import {
   getUserSuccess,
   resetUsersSuccess,
 } from "./userSlice";
-import {
-  getCartStart,
-  getCartFailure,
-  getCartSuccess,
-  addToCartStart,
-  addToCartSuccess,
-  addToCartFailure,
-  resetCartSuccess,
-  decreaseCartQuantitySuccess,
-  deleteCartItemSuccess,
-  deleteCartSuccess,
-} from "./cartSlice";
 import { toast } from "react-toastify";
 
 import { getAllPostsFailure, getAllPostsStart, getAllPostsSuccess, getPostFailure, getPostStart, getPostSuccess } from "./postSlice";
@@ -161,6 +149,28 @@ export const sendOtpForgotPassword = async (formData) => {
     };
   }
 }
+
+
+//------------------------------------------------------Deposit View---------------------------------------------------------------------------------
+
+// Lấy danh sách deposit 
+export const getAllDeposits = async () => {
+  try {
+    const res = await publicRequest.get(`/deposit/getall`);
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || 'Lấy danh sách deposit thành công'
+    };
+  } catch (error) {
+    console.error("Error fetching deposits:", error);
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || 'Có lỗi xảy ra khi lấy danh sách deposit'
+    };
+  }
+};
 
 //dat coc ---------------
 export const depositCreate = async (formData) => {
@@ -493,7 +503,7 @@ export const paymentBillSuccess = async (formData) => {
     return {
       success: false,
       data: [],
-      message: error.response?.data?.message || "Lỗi khi lấy danh sách hóa đơn"
+      message: error.response?.data?.message || "Lỗi khi thanh toán hóa đơn thành công"
     };
   }
 }
@@ -632,74 +642,6 @@ export const getUserByUserName = async (dispatch, username) => {
     return error;
   }
 }
-
-// export const createOrder = async (dispatch, order) => {
-//   dispatch(createOrderFailure());
-//   try {
-//     const res = await publicRequest.post(`/orders`, order);
-//     dispatch(createOrderSuccess(res.data));
-//   } catch (error) {
-//     dispatch(createOrderFailure());
-//   }
-// };
-
-// export const resetOrders = async (dispatch) => {
-//   try {
-//     dispatch(resetOrdersSuccess());
-//   } catch (error) { }
-// };
-
-// export const updateOrderStatus = async (dispatch, orderId, status) => {
-//   try {
-//     const res = userRequest.put(`/orders/${orderId}`, { status: status });
-//     dispatch(updateOrderStatusSuccess(res.data));
-//   } catch (error) { }
-// };
-
-// // Order
-
-// export const getOrdersByUId = async (dispatch, userId) => {
-//   dispatch(getOrdersStart());
-//   try {
-//     const res = await publicRequest.get(`orders/find/${userId}`);
-//     dispatch(getOrdersSuccess(res.data));
-//   } catch (error) {
-//     dispatch(getOrdersFailure());
-//   }
-// };
-
-// export const getAllOrders = async (dispatch) => {
-//   dispatch(getAllOrdersStart());
-//   try {
-//     const res = await publicRequest.get(`/orders`);
-//     dispatch(getAllOrdersSuccess(res.data));
-//   } catch (error) {
-//     dispatch(getAllOrdersFailure());
-//   }
-// }
-
-// export const createOrder = async (dispatch, order) => {
-//   dispatch(createOrderFailure());
-//   try {
-//     const res = await publicRequest.post(`/orders`, order);
-//     dispatch(createOrderSuccess(res.data));
-//   } catch (error) {
-//     dispatch(createOrderFailure());
-//   }
-// };
-
-// export const resetOrders = async (dispatch) => {
-//   try {
-//     dispatch(resetOrdersSuccess());
-//   } catch (error) { }
-// };
-
-// export const updateOrderStatus = async (dispatch, orderId, status) => {
-//   try {
-//     const res = userRequest.put(`/orders/${orderId}`, { status: status });
-//     dispatch(updateOrderStatusSuccess(res.data));
-//   } catch (error) { }
-// };
 
 
 // -----------------------------------------------------------------------------Chat functions------------------------------------------------------------------------------------------
@@ -998,6 +940,26 @@ export const broadcastNotification = async (notificationData, role) => {
     return {
       success: false,
       message: error.response?.data?.message || 'Có lỗi xảy ra khi gửi thông báo toàn cục'
+    };
+  }
+};
+
+//---------------------------------------------------CRUD Contract View---------------------------------------------------------------------------------
+//lấy danh sách hợp đồng theo căn hộ
+export const getContractOwners = async (apartmentName) => {
+  try {
+    const res = await publicRequest.get(`/user/list_contract_owner?apartmentName=${apartmentName}`);
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || 'Lấy danh sách hợp đồng thành công'
+    };
+  } catch (error) {
+    console.error("Error fetching contract owners:", error);
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || 'Có lỗi xảy ra khi lấy danh sách hợp đồng'
     };
   }
 };
