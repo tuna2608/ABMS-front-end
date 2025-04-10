@@ -16,7 +16,10 @@ import {
   forgotPasswordOtpSent,
   forgotPasswordOtpVerified,
   forgotPasswordReset,
-  forgotPasswordFailure
+  forgotPasswordFailure,
+  changePasswordStart,
+  changePasswordSuccess,
+  changePasswordFailure
 } from "./authSlice";
 import { CLIENT_URL, publicRequest, userRequest } from "../utilities/requestMethod";
 import {
@@ -181,6 +184,33 @@ export const resetPassword = async (dispatch, resetPasswordDTO) => {
   } catch (error) {
     dispatch(verifyFail());
     return error.response.data;
+  }
+};
+// Thêm hàm API để đổi mật khẩu
+export const changePassword = async (dispatch, changePasswordDTO) => {
+  dispatch(changePasswordStart());
+  try {
+    const res = await userRequest.post("/api/change_password", changePasswordDTO);
+    
+    if (res.data.status === 200) {
+      dispatch(changePasswordSuccess());
+      return {
+        success: true,
+        message: res.data.message || "Đổi mật khẩu thành công"
+      };
+    } else {
+      dispatch(changePasswordFailure());
+      return {
+        success: false,
+        message: res.data.message || "Đổi mật khẩu thất bại"
+      };
+    }
+  } catch (error) {
+    dispatch(changePasswordFailure());
+    return {
+      success: false,
+      message: error.response?.data?.message || "Có lỗi xảy ra khi đổi mật khẩu"
+    };
   }
 };
 

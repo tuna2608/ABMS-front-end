@@ -7,6 +7,7 @@ const initialState = {
   userRegister: null,
   forgotPasswordEmail: null,
   forgotPasswordStep: null, // 'initial', 'otp_sent', 'otp_verified'
+  changePasswordStatus: null // 'idle', 'loading', 'success', 'error'
 };
 
 export const userSlice = createSlice({
@@ -93,7 +94,25 @@ export const userSlice = createSlice({
     forgotPasswordFailure: (state) => {
       state.isFetching = false;
       state.error = true;
-    }
+    },
+    changePasswordStart: (state) => {
+      state.isFetching = true;
+      state.error = false;
+      state.changePasswordStatus = 'loading';
+    },
+    changePasswordSuccess: (state) => {
+      state.isFetching = false;
+      state.error = false;
+      state.changePasswordStatus = 'success';
+    },
+    changePasswordFailure: (state) => {
+      state.isFetching = false;
+      state.error = true;
+      state.changePasswordStatus = 'error';
+    },
+    resetChangePasswordStatus: (state) => {
+      state.changePasswordStatus = 'idle';
+    },
   },
 });
 
@@ -117,7 +136,11 @@ export const {
   forgotPasswordOtpSent,
   forgotPasswordOtpVerified,
   forgotPasswordReset,
-  forgotPasswordFailure
+  forgotPasswordFailure,
+  changePasswordStart,
+  changePasswordSuccess,
+  changePasswordFailure,
+  resetChangePasswordStatus
 } = userSlice.actions;
 
 export default userSlice.reducer;
