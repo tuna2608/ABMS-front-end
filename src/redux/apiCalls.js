@@ -15,6 +15,11 @@ import {
   editProfileStart,
   editProfileSuccess,
   editProfileFail,
+  forgotPasswordStart,
+  forgotPasswordOtpSent,
+  forgotPasswordFailure,
+  forgotPasswordOtpVerified,
+  forgotPasswordReset,
 } from "./authSlice";
 import {publicRequest, userRequest } from "../utilities/requestMethod";
 import {
@@ -128,6 +133,43 @@ export const editProfile = async (dispatch,formData) => {
   } catch (error) {
     dispatch(editProfileFail())
     return error.response
+  }
+};
+
+// Forgot Password APIs
+export const forgotPassword = async (dispatch, email) => {
+  dispatch(forgotPasswordStart(email));
+  try {
+    const res = await publicRequest.post("/api/forgot_password", { email });
+    dispatch(forgotPasswordOtpSent());
+    return res.data;
+  } catch (error) {
+    dispatch(forgotPasswordFailure());
+    return error.response.data;
+  }
+};
+
+export const verifyForgotPasswordOTP = async (dispatch, user) => {
+  dispatch(verifyStart());
+  try {
+    const res = await publicRequest.post("/api/verify_otp", user);
+    dispatch(forgotPasswordOtpVerified());
+    return res.data;
+  } catch (error) {
+    dispatch(verifyFail());
+    return error.response.data;
+  }
+};
+
+export const resetPassword = async (dispatch, resetPasswordDTO) => {
+  dispatch(verifyStart());
+  try {
+    const res = await publicRequest.post("/api/reset_password", resetPasswordDTO);
+    dispatch(forgotPasswordReset());
+    return res.data;
+  } catch (error) {
+    dispatch(verifyFail());
+    return error.response.data;
   }
 };
 
