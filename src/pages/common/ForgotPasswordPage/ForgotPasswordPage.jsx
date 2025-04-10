@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { useMutation } from "@tanstack/react-query";
+import { useDispatch } from "react-redux";
 import { Form, Image, message } from "antd";
 import styled from "styled-components";
 import {
@@ -14,7 +14,7 @@ import imgLogin from "../../../assets/common/images/logo-login.png";
 import bgLogin from "../../../assets/common/images/bg-login.jpg";
 import { useNavigate } from "react-router-dom";
 import { WrapperTextLight } from "../LoginPage/style";
-import { sendOtpForgotPassword } from "../../../redux/apiCalls";
+import { forgotPassword } from "../../../redux/apiCalls";
 
 const TitlePage = styled.h2`
   color: var(--cheadline);
@@ -26,25 +26,30 @@ const TextContent = styled.p`
 
 const ForgotPasswordPage = () => {
   const [email, setEmail] = useState("");
-  const [loading,setLoading] = useState(false)
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [isLoading, setIsLoading] = useState(false);
 
   const handleResetPassword = async (values) => {
-    setLoading(true);
-    const formData = {
-      email: values.email
-    }
+    setIsLoading(true);
     try {
-      const res = await sendOtpForgotPassword(formData);
-      if(res.success){
-        navigate('/verify-forgot-otp')
-      }else{
-        message.error(res.message);
+      const result = await forgotPassword(dispatch, values.email);
+      
+      const messageAPI = result?.message;
+      if (result?.status === 200) {
+        message.success(messageAPI || "Mã OTP đã được gửi đến email của bạn");
+        // Store email in localStorage for OTP verification
+        localStorage.setItem('forgotPasswordEmail', values.email);
+        // Navigate to OTP verification page
+        navigate('/verify-forgot-otp');
+      } else {
+        message.error(messageAPI || "Có lỗi xảy ra khi gửi mã OTP");
       }
     } catch (error) {
-      message.error("Không thể send otp forgot password")
-    }finally{
-      setLoading(false)
+      message.error("Có lỗi xảy ra. Vui lòng thử lại.");
+      console.error(error);
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -93,7 +98,7 @@ const ForgotPasswordPage = () => {
         <WrapperContainerLeft>
           <TitlePage>Quên mật khẩu</TitlePage>
           <TextContent>
-            Nhập email để nhận liên kết đặt lại mật khẩu
+            Nhập email để nhận OTP đặt lại mật khẩu
           </TextContent>
           <Form
             name="forgotPassword"
@@ -103,7 +108,13 @@ const ForgotPasswordPage = () => {
           >
             <Form.Item
               name="email"
-              rules={[{ required: true, message: "Vui lòng nhập email!" }]}
+              rules={[
+                { required: true, message: "Vui lòng nhập email!" },
+                { 
+                  type: 'email', 
+                  message: 'Vui lòng nhập đúng định dạng email!' 
+                }
+              ]}
             >
               <InputForm
                 placeholder="Email"
@@ -117,7 +128,7 @@ const ForgotPasswordPage = () => {
               <ButtonComponent
                 textButton="Gửi yêu cầu"
                 htmlType="submit"
-                disabled={false}
+                disabled={isLoading}
                 size={40}
                 styleButton={{
                   backgroundColor: "var(--cbutton)",
@@ -132,7 +143,6 @@ const ForgotPasswordPage = () => {
                   fontWeight: "600",
                 }}
               />
-              {/* {isError && <p className="error-message">{error.message}</p>} */}
             </Form.Item>
           </Form>
           <LinkNav>
