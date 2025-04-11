@@ -524,7 +524,6 @@ export const getAllBillRentor = async (dispatch,rentorId) => {
   }
 }
 
-
 // thanh toan hoa don bill
 export const paymentBill = async (formData) => {
   try {
@@ -556,7 +555,25 @@ export const paymentBillSuccess = async (formData) => {
     return {
       success: false,
       data: [],
-      message: error.response?.data?.message || "Lỗi khi thanh toán hóa đơn thành công"
+      message: error.response?.data?.message || "Lỗi khi thanh toán hóa đơn thành công "
+    };
+  }
+}
+
+//payment Bill cancel
+export const paymentBillCancel = async (formData) => {
+  try {
+    const res = await publicRequest.post(`/payment/cancel`,formData);
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || ''
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || "Lỗi khi thanh toán hóa đơn thất bại"
     };
   }
 }
