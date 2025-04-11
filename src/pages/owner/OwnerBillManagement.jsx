@@ -266,17 +266,15 @@ const BillPage = () => {
 
   const handlePayment = async (record) => {
     const formData = {
+      billId: record.billId,
       productName: record.billContent,
       description: record.billContent,
       returnUrl: "http://localhost:3000/payment/success",
       cancelUrl: "http://localhost:3000/payment/cancel",
       price: record.amount,
-      billId: record.billId,
     };
-    console.log(formData);
     try {
       const res = await paymentBill(formData);
-      console.log(res);
       if (res.success) {
         localStorage.setItem("paymentBillRequest", JSON.stringify(formData));
         const url = res?.data?.checkoutUrl;
@@ -289,6 +287,8 @@ const BillPage = () => {
     } finally {
     }
   };
+
+
 
   // Show bill details modal
   const showBillDetails = (billCode) => {

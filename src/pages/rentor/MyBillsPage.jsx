@@ -113,7 +113,7 @@ const MyBillsPage = () => {
         message.error(res.message);
       }
     } catch (error) {
-      message("Không thể thực hiện thanh toán hóa đơn!");
+      message.error("Không thể thực hiện thanh toán hóa đơn!");
     } finally {
     }
   };
