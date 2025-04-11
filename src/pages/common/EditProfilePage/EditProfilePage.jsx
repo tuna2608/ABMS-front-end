@@ -7,10 +7,14 @@ import {
   DatePicker,
   Upload,
   message,
+  Modal,
+  Alert
 } from "antd";
+import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
+import { TransactionOutlined } from "@ant-design/icons";
 
 import avtBase from "../../../assets/common/images/avtbase.jpg";
 import { editProfile, getImageCloud } from "../../../redux/apiCalls";
@@ -155,9 +159,24 @@ const CoinBadge = styled.div`
   text-align: center;
   font-weight: 600;
   color: #4b7bec;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+`;
+
+const CoinActionButton = styled(Button)`
+  margin-left: 10px;
+  background-color: #52c41a;
+  color: white;
+  border: none;
+
+  &:hover {
+    background-color: #389e0d;
+  }
 `;
 
 const ProfileEditPage = () => {
+  const navigate = useNavigate();
   const userCurrent = useSelector((state) => state.user.currentUser);
 
   const defaultValue = moment();
@@ -171,6 +190,16 @@ const ProfileEditPage = () => {
   const [selectedImage, setSelectedImage] = useState(user.userImgUrl || avtBase);
   const [selectedFile, setSelectedFile] = useState(null);
   const [isInitialUpload, setIsInitialUpload] = useState(!user.userImgUrl);
+
+  // New states for coin transfer
+  const [isBankInfoModalVisible, setIsBankInfoModalVisible] = useState(false);
+  const [isCoinRequestModalVisible, setIsCoinRequestModalVisible] = useState(false);
+  const [coinRequestAmount, setCoinRequestAmount] = useState(0);
+  const [bankInfo, setBankInfo] = useState({
+    bankName: '',
+    accountNumber: '',
+    accountName: ''
+  });
 
   const dispatch = useDispatch();
 
@@ -243,6 +272,26 @@ const ProfileEditPage = () => {
     setLoading(false);
   };
 
+  // New handler for bank info submission
+  const handleBankInfoSubmit = (values) => {
+    setBankInfo(values);
+    setIsBankInfoModalVisible(false);
+    setIsCoinRequestModalVisible(true);
+  };
+
+  // New handler for coin transfer request
+  const handleCoinTransferRequest = () => {
+    if (coinRequestAmount <= 0) {
+      message.error('Số tiền yêu cầu phải lớn hơn 0');
+      return;
+    }
+
+    message.success('Yêu cầu chuyển coin đã được gửi');
+    setIsCoinRequestModalVisible(false);
+    setCoinRequestAmount(0);
+    navigate('/adminHome/coin');
+  };
+
   return (
     <PageContainer>
       <MainContent>
@@ -291,6 +340,19 @@ const ProfileEditPage = () => {
 
           <CoinBadge>
             Available Coins: {user.accountBallance}
+            <CoinActionButton 
+              icon={<TransactionOutlined />}
+              onClick={() => {
+                // If no bank info, show bank info modal first
+                if (!bankInfo.accountNumber) {
+                  setIsBankInfoModalVisible(true);
+                } else {
+                  setIsCoinRequestModalVisible(true);
+                }
+              }}
+            >
+              Yêu Cầu Chuyển Coin
+            </CoinActionButton>
           </CoinBadge>
 
           <Form
@@ -349,6 +411,89 @@ const ProfileEditPage = () => {
           </Form>
         </FormContainer>
       </MainContent>
+
+      {/* Bank Info Modal */}
+      <Modal
+        title="Thông Tin Tài Khoản Ngân Hàng"
+        open={isBankInfoModalVisible}
+        onCancel={() => setIsBankInfoModalVisible(false)}
+        footer={null}
+      >
+        <Form
+          layout="vertical"
+          onFinish={handleBankInfoSubmit}
+          initialValues={bankInfo}
+        >
+          <Form.Item 
+            name="bankName" 
+            label="Tên Ngân Hàng"
+            rules={[{ required: true, message: 'Vui lòng nhập tên ngân hàng' }]}
+          >
+            <Input placeholder="Nhập tên ngân hàng" />
+          </Form.Item>
+          <Form.Item 
+            name="accountNumber" 
+            label="Số Tài Khoản"
+            rules={[{ required: true, message: 'Vui lòng nhập số tài khoản' }]}
+          >
+            <Input placeholder="Nhập số tài khoản" />
+          </Form.Item>
+          <Form.Item 
+            name="accountName" 
+            label="Tên Tài Khoản"
+            rules={[{ required: true, message: 'Vui lòng nhập tên tài khoản' }]}
+          >
+            <Input placeholder="Nhập tên tài khoản" />
+          </Form.Item>
+          <Form.Item>
+            <Button type="primary" htmlType="submit" block>
+              Lưu Thông Tin
+            </Button>
+          </Form.Item>
+        </Form>
+      </Modal>
+
+      {/* Coin Transfer Request Modal */}
+      <Modal
+        title="Yêu Cầu Chuyển Coin"
+        open={isCoinRequestModalVisible}
+        onCancel={() => setIsCoinRequestModalVisible(false)}
+        footer={[
+          <Button key="cancel" onClick={() => setIsCoinRequestModalVisible(false)}>
+            Hủy
+          </Button>,
+          <Button 
+            key="submit" 
+            type="primary" 
+            onClick={handleCoinTransferRequest}
+          >
+            Gửi Yêu Cầu
+          </Button>
+        ]}
+      >
+        <Form layout="vertical">
+          <Form.Item label="Số Coin Muốn Chuyển">
+            <Input 
+              type="number" 
+              value={coinRequestAmount}
+              onChange={(e) => setCoinRequestAmount(Number(e.target.value))}
+              placeholder="Nhập số coin muốn chuyển"
+            />
+          </Form.Item>
+          <div style={{ marginBottom: '15px' }}>
+            <strong>Thông Tin Tài Khoản:</strong>
+            <p>Ngân Hàng: {bankInfo.bankName}</p>
+            <p>Số Tài Khoản: {bankInfo.accountNumber}</p>
+            <p>Tên Tài Khoản: {bankInfo.accountName}</p>
+          </div>
+          <Alert 
+            message="Lưu Ý" 
+            description="Yêu cầu chuyển coin sẽ được quản trị viên xử lý. Vui lòng kiểm tra số dư và thông tin tài khoản ngân hàng." 
+            type="info" 
+            showIcon 
+          />
+        </Form>
+      </Modal>
     </PageContainer>
   );
 };

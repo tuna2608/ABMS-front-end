@@ -23,6 +23,7 @@ import FormManagement from "../pages/client/FormManagement/FormManagement";
 import UpdateContract from "../pages/client/Update&VerifyContract/UpdateContract";
 import VerifyContract from "../pages/client/Update&VerifyContract/VerifyContract";
 import InputBankForm from "../pages/client/InputBankForm/InputBankForm";
+import ChangePasswordPage from "../pages/common/ChangePasswordPage/ChangePasswordPage";
 // import BillDetailsPage from "../pages/rentor/BillDetailsPage";
 
 
@@ -50,6 +51,11 @@ export const routes = [
     {
         path: '/new-password',
         page: NewPasswordPage,
+        isShowHeader: false
+    },
+    {
+        path: '/change-password',
+        page: ChangePasswordPage,
         isShowHeader: false
     },
     {

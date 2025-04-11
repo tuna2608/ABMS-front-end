@@ -9,6 +9,7 @@ import {
   SafetyOutlined,
   DollarOutlined,
   DashboardOutlined,
+  CreditCardOutlined,
 } from "@ant-design/icons";
 
 const { Sider } = Layout;
@@ -29,7 +30,9 @@ const AdminSidebar = ({ collapsed, activeTab, setActiveTab, toggleCollapsed }) =
     'posts/list': 'postsList',
     'posts/create': 'createPost',
     'reports': 'reports',
-    'settings': 'settings'
+    'settings': 'settings',
+    'payments': 'payments', // Added payment route mapping
+    'coin': 'coin'
   }), []);
   
   // Effect to sync URL with active tab
@@ -91,6 +94,18 @@ const AdminSidebar = ({ collapsed, activeTab, setActiveTab, toggleCollapsed }) =
           onClick: () => handleMenuClick("postsList", "posts/list")
         },
       ]
+    },
+    {
+      key: "payments", // New payment management menu item
+      icon: <CreditCardOutlined />,
+      label: "Quản lý thanh toán",
+      onClick: () => handleMenuClick("payments", "payments")
+    },
+    {
+      key: "coin", // New payment management menu item
+      icon: <CreditCardOutlined />,
+      label: "Quản lý coin",
+      onClick: () => handleMenuClick("coin", "coin")
     },
     {
       key: "reports",
