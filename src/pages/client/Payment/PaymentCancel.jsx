@@ -2,16 +2,17 @@ import React, { useEffect, useState } from "react";
 import { Result, Button, message } from "antd";
 import { CloseCircleOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
-import { depositCancel } from "../../../redux/apiCalls";
+import { depositCancel, paymentBillCancel } from "../../../redux/apiCalls";
 import { useSelector } from "react-redux";
 
 const PaymentSuccess = () => {
   const [currentUser] = useState(
     useSelector((state) => state.user.currentUser)
   );
+  
   const navigate = useNavigate();
   const depositRequest = JSON.parse(localStorage.getItem("depositRequest"));
-  // console.log(depositRequest);
+  console.log(depositRequest);
 
   const paymentBillRequest = JSON.parse(
     localStorage.getItem("paymentBillRequest")
@@ -19,8 +20,11 @@ const PaymentSuccess = () => {
   useEffect(() => {
     if (depositRequest) {
       callDepositeCancel(currentUser);
+      localStorage.removeItem("depositRequest");
     }
     if (paymentBillRequest) {
+      callPaymentBillCancel(currentUser)
+      localStorage.removeItem("paymentBillRequest");
     }
   }, [currentUser]);
 
@@ -36,6 +40,27 @@ const PaymentSuccess = () => {
       message.error("Không thể thực hiện thanh toán thất bại");
     }
   }
+
+  async function callPaymentBillCancel(currentUser) {
+      const formData = {
+        billId: paymentBillRequest.billId,
+        paymentInfo: paymentBillRequest.description,
+        amount: paymentBillRequest.price,
+        userPaymentId: currentUser.userId
+      };
+  
+      try {
+        const res = await paymentBillCancel(formData);
+        if (res.success) {
+          message.success(res.message);
+        } else {
+          message.error(res.message);
+        }
+      } catch (error) {
+        message.error("Không thể thực hiện thanh toán hóa đơn thất bại");
+      }
+    }
+
 
   return (
     <div className="payment-success bg-white min-h-screen flex items-center justify-center">
