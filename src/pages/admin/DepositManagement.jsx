@@ -1,19 +1,64 @@
-import React, { useState, useEffect } from 'react';
-import { Card, Row, Col, Statistic, Table, Space, Button, Input, Select, Tag } from 'antd';
-import { SafetyOutlined, SearchOutlined } from "@ant-design/icons";
-import { getAllDeposits } from './../../redux/apiCalls'; 
+import React, { useEffect, useState } from "react";
+import {
+  Card,
+  Row,
+  Col,
+  Statistic,
+  Table,
+  Space,
+  Button,
+  Input,
+  Select,
+  Tag,
+  Flex,
+  message,
+} from "antd";
+import { SafetyOutlined, SearchOutlined,EyeOutlined } from "@ant-design/icons";
+import { getAllDeposits } from "../../redux/apiCalls";
 
 const { Option } = Select;
 
 const DepositManagement = () => {
-  const [deposits, setDeposits] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [depositFilterStatus, setDepositFilterStatus] = useState("all");
   const [searchText, setSearchText] = useState("");
 
+  const [deposits, setDeposits] = useState([
+    {
+      depositId: 1,
+      apartmentName: "A201",
+      depositUserName: "Người dùng Tú",
+      depositPrice: 9000.0,
+      status: "done",
+      postOwnerName: "Chủ căn hộ Tú1",
+    },
+  ]);
+
+
+  useEffect(()=>{
+    callGetAllDeposits();
+  },[])
+
+  async function callGetAllDeposits(){
+    setLoading(true)
+    try {
+      const res = await getAllDeposits();
+      if (res.success) {
+        setDeposits(res.data)
+        message.success(res.message)
+      } else {
+        message.error(res.message);
+      }
+    } catch (error) {
+      message("Không thể thực hiện lấy danh sách đặt cọc!");
+    } finally {
+      setLoading(false)
+    }
+  }
+
   // Format currency
   const formatCurrency = (amount) => {
-    return new Intl.NumberFormat('vi-VN').format(amount) + " VNĐ";
+    return new Intl.NumberFormat("vi-VN").format(amount) + " VNĐ";
   };
 
   // Fetch deposits
@@ -39,91 +84,65 @@ const DepositManagement = () => {
     totalAmount: deposits.reduce((sum, deposit) => sum + deposit.depositPrice, 0)
   };
 
-  // Filter deposits
-  const filteredDeposits = deposits.filter(item => 
-    (depositFilterStatus === 'all' || item.status === depositFilterStatus) &&
-    (searchText === '' || 
-     item.depositId.toString().includes(searchText) || 
-     item.apartmentName.toLowerCase().includes(searchText.toLowerCase()) ||
-     item.postOwnerName.toLowerCase().includes(searchText.toLowerCase()) ||
-     item.depositUserName.toLowerCase().includes(searchText.toLowerCase()))
-  );
-
-  // Status color mapping
-  const getStatusColor = (status) => {
-    switch(status) {
-      case 'done': return 'success';
-      case 'ongoing': return 'processing';
-      case 'none': return 'default';
-      default: return 'default';
-    }
-  };
-
-  // Deposit columns definition
   const depositColumns = [
     {
-      title: 'Mã Đặt Cọc',
-      dataIndex: 'depositId',
-      key: 'depositId',
+      title: "Căn hộ",
+      dataIndex: "apartmentName",
+      key: "apartmentName",
     },
     {
-      title: 'Trạng Thái',
-      dataIndex: 'status',
-      key: 'status',
-      render: (status) => (
-        <Tag color={getStatusColor(status)}>
-          {status === 'done' ? 'Hoàn Thành' : 
-           status === 'ongoing' ? 'Đang Đặt Cọc' : 
-           status === 'none' ? 'Chưa Đặt Cọc' : status}
-        </Tag>
-      )
+      title: "Người đặt cọc",
+      dataIndex: "depositUserName",
+      key: "depositUserName",
     },
     {
-      title: 'Chủ Bài Đăng',
-      dataIndex: 'postOwnerName',
-      key: 'postOwnerName',
+      title: "Số tiền",
+      dataIndex: "depositPrice",
+      key: "depositPrice",
+      render: (price) => `${price} VND`,
     },
     {
-      title: 'Người Đặt Cọc',
-      dataIndex: 'depositUserName',
-      key: 'depositUserName',
+      title: "Trạng thái",
+      dataIndex: "status",
+      key: "status",
+      render: (status) => {
+        const colorMap = {
+          ongoing: "blue",
+          done: "green",
+        };
+        const textMap = {
+          ongoing: "Đang thực hiện",
+          done: "Đã chuyển tiền",
+        };
+        return <Tag color={colorMap[status] || "default"}>{textMap[status]}</Tag>;
+      },
     },
     {
-      title: 'Căn Hộ',
-      dataIndex: 'apartmentName',
-      key: 'apartmentName',
+      title: "Hành động",
+      key: "actions",
+      render: (_, record) => (
+        <Flex gap={12}>
+          <Button
+            type="primary"
+            icon={<EyeOutlined />}
+          >
+            Xem chi tiết
+          </Button>
+        </Flex>
+      ),
     },
-    {
-      title: 'Mã Thanh Toán',
-      dataIndex: 'paymentId',
-      key: 'paymentId',
-    },
-    {
-      title: 'Ngày Thanh Toán',
-      dataIndex: 'paymentDate',
-      key: 'paymentDate',
-      render: (date) => new Date(date).toLocaleString('vi-VN')
-    },
-    {
-      title: 'Thông Tin Thanh Toán',
-      dataIndex: 'paymentInfo',
-      key: 'paymentInfo',
-    }
   ];
 
   return (
-    <Card 
+    <Card
       title={
         <Space>
-          <SafetyOutlined /> 
+          <SafetyOutlined />
           <span>Quản lý đặt cọc</span>
         </Space>
-      } 
+      }
       extra={
-        <Button 
-        type="primary" 
-        onClick={() => {}}
-        >
+        <Button type="primary" onClick={() => {}}>
           Tạo giao dịch đặt cọc mới
         </Button>
       }
@@ -131,39 +150,48 @@ const DepositManagement = () => {
       {/* Phần còn lại của component giữ nguyên như cũ */}
       <Row gutter={[16, 16]} style={{ marginBottom: 20 }}>
         <Col xs={24} sm={12} md={8} lg={4}>
-          <Card onClick={() => setDepositFilterStatus('all')} hoverable>
-            <Statistic 
-              title="Tổng số" 
-              value={depositStats.total} 
-              valueStyle={{ color: '#1890ff' }}
+          <Card onClick={() => setDepositFilterStatus("all")} hoverable>
+            <Statistic
+              title="Tổng số"
+              value={depositStats.total}
+              valueStyle={{ color: "#1890ff" }}
               suffix="giao dịch"
             />
           </Card>
         </Col>
-        <Col xs={24} sm={12} md={8} lg={6}>
-          <Card onClick={() => setDepositFilterStatus('ongoing')} hoverable>
-            <Statistic 
-              title="Đang Đặt Cọc" 
-              value={depositStats.ongoing}
-              valueStyle={{ color: '#1890ff' }}
+        <Col xs={24} sm={12} md={8} lg={5}>
+          <Card onClick={() => setDepositFilterStatus("pending")} hoverable>
+            <Statistic
+              title="Chờ xác nhận"
+              value={depositStats.pending}
+              valueStyle={{ color: "#1890ff" }}
             />
           </Card>
         </Col>
-        <Col xs={24} sm={12} md={8} lg={6}>
-          <Card onClick={() => setDepositFilterStatus('done')} hoverable>
-            <Statistic 
-              title="Hoàn Thành" 
-              value={depositStats.done}
-              valueStyle={{ color: '#52c41a' }}
+        <Col xs={24} sm={12} md={8} lg={5}>
+          <Card onClick={() => setDepositFilterStatus("confirmed")} hoverable>
+            <Statistic
+              title="Đã xác nhận"
+              value={depositStats.confirmed}
+              valueStyle={{ color: "#fa8c16" }}
             />
           </Card>
         </Col>
-        <Col xs={24} sm={12} md={8} lg={6}>
-          <Card onClick={() => setDepositFilterStatus('none')} hoverable>
-            <Statistic 
-              title="Chưa Đặt Cọc" 
-              value={depositStats.none}
-              valueStyle={{ color: '#d9d9d9' }}
+        <Col xs={24} sm={12} md={8} lg={5}>
+          <Card onClick={() => setDepositFilterStatus("completed")} hoverable>
+            <Statistic
+              title="Hoàn thành"
+              value={depositStats.completed}
+              valueStyle={{ color: "#52c41a" }}
+            />
+          </Card>
+        </Col>
+        <Col xs={24} sm={12} md={8} lg={5}>
+          <Card onClick={() => setDepositFilterStatus("cancelled")} hoverable>
+            <Statistic
+              title="Đã hủy"
+              value={depositStats.cancelled}
+              valueStyle={{ color: "#ff4d4f" }}
             />
           </Card>
         </Col>
@@ -172,10 +200,10 @@ const DepositManagement = () => {
       <Row gutter={[16, 16]} style={{ marginBottom: 20 }}>
         <Col span={24}>
           <Card>
-            <Statistic 
-              title="Tổng giá trị giao dịch" 
+            <Statistic
+              title="Tổng giá trị giao dịch"
               value={formatCurrency(depositStats.totalAmount)}
-              valueStyle={{ color: '#1890ff' }}
+              valueStyle={{ color: "#1890ff" }}
             />
           </Card>
         </Col>
@@ -190,10 +218,10 @@ const DepositManagement = () => {
           value={searchText}
           onChange={(e) => setSearchText(e.target.value)}
         />
-        
+
         <Space>
-          <Select 
-            value={depositFilterStatus} 
+          <Select
+            value={depositFilterStatus}
             style={{ width: 150 }}
             onChange={setDepositFilterStatus}
           >
@@ -205,15 +233,16 @@ const DepositManagement = () => {
         </Space>
       </Space>
 
-      <Table 
-        columns={depositColumns} 
-        dataSource={filteredDeposits}
-        loading={loading}
-        rowKey="depositId"
-        pagination={{ 
+      <Table
+        columns={depositColumns}
+        dataSource={deposits}
+        rowKey="id"
+        pagination={{
           pageSize: 5,
-          showTotal: (total, range) => `${range[0]}-${range[1]} của ${total} giao dịch` 
+          showTotal: (total, range) =>
+            `${range[0]}-${range[1]} của ${total} giao dịch`,
         }}
+        loading={loading}
         scroll={{ x: 1100 }}
       />
     </Card>

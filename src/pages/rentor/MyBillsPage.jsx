@@ -105,7 +105,6 @@ const MyBillsPage = () => {
     };
     try {
       const res = await paymentBill(formData);
-      console.log(res);
       if (res.success) {
         localStorage.setItem("paymentBillRequest", JSON.stringify(formData));
         const url = res?.data?.checkoutUrl;
@@ -114,7 +113,7 @@ const MyBillsPage = () => {
         message.error(res.message);
       }
     } catch (error) {
-      message("Không thể thực hiện thanh toán!");
+      message("Không thể thực hiện thanh toán hóa đơn!");
     } finally {
     }
   };

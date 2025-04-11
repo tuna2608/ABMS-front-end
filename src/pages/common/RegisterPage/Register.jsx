@@ -6,7 +6,7 @@ import {
   WrapperContainerRight,
 } from "./style";
 import { EyeTwoTone, EyeInvisibleOutlined } from "@ant-design/icons";
-import { Checkbox, Form, Image, message } from "antd";
+import { Checkbox, Form, Image, message, Spin } from "antd";
 import imgLogin from "./../../../assets/common/images/logo-login.png";
 import styled from "styled-components";
 import InputForm from "../../../components/common/InputForm/InputForm";
@@ -32,19 +32,31 @@ const RegisterPage = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
-  const [soDienThoai,setSoDienThoai] = useState("");
-  const [userName,setUserName] = useState("");
+  const [soDienThoai, setSoDienThoai] = useState("");
+  const [userName, setUserName] = useState("");
+  const [loading, setLoading] = useState(false);
   const dispatch = useDispatch();
 
   const handleRegister = async (values) => {
-    const res = await register(dispatch, {userName,phone:soDienThoai,email,password,re_password: confirmPassword});
-    const messageAPI = res?.message
-    if(res?.status === 401){
-      message.error(messageAPI)
-      return;
-    }else{
-      message.success(messageAPI)
-      navigate('/verify-otp')
+    setLoading(true);
+    try {
+      const res = await register(dispatch, {
+        userName,
+        phone: soDienThoai,
+        email,
+        password,
+        re_password: confirmPassword,
+      });
+      if (res.success) {
+        message.success(res.message);
+        navigate("/verify-otp");
+      } else {
+        message.error(res.message);
+      }
+    } catch (error) {
+      message.error("Không thể thực hiện đăng ký");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -122,7 +134,9 @@ const RegisterPage = () => {
 
             <Form.Item
               name="soDienThoai"
-              rules={[{ required: true, message: "Vui lòng nhập số điện thoại" }]}
+              rules={[
+                { required: true, message: "Vui lòng nhập số điện thoại" },
+              ]}
             >
               <InputForm
                 placeholder="09xxxxx"
@@ -205,30 +219,32 @@ const RegisterPage = () => {
             </Form.Item> */}
 
             <Form.Item>
-              <ButtonComponent
-                htmlType="submit"
-                disabled={
-                  !email.length ||
-                  !password.length ||
-                  password !== confirmPassword ||
-                  !userName.length ||
-                  !soDienThoai.length
-                }
-                size={40}
-                styleButton={{
-                  backgroundColor: "var(--cbutton)",
-                  height: "48px",
-                  width: "100%",
-                  border: "none",
-                  borderRadius: "4px",
-                }}
-                styleTextButton={{
-                  color: "var(--cbuttontext)",
-                  fontSize: "20px",
-                  fontWeight: "600",
-                }}
-                textButton={"Đăng ký"}
-              />
+              <Spin spinning={loading}>
+                <ButtonComponent
+                  htmlType="submit"
+                  disabled={
+                    !email.length ||
+                    !password.length ||
+                    password !== confirmPassword ||
+                    !userName.length ||
+                    !soDienThoai.length
+                  }
+                  size={40}
+                  styleButton={{
+                    backgroundColor: "var(--cbutton)",
+                    height: "48px",
+                    width: "100%",
+                    border: "none",
+                    borderRadius: "4px",
+                  }}
+                  styleTextButton={{
+                    color: "var(--cbuttontext)",
+                    fontSize: "20px",
+                    fontWeight: "600",
+                  }}
+                  textButton={"Đăng ký"}
+                />
+              </Spin>
             </Form.Item>
           </Form>
           <LinkNav>
