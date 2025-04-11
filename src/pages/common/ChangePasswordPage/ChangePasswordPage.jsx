@@ -1,10 +1,10 @@
-import React, { useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Form,
   Input,
-  Button,
   Typography,
   message,
+  Spin
 } from "antd";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
@@ -41,20 +41,27 @@ const FormSection = styled.div`
   margin-bottom: 20px;
 `;
 
-const SaveButton = styled(Button)`
+const SaveButton = styled.button`
   width: 100%;
   height: 50px;
   border-radius: 25px;
   background-color: #4b7bec;
   border-color: #4b7bec;
+  color: white;
   font-weight: 600;
+  border: none;
   transition: all 0.3s ease;
+  cursor: pointer;
 
   &:hover {
     background-color: #3a5ec7;
-    border-color: #3a5ec7;
     transform: translateY(-3px);
     box-shadow: 0 7px 14px rgba(50,50,93,.1), 0 3px 6px rgba(0,0,0,.08);
+  }
+
+  &:disabled {
+    background-color: #a0a0a0;
+    cursor: not-allowed;
   }
 `;
 
@@ -86,7 +93,7 @@ const PasswordRules = styled.div`
 const ChangePasswordPage = () => {
   const userCurrent = useSelector((state) => state.user.currentUser);
   const changePasswordStatus = useSelector((state) => state.user.changePasswordStatus);
-  const isFetching = useSelector((state) => state.user.isFetching);
+  const [isLoading, setIsLoading] = useState(false);
   
   const [form] = Form.useForm();
   const dispatch = useDispatch();
@@ -115,6 +122,8 @@ const ChangePasswordPage = () => {
       return;
     }
 
+    setIsLoading(true);
+
     // Call change password API
     const changePasswordDTO = {
       email: userCurrent.email, // Or userCurrent.userName depending on backend API
@@ -122,25 +131,31 @@ const ChangePasswordPage = () => {
       newPassword: values.newPassword
     };
 
-    const response = await changePassword(dispatch, changePasswordDTO);
-    
-    // Handle specific error cases
-    if (!response.success) {
-      // Check for specific error messages and set form errors accordingly
-      if (response.message.includes("mật khẩu hiện tại không đúng")) {
-        form.setFields([{
-          name: 'oldPassword',
-          errors: [response.message]
-        }]);
-      } else if (response.message.includes("không được trùng với mật khẩu hiện tại")) {
-        form.setFields([{
-          name: 'newPassword',
-          errors: [response.message]
-        }]);
-      } else {
-        // Generic error message
-        message.error(response.message);
+    try {
+      const response = await changePassword(dispatch, changePasswordDTO);
+      
+      // Handle specific error cases
+      if (!response.success) {
+        // Check for specific error messages and set form errors accordingly
+        if (response.message.includes("mật khẩu hiện tại không đúng")) {
+          form.setFields([{
+            name: 'oldPassword',
+            errors: [response.message]
+          }]);
+        } else if (response.message.includes("không được trùng với mật khẩu hiện tại")) {
+          form.setFields([{
+            name: 'newPassword',
+            errors: [response.message]
+          }]);
+        } else {
+          // Generic error message
+          message.error(response.message);
+        }
       }
+    } catch (error) {
+      message.error("Có lỗi xảy ra. Vui lòng thử lại.");
+    } finally {
+      setIsLoading(false);
     }
   };
 
@@ -181,7 +196,7 @@ const ChangePasswordPage = () => {
                   },
                 ]}
               >
-                <Input.Password />
+                <Input.Password disabled={isLoading} />
               </Form.Item>
             </FormSection>
 
@@ -200,7 +215,7 @@ const ChangePasswordPage = () => {
                   }
                 ]}
               >
-                <Input.Password />
+                <Input.Password disabled={isLoading} />
               </Form.Item>
             </FormSection>
             
@@ -224,19 +239,19 @@ const ChangePasswordPage = () => {
                   }),
                 ]}
               >
-                <Input.Password />
+                <Input.Password disabled={isLoading} />
               </Form.Item>
             </FormSection>
 
             <Form.Item>
-              <SaveButton
-                type="primary"
-                htmlType="submit"
-                disabled={isFetching}
-                loading={isFetching}
-              >
-                XÁC NHẬN
-              </SaveButton>
+              <Spin spinning={isLoading}>
+                <SaveButton
+                  type="submit"
+                  disabled={isLoading}
+                >
+                  XÁC NHẬN
+                </SaveButton>
+              </Spin>
             </Form.Item>
           </Form>
         </FormContainer>
