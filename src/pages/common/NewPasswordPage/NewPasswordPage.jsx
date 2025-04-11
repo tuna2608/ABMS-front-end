@@ -79,8 +79,17 @@ const NewPasswordPage = () => {
           navigate('/login', { replace: true });
         }, 500);
       } else {
-        // Handle potential failure scenarios
-        message.error(messageAPI || "Đặt lại mật khẩu không thành công");
+        // Handle specific error messages
+        const errorMessage = messageAPI || "Đặt lại mật khẩu không thành công";
+        message.error(errorMessage);
+
+        // If the error is about using the old password
+        if (errorMessage.includes("mật khẩu cũ")) {
+          form.setFields([{
+            name: 'newPassword',
+            errors: [errorMessage]
+          }]);
+        }
       }
     } catch (error) {
       console.error('Reset Password Error:', error);

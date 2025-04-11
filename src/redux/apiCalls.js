@@ -3,9 +3,6 @@ import {
   loginFailure,
   loginStart,
   loginSuccess,
-  signupStart,
-  signupSuccess,
-  signupFail,
   registerStart,
   registerSuccess,
   registerFail,
@@ -20,6 +17,9 @@ import {
   forgotPasswordFailure,
   forgotPasswordOtpVerified,
   forgotPasswordReset,
+  changePasswordStart,
+  changePasswordSuccess,
+  changePasswordFailure
 } from "./authSlice";
 import {publicRequest, userRequest } from "../utilities/requestMethod";
 import {
@@ -31,7 +31,6 @@ import {
   getUserSuccess,
   resetUsersSuccess,
 } from "./userSlice";
-import { toast } from "react-toastify";
 import {
   getMessagesStart,
   getMessagesSuccess,
@@ -169,26 +168,41 @@ export const resetPassword = async (dispatch, resetPasswordDTO) => {
     return res.data;
   } catch (error) {
     dispatch(verifyFail());
-    return error.response.data;
+    return error.response?.data || { 
+      message: "Có lỗi xảy ra. Vui lòng thử lại.", 
+      status: 500 
+    };
+  }
+};
+// Thêm hàm API để đổi mật khẩu
+export const changePassword = async (dispatch, changePasswordDTO) => {
+  dispatch(changePasswordStart());
+  try {
+    const res = await userRequest.post("/api/change_password", changePasswordDTO);
+    
+    if (res.data.status === 200) {
+      dispatch(changePasswordSuccess());
+      return {
+        success: true,
+        message: res.data.message || "Đổi mật khẩu thành công"
+      };
+    } else {
+      dispatch(changePasswordFailure());
+      return {
+        success: false,
+        message: res.data.message || "Đổi mật khẩu thất bại"
+      };
+    }
+  } catch (error) {
+    dispatch(changePasswordFailure());
+    return {
+      success: false,
+      message: error.response?.data?.message || "Có lỗi xảy ra khi đổi mật khẩu"
+    };
   }
 };
 
-export const sendOtpForgotPassword = async (formData) => {
-  try {
-    const res = await publicRequest.post("/api/forgot_password",formData);
-    return {
-      success: true,
-      data: res.data.data || [],
-      message: res.data.message || ''
-    };
-  } catch (error) {
-    return {
-      success: false,
-      data: [],
-      message: error.response?.data?.message || "Lỗi khi send otp forgot password"
-    };
-  }
-}
+
 
 //------------------------------------------------------Deposit View---------------------------------------------------------------------------------
 
