@@ -183,7 +183,10 @@ export const resetPassword = async (dispatch, resetPasswordDTO) => {
     return res.data;
   } catch (error) {
     dispatch(verifyFail());
-    return error.response.data;
+    return error.response?.data || { 
+      message: "Có lỗi xảy ra. Vui lòng thử lại.", 
+      status: 500 
+    };
   }
 };
 // Thêm hàm API để đổi mật khẩu

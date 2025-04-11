@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect } from "react";
 import {
   Form,
   Input,
@@ -9,12 +9,11 @@ import {
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { changePassword } from "../../../redux/apiCalls"; // Đảm bảo đường dẫn chính xác
-import { resetChangePasswordStatus } from "../../../redux/authSlice"; // Đảm bảo đường dẫn chính xác
+import { changePassword } from "../../../redux/apiCalls"; 
+import { resetChangePasswordStatus } from "../../../redux/authSlice"; 
 
 const { Title } = Typography;
 
-// Styled Components (giữ nguyên như phiên bản trước)
 const PageContainer = styled.div`
   display: flex;
   min-height: 100vh;
@@ -93,16 +92,16 @@ const ChangePasswordPage = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  // Theo dõi trạng thái đổi mật khẩu
+  // Track change password status
   useEffect(() => {
     if (changePasswordStatus === 'success') {
       message.success("Đổi mật khẩu thành công");
       form.resetFields();
       dispatch(resetChangePasswordStatus());
-      // Chuyển hướng về trang chủ
+      // Navigate to home page
       setTimeout(() => {
         navigate('/');
-      }, 1500); // Đợi 1.5 giây để người dùng xem thông báo thành công
+      }, 1500); // Wait 1.5 seconds to show success message
     } else if (changePasswordStatus === 'error') {
       message.error("Đổi mật khẩu thất bại");
       dispatch(resetChangePasswordStatus());
@@ -110,23 +109,38 @@ const ChangePasswordPage = () => {
   }, [changePasswordStatus, dispatch, form, navigate]);
 
   const handleSubmit = async (values) => {
-    // Validation để kiểm tra mật khẩu mới và xác nhận mật khẩu
+    // Validate new password and confirm password match
     if (values.newPassword !== values.confirmPassword) {
       message.error("Mật khẩu mới và xác nhận mật khẩu không khớp");
       return;
     }
 
-    // Gọi API đổi mật khẩu
+    // Call change password API
     const changePasswordDTO = {
-      email: userCurrent.email, // Hoặc userCurrent.userName tùy theo API backend
+      email: userCurrent.email, // Or userCurrent.userName depending on backend API
       currentPassword: values.oldPassword,
       newPassword: values.newPassword
     };
 
     const response = await changePassword(dispatch, changePasswordDTO);
     
+    // Handle specific error cases
     if (!response.success) {
-      message.error(response.message);
+      // Check for specific error messages and set form errors accordingly
+      if (response.message.includes("mật khẩu hiện tại không đúng")) {
+        form.setFields([{
+          name: 'oldPassword',
+          errors: [response.message]
+        }]);
+      } else if (response.message.includes("không được trùng với mật khẩu hiện tại")) {
+        form.setFields([{
+          name: 'newPassword',
+          errors: [response.message]
+        }]);
+      } else {
+        // Generic error message
+        message.error(response.message);
+      }
     }
   };
 
@@ -147,6 +161,7 @@ const ChangePasswordPage = () => {
             <h4>Yêu cầu mật khẩu:</h4>
             <ul>
               <li>Tối thiểu 6 ký tự</li>
+              <li>Không được trùng với mật khẩu hiện tại</li>
             </ul>
           </PasswordRules>
 
@@ -193,6 +208,7 @@ const ChangePasswordPage = () => {
               <Form.Item 
                 label="Xác nhận mật khẩu mới:" 
                 name="confirmPassword"
+                dependencies={['newPassword']}
                 rules={[
                   { 
                     required: true, 
