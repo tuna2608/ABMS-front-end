@@ -96,12 +96,12 @@ const MyBillsPage = () => {
 
   const handlePayment = async (record) => {
     const formData = {
+      billId: record.billId,
       productName: record.billContent,
       description: (record.billType === "monthPaid") ? "Bill thue nha" : record.billContent,
       returnUrl: "http://localhost:3000/payment/success",
       cancelUrl: "http://localhost:3000/payment/cancel",
       price: record.amount,
-      billId: record.billId,
     };
     try {
       const res = await paymentBill(formData);
@@ -113,7 +113,7 @@ const MyBillsPage = () => {
         message.error(res.message);
       }
     } catch (error) {
-      message("Không thể thực hiện thanh toán hóa đơn!");
+      message.error("Không thể thực hiện thanh toán hóa đơn!");
     } finally {
     }
   };

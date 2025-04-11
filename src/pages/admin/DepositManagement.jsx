@@ -109,10 +109,12 @@ const DepositManagement = () => {
         const colorMap = {
           ongoing: "blue",
           done: "green",
+          cancel: "orange" 
         };
         const textMap = {
           ongoing: "Đang thực hiện",
           done: "Đã chuyển tiền",
+          cancel: "Hủy chuyển tiền"
         };
         return <Tag color={colorMap[status] || "default"}>{textMap[status]}</Tag>;
       },
