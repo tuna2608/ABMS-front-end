@@ -23,6 +23,7 @@ import styled from 'styled-components';
 import moment from "moment";
 import { useSelector } from "react-redux";
 import { getContractOwners, getApartments } from "../../redux/apiCalls";
+import { RenewalModal } from './RenewContractModal';
 
 const { Search } = Input;
 const { TabPane } = Tabs;
@@ -56,6 +57,8 @@ const ContractView = () => {
   const [selectedContract, setSelectedContract] = useState(null);
   const [isContractModalVisible, setIsContractModalVisible] = useState(false);
   const [searchText, setSearchText] = useState('');
+  const [isRenewModalVisible, setIsRenewModalVisible] = useState(false);
+  const [renewingContract, setRenewingContract] = useState(null);
 
   // Fetch owner's apartments
   useEffect(() => {
@@ -114,8 +117,8 @@ const ContractView = () => {
   };
 
   const handleRenewContract = (contract) => {
-    // TODO: Implement contract renewal logic
-    message.info('Tính năng đang được phát triển');
+    setRenewingContract(contract);
+    setIsRenewModalVisible(true);
   };
 
   const handleDownloadTemplate = () => {
@@ -322,6 +325,14 @@ const ContractView = () => {
       </Space>
 
       {renderContractModal()}
+
+      <RenewalModal
+        isVisible={isRenewModalVisible}
+        onCancel={() => setIsRenewModalVisible(false)}
+        contract={renewingContract}
+        onSuccess={fetchContractOwners}
+        selectedApartment={selectedApartment}
+      />
     </Card>
   );
 };

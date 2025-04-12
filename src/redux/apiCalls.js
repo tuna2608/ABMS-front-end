@@ -1033,3 +1033,42 @@ export const getContractOwners = async (apartmentName) => {
     };
   }
 };
+
+export const updateContractVerification = async (verificationId, startDate, endDate, imageFiles) => {
+  try {
+    const formData = new FormData();
+    formData.append('verificationId', verificationId);
+    
+    // Format dates to ISO string
+    const formatDate = (date) => {
+      return moment(date).format('YYYY-MM-DDT00:00:00.000');
+    };
+
+    formData.append('contractStartDate', formatDate(startDate));
+    formData.append('contractEndDate', formatDate(endDate));
+
+    if (imageFiles?.length > 0) {
+      imageFiles.forEach(file => {
+        formData.append('imageFile', file);
+      });
+    }
+
+    const res = await publicRequest.put('/user/update_verification', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+
+    return {
+      success: res.data?.status === 201,
+      data: res.data?.data,
+      message: res.data?.message
+    };
+  } catch (error) {
+    console.error("Error updating contract verification:", error);
+    return {
+      success: false,
+      message: error.response?.data?.message || 'Có lỗi xảy ra khi cập nhật hợp đồng'
+    };
+  }
+};
