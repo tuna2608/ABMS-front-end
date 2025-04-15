@@ -55,6 +55,7 @@ import {
   deleteApartmentFailure,
 } from './apartmentSlice';
 import { getAllPostsFailure, getAllPostsStart, getAllPostsSuccess, getPostFailure, getPostStart, getPostSuccess } from "./postSlice";
+import moment from "moment";
 
 // Auth ------------------------------------------------------------------
 export const login = async (dispatch, user) => {
@@ -1034,6 +1035,7 @@ export const getContractOwners = async (apartmentName) => {
   }
 };
 
+//cập nhật hợp đồng mới
 export const updateContractVerification = async (verificationId, startDate, endDate, imageFiles) => {
   try {
     const formData = new FormData();
