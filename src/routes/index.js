@@ -13,6 +13,7 @@ import ApartmentDetail from "../pages/client/PostDetail/PostDetail";
 import ChatPage from "../pages/client/ChatPage/ChatPage";
 import NotificationsPage from "../pages/client/NotificationPage/NotificationPage";
 import DepositApartments from "../pages/client/DepositApartment/DepositApartment";
+import ServicePage from "../pages/client/ServicePage/ServicePage";
 import EditProfilePage from "../pages/common/EditProfilePage/EditProfilePage";
 import StaffHome from "../pages/staff/StaffHome";
 import OTPPage from "../pages/common/OTPPage/OTPPage";
@@ -156,6 +157,11 @@ export const routes = [
     {
         path: '/edit-profile',
         page: EditProfilePage,
+        isShowHeader: true
+    },
+    {
+        path: '/service',
+        page: ServicePage,
         isShowHeader: true
     },
     {
