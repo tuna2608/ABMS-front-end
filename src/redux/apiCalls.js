@@ -69,7 +69,6 @@ import {
   updateFormStatusSuccess,
 } from "./formSlice";
 
-import { moment } from "moment";
 
 
 // Auth ------------------------------------------------------------------
@@ -1145,10 +1144,13 @@ export const createForm = async (dispatch, userId, dto) => {
   dispatch(createFormStart());
   try {
     const formData = new FormData();
-    formData.append("dto", new Blob([JSON.stringify(dto)], { type: "application/json" }));
+    formData.append("userId", userId);
+    formData.append("formType", dto.formType);
+    formData.append("apartmentId", dto.apartmentId);
+    formData.append("reason", dto.reason);
     formData.append("file", dto.file);
 
-    const res = await publicRequest.post(`/api/forms/upload/${userId}`, formData, {
+    const res = await publicRequest.post(`/api/forms/upload`, formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
