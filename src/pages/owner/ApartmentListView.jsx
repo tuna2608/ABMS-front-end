@@ -15,9 +15,11 @@ import {
   SearchOutlined,
   FilterOutlined,
   EnvironmentOutlined,
+  MailOutlined,
+  PhoneOutlined,
 } from "@ant-design/icons";
 import { useSelector } from "react-redux";
-import { getApartments } from "../../redux/apiCalls";
+import { getApartments, getRentorByApartment } from "../../redux/apiCalls";
 
 const { Option } = Select;
 const { Search } = Input;
@@ -31,9 +33,18 @@ const ApartmentListView = () => {
   const [pageSize] = useState(4);
   const [apartments, setApartments] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [renters, setRenters] = useState({});
 
   useEffect(() => {
-    fetchApartments(currentUser);
+    const initData = async () => {
+      await fetchApartments(currentUser);
+      // Fetch renters for each apartment
+      apartments.forEach((apt) => {
+        fetchRenters(apt.apartmentName);
+      });
+    };
+
+    initData();
   }, [currentUser]);
 
   const fetchApartments = async (currentUser) => {
@@ -59,6 +70,20 @@ const ApartmentListView = () => {
       message.error("Không thể tải danh sách căn hộ");
     } finally {
       setLoading(false);
+    }
+  };
+
+  const fetchRenters = async (apartmentName) => {
+    try {
+      const response = await getRentorByApartment(apartmentName);
+      if (response.success) {
+        setRenters((prev) => ({
+          ...prev,
+          [apartmentName]: response.data,
+        }));
+      }
+    } catch (error) {
+      console.error("Error fetching renters:", error);
     }
   };
 
@@ -140,6 +165,106 @@ const ApartmentListView = () => {
       key: "floor",
       width: 80,
       editable: true,
+    },
+    {
+      title: "Người thuê",
+      key: "renters",
+      render: (_, record) => {
+        const apartmentRenters = renters[record.apartmentName] || [];
+        return apartmentRenters.length > 0 ? (
+          <Space direction="vertical" style={{ width: '100%' }}>
+            {apartmentRenters.map((renter) => (
+              <Card 
+                key={renter.userId} 
+                size="small" 
+                style={{
+                  marginBottom: 8,
+                  borderRadius: 8,
+                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
+                  border: '1px solid #e8e8e8'
+                }}
+                bodyStyle={{ padding: '12px' }}
+              >
+                <Space align="start">
+                  <div 
+                    style={{
+                      width: 32,
+                      height: 32,
+                      borderRadius: '50%',
+                      background: '#1890ff',
+                      display: 'flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      color: 'white',
+                      fontSize: '16px',
+                      marginRight: 8
+                    }}
+                  >
+                    {renter.userName?.[0]?.toUpperCase() || 'U'}
+                  </div>
+                  <Space direction="vertical" size={4}>
+                    <Space>
+                      <span style={{ 
+                        fontWeight: 500,
+                        fontSize: '14px',
+                        color: '#262626'
+                      }}>
+                        {renter.userName}
+                      </span>
+                      <Tag 
+                        color="purple" 
+                        style={{ 
+                          borderRadius: '4px',
+                          fontSize: '12px',
+                          padding: '0 6px'
+                        }}
+                      >
+                        {renter.role}
+                      </Tag>
+                    </Space>
+                    <Space size={12}>
+                      {renter.email && (
+                        <span style={{ 
+                          fontSize: '12px',
+                          color: '#595959',
+                          display: 'flex',
+                          alignItems: 'center'
+                        }}>
+                          <MailOutlined style={{ marginRight: 4 }} />
+                          {renter.email}
+                        </span>
+                      )}
+                      {renter.phone && (
+                        <span style={{ 
+                          fontSize: '12px',
+                          color: '#595959',
+                          display: 'flex',
+                          alignItems: 'center'
+                        }}>
+                          <PhoneOutlined style={{ marginRight: 4 }} />
+                          {renter.phone}
+                        </span>
+                      )}
+                    </Space>
+                  </Space>
+                </Space>
+              </Card>
+            ))}
+          </Space>
+        ) : (
+          <Tag 
+            color="default"
+            style={{
+              padding: '4px 8px',
+              borderRadius: '4px',
+              fontSize: '13px'
+            }}
+          >
+            Chưa có người thuê
+          </Tag>
+        );
+      },
+      width: 300
     },
   ];
 

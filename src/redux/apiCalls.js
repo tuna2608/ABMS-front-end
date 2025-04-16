@@ -359,6 +359,25 @@ export const deleteApartment = async (dispatch, apartmentId) => {
   }
 };
 
+//view rentor trong căn hộ
+export const getRentorByApartment = async (apartmentName) => {
+  try {
+    const res = await publicRequest.get(`/apartment/get_rentor?apartmentName=${apartmentName}`);
+    return {
+      success: res.data?.status === 200,
+      data: res.data?.data || [],
+      message: res.data?.message || 'Lấy danh sách người thuê thành công'
+    };
+  } catch (error) {
+    console.error("Error fetching renters:", error);
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || 'Có lỗi xảy ra khi lấy danh sách người thuê'
+    };
+  }
+};
+
 //------------------------------------------------------------------------------tạo bài viết mua bán căn hộ------------------------------------------------------------------------------
 
 export const getPostsByUserId = async (dispatch, userId) => {
