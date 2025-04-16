@@ -7,7 +7,7 @@ import {
   WrapperTextLight,
 } from "./style";
 import { EyeTwoTone, EyeInvisibleOutlined } from "@ant-design/icons";
-import { Checkbox, Form, Image, message} from "antd";
+import { Checkbox, Form, Image, message } from "antd";
 import imgLogin from "./../../../assets/common/images/logo-login.png";
 import styled from "styled-components";
 import InputForm from "../../../components/common/InputForm/InputForm";
@@ -16,8 +16,7 @@ import bgLogin from "../../../assets/common/images/bg-login.jpg";
 import { LoadingComponent } from "../../../components/common/LoadingComponent/LoadingComponent";
 import { LinkNav } from "../ForgotPasswordPage/style";
 import { login } from "../../../redux/apiCalls";
-import {useDispatch} from 'react-redux'
-
+import { useDispatch } from "react-redux";
 
 const TextContent = styled.p`
   color: var(--cparagraph);
@@ -30,6 +29,7 @@ const TitlePage = styled.h2`
 const SignInPage = () => {
   const navigate = useNavigate();
   const [isShowPassword, setIsShowPassword] = useState(false);
+  const [loading,setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
@@ -44,30 +44,34 @@ const SignInPage = () => {
     return value.length >= 2;
   };
 
-  
   const handleLogin = async () => {
-
-    if(!isValidPassword(password)){
-      message.error("Password must be at least 6 characters long.")
-      return;
-    }
-    const res = await login(dispatch, { usernameOrEmail: email, password });
-    // console.log(res);
-    const messageAPI = res.message
-    if(res.status === 401){
-      message.error(messageAPI)
-      return;
-    }else{
-      message.success(messageAPI)
-      const roleUser = res?.data.role;
-      if(roleUser === 'Admin'){
-        navigate('/adminHome')
-      }else if(roleUser === 'Staff'){
-        navigate('/staffHome')
+    setLoading(true);
+    try {
+      if (!isValidPassword(password)) {
+        message.error("Password must be at least 6 characters long.");
+        return;
+      }
+      const res = await login(dispatch, { usernameOrEmail: email, password });
+      // console.log(res);
+      if(res.success){
+        message.success(res.message);
+        const roleUser = res.data.role;
+        if (roleUser === "Admin") {
+          navigate("/adminHome");
+        } else if (roleUser === "Staff") {
+          navigate("/staffHome");
+        } else {
+          navigate("/");
+        }
       }else {
-        navigate('/')
-      } 
+        message.error(res.message);
+      }
+    } catch (error) {
+      message.error("Không thể thực hiện đăng nhập")
+    }finally{
+      setLoading(false)
     }
+    
   };
 
   return (
@@ -168,7 +172,7 @@ const SignInPage = () => {
               <Checkbox>Remember me</Checkbox>
             </Form.Item>
             <Form.Item label={null}>
-              <LoadingComponent isPending={false}>
+              <LoadingComponent isPending={loading}>
                 <ButtonComponent
                   htmlType="submit"
                   disabled={!email.length || !password.length}
@@ -205,10 +209,11 @@ const SignInPage = () => {
             </WrapperTextLight>
           </LinkNav>
           <LinkNav>
-            <p>Chưa có tài khoản ?
-            <WrapperTextLight onClick={() => navigate("/register")}>
-              Đăng ký ngay
-            </WrapperTextLight>
+            <p>
+              Chưa có tài khoản ?
+              <WrapperTextLight onClick={() => navigate("/register")}>
+                Đăng ký ngay
+              </WrapperTextLight>
             </p>
           </LinkNav>
         </WrapperContainerLeft>
