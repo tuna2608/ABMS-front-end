@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch } from "react-redux";
-import { Form, Image, message } from "antd";
+import { Form, Image, message, Spin } from "antd";
 import styled from "styled-components";
 import {
   LinkNav,
@@ -125,24 +125,26 @@ const ForgotPasswordPage = () => {
             </Form.Item>
 
             <Form.Item>
-              <ButtonComponent
-                textButton="Gửi yêu cầu"
-                htmlType="submit"
-                disabled={isLoading}
-                size={40}
-                styleButton={{
-                  backgroundColor: "var(--cbutton)",
-                  height: "48px",
-                  width: "100%",
-                  border: "none",
-                  borderRadius: "4px",
-                }}
-                styleTextButton={{
-                  color: "var(--cbuttontext)",
-                  fontSize: "20px",
-                  fontWeight: "600",
-                }}
-              />
+              <Spin spinning={isLoading}>
+                <ButtonComponent
+                  textButton="Gửi yêu cầu"
+                  htmlType="submit"
+                  disabled={isLoading}
+                  size={40}
+                  styleButton={{
+                    backgroundColor: "var(--cbutton)",
+                    height: "48px",
+                    width: "100%",
+                    border: "none",
+                    borderRadius: "4px",
+                  }}
+                  styleTextButton={{
+                    color: "var(--cbuttontext)",
+                    fontSize: "20px",
+                    fontWeight: "600",
+                  }}
+                />
+              </Spin>
             </Form.Item>
           </Form>
           <LinkNav>
