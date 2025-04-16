@@ -31,6 +31,7 @@ import {
   getUserSuccess,
   resetUsersSuccess,
 } from "./userSlice";
+import moment from 'moment';
 import {
   getMessagesStart,
   getMessagesSuccess,
@@ -55,7 +56,7 @@ import {
   deleteApartmentFailure,
 } from './apartmentSlice';
 import { getAllPostsFailure, getAllPostsStart, getAllPostsSuccess, getPostFailure, getPostStart, getPostSuccess } from "./postSlice";
-import {moment} from 'moment';
+
 
 // Auth ------------------------------------------------------------------
 export const login = async (dispatch, user) => {
@@ -63,10 +64,18 @@ export const login = async (dispatch, user) => {
   try {
     const res = await publicRequest.post("/api/login", user);
     dispatch(loginSuccess(res.data.data));
-    return res.data;
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || ''
+    };
   } catch (error) {
     dispatch(loginFailure());
-    return error.response.data;
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || "Lỗi khi đăng nhập tài khoản"
+    };
   }
 };
 

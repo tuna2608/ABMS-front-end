@@ -197,6 +197,7 @@ const RegisterLink = styled(WrapperTextLight)`
 const SignInPage = () => {
   const navigate = useNavigate();
   const [isShowPassword, setIsShowPassword] = useState(false);
+  const [loading,setLoading] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
@@ -212,27 +213,33 @@ const SignInPage = () => {
   };
 
   const handleLogin = async () => {
-    if(!isValidPassword(password)){
-      message.error("Password must be at least 6 characters long.")
-      return;
-    }
-    const res = await login(dispatch, { usernameOrEmail: email, password });
-    // console.log(res);
-    const messageAPI = res.message
-    if(res.status === 401){
-      message.error(messageAPI)
-      return;
-    }else{
-      message.success(messageAPI)
-      const roleUser = res.data.role;
-      if(roleUser === 'Admin'){
-        navigate('/adminHome')
-      }else if(roleUser === 'Staff'){
-        navigate('/staffHome')
+    setLoading(true);
+    try {
+      if (!isValidPassword(password)) {
+        message.error("Password must be at least 6 characters long.");
+        return;
+      }
+      const res = await login(dispatch, { usernameOrEmail: email, password });
+      // console.log(res);
+      if(res.success){
+        message.success(res.message);
+        const roleUser = res.data.role;
+        if (roleUser === "Admin") {
+          navigate("/adminHome");
+        } else if (roleUser === "Staff") {
+          navigate("/staffHome");
+        } else {
+          navigate("/");
+        }
       }else {
-        navigate('/')
-      } 
+        message.error(res.message);
+      }
+    } catch (error) {
+      message.error("Không thể thực hiện đăng nhập")
+    }finally{
+      setLoading(false)
     }
+    
   };
 
   return (
@@ -315,7 +322,7 @@ const SignInPage = () => {
               <Checkbox>Remember me</Checkbox>
             </Form.Item>
             <Form.Item label={null}>
-              <LoadingComponent isPending={false}>
+              <LoadingComponent isPending={loading}>
                 <ButtonComponent
                   htmlType="submit"
                   disabled={!email.length || !password.length}
