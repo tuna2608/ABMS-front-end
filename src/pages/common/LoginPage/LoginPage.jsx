@@ -59,7 +59,7 @@ const SignInPage = () => {
       return;
     }else{
       message.success(messageAPI)
-      const roleUser = res.data.role;
+      const roleUser = res?.data.role;
       if(roleUser === 'Admin'){
         navigate('/adminHome')
       }else if(roleUser === 'Staff'){
