@@ -130,7 +130,7 @@ function HeaderComponent() {
         label: <div onClick={() => navigate("/rentorHome")}>Kênh người thuê</div>,
       });
     }
-    if (user?.role === 'Owner' || user?.role === 'Rentor' || user?.role === 'User') {
+    if ( user?.role === 'User') {
       baseItems.push({
         key: "3",
         label: <div onClick={() => navigate("/deposit-apartment")}>Căn hộ đã đặt cọc</div>,
