@@ -131,7 +131,7 @@ const SignInPage = () => {
             <Form.Item
               name="usernameOrEmail"
               rules={[
-                { required: true, message: "Please input your username!" },
+                { required: true, message: "Hãy nhập userName!" },
               ]}
             >
               <InputForm

@@ -102,9 +102,10 @@ const BillPage = () => {
     setLoading(true);
     try {
       const res = await getAllBillOwner(dispatch, userId);
-      // console.log(res.data.length === 0);
       if (res.success) {
         setBills(res.data);
+        console.log();
+        
       } else {
         message.error(res.message);
       }
