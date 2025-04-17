@@ -10,6 +10,7 @@ import {
   DollarOutlined,
   DashboardOutlined,
   CreditCardOutlined,
+  CustomerServiceOutlined
 } from "@ant-design/icons";
 
 const { Sider } = Layout;
@@ -106,6 +107,12 @@ const AdminSidebar = ({ collapsed, activeTab, setActiveTab, toggleCollapsed }) =
       icon: <CreditCardOutlined />,
       label: "Quản lý coin",
       onClick: () => handleMenuClick("coin", "coin")
+    },
+    {
+      key: "service", // New payment management menu item
+      icon: <CustomerServiceOutlined/>,
+      label: "Quản lý bài viết dịch vụ",
+      onClick: () => handleMenuClick("service", "service")
     },
     {
       key: "reports",

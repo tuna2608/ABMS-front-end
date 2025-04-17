@@ -56,6 +56,20 @@ import {
   deleteApartmentFailure,
 } from './apartmentSlice';
 import { getAllPostsFailure, getAllPostsStart, getAllPostsSuccess, getPostFailure, getPostStart, getPostSuccess } from "./postSlice";
+import {
+  getFormStart,
+  getFormSuccess,
+  getFormFailure,
+  getAllFormsStart,
+  getAllFormsSuccess,
+  getAllFormsFailure,
+  createFormStart,
+  createFormSuccess,
+  createFormFailure,
+  updateFormStatusSuccess,
+} from "./formSlice";
+
+
 
 
 // Auth ------------------------------------------------------------------
@@ -1080,6 +1094,100 @@ export const updateContractVerification = async (verificationId, startDate, endD
     return {
       success: false,
       message: error.response?.data?.message || 'Có lỗi xảy ra khi cập nhật hợp đồng'
+    };
+  }
+};
+
+// Get a single form
+export const getForm = async (dispatch, formId) => {
+  dispatch(getFormStart());
+  try {
+    const res = await publicRequest.get(`/api/forms/${formId}`);
+    dispatch(getFormSuccess(res.data.form));
+    return {
+      success: true,
+      data: res.data.form || {},
+      message: res.data.message || "Lấy form thành công",
+    };
+  } catch (error) {
+    dispatch(getFormFailure());
+    return {
+      success: false,
+      data: {},
+      message: error.response?.data?.message || "Không thể lấy form",
+    };
+  }
+};
+
+// Get all forms
+export const getAllForms = async (dispatch) => {
+  dispatch(getAllFormsStart());
+  try {
+    const res = await publicRequest.get(`/api/forms/all`);
+    dispatch(getAllFormsSuccess(res.data.forms));
+    return {
+      success: true,
+      data: res.data.forms || [],
+      message: res.data.message || "Lấy danh sách đơn từ thành công",
+    };
+  } catch (error) {
+    dispatch(getAllFormsFailure());
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || "Không thể lấy danh sách đơn từ",
+    };
+  }
+};
+
+// Create new form (with file)
+export const createForm = async (dispatch, userId, dto) => {
+  dispatch(createFormStart());
+  try {
+    const formData = new FormData();
+    formData.append("userId", userId);
+    formData.append("formType", dto.formType);
+    formData.append("apartmentId", dto.apartmentId);
+    formData.append("reason", dto.reason);
+    formData.append("file", dto.file);
+
+    const res = await publicRequest.post(`/api/forms/upload`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    dispatch(createFormSuccess(res.data.data));
+    return {
+      success: true,
+      data: res.data.data || {},
+      message: res.data.message || "Tạo đơn thành công",
+    };
+  } catch (error) {
+    dispatch(createFormFailure());
+    return {
+      success: false,
+      data: {},
+      message: error.response?.data?.message || "Tạo đơn thất bại",
+    };
+  }
+};
+
+// Approve or reject form (admin)
+export const approveForm = async (dispatch, formId, status) => {
+  try {
+    const res = await publicRequest.put(`/api/forms/approve/${formId}?status=${status}`);
+    dispatch(updateFormStatusSuccess(res.data.form));
+    return {
+      success: true,
+      data: res.data.form || {},
+      message: res.data.message || "Cập nhật trạng thái thành công",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: {},
+      message: error.response?.data?.message || "Duyệt đơn thất bại",
     };
   }
 };

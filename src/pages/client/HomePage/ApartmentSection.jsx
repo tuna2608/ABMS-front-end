@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import styled from 'styled-components';
 import {
   CameraOutlined,
@@ -8,6 +8,8 @@ import {
   ArrowRightOutlined,
   HeartOutlined
 } from "@ant-design/icons";
+import { useDispatch } from "react-redux";
+import { getAllPosts } from "../../../redux/apiCalls"; // Adjust the path based on your project structure
 
 const ApartmentSectionWrapper = styled.section`
   max-width: 1200px;
@@ -272,14 +274,78 @@ const ApartmentNavButton = styled.button`
   }
 `;
 
-function ApartmentSection({ 
-  currentProperties, 
-  totalPages, 
-  currentPage, 
-  handlePrevApartment, 
-  handleNextApartment, 
-  handleViewMore 
-}) {
+function ApartmentSection({ handleViewMore }) {
+  const [properties, setProperties] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [currentPage, setCurrentPage] = useState(0);
+  const propertiesPerPage = 4;
+  
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    async function fetchProperties() {
+      setLoading(true);
+      try {
+        const response = await getAllPosts(dispatch);
+        if (response && response.data) {
+          setProperties(response.data);
+        }
+      } catch (error) {
+        console.error("Error fetching properties:", error);
+      } finally {
+        setLoading(false);
+      }
+    }
+    
+    fetchProperties();
+  }, [dispatch]);
+
+  const totalPages = Math.ceil(properties.length / propertiesPerPage);
+  
+  const currentProperties = properties.slice(
+    currentPage * propertiesPerPage,
+    (currentPage + 1) * propertiesPerPage
+  );
+
+  const handlePrevApartment = () => {
+    setCurrentPage((prev) => (prev > 0 ? prev - 1 : totalPages - 1));
+  };
+
+  const handleNextApartment = () => {
+    setCurrentPage((prev) => (prev < totalPages - 1 ? prev + 1 : 0));
+  };
+
+  // Format price function from PostList component
+  const formatPrice = (price) => {
+    return new Intl.NumberFormat("vi-VN").format(price) + " VNĐ/tháng";
+  };
+  
+  // If data is loading or not available yet, we could return a loading state
+  if (loading) {
+    return (
+      <ApartmentSectionWrapper>
+        <SectionTitleContainer>
+          <SectionTitle>Căn hộ dành cho bạn</SectionTitle>
+        </SectionTitleContainer>
+        <div style={{ padding: "20px", textAlign: "center" }}>
+          Đang tải dữ liệu...
+        </div>
+      </ApartmentSectionWrapper>
+    );
+  }
+
+  // Mapping the fetched data to match the expected format for the component
+  const mappedProperties = currentProperties.map(property => ({
+    id: property.postId,
+    image: property.postImages && property.postImages.length > 0 ? property.postImages[0] : '/placeholder-image.jpg',
+    imageCount: property.postImages ? property.postImages.length : 0,
+    price: formatPrice(property.price),
+    area: `${property.apartment?.area || 200} m²`,
+    title: property.title,
+    location: property.apartment?.apartmentName || 'Unknown',
+    createdAt: new Date(property.createdAt || new Date()).toLocaleDateString('vi-VN')
+  }));
+
   return (
     <ApartmentSectionWrapper>
       <SectionTitleContainer>
@@ -290,7 +356,7 @@ function ApartmentSection({
       </SectionTitleContainer>
 
       <ApartmentGrid>
-        {currentProperties.map((property) => (
+        {mappedProperties.map((property) => (
           <ApartmentCard key={property.id}>
             <ApartmentImage>
               <img src={property.image} alt={property.title} />

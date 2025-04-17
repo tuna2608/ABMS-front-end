@@ -11,6 +11,8 @@ import BillPage from "./OwnerBillManagement";
 import ContractView from "./ContractView";
 import PaymentView from "./PaymentView";
 import ChatPage from "../client/ChatPage/ChatPage";
+import UserCoinRequests from "../client/UserCoinRequests/UserCoinRequests";
+
 
 const { Sider, Content, Header } = Layout;
 const OwnerHome = () => {
@@ -103,6 +105,8 @@ Khách hàng có thể mất một phần hoặc toàn bộ tiền đặt cọc 
         return <PaymentView />;
       case "bill-management":
         return <BillPage />;
+        case "coin-request":
+        return <UserCoinRequests />;
       case "chatpage":
         return <ChatPage />;
       default:
@@ -151,6 +155,7 @@ Khách hàng có thể mất một phần hoặc toàn bộ tiền đặt cọc 
             <Route path="/contract-management" element={renderContent()} />
             <Route path="/payment-management" element={renderContent()} />
             <Route path="/bill-management" element={renderContent()} />
+            <Route path="/coin-request" element={renderContent()} />
             <Route path="/messages" element={renderContent()} />
             <Route path="*" element={<Navigate to="/ownerHome/list" replace />} />
           </Routes>

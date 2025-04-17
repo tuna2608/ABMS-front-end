@@ -76,6 +76,18 @@ const PostLink = styled(Button)`
     background-color: transparent;
   }
 `;
+const ServiceLink = styled(Button)`
+  color: white;
+  background-color: transparent;
+  border: none;
+  font-size: 16px;
+  transition: color 0.3s;
+
+  &:hover {
+    color: var(--csecondary);
+    background-color: transparent;
+  }
+`;
 
 const NavItemAVT = styled.div`
   display: flex;
@@ -128,6 +140,12 @@ function HeaderComponent() {
       baseItems.push({
         key: "2",
         label: <div onClick={() => navigate("/rentorHome")}>Kênh người thuê</div>,
+      });
+    }
+    if ( user?.role === 'User') {
+      baseItems.push({
+        key: "3",
+        label: <div onClick={() => navigate("/deposit-apartment")}>Căn hộ đã đặt cọc</div>,
       });
     }
     
@@ -230,9 +248,14 @@ function HeaderComponent() {
 
         <Col span={10}>
           <NavbarListItem>
+            
             <PostLink onClick={() => navigate("/post")}>
               Bài viết
             </PostLink>
+            <ServiceLink onClick={() => navigate("/service")}>
+              Dịch vụ
+            </ServiceLink>
+            
 
             <NotificationWrapper />
 

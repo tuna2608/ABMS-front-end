@@ -4,6 +4,7 @@ import {
   HomeOutlined,
   FileTextOutlined,
   DollarOutlined,
+  CreditCardOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
@@ -47,6 +48,15 @@ const SideMenu = ({ setCurrentView }) => {
         navigate("/rentorHome/payment");
       },
     },
+    {
+      key: "contract",
+      icon: <CreditCardOutlined />,
+      label: "Danh sách chuyển Coin",
+      onClick: () => {
+        setCurrentView("coin-request");
+        navigate("/rentorHome/coin-request");
+      },
+    }
   ];
 
   return (
