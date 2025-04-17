@@ -7,7 +7,8 @@ import {
   FileProtectOutlined,
   WalletOutlined,
   FileAddOutlined,
-  MessageOutlined
+  MessageOutlined,
+  CreditCardOutlined
 } from "@ant-design/icons";
 
 const SideMenu = ({ setCurrentView }) => {
@@ -67,6 +68,12 @@ const SideMenu = ({ setCurrentView }) => {
       icon: <FileAddOutlined />,
       label: "Quản lý hóa đơn",
       onClick: () => handleMenuClick("bill-management", "bill-management"),
+    },
+    {
+      key: "5",
+      icon: <CreditCardOutlined />,
+      label: "Danh sách chuyển Coin",
+      onClick: () => handleMenuClick("coin-request", "coin-request"),
     },
     {
       key: "7",

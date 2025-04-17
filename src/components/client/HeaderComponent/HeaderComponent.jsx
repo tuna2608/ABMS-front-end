@@ -76,6 +76,18 @@ const PostLink = styled(Button)`
     background-color: transparent;
   }
 `;
+const ServiceLink = styled(Button)`
+  color: white;
+  background-color: transparent;
+  border: none;
+  font-size: 16px;
+  transition: color 0.3s;
+
+  &:hover {
+    color: var(--csecondary);
+    background-color: transparent;
+  }
+`;
 
 const NavItemAVT = styled.div`
   display: flex;
@@ -135,15 +147,11 @@ function HeaderComponent() {
         key: "3",
         label: <div onClick={() => navigate("/deposit-apartment")}>Căn hộ đã đặt cọc</div>,
       });
-      baseItems.push({
-        key: "4",
-        label: <div onClick={() => navigate("/service")}>Dịch vụ</div>,
-      });
     }
     
     // Add logout option
     baseItems.push({
-      key: "5",
+      key: "4",
       label: <div onClick={handleLogout}>Logout</div>,
     });
     
@@ -240,9 +248,14 @@ function HeaderComponent() {
 
         <Col span={10}>
           <NavbarListItem>
+            
             <PostLink onClick={() => navigate("/post")}>
               Bài viết
             </PostLink>
+            <ServiceLink onClick={() => navigate("/service")}>
+              Dịch vụ
+            </ServiceLink>
+            
 
             <NotificationWrapper />
 

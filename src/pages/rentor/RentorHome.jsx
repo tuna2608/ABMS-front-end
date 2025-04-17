@@ -10,6 +10,7 @@ import MyBillsPage from "./MyBillsPage";
 import ContractView from "./ContractView";
 import PaymentView from "./PaymentView";
 import zaloLogo from '../../assets/common/images/logo-zalo-vector-7.jpg';
+import UserCoinRequests from "../client/UserCoinRequests/UserCoinRequests";
 
 const { Sider, Content, Header } = Layout;
 
@@ -55,8 +56,10 @@ const RentorHome = () => {
         return <ApartmentListView />;
       case "my-bills":
         return <MyBillsPage />;
-      case "contract":
+        case "contract":
         return <ContractView />;
+      case "coin-request":
+        return <UserCoinRequests />;
       case "payment":
         return <PaymentView />;
       default:
@@ -126,6 +129,7 @@ const RentorHome = () => {
             />
             <Route path="/list" element={renderContent()} />
             <Route path="/my-bills" element={renderContent()} />
+            <Route path="/coin-request" element={renderContent()} />
             <Route path="/contract" element={renderContent()} />
             <Route path="/payment" element={renderContent()} />
             <Route
