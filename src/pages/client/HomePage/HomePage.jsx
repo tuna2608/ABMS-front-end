@@ -2,11 +2,11 @@ import React, { useState, useRef } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
-
 // Import individual components
 import HeroSection from "./HeroSection";
 import SearchSection from "./SearchSection";
 import ApartmentSection from ".//ApartmentSection";
+import ServiceSection from "./ServiceSection"; // Import the new ServiceSection component
 
 // Styled Components
 const Container = styled.div`
@@ -39,6 +39,33 @@ const Wrapper = styled.div`
   z-index: 1;
 `;
 
+// Thêm phần styled component cho divider
+const SectionDivider = styled.div`
+  width: 90%;
+  max-width: 1200px;
+  margin: 2rem auto;
+  height: 1px;
+  background: linear-gradient(90deg, transparent, rgba(30, 58, 138, 0.5), transparent);
+  position: relative;
+  
+  &::after {
+    content: "";
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 50px;
+    height: 50px;
+    background-color: #f3f4f6;
+    border-radius: 50%;
+    border: 1px solid rgba(30, 58, 138, 0.3);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 0 15px rgba(30, 58, 138, 0.1);
+  }
+`;
+
 function HomePage() {
   // Search state
   const [searchText, setSearchText] = useState("");
@@ -63,102 +90,11 @@ function HomePage() {
     }
   };
 
-  // Handle apartment navigation
-  const [currentPage, setCurrentPage] = useState(0);
-  const propertiesPerPage = 4;
 
-  // Sample property data with real estate listings
-  const properties = [
-    {
-      id: 1,
-      title: "Căn góc Vĩnh Thiên Đường đối diện mặt biển vịnh biển bồng lai",
-      price: "17.7 tỷ",
-      area: "75 m²",
-      location: "Vân Giang, Hưng Yên",
-      imageCount: 5,
-      createdAt: "Đăng hôm nay",
-      image: "https://placehold.co/300x180/e6e6e6/808080?text=Real+Estate",
-    },
-    {
-      id: 2,
-      title: "Bán tòa CHDV Thái Hà, 18p kk, DT 90m²/1h, ba gác, 20m ra ô tô",
-      price: "15.5 tỷ",
-      area: "78 m²",
-      location: "Đống Đa, Hà Nội",
-      imageCount: 7,
-      createdAt: "Đăng hôm nay",
-      image: "https://placehold.co/300x180/e6e6e6/808080?text=Property",
-    },
-    {
-      id: 3,
-      title: "Bán cặp đất đường Trường Sa, Ngũ Hành Sơn, đường 15m, mặt tiền",
-      price: "13 tỷ",
-      area: "200 m²",
-      location: "Ngũ Hành Sơn, Đà Nẵng",
-      imageCount: 3,
-      createdAt: "Đăng hôm nay",
-      image: "https://placehold.co/300x180/e6e6e6/808080?text=Land",
-    },
-    {
-      id: 4,
-      title: "Tin thật 100%! Góc 2 mặt tiền khu Nguyễn Văn Trỗi, PN. DT 75x13m",
-      price: "17.5 tỷ",
-      area: "97.5 m²",
-      location: "Phú Nhuận, Hồ Chí Minh",
-      imageCount: 8,
-      createdAt: "Đăng hôm nay",
-      image: "https://placehold.co/300x180/e6e6e6/808080?text=Apartment",
-    },
-    {
-      id: 5,
-      title: "Biệt thự vườn cao cấp view sông tại Phú Hữu, Nhơn Trạch",
-      price: "9.8 tỷ",
-      area: "320 m²",
-      location: "Nhơn Trạch, Đồng Nai",
-      imageCount: 6,
-      createdAt: "Đăng hôm nay",
-      image: "https://placehold.co/300x180/e6e6e6/808080?text=Villa",
-    },
-    {
-      id: 6,
-      title: "Căn hộ chung cư 2 phòng ngủ tại dự án Sky Garden",
-      price: "3.5 tỷ",
-      area: "68 m²",
-      location: "Quận 7, Hồ Chí Minh",
-      imageCount: 4,
-      createdAt: "Đăng hôm nay",
-      image: "https://placehold.co/300x180/e6e6e6/808080?text=Apartment",
-    },
-  ];
+  // Đã xóa dữ liệu properties mẫu vì sẽ lấy data từ API
 
   const navigate = useNavigate();
 
-  // Get current properties for pagination
-  const indexOfLastProperty = (currentPage + 1) * propertiesPerPage;
-  const indexOfFirstProperty = indexOfLastProperty - propertiesPerPage;
-  const currentProperties = properties.slice(
-    indexOfFirstProperty,
-    indexOfLastProperty
-  );
-
-  // Calculate total pages for pagination indicator
-  const totalPages = Math.ceil(properties.length / propertiesPerPage);
-
-  const handlePrevApartment = () => {
-    setCurrentPage((prev) =>
-      prev === 0
-        ? Math.ceil(properties.length / propertiesPerPage) - 1
-        : prev - 1
-    );
-  };
-
-  const handleNextApartment = () => {
-    setCurrentPage((prev) =>
-      prev === Math.ceil(properties.length / propertiesPerPage) - 1
-        ? 0
-        : prev + 1
-    );
-  };
 
   const handleSearch = () => {
     const queryParams = new URLSearchParams({
@@ -202,13 +138,14 @@ function HomePage() {
 
         {/* Apartment Listings Section */}
         <ApartmentSection 
-          currentProperties={currentProperties}
-          totalPages={totalPages}
-          currentPage={currentPage}
-          handlePrevApartment={handlePrevApartment}
-          handleNextApartment={handleNextApartment}
           handleViewMore={handleViewMore}
         />
+        
+        {/* Section Divider */}
+        <SectionDivider />
+        
+        {/* Service Section */}
+        <ServiceSection />
       </Wrapper>
     </Container>
   );
