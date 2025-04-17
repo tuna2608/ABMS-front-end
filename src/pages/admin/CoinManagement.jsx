@@ -4,79 +4,243 @@ import {
   Button, 
   message, 
   Typography,
-  Descriptions,
   Tag,
   Modal,
   Space,
-  Alert
+  Alert,
+  Table,
+  Drawer,
+  Descriptions,
+  Divider,
+  Image
 } from 'antd';
 import { 
   MoneyCollectOutlined, 
   BankOutlined, 
   CheckOutlined,
-  CloseOutlined
+  CloseOutlined,
+  EyeOutlined,
+  QrcodeOutlined,
+  CheckCircleOutlined
 } from '@ant-design/icons';
 
 const { Text } = Typography;
 
-// Sample initial transfer request data for testing
-const initialTransferRequest = {
-  id: 1,
-  userId: 'U001',
-  username: 'nguyen_van_a',
-  fullName: 'Nguyễn Văn A',
-  amount: 500000,
-  status: 'pending',
-  bankInfo: {
-    bankName: 'Vietcombank',
-    accountNumber: '1234567890',
-    accountName: 'NGUYEN VAN A'
-  },
-  requestDate: '2024-04-10'
+// Hàm định dạng số tiền mới thay thế cho toLocaleString()
+const formatCurrency = (amount) => {
+  // Chuyển số thành string
+  const numStr = String(amount);
+  // Thêm dấu phẩy ngăn cách hàng nghìn
+  let result = '';
+  let counter = 0;
+  
+  for (let i = numStr.length - 1; i >= 0; i--) {
+    counter++;
+    result = numStr[i] + result;
+    if (counter % 3 === 0 && i !== 0) {
+      result = ',' + result;
+    }
+  }
+  
+  return result;
 };
 
+// Sample data for multiple transfer requests
+const sampleTransferRequests = [
+  {
+    id: 1,
+    userId: 'U001',
+    username: 'nguyen_van_a',
+    fullName: 'Nguyễn Văn A',
+    amount: 500000,
+    status: 'pending',
+    bankInfo: {
+      bankName: 'Vietcombank',
+      accountNumber: '1234567890',
+      accountName: 'NGUYEN VAN A'
+    },
+    requestDate: '2024-04-10'
+  },
+  {
+    id: 2,
+    userId: 'U002',
+    username: 'tran_thi_b',
+    fullName: 'Trần Thị B',
+    amount: 1000000,
+    status: 'pending',
+    bankInfo: {
+      bankName: 'BIDV',
+      accountNumber: '0987654321',
+      accountName: 'TRAN THI B'
+    },
+    requestDate: '2024-04-11'
+  },
+  {
+    id: 3,
+    userId: 'U003',
+    username: 'le_van_c',
+    fullName: 'Lê Văn C',
+    amount: 750000,
+    status: 'completed',
+    bankInfo: {
+      bankName: 'Techcombank',
+      accountNumber: '2345678901',
+      accountName: 'LE VAN C'
+    },
+    requestDate: '2024-04-09'
+  },
+  {
+    id: 4,
+    userId: 'U004',
+    username: 'pham_thi_d',
+    fullName: 'Phạm Thị D',
+    amount: 300000,
+    status: 'rejected',
+    bankInfo: {
+      bankName: 'TPBank',
+      accountNumber: '3456789012',
+      accountName: 'PHAM THI D'
+    },
+    requestDate: '2024-04-08'
+  }
+];
+
 const CoinManagement = () => {
-  const [transferRequest, setTransferRequest] = useState(initialTransferRequest);
-  const [isConfirmModalVisible, setIsConfirmModalVisible] = useState(false);
-  const [modalAction, setModalAction] = useState(null);
+  const [transferRequests, setTransferRequests] = useState(sampleTransferRequests);
+  const [selectedRequest, setSelectedRequest] = useState(null);
+  const [drawerVisible, setDrawerVisible] = useState(false);
+  const [qrModalVisible, setQrModalVisible] = useState(false);
+  const [rejectModalVisible, setRejectModalVisible] = useState(false);
 
-  // Handle coin transfer approval or rejection
-  const handleTransferAction = (action) => {
-    setModalAction(action);
-    setIsConfirmModalVisible(true);
+  // Status tag renderer
+  const renderStatus = (status) => {
+    const statusMap = {
+      pending: { color: 'orange', text: 'Chờ Xử Lý' },
+      completed: { color: 'green', text: 'Đã Hoàn Thành' },
+      rejected: { color: 'red', text: 'Đã Từ Chối' }
+    };
+    
+    const { color, text } = statusMap[status] || { color: 'default', text: status };
+    return <Tag color={color}>{text}</Tag>;
   };
 
-  // Confirm transfer process
-  const confirmTransfer = () => {
-    if (!transferRequest) return;
-
-    Modal.confirm({
-      title: modalAction === 'approve' 
-        ? 'Xác Nhận Chuyển Coin' 
-        : 'Xác Nhận Từ Chối Yêu Cầu',
-      content: modalAction === 'approve'
-        ? `Bạn có chắc chuyển ${transferRequest.amount} coin cho ${transferRequest.fullName}?`
-        : `Bạn có chắc từ chối yêu cầu chuyển ${transferRequest.amount} coin của ${transferRequest.fullName}?`,
-      onOk() {
-        // Simulate transfer or rejection process
-        const successMessage = modalAction === 'approve'
-          ? `Đã chuyển ${transferRequest.amount} coin cho ${transferRequest.fullName}`
-          : `Đã từ chối yêu cầu chuyển coin của ${transferRequest.fullName}`;
-        
-        message.success(successMessage);
-        
-        // Update transfer request status
-        const updatedStatus = modalAction === 'approve' ? 'completed' : 'rejected';
-        setTransferRequest(prev => ({
-          ...prev,
-          status: updatedStatus
-        }));
-
-        // Close modal
-        setIsConfirmModalVisible(false);
-      }
-    });
+  // View request details
+  const viewRequestDetails = (record) => {
+    setSelectedRequest(record);
+    setDrawerVisible(true);
   };
+
+  // Handle approval action
+  const handleApprove = (record) => {
+    setSelectedRequest(record);
+    setQrModalVisible(true);
+  };
+
+  // Handle rejection action
+  const handleReject = (record) => {
+    setSelectedRequest(record);
+    setRejectModalVisible(true);
+  };
+
+  // Confirm transfer completion
+  const confirmTransferCompleted = () => {
+    if (!selectedRequest) return;
+    
+    // Update the request status
+    const updatedRequests = transferRequests.map(req => 
+      req.id === selectedRequest.id ? { ...req, status: 'completed' } : req
+    );
+    setTransferRequests(updatedRequests);
+    
+    // Show success message
+    message.success(`Đã xác nhận chuyển ${formatCurrency(selectedRequest.amount)} VND cho ${selectedRequest.fullName}`);
+    
+    // Close QR modal
+    setQrModalVisible(false);
+  };
+
+  // Confirm rejection
+  const confirmReject = () => {
+    if (!selectedRequest) return;
+    
+    // Update the request status
+    const updatedRequests = transferRequests.map(req => 
+      req.id === selectedRequest.id ? { ...req, status: 'rejected' } : req
+    );
+    setTransferRequests(updatedRequests);
+    
+    // Show success message
+    message.success(`Đã từ chối yêu cầu chuyển coin của ${selectedRequest.fullName}`);
+    
+    // Close reject modal
+    setRejectModalVisible(false);
+  };
+
+  // Table columns configuration
+  const columns = [
+    {
+      title: 'Người Yêu Cầu',
+      dataIndex: 'fullName',
+      key: 'fullName',
+      render: (text, record) => (
+        <>
+          <Text strong>{text}</Text>
+          <br />
+          <Text type="secondary">({record.username})</Text>
+        </>
+      ),
+    },
+    {
+      title: 'Số Tiền',
+      dataIndex: 'amount',
+      key: 'amount',
+      render: (amount) => (
+        <Text strong style={{ color: '#1890ff' }}>
+          {formatCurrency(amount)} VND
+        </Text>
+      ),
+    },
+    {
+      title: 'Ngày Yêu Cầu',
+      dataIndex: 'requestDate',
+      key: 'requestDate',
+    },
+    {
+      title: 'Trạng Thái',
+      dataIndex: 'status',
+      key: 'status',
+      render: renderStatus,
+    },
+    {
+      title: 'Thao Tác',
+      key: 'action',
+      render: (_, record) => (
+        <Space size="small">
+          <Button 
+            icon={<EyeOutlined />} 
+            onClick={() => viewRequestDetails(record)} 
+            title="Xem chi tiết"
+          />
+          {record.status === 'pending' && (
+            <>
+              <Button 
+                type="primary" 
+                icon={<CheckOutlined />} 
+                onClick={() => handleApprove(record)} 
+                title="Duyệt"
+              />
+              <Button 
+                danger 
+                icon={<CloseOutlined />} 
+                onClick={() => handleReject(record)} 
+                title="Từ chối"
+              />
+            </>
+          )}
+        </Space>
+      ),
+    },
+  ];
 
   return (
     <Card 
@@ -87,110 +251,174 @@ const CoinManagement = () => {
         </Space>
       }
     >
-      <Card 
-        type="inner" 
-        title={
-          <Space>
-            <BankOutlined />
-            <span>Thông Tin Tài Khoản Ngân Hàng</span>
-          </Space>
+      {/* Table of transfer requests */}
+      <Table 
+        dataSource={transferRequests} 
+        columns={columns} 
+        rowKey="id"
+        pagination={{ pageSize: 10 }}
+      />
+
+      {/* Request Details Drawer */}
+      <Drawer
+        title="Chi Tiết Yêu Cầu Chuyển Coin"
+        placement="right"
+        width={400}
+        onClose={() => setDrawerVisible(false)}
+        open={drawerVisible}
+        extra={
+          selectedRequest?.status === 'pending' && (
+            <Space>
+              <Button 
+                type="primary" 
+                icon={<CheckOutlined />}
+                onClick={() => {
+                  setDrawerVisible(false);
+                  handleApprove(selectedRequest);
+                }}
+              >
+                Duyệt
+              </Button>
+              <Button 
+                danger 
+                icon={<CloseOutlined />}
+                onClick={() => {
+                  setDrawerVisible(false);
+                  handleReject(selectedRequest);
+                }}
+              >
+                Từ Chối
+              </Button>
+            </Space>
+          )
         }
-        style={{ marginBottom: 16 }}
       >
-        <Descriptions column={1}>
-          <Descriptions.Item label="Tên Ngân Hàng">
-            {transferRequest.bankInfo.bankName}
-          </Descriptions.Item>
-          <Descriptions.Item label="Số Tài Khoản">
-            {transferRequest.bankInfo.accountNumber}
-          </Descriptions.Item>
-          <Descriptions.Item label="Tên Tài Khoản">
-            {transferRequest.bankInfo.accountName}
-          </Descriptions.Item>
-        </Descriptions>
-      </Card>
+        {selectedRequest && (
+          <>
+            <Descriptions title="Thông Tin Người Dùng" column={1}>
+              <Descriptions.Item label="Họ Tên">
+                {selectedRequest.fullName}
+              </Descriptions.Item>
+              <Descriptions.Item label="Tên Đăng Nhập">
+                {selectedRequest.username}
+              </Descriptions.Item>
+              <Descriptions.Item label="Số Tiền Yêu Cầu">
+                <Text strong style={{ color: '#1890ff' }}>
+                  {formatCurrency(selectedRequest.amount)} VND
+                </Text>
+              </Descriptions.Item>
+              <Descriptions.Item label="Trạng Thái">
+                {renderStatus(selectedRequest.status)}
+              </Descriptions.Item>
+              <Descriptions.Item label="Ngày Yêu Cầu">
+                {selectedRequest.requestDate}
+              </Descriptions.Item>
+            </Descriptions>
 
-      <Card 
-        type="inner" 
-        title={
-          <Space>
-            <MoneyCollectOutlined />
-            <span>Chi Tiết Yêu Cầu</span>
-          </Space>
-        }
-      >
-        <Descriptions column={1}>
-          <Descriptions.Item label="Người Yêu Cầu">
-            <Text strong>{transferRequest.fullName}</Text>
-            <br />
-            <Text type="secondary">({transferRequest.username})</Text>
-          </Descriptions.Item>
-          <Descriptions.Item label="Số Tiền Yêu Cầu">
-            <Text strong style={{ color: '#1890ff' }}>
-              {transferRequest.amount} VND
-            </Text>
-          </Descriptions.Item>
-          <Descriptions.Item label="Ngày Yêu Cầu">
-            {transferRequest.requestDate}
-          </Descriptions.Item>
-          <Descriptions.Item label="Trạng Thái">
-            {transferRequest.status === 'pending' ? (
-              <Tag color="orange">Chờ Xử Lý</Tag>
-            ) : transferRequest.status === 'completed' ? (
-              <Tag color="green">Đã Hoàn Thành</Tag>
-            ) : (
-              <Tag color="red">Đã Từ Chối</Tag>
-            )}
-          </Descriptions.Item>
-        </Descriptions>
-      </Card>
+            <Divider />
 
-      {transferRequest.status === 'pending' && (
-        <div style={{ 
-          marginTop: 16, 
-          display: 'flex', 
-          justifyContent: 'center', 
-          gap: '16px' 
-        }}>
-          <Button 
-            type="primary" 
-            icon={<CheckOutlined />} 
-            size="large"
-            onClick={() => handleTransferAction('approve')}
-          >
-            Duyệt Chuyển Coin
-          </Button>
-          <Button 
-            type="danger" 
-            icon={<CloseOutlined />} 
-            size="large"
-            onClick={() => handleTransferAction('reject')}
-          >
-            Từ Chối Yêu Cầu
-          </Button>
-        </div>
-      )}
+            <Descriptions title="Thông Tin Tài Khoản Ngân Hàng" column={1}>
+              <Descriptions.Item label="Tên Ngân Hàng">
+                {selectedRequest.bankInfo.bankName}
+              </Descriptions.Item>
+              <Descriptions.Item label="Số Tài Khoản">
+                {selectedRequest.bankInfo.accountNumber}
+              </Descriptions.Item>
+              <Descriptions.Item label="Tên Tài Khoản">
+                {selectedRequest.bankInfo.accountName}
+              </Descriptions.Item>
+            </Descriptions>
+          </>
+        )}
+      </Drawer>
 
-      {/* Confirmation Modal */}
+      {/* QR Code Modal for Transfer */}
       <Modal
-        title={modalAction === 'approve' 
-          ? 'Xác Nhận Chuyển Coin' 
-          : 'Xác Nhận Từ Chối Yêu Cầu'}
-        open={isConfirmModalVisible}
-        onOk={confirmTransfer}
-        onCancel={() => setIsConfirmModalVisible(false)}
+        title={
+          <Space>
+            <QrcodeOutlined />
+            <span>Xác Nhận Chuyển Khoản</span>
+          </Space>
+        }
+        open={qrModalVisible}
+        onCancel={() => setQrModalVisible(false)}
+        footer={[
+          <Button key="cancel" onClick={() => setQrModalVisible(false)}>
+            Hủy
+          </Button>,
+          <Button 
+            key="confirm" 
+            type="primary" 
+            icon={<CheckCircleOutlined />}
+            onClick={confirmTransferCompleted}
+          >
+            Đã Chuyển Khoản
+          </Button>
+        ]}
       >
-        <p>
-          {modalAction === 'approve' 
-            ? `Bạn có chắc muốn duyệt và chuyển ${transferRequest.amount} VND cho ${transferRequest.fullName} không?`
-            : `Bạn có chắc muốn từ chối yêu cầu chuyển ${transferRequest.amount} VND của ${transferRequest.fullName} không?`}
-        </p>
-        <Alert 
-          message="Lưu Ý" 
-          description="Sau khi xác nhận, giao dịch sẽ không thể hoàn tác." 
-          type="warning" 
-          showIcon 
-        />
+        {selectedRequest && (
+          <>
+            <Descriptions column={1} size="small">
+              <Descriptions.Item label="Người Nhận">
+                {selectedRequest.bankInfo.accountName}
+              </Descriptions.Item>
+              <Descriptions.Item label="Số Tài Khoản">
+                {selectedRequest.bankInfo.accountNumber}
+              </Descriptions.Item>
+              <Descriptions.Item label="Ngân Hàng">
+                {selectedRequest.bankInfo.bankName}
+              </Descriptions.Item>
+              <Descriptions.Item label="Số Tiền">
+                <Text strong style={{ color: '#1890ff' }}>
+                  {formatCurrency(selectedRequest.amount)} VND
+                </Text>
+              </Descriptions.Item>
+            </Descriptions>
+            
+            <div style={{ textAlign: 'center', margin: '20px 0' }}>
+              <Image 
+                src="/api/placeholder/200/200" 
+                alt="QR Code for Bank Transfer"
+                style={{ maxWidth: '200px' }}
+              />
+              <div style={{ marginTop: 8 }}>
+                <Text type="secondary">Quét mã QR để chuyển khoản</Text>
+              </div>
+            </div>
+
+            <Alert
+              message="Xác nhận sau khi chuyển khoản"
+              description="Sau khi hoàn tất chuyển khoản, vui lòng nhấn nút 'Đã Chuyển Khoản' để xác nhận và hoàn tất yêu cầu."
+              type="info"
+              showIcon
+            />
+          </>
+        )}
+      </Modal>
+
+      {/* Rejection Confirmation Modal */}
+      <Modal
+        title="Xác Nhận Từ Chối Yêu Cầu"
+        open={rejectModalVisible}
+        onOk={confirmReject}
+        onCancel={() => setRejectModalVisible(false)}
+        okText="Xác Nhận Từ Chối"
+        cancelText="Hủy"
+        okButtonProps={{ danger: true }}
+      >
+        {selectedRequest && (
+          <>
+            <p>
+              Bạn có chắc muốn từ chối yêu cầu chuyển {formatCurrency(selectedRequest.amount)} VND của {selectedRequest.fullName} không?
+            </p>
+            <Alert
+              message="Lưu ý"
+              description="Thao tác này không thể hoàn tác sau khi xác nhận."
+              type="warning"
+              showIcon
+            />
+          </>
+        )}
       </Modal>
     </Card>
   );
