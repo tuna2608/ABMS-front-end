@@ -6,7 +6,7 @@ import {
   WrapperContainerLeft,
   WrapperContainerRight,
 } from "./style";
-import { Form, Image, message } from "antd";
+import { Form, Image, message, Spin } from "antd";
 import imgLogin from "./../../../assets/common/images/logo-login.png";
 import styled from "styled-components";
 import ButtonComponent from "../../../components/common/ButtonComponent/ButtonComponent";
@@ -158,7 +158,7 @@ const OTPVerificationPage = () => {
   }, [timer]);
 
   const handleResendOTP = async () => {
-    if (canResend && email) {
+    if (canResend && email && !isLoading) {
       setIsLoading(true);
       try {
         const result = await forgotPassword(dispatch, email);
@@ -285,6 +285,7 @@ const OTPVerificationPage = () => {
                 onPaste={index === 0 ? handlePaste : null}
                 ref={(el) => (inputRefs.current[index] = el)}
                 autoFocus={index === 0}
+                disabled={isLoading}
               />
             ))}
           </OtpInputContainer>
@@ -294,7 +295,7 @@ const OTPVerificationPage = () => {
             <ResendButton 
               className={!canResend ? "disabled" : ""}
               onClick={handleResendOTP}
-              disabled={isLoading}
+              disabled={!canResend || isLoading}
             >
               {canResend ? "Gửi lại" : `Gửi lại sau (${timer}s)`}
             </ResendButton>
@@ -302,24 +303,26 @@ const OTPVerificationPage = () => {
           
           <Form>
             <Form.Item>
-              <ButtonComponent
-                onClick={handleVerifyOTP}
-                disabled={otp.some((digit) => !digit) || isLoading}
-                size={40}
-                styleButton={{
-                  backgroundColor: "var(--cbutton)",
-                  height: "48px",
-                  width: "100%",
-                  border: "none",
-                  borderRadius: "4px",
-                }}
-                styleTextButton={{
-                  color: "var(--cbuttontext)",
-                  fontSize: "20px",
-                  fontWeight: "600",
-                }}
-                textButton={"Xác nhận"}
-              />
+              <Spin spinning={isLoading}>
+                <ButtonComponent
+                  onClick={handleVerifyOTP}
+                  disabled={otp.some((digit) => !digit) || isLoading}
+                  size={40}
+                  styleButton={{
+                    backgroundColor: "var(--cbutton)",
+                    height: "48px",
+                    width: "100%",
+                    border: "none",
+                    borderRadius: "4px",
+                  }}
+                  styleTextButton={{
+                    color: "var(--cbuttontext)",
+                    fontSize: "20px",
+                    fontWeight: "600",
+                  }}
+                  textButton={"Xác nhận"}
+                />
+              </Spin>
             </Form.Item>
           </Form>
           

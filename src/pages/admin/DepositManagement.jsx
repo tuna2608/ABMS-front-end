@@ -45,7 +45,7 @@ const DepositManagement = () => {
       const res = await getAllDeposits();
       if (res.success) {
         setDeposits(res.data)
-        message.success(res.message)
+        // message.success(res.message)
       } else {
         message.error(res.message);
       }

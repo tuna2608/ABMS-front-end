@@ -1,7 +1,9 @@
 import React, { useState } from 'react';
-import { Form, Input, Select, Button, Upload, Typography, Card, Divider, Row, Col } from 'antd';
+import { Form, Input, Select, Button, Upload, Typography, Card, Divider, Row, Col, message } from 'antd';
 import { UploadOutlined, SendOutlined, DownloadOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
+import { useDispatch } from 'react-redux';
+import { createForm } from '../../../redux/apiCalls'; // cập nhật lại đường dẫn phù hợp
 
 const { Title, Text, Paragraph } = Typography;
 const { Option } = Select;
@@ -48,7 +50,6 @@ const FormFooter = styled.div`
 const SubmitButton = styled(Button)`
   background-color: #4b7bec;
   border-color: #3867d6;
-  
   &:hover {
     background-color: #3867d6;
     border-color: #3867d6;
@@ -59,7 +60,6 @@ const ApplicationTypeLabel = styled.div`
   font-weight: bold;
   margin-bottom: 8px;
 `;
-
 
 const UploadArea = styled(Upload.Dragger)`
   margin-bottom: 16px;
@@ -77,26 +77,16 @@ const DownloadButton = styled(Button)`
   border-color: #3867d6;
   display: block;
   margin: 0 auto;
-  
   &:hover {
     color: #4b7bec;
     border-color: #4b7bec;
   }
 `;
 
-// Main Component
 const FormManagement = () => {
   const [form] = Form.useForm();
-  const [ setApplicationType] = useState('apartment_renovation');
-
-  const handleApplicationTypeChange = (value) => {
-    setApplicationType(value);
-  };
-
-  const onFinish = (values) => {
-    console.log('Form values:', values);
-    // Handle form submission
-  };
+  const dispatch = useDispatch();
+  const [file, setFile] = useState(null);
 
   const applicationTypes = [
     { value: 'apartment_renovation', label: 'Đăng ký thi công nội thất' },
@@ -105,6 +95,41 @@ const FormManagement = () => {
     { value: 'complaint_form', label: 'Đơn khiếu nại' },
     { value: 'facility_booking', label: 'Đơn đăng ký sử dụng tiện ích' },
   ];
+
+  const onFinish = async (values) => {
+    if (!file) {
+      return message.warning("Vui lòng đính kèm file");
+    }
+
+    const dto = {
+      formType: values.application_type,
+      status: "pending",
+      apartmentId: 1, // giả lập, cần lấy từ dữ liệu thực tế
+      file: file,
+      residentName: values.resident_name,
+      apartmentNumber: values.apartment_number,
+      reason: values.reason,
+    };
+
+    const userId = 1; // giả lập user id
+    const res = await createForm(dispatch, userId, dto);
+
+    if (res.success) {
+      message.success(res.message || "Tạo đơn thành công");
+      form.resetFields();
+      setFile(null);
+    } else {
+      message.error(res.message || "Tạo đơn thất bại");
+    }
+  };
+
+  const uploadProps = {
+    beforeUpload: (file) => {
+      setFile(file);
+      return false;
+    },
+    fileList: file ? [file] : [],
+  };
 
   return (
     <StyledCard>
@@ -130,8 +155,6 @@ const FormManagement = () => {
           </Paragraph>
         </NoteSection>
 
-
-
         <Form
           form={form}
           layout="vertical"
@@ -142,7 +165,7 @@ const FormManagement = () => {
             <Col span={24}>
               <ApplicationTypeLabel>Loại đơn:</ApplicationTypeLabel>
               <Form.Item name="application_type">
-                <Select onChange={handleApplicationTypeChange}>
+                <Select>
                   {applicationTypes.map(type => (
                     <Option key={type.value} value={type.value}>
                       {type.label}
@@ -193,22 +216,17 @@ const FormManagement = () => {
 
           <Row gutter={24}>
             <Col span={24}>
-              <Form.Item
-                label="Tệp đính kèm"
-                name="attachment"
-              >
-                <UploadArea>
+              <Form.Item label="Tệp đính kèm" name="attachment">
+                <UploadArea {...uploadProps}>
                   <p className="ant-upload-drag-icon">
                     <UploadOutlined />
                   </p>
                   <p className="ant-upload-text">Kéo thả file vào đây hoặc click để chọn file</p>
                 </UploadArea>
-                
                 <SupportedFormats>
                   Hỗ trợ định dạng: .xlsx, .pdf, .docx, .doc, .xls, .jpg, .png, .zip
                 </SupportedFormats>
-                
-                <DownloadButton icon={<DownloadOutlined />}>
+                <DownloadButton icon={<DownloadOutlined />} href="https://drive.google.com/file/d/1fxwKwvBvGRdDVE-wkQsCzzyUl52mUpnl/view?usp=sharing" target="_blank" rel="noopener noreferrer">
                   Tải mẫu đơn tại đây
                 </DownloadButton>
               </Form.Item>

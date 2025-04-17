@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { Form, Image, message } from "antd";
+import { Form, Image, message, Spin } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
@@ -181,6 +181,7 @@ const NewPasswordPage = () => {
               <InputForm
                 placeholder="Mật khẩu mới"
                 type="password"
+                disabled={isLoading}
               />
             </Form.Item>
             <Form.Item
@@ -201,32 +202,38 @@ const NewPasswordPage = () => {
               <InputForm
                 placeholder="Xác nhận mật khẩu"
                 type="password"
+                disabled={isLoading}
               />
             </Form.Item>
 
             <Form.Item>
-              <ButtonComponent
-                textButton="Đặt Lại Mật Khẩu"
-                htmlType="submit"
-                disabled={isLoading}
-                size={40}
-                styleButton={{
-                  backgroundColor: "var(--cbutton)",
-                  height: "48px",
-                  width: "100%",
-                  border: "none",
-                  borderRadius: "4px",
-                }}
-                styleTextButton={{
-                  color: "var(--cbuttontext)",
-                  fontSize: "20px",
-                  fontWeight: "600",
-                }}
-              />
+              <Spin spinning={isLoading}>
+                <ButtonComponent
+                  textButton="Đặt Lại Mật Khẩu"
+                  htmlType="submit"
+                  disabled={isLoading}
+                  size={40}
+                  styleButton={{
+                    backgroundColor: "var(--cbutton)",
+                    height: "48px",
+                    width: "100%",
+                    border: "none",
+                    borderRadius: "4px",
+                  }}
+                  styleTextButton={{
+                    color: "var(--cbuttontext)",
+                    fontSize: "20px",
+                    fontWeight: "600",
+                  }}
+                />
+              </Spin>
             </Form.Item>
           </Form>
           <LinkNav style={{ textAlign: 'center', marginTop: '10px' }}>
-            <WrapperTextLight onClick={() => navigate("/verify-forgot-otp")}>
+            <WrapperTextLight 
+              onClick={() => navigate("/verify-forgot-otp")}
+              style={{ pointerEvents: isLoading ? 'none' : 'auto' }}
+            >
               Quay lại
             </WrapperTextLight>
           </LinkNav>

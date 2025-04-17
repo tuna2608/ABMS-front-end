@@ -21,7 +21,7 @@ import {
   changePasswordSuccess,
   changePasswordFailure
 } from "./authSlice";
-import {publicRequest, userRequest } from "../utilities/requestMethod";
+import { publicRequest, userRequest } from "../utilities/requestMethod";
 import {
   addUserStart,
   addUserSuccess,
@@ -31,6 +31,7 @@ import {
   getUserSuccess,
   resetUsersSuccess,
 } from "./userSlice";
+import moment from 'moment';
 import {
   getMessagesStart,
   getMessagesSuccess,
@@ -55,7 +56,20 @@ import {
   deleteApartmentFailure,
 } from './apartmentSlice';
 import { getAllPostsFailure, getAllPostsStart, getAllPostsSuccess, getPostFailure, getPostStart, getPostSuccess } from "./postSlice";
-import moment from "moment";
+import {
+  getFormStart,
+  getFormSuccess,
+  getFormFailure,
+  getAllFormsStart,
+  getAllFormsSuccess,
+  getAllFormsFailure,
+  createFormStart,
+  createFormSuccess,
+  createFormFailure,
+  updateFormStatusSuccess,
+} from "./formSlice";
+
+
 
 // Auth ------------------------------------------------------------------
 export const login = async (dispatch, user) => {
@@ -63,10 +77,18 @@ export const login = async (dispatch, user) => {
   try {
     const res = await publicRequest.post("/api/login", user);
     dispatch(loginSuccess(res.data.data));
-    return res.data;
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || ''
+    };
   } catch (error) {
     dispatch(loginFailure());
-    return error.response.data;
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || "Lỗi khi đăng nhập tài khoản"
+    };
   }
 };
 
@@ -124,7 +146,7 @@ export const getImageCloud = async (formData) => {
   }
 };
 
-export const editProfile = async (dispatch,formData) => {
+export const editProfile = async (dispatch, formData) => {
   dispatch(editProfileStart());
   try {
     const res = await userRequest.put(`/user/edit_profile`, formData);
@@ -169,9 +191,9 @@ export const resetPassword = async (dispatch, resetPasswordDTO) => {
     return res.data;
   } catch (error) {
     dispatch(verifyFail());
-    return error.response?.data || { 
-      message: "Có lỗi xảy ra. Vui lòng thử lại.", 
-      status: 500 
+    return error.response?.data || {
+      message: "Có lỗi xảy ra. Vui lòng thử lại.",
+      status: 500
     };
   }
 };
@@ -180,7 +202,7 @@ export const changePassword = async (dispatch, changePasswordDTO) => {
   dispatch(changePasswordStart());
   try {
     const res = await userRequest.post("/api/change_password", changePasswordDTO);
-    
+
     if (res.data.status === 200) {
       dispatch(changePasswordSuccess());
       return {
@@ -228,7 +250,8 @@ export const getAllDeposits = async () => {
 
 //dat coc ---------------
 export const depositCreate = async (formData) => {
-  const form = {...formData,
+  const form = {
+    ...formData,
     successUrl: `http://localhost:3000/payment/success`,
     cancelUrl: `http://localhost:3000/payment/cancel`,
   }
@@ -445,7 +468,7 @@ export const getAllConsumption = async (dispatch) => {
 // import file excel to save to database
 export const importFile = async (formData) => {
   try {
-    const res = await publicRequest.post(`/consumption/upload_file `,formData, {
+    const res = await publicRequest.post(`/consumption/upload_file `, formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
@@ -464,9 +487,9 @@ export const importFile = async (formData) => {
   }
 }
 //create bill
-export const createBillConsumption = async (dispatch,formData) => {
+export const createBillConsumption = async (dispatch, formData) => {
   try {
-    const res = await publicRequest.post(`/bill/createBillConsumption`,formData);
+    const res = await publicRequest.post(`/bill/createBillConsumption`, formData);
     return res.data;
   } catch (error) {
     return error.response;
@@ -474,9 +497,9 @@ export const createBillConsumption = async (dispatch,formData) => {
 }
 
 //create bill
-export const createBillMonthPaid = async (dispatch,formData) => {
+export const createBillMonthPaid = async (dispatch, formData) => {
   try {
-    const res = await publicRequest.post(`/bill/createBillMonthPaid`,formData);
+    const res = await publicRequest.post(`/bill/createBillMonthPaid`, formData);
     return {
       success: true,
       data: res.data.data || [],
@@ -509,7 +532,7 @@ export const getAllBill = async (dispatch) => {
 }
 
 // get tat ca bill theo owner
-export const getAllBillOwner = async (dispatch,ownerId) => {
+export const getAllBillOwner = async (dispatch, ownerId) => {
   try {
     const res = await publicRequest.get(`/bill/view_own_bill_list/${ownerId}`);
     return {
@@ -527,7 +550,7 @@ export const getAllBillOwner = async (dispatch,ownerId) => {
 }
 
 // get tat ca bill theo rentor
-export const getAllBillRentor = async (dispatch,rentorId) => {
+export const getAllBillRentor = async (dispatch, rentorId) => {
   try {
     const res = await publicRequest.get(`/bill/getRentorBills/${rentorId}`);
     return {
@@ -547,7 +570,7 @@ export const getAllBillRentor = async (dispatch,rentorId) => {
 // thanh toan hoa don bill
 export const paymentBill = async (formData) => {
   try {
-    const res = await publicRequest.post(`/order/create`,formData);
+    const res = await publicRequest.post(`/order/create`, formData);
     return {
       success: true,
       data: res.data.data || [],
@@ -565,7 +588,7 @@ export const paymentBill = async (formData) => {
 //payment Bill success
 export const paymentBillSuccess = async (formData) => {
   try {
-    const res = await publicRequest.post(`/payment/success`,formData);
+    const res = await publicRequest.post(`/payment/success`, formData);
     return {
       success: true,
       data: res.data.data || [],
@@ -583,7 +606,7 @@ export const paymentBillSuccess = async (formData) => {
 //payment Bill cancel
 export const paymentBillCancel = async (formData) => {
   try {
-    const res = await publicRequest.post(`/payment/cancel`,formData);
+    const res = await publicRequest.post(`/payment/cancel`, formData);
     return {
       success: true,
       data: res.data.data || [],
@@ -817,12 +840,12 @@ export const verifyUserInfo = async (dispatch, formData) => {
   try {
     if (formData.get('verificationFormType') === '2') {
       formData.set('contractEndDate', null);
-    } 
+    }
     for (let [key, value] of formData.entries()) {
       console.log(`${key}: ${value instanceof File ? value.name : value}`);
     }
     const res = await userRequest.post("/user/verify_user", formData);
-    
+
     dispatch(verifySuccess());
     return res.data;
   } catch (error) {
@@ -842,7 +865,7 @@ export const getResidentList = async (dispatch) => {
         ...user,
         imageFiles: Array.isArray(user.imageFiles) ? user.imageFiles : []
       }));
-      
+
       dispatch(getUserSuccess(processedData));
       return res.data;
     } else if (res.data && Array.isArray(res.data)) {
@@ -850,7 +873,7 @@ export const getResidentList = async (dispatch) => {
         ...user,
         imageFiles: Array.isArray(user.imageFiles) ? user.imageFiles : []
       }));
-      
+
       dispatch(getUserSuccess(processedData));
       return { data: processedData };
     } else if (res.data && res.data.status === 200 && res.data.message === "Không có cư dân nào cần được duyệt") {
@@ -956,25 +979,25 @@ export const getApartmentsWithoutHouseholder = async (dispatch) => {
 };
 //------------------------------------------------------------------------------thông báo------------------------------------------------------------------------------------
 //lay noti tu id
-  export const fetchNotifications = async (userId) => {
-    try {
-      const res = await userRequest.get(`/notification/view_all?userId=${userId}`);
-      return {
-        success: true,
-        data: res.data.data || [],
-        message: res.data.message || 'Lấy thông báo thành công'
-      };
-    } catch (error) {
-      console.error("Error fetching notifications:", error);
-      return {
-        success: false,
-        data: [],
-        message: error.response?.data?.message || 'Có lỗi xảy ra khi lấy thông báo'
-      };
-    }
-  };
+export const fetchNotifications = async (userId) => {
+  try {
+    const res = await userRequest.get(`/notification/view_all?userId=${userId}`);
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || 'Lấy thông báo thành công'
+    };
+  } catch (error) {
+    console.error("Error fetching notifications:", error);
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || 'Có lỗi xảy ra khi lấy thông báo'
+    };
+  }
+};
 
-  // xoa noti
+// xoa noti
 export const deleteNotification = async (notificationId, userId) => {
   try {
     const res = await userRequest.delete(`/notification/delete?notificationId=${notificationId}&userId=${userId}`);
@@ -1059,7 +1082,7 @@ export const updateContractVerification = async (verificationId, startDate, endD
   try {
     const formData = new FormData();
     formData.append('verificationId', verificationId);
-    
+
     // Format dates to ISO string
     const formatDate = (date) => {
       return moment(date).format('YYYY-MM-DDT00:00:00.000');
@@ -1090,6 +1113,100 @@ export const updateContractVerification = async (verificationId, startDate, endD
     return {
       success: false,
       message: error.response?.data?.message || 'Có lỗi xảy ra khi cập nhật hợp đồng'
+    };
+  }
+};
+
+// Get a single form
+export const getForm = async (dispatch, formId) => {
+  dispatch(getFormStart());
+  try {
+    const res = await publicRequest.get(`/api/forms/${formId}`);
+    dispatch(getFormSuccess(res.data.form));
+    return {
+      success: true,
+      data: res.data.form || {},
+      message: res.data.message || "Lấy form thành công",
+    };
+  } catch (error) {
+    dispatch(getFormFailure());
+    return {
+      success: false,
+      data: {},
+      message: error.response?.data?.message || "Không thể lấy form",
+    };
+  }
+};
+
+// Get all forms
+export const getAllForms = async (dispatch) => {
+  dispatch(getAllFormsStart());
+  try {
+    const res = await publicRequest.get(`/api/forms/all`);
+    dispatch(getAllFormsSuccess(res.data.forms));
+    return {
+      success: true,
+      data: res.data.forms || [],
+      message: res.data.message || "Lấy danh sách đơn từ thành công",
+    };
+  } catch (error) {
+    dispatch(getAllFormsFailure());
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || "Không thể lấy danh sách đơn từ",
+    };
+  }
+};
+
+// Create new form (with file)
+export const createForm = async (dispatch, userId, dto) => {
+  dispatch(createFormStart());
+  try {
+    const formData = new FormData();
+    formData.append("userId", userId);
+    formData.append("formType", dto.formType);
+    formData.append("apartmentId", dto.apartmentId);
+    formData.append("reason", dto.reason);
+    formData.append("file", dto.file);
+
+    const res = await publicRequest.post(`/api/forms/upload`, formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
+
+    dispatch(createFormSuccess(res.data.data));
+    return {
+      success: true,
+      data: res.data.data || {},
+      message: res.data.message || "Tạo đơn thành công",
+    };
+  } catch (error) {
+    dispatch(createFormFailure());
+    return {
+      success: false,
+      data: {},
+      message: error.response?.data?.message || "Tạo đơn thất bại",
+    };
+  }
+};
+
+// Approve or reject form (admin)
+export const approveForm = async (dispatch, formId, status) => {
+  try {
+    const res = await publicRequest.put(`/api/forms/approve/${formId}?status=${status}`);
+    dispatch(updateFormStatusSuccess(res.data.form));
+    return {
+      success: true,
+      data: res.data.form || {},
+      message: res.data.message || "Cập nhật trạng thái thành công",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: {},
+      message: error.response?.data?.message || "Duyệt đơn thất bại",
     };
   }
 };
