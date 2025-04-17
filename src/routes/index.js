@@ -26,6 +26,7 @@ import VerifyContract from "../pages/client/Update&VerifyContract/VerifyContract
 import InputBankForm from "../pages/client/InputBankForm/InputBankForm";
 import ChangePasswordPage from "../pages/common/ChangePasswordPage/ChangePasswordPage";
 import UserCoinRequests from "../pages/client/UserCoinRequests/UserCoinRequests";
+import ServiceDetailPage from "../pages/client/ServicePage/ServiceDetailPage";
 // import BillDetailsPage from "../pages/rentor/BillDetailsPage";
 
 
@@ -163,6 +164,11 @@ export const routes = [
     {
         path: '/service',
         page: ServicePage,
+        isShowHeader: true
+    },
+    {
+        path: '/service-detail',
+        page: ServiceDetailPage,
         isShowHeader: true
     },
     {
