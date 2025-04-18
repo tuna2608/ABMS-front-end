@@ -160,10 +160,14 @@ function HeaderComponent() {
         label: <div onClick={() => navigate("/deposit-apartment")}>Căn hộ đã đặt cọc</div>,
       });
     }
+    baseItems.push({
+      key: "4",
+      label: <div onClick={() => navigate("/coin-request")}>Yêu cầu hoàn tiền</div>,
+    });
     
     // Add logout option
     baseItems.push({
-      key: "4",
+      key: "5",
       label: <div onClick={handleLogout}>Logout</div>,
     });
     
