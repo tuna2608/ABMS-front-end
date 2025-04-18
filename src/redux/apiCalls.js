@@ -68,6 +68,7 @@ import {
   createFormFailure,
   updateFormStatusSuccess,
 } from "./formSlice";
+import axios from "axios";
 
 
 
@@ -1188,6 +1189,41 @@ export const approveForm = async (dispatch, formId, status) => {
       success: false,
       data: {},
       message: error.response?.data?.message || "Duyệt đơn thất bại",
+    };
+  }
+};
+
+//----------------------------ReCoin------------------------------------//
+export const getListBank = async () => {
+  try {
+    const res = await axios.get(`https://api.vietqr.io/v2/banks`);
+    return {
+      success: true,
+      data: res.data.data || {},
+      message: res.data.message || "Lấy danh sách ngân hàng thành công",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: {},
+      message: error.response?.data?.message || "Lỗi lấy danh sách ngân hàng",
+    };
+  }
+};
+
+export const requestCreateReCoin = async (formData) => {
+  try {
+    const res = await publicRequest.post(`/recoin/add`,formData);
+    return {
+      success: true,
+      data: res.data.data || {},
+      message: res.data.message || "Tạo yêu cầu rút tiền thành công",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: {},
+      message: error.response?.data?.message || "Lỗi tạo yêu cầu rút tiền",
     };
   }
 };
