@@ -15,6 +15,44 @@ const { Text } = Typography;
 const { TextArea } = Input;
 const { TabPane } = Tabs;
 
+// Update RejectModal implementation and move it outside ServicePostReview
+const RejectModal = ({ 
+  visible, 
+  onCancel, 
+  onOk, 
+  loading, 
+  rejectionReason, 
+  setRejectionReason 
+}) => (
+  <Modal
+    title="Từ chối bài đăng"
+    open={visible}
+    onOk={onOk}
+    onCancel={onCancel}
+    confirmLoading={loading}
+    okText="Xác nhận"
+    cancelText="Hủy"
+  >
+    <Form layout="vertical">
+      <Form.Item
+        label="Lý do từ chối"
+        required
+        validateStatus={!rejectionReason.trim() && 'error'}
+        help={!rejectionReason.trim() && 'Vui lòng nhập lý do từ chối'}
+      >
+        <TextArea
+          rows={4}
+          value={rejectionReason}
+          onChange={e => setRejectionReason(e.target.value)}
+          placeholder="Nhập lý do từ chối bài đăng..."
+          maxLength={500}
+          showCount
+        />
+      </Form.Item>
+    </Form>
+  </Modal>
+);
+
 const ServicePostReview = () => {
   // States
   const [servicePosts, setServicePosts] = useState([]);
@@ -91,6 +129,7 @@ const ServicePostReview = () => {
     }
   };
 
+  // Update handleReject function
   const handleReject = async (record) => {
     if (!rejectionReason.trim()) {
       message.error('Vui lòng nhập lý do từ chối');
@@ -109,12 +148,14 @@ const ServicePostReview = () => {
         message.success('Từ chối bài đăng thành công');
         setRejectModalVisible(false);
         setRejectionReason('');
-        fetchUnverifiedPosts(); // Can access the function now
+        setSelectedPost(null);
+        await fetchUnverifiedPosts();
       } else {
-        message.error(response.message || 'Không thể từ chối bài đăng');
+        throw new Error(response.message || 'Không thể từ chối bài đăng');
       }
     } catch (error) {
-      message.error('Có lỗi xảy ra khi từ chối bài đăng');
+      console.error('Error rejecting post:', error);
+      message.error(error.message || 'Có lỗi xảy ra khi từ chối bài đăng');
     } finally {
       setLoading(false);
     }
@@ -192,38 +233,6 @@ const ServicePostReview = () => {
     });
   };
 
-  // Add reject modal
-  const RejectModal = () => (
-    <Modal
-      title="Từ chối bài đăng"
-      open={rejectModalVisible}
-      onOk={() => handleReject(selectedPost)}
-      onCancel={() => {
-        setRejectModalVisible(false);
-        setRejectionReason('');
-        setSelectedPost(null);
-      }}
-      confirmLoading={loading}
-    >
-      <Form layout="vertical">
-        <Form.Item
-          label="Lý do từ chối"
-          required
-          rules={[{ required: true, message: 'Vui lòng nhập lý do từ chối' }]}
-        >
-          <TextArea
-            rows={4}
-            value={rejectionReason}
-            onChange={e => setRejectionReason(e.target.value)}
-            placeholder="Nhập lý do từ chối bài đăng..."
-            maxLength={500}
-            showCount
-          />
-        </Form.Item>
-      </Form>
-    </Modal>
-  );
-
   return (
     <Card title="Quản lý bài đăng dịch vụ">
       {/* Search */}
@@ -261,8 +270,18 @@ const ServicePostReview = () => {
         loading={loading}
       />
 
-      {/* Add RejectModal */}
-      <RejectModal />
+      <RejectModal 
+        visible={rejectModalVisible}
+        onCancel={() => {
+          setRejectModalVisible(false);
+          setRejectionReason('');
+          setSelectedPost(null);
+        }}
+        onOk={() => handleReject(selectedPost)}
+        loading={loading}
+        rejectionReason={rejectionReason}
+        setRejectionReason={setRejectionReason}
+      />
     </Card>
   );
 };

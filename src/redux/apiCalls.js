@@ -1348,3 +1348,36 @@ export const getFacilityByUserId = async (userId) => {
     };
   }
 };
+
+//update facility
+export const updateFacility = async (facilityId, userId, facilityPostContent, files) => {
+  try {
+    const formData = new FormData();
+    formData.append('userId', userId);
+    formData.append('facilityPostContent', facilityPostContent);
+    
+    if (files?.length > 0) {
+      files.forEach(file => {
+        formData.append('file', file);
+      });
+    }
+
+    const res = await publicRequest.put(`/facility/update/${facilityId}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+
+    return {
+      success: res.data?.status === 201,
+      data: res.data?.data,
+      message: res.data?.message || 'Cập nhật bài đăng thành công'
+    };
+  } catch (error) {
+    console.error("Error updating facility:", error);
+    return {
+      success: false,
+      message: error.response?.data?.message || 'Có lỗi xảy ra khi cập nhật bài đăng'
+    };
+  }
+};

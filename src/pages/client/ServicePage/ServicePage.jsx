@@ -44,9 +44,11 @@ import { useLocation, useNavigate } from "react-router-dom";
 import { 
   getVerifiedFacilities,
   createFacility,
-  getFacilityByUserId
+  getFacilityByUserId,
+  updateFacility
 } from "../../../redux/apiCalls";
 import { useSelector } from "react-redux";
+import { CreateServiceModal, UpdateServiceModal } from './CreateServiceModal';
 
 const { Search } = Input;
 const { Option } = Select;
@@ -65,6 +67,8 @@ const ServicePage = () => {
   const [searchText, setSearchText] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
   const [isCreateModalVisible, setIsCreateModalVisible] = useState(false);
+  const [isUpdateModalVisible, setIsUpdateModalVisible] = useState(false);
+  const [selectedService, setSelectedService] = useState(null);
   const [facilities, setFacilities] = useState([]);
   const [facilityDetail, setFacilityDetail] = useState(null);
   const [detailModalVisible, setDetailModalVisible] = useState(false);
@@ -160,7 +164,34 @@ const ServicePage = () => {
   };
 
   const handleEditClick = (record) => {
-    message.info('Tính năng đang được phát triển');
+    setSelectedService(record);
+    setIsUpdateModalVisible(true);
+  };
+
+  const handleUpdateService = async (facilityId, formData) => {
+    try {
+      setLoading(true);
+      const response = await updateFacility(
+        facilityId, 
+        currentUser.userId,
+        formData.get('facilityPostContent'),
+        Array.from(formData.getAll('file'))
+      );
+
+      if (response.success) {
+        message.success('Cập nhật bài viết thành công');
+        setIsUpdateModalVisible(false);
+        setSelectedService(null);
+        fetchFacilities(); // Refresh the list
+      } else {
+        message.error(response.message || 'Có lỗi xảy ra khi cập nhật bài viết');
+      }
+    } catch (error) {
+      console.error("Error updating facility:", error);
+      message.error('Có lỗi xảy ra khi cập nhật bài viết');
+    } finally {
+      setLoading(false);
+    }
   };
 
   const formatPrice = (price) => {
@@ -347,57 +378,6 @@ const ServicePage = () => {
         />
       </div>
     </>
-  );
-
-  const CreateServiceModal = () => (
-    <Modal
-      title="Tạo bài viết mới"
-      open={isCreateModalVisible}
-      onCancel={() => setIsCreateModalVisible(false)}
-      footer={null}
-      width={600}
-    >
-      <Form layout="vertical" onFinish={handleCreateService}>
-        <Form.Item
-          name="content"
-          label="Nội dung bài viết"
-          rules={[{ required: true, message: "Vui lòng nhập nội dung bài viết!" }]}
-        >
-          <TextArea 
-            rows={6} 
-            placeholder="Mô tả chi tiết về dịch vụ của bạn..." 
-            showCount
-            maxLength={1000}
-          />
-        </Form.Item>
-
-        <Form.Item
-          name="images"
-          label="Hình ảnh"
-          rules={[{ required: true, message: "Vui lòng tải lên ít nhất 1 hình ảnh!" }]}
-        >
-          <Upload
-            listType="picture-card"
-            beforeUpload={() => false}
-            maxCount={5}
-          >
-            <div>
-              <PlusOutlined />
-              <div style={{ marginTop: 8 }}>Tải ảnh</div>
-            </div>
-          </Upload>
-        </Form.Item>
-
-        <Form.Item style={{ marginBottom: 0, textAlign: 'right' }}>
-          <Button style={{ marginRight: 8 }} onClick={() => setIsCreateModalVisible(false)}>
-            Hủy
-          </Button>
-          <Button type="primary" htmlType="submit" loading={loading}>
-            Đăng bài
-          </Button>
-        </Form.Item>
-      </Form>
-    </Modal>
   );
 
   const ServiceDetailModal = () => (
@@ -621,7 +601,24 @@ const ServicePage = () => {
         </TabPane>
       </Tabs>
 
-      {CreateServiceModal()}
+      <CreateServiceModal 
+        visible={isCreateModalVisible}
+        onCancel={() => setIsCreateModalVisible(false)}
+        onSubmit={handleCreateService}
+        loading={loading}
+      />
+      
+      <UpdateServiceModal 
+        visible={isUpdateModalVisible}
+        onCancel={() => {
+          setIsUpdateModalVisible(false);
+          setSelectedService(null);
+        }}
+        onSubmit={handleUpdateService}
+        loading={loading}
+        initialValues={selectedService}
+      />
+      
       {ServiceDetailModal()}
     </div>
   );
