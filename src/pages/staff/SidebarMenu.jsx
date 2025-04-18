@@ -29,7 +29,7 @@ const SidebarMenu = ({ collapsed, setCollapsed, activeMenuItem, setActiveMenuIte
     {
       key: "account-management",
       icon: <UserOutlined />,
-      label: "Quản lý tài khoản",
+      label: "Xác thực tài khoản",
       onClick: () => handleMenuClick("account-management"),
     },
     {

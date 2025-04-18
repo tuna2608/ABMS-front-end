@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from 'react-router-dom';
 import {
   UserOutlined,
   HomeOutlined,
-  SettingOutlined,
+  FormOutlined,
   BellOutlined,
   SafetyOutlined,
   DollarOutlined,
@@ -115,16 +115,16 @@ const AdminSidebar = ({ collapsed, activeTab, setActiveTab, toggleCollapsed }) =
       onClick: () => handleMenuClick("service", "service")
     },
     {
+      key: "form-management", // New payment management menu item
+      icon: <FormOutlined/>,
+      label: "Quản lý đơn từ",
+      onClick: () => handleMenuClick("form-management", "form-management")
+    },
+    {
       key: "reports",
       icon: <DollarOutlined />,
       label: "Báo cáo tài chính",
       onClick: () => handleMenuClick("reports", "reports")
-    },
-    {
-      key: "settings",
-      icon: <SettingOutlined />,
-      label: "Cài đặt hệ thống",
-      onClick: () => handleMenuClick("settings", "settings")
     }
   ];
 
