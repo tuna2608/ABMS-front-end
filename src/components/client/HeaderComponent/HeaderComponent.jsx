@@ -88,6 +88,18 @@ const ServiceLink = styled(Button)`
     background-color: transparent;
   }
 `;
+const FormLink = styled(Button)`
+  color: white;
+  background-color: transparent;
+  border: none;
+  font-size: 16px;
+  transition: color 0.3s;
+
+  &:hover {
+    color: var(--csecondary);
+    background-color: transparent;
+  }
+`;
 
 const NavItemAVT = styled.div`
   display: flex;
@@ -159,6 +171,18 @@ function HeaderComponent() {
   };
 
   const items = getDropdownItems();
+
+  // Form items for dropdown
+  const formItems = [
+    {
+      key: "1",
+      label: <div onClick={() => navigate("/form-request")}>Gửi đơn</div>,
+    },
+    {
+      key: "2",
+      label: <div onClick={() => navigate("/form-list")}>Danh sách đơn</div>,
+    }
+  ];
 
   const getDropdownNotis = () => {
     const baseItems = [
@@ -255,8 +279,14 @@ function HeaderComponent() {
             <ServiceLink onClick={() => navigate("/service")}>
               Dịch vụ
             </ServiceLink>
+            {(user?.role === 'Owner' || user?.role === 'Rentor') && (
+              <Dropdown menu={{ items: formItems }} placement="bottom">
+                <FormLink>
+                  Đơn từ
+                </FormLink>
+              </Dropdown>
+            )}
             
-
             <NotificationWrapper />
 
             {user ? (

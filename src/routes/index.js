@@ -27,6 +27,7 @@ import InputBankForm from "../pages/client/InputBankForm/InputBankForm";
 import ChangePasswordPage from "../pages/common/ChangePasswordPage/ChangePasswordPage";
 import UserCoinRequests from "../pages/client/UserCoinRequests/UserCoinRequests";
 import ServiceDetailPage from "../pages/client/ServicePage/ServiceDetailPage";
+import UserFormList from "../pages/client/FormManagement/UserFormList";
 // import BillDetailsPage from "../pages/rentor/BillDetailsPage";
 
 
@@ -107,8 +108,13 @@ export const routes = [
         isShowHeader: false
     },
     {
-        path: '/form',
+        path: '/form-request',
         page: FormManagement,
+        isShowHeader: true
+    },
+    {
+        path: '/form-list',
+        page: UserFormList,
         isShowHeader: true
     },
     {
