@@ -4,6 +4,7 @@ import { UploadOutlined, SendOutlined, DownloadOutlined } from '@ant-design/icon
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { createForm } from '../../../redux/apiCalls'; // cập nhật lại đường dẫn phù hợp
+import { useNavigate } from 'react-router-dom';
 
 const { Title, Text, Paragraph } = Typography;
 const { Option } = Select;
@@ -86,6 +87,7 @@ const DownloadButton = styled(Button)`
 const FormManagement = () => {
   const [form] = Form.useForm();
   const dispatch = useDispatch();
+  const navigate = useNavigate();
   const [file, setFile] = useState(null);
 
   const applicationTypes = [
@@ -118,6 +120,8 @@ const FormManagement = () => {
       message.success(res.message || "Tạo đơn thành công");
       form.resetFields();
       setFile(null);
+      // Chuyển hướng đến trang danh sách đơn sau khi gửi thành công
+      navigate('/form-list');
     } else {
       message.error(res.message || "Tạo đơn thất bại");
     }

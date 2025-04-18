@@ -155,9 +155,9 @@ const ServicePostReview = () => {
   // Handle post approval
   const handleApprove = (post) => {
     Modal.confirm({
-      title: 'Xác nhận duyệt bài đăng',
+      title: 'Xác nhận duyệt bài viết',
       icon: <CheckCircleOutlined style={{ color: '#52c41a' }} />,
-      content: `Bạn có chắc chắn muốn duyệt bài đăng "${post.title}" không?`,
+      content: `Bạn có chắc chắn muốn duyệt bài viết "${post.title}" không?`,
       okText: 'Xác nhận duyệt',
       cancelText: 'Hủy',
       onOk() {
@@ -173,7 +173,7 @@ const ServicePostReview = () => {
         }
         
         // Show success message
-        message.success(`Đã duyệt bài đăng "${post.title}"`);
+        message.success(`Đã duyệt bài viết "${post.title}"`);
       }
     });
   };
@@ -210,7 +210,7 @@ const ServicePostReview = () => {
     });
     
     // Show success message
-    message.success(`Đã từ chối bài đăng "${selectedPost.title}"`);
+    message.success(`Đã từ chối bài viết "${selectedPost.title}"`);
     
     // Close rejection modal
     setRejectModalVisible(false);
@@ -257,7 +257,7 @@ const ServicePostReview = () => {
   // Table columns configuration
   const columns = [
     {
-      title: 'Bài đăng',
+      title: 'Bài viết',
       dataIndex: 'title',
       key: 'title',
       render: (text, record) => (
@@ -281,7 +281,7 @@ const ServicePostReview = () => {
       render: (category) => <Tag>{category}</Tag>,
     },
     {
-      title: 'Ngày đăng',
+      title: 'Ngày viết',
       dataIndex: 'submittedDate',
       key: 'submittedDate',
     },
@@ -342,7 +342,7 @@ const ServicePostReview = () => {
   ];
 
   return (
-    <Card title="Quản lý bài đăng dịch vụ">
+    <Card title="Quản lý bài viết dịch vụ">
       {/* Filter section */}
       <Card style={{ marginBottom: 16 }} size="small">
         <Space direction="vertical" style={{ width: '100%' }}>
@@ -452,7 +452,7 @@ const ServicePostReview = () => {
 
       {/* Post Details Drawer */}
       <Drawer
-        title="Chi tiết bài đăng dịch vụ"
+        title="Chi tiết bài viết dịch vụ"
         placement="right"
         width={600}
         onClose={() => setDrawerVisible(false)}
@@ -528,7 +528,7 @@ const ServicePostReview = () => {
                 {selectedPost.location}
               </Descriptions.Item>
               <Descriptions.Item 
-                label={<><CalendarOutlined /> Ngày đăng</>}
+                label={<><CalendarOutlined /> Ngày viết</>}
                 span={1}
               >
                 {selectedPost.submittedDate}
@@ -549,7 +549,7 @@ const ServicePostReview = () => {
               <>
                 <Divider orientation="left">Lý do từ chối</Divider>
                 <Alert
-                  message="Lý do từ chối bài đăng:"
+                  message="Lý do từ chối bài viết:"
                   description={selectedPost.rejectionReason}
                   type="error"
                   showIcon
@@ -562,7 +562,7 @@ const ServicePostReview = () => {
 
       {/* Rejection Modal */}
       <Modal
-        title="Từ chối bài đăng dịch vụ"
+        title="Từ chối bài viết dịch vụ"
         open={rejectModalVisible}
         onOk={handleReject}
         onCancel={() => setRejectModalVisible(false)}
@@ -578,14 +578,14 @@ const ServicePostReview = () => {
           >
             <TextArea 
               rows={4} 
-              placeholder="Nhập lý do từ chối bài đăng" 
+              placeholder="Nhập lý do từ chối bài viết" 
               value={rejectionReason}
               onChange={(e) => setRejectionReason(e.target.value)}
             />
           </Form.Item>
           <Alert
             message="Lưu ý:"
-            description="Lý do từ chối sẽ được gửi đến người đăng bài. Vui lòng cung cấp lý do cụ thể và hướng dẫn cách họ có thể chỉnh sửa để đăng lại."
+            description="Lý do từ chối sẽ được gửi đến người viết bài. Vui lòng cung cấp lý do cụ thể và hướng dẫn cách họ có thể chỉnh sửa để đăng lại."
             type="warning"
             showIcon
           />
