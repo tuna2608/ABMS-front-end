@@ -162,7 +162,7 @@ function HeaderComponent() {
     }
     baseItems.push({
       key: "4",
-      label: <div onClick={() => navigate("/coin-request")}>Căn hộ đã đặt cọc</div>,
+      label: <div onClick={() => navigate("/coin-request")}>Yêu cầu hoàn tiền</div>,
     });
     
     // Add logout option
