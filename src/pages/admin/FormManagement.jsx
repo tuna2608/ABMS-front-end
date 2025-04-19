@@ -5,6 +5,7 @@ import { CheckCircleOutlined, CloseCircleOutlined, EyeOutlined, DownloadOutlined
 import styled from 'styled-components';
 import { useDispatch } from 'react-redux';
 import { getAllForms, approveForm } from '../../redux/apiCalls';
+import { getUserInfo } from '../../redux/apiCalls';
 
 const { Title } = Typography;
 
@@ -37,18 +38,21 @@ const AdminFormManagement = () => {
       setLoading(true);
       const res = await getAllForms(dispatch);
       if (res.success) {
-        const mapped = res.data.map((item) => ({
-          id: item.formId,
-          formType: item.formType,
-          apartmentNumber: item.apartment?.apartmentName || 'N/A',
-          residentName: item.user?.fullName || 'N/A',
-          submissionDate: item.createdAt,
-          status: item.status,
-          reason: item.reason || '-',
-          fileUrl: item.fileUrl,
-          fileName: item.fileName,
+        const enrichedForms = await Promise.all(res.data.map(async (item) => {
+          const userInfo = await getUserInfo(item.userId)(dispatch);
+          return {
+            id: item.formId,
+            formType: item.formType,
+            apartmentNumber: userInfo.apartment.find(a => a.apartmentId === item.apartmentId).apartmentName || 'N/A',
+            residentName: userInfo.fullName || 'N/A',
+            submissionDate: item.createdAt,
+            status: item.status,
+            reason: item.reason || '-',
+            fileUrl: item.fileUrl,
+            fileName: item.fileName,
+          };
         }));
-        setForms(mapped);
+        setForms(enrichedForms);
       }
       setLoading(false);
     };
