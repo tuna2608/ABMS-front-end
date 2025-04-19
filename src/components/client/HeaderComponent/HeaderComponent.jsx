@@ -138,7 +138,7 @@ function HeaderComponent() {
     const baseItems = [
       {
         key: "1",
-        label: <div onClick={() => navigate('/edit-profile')}>Edit profile</div>,
+        label: <div onClick={() => navigate('/edit-profile')}>Thông tin cá nhân</div>,
       }
     ];
     
@@ -168,7 +168,7 @@ function HeaderComponent() {
     // Add logout option
     baseItems.push({
       key: "5",
-      label: <div onClick={handleLogout}>Logout</div>,
+      label: <div onClick={handleLogout}>Đăng xuất</div>,
     });
     
     return baseItems;
@@ -302,8 +302,8 @@ function HeaderComponent() {
               </Dropdown>
             ) : (
               <>
-                <Button onClick={() => navigate("/login")}>Login</Button>
-                <Button onClick={() => navigate("/register")}>Register</Button>
+                <Button onClick={() => navigate("/login")}>Đăng nhập</Button>
+                <Button onClick={() => navigate("/register")}>Đăng ký</Button>
               </>
             )}
           </NavbarListItem>

@@ -3,6 +3,8 @@ import { Table, Typography, Card, Badge, Tag, Button, Modal, Descriptions, Space
 import { EyeOutlined, DownloadOutlined, ArrowLeftOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
 import { useNavigate } from 'react-router-dom';
+import { useDispatch } from "react-redux";
+import { getAllForms } from '../../../redux/apiCalls';
 
 const { Title, Text, Paragraph } = Typography;
 
@@ -60,9 +62,37 @@ const BackLink = styled(Button)`
 
 const UserFormList = () => {
   const navigate = useNavigate();
+  const [loading, setLoading] = useState(false);
   const [selectedForm, setSelectedForm] = useState(null);
   const [modalVisible, setModalVisible] = useState(false);
+  const [forms, setForms] = useState([]);
 
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    async function fetchForms() {
+      setLoading(true);
+      const res = await getAllForms(dispatch);
+      if (res.success) {
+        const mapped = res.data.map((item, index) => ({
+          id: item.formId,
+          formType: item.formType,
+          apartmentNumber: item.apartment?.apartmentName || 'N/A',
+          submissionDate: item.createdAt,
+          status: item.status,
+          reason: item.reason || '-',
+          fileUrl: item.fileUrl,
+          fileName: item.fileName,
+          responseNote: item.feedback || null,
+          responseDate: item.executedAt || null
+        }));
+        setForms(mapped);
+      }
+      setLoading(false);
+    }
+    fetchForms();
+    }, [dispatch]);
+  
   // Dữ liệu mẫu - sau này sẽ được thay thế bằng API call
   const sampleUserForms = [
     {
@@ -196,7 +226,7 @@ const UserFormList = () => {
             Danh sách đơn đã gửi
           </Title>
         </div>
-        <Button type="primary" ghost onClick={() => navigate("/form")}>
+        <Button type="primary" ghost onClick={() => navigate("/form-request")}>
           + Gửi đơn mới
         </Button>
       </HeaderSection>
@@ -208,10 +238,11 @@ const UserFormList = () => {
       </StatusSection>
 
       <FormListSection>
-        {sampleUserForms.length > 0 ? (
+        {forms.length > 0 ? (
           <StyledTable
+            loading={loading}
             columns={columns}
-            dataSource={sampleUserForms}
+            dataSource={forms}
             rowKey="id"
             pagination={{
               pageSize: 10,
@@ -227,7 +258,7 @@ const UserFormList = () => {
             <Button 
               type="primary" 
               style={{ marginTop: 16 }} 
-              onClick={() => navigate("/form")}
+              onClick={() => navigate("/form-request")}
             >
               Gửi đơn mới
             </Button>
@@ -237,7 +268,7 @@ const UserFormList = () => {
 
       <Modal
         title={<Title level={4}>Chi tiết đơn</Title>}
-        visible={modalVisible}
+        open={modalVisible}
         onCancel={() => setModalVisible(false)}
         footer={[
           <Button key="close" onClick={() => setModalVisible(false)}>
