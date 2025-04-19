@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { Form, Input, Select, Button, Upload, Typography, Card, Divider, Row, Col, message } from 'antd';
 import { UploadOutlined, SendOutlined, DownloadOutlined } from '@ant-design/icons';
 import styled from 'styled-components';
-import { useDispatch } from 'react-redux';
+import { useDispatch ,useSelector} from 'react-redux';
 import { createForm } from '../../../redux/apiCalls'; // cập nhật lại đường dẫn phù hợp
 import { useNavigate } from 'react-router-dom';
 
@@ -89,6 +89,7 @@ const FormManagement = () => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [file, setFile] = useState(null);
+  const currentUser = useSelector((state) => state.user.currentUser);
 
   const applicationTypes = [
     { value: 'apartment_renovation', label: 'Đăng ký thi công nội thất' },
@@ -106,14 +107,14 @@ const FormManagement = () => {
     const dto = {
       formType: values.application_type,
       status: "pending",
-      apartmentId: 1, // giả lập, cần lấy từ dữ liệu thực tế
+      apartmentId: values.apartment_number, // giả lập, cần lấy từ dữ liệu thực tế
       file: file,
       residentName: values.resident_name,
       apartmentNumber: values.apartment_number,
       reason: values.reason,
     };
 
-    const userId = 1; // giả lập user id
+    const userId = currentUser.userId; // lấy user id đăng nhập
     const res = await createForm(dispatch, userId, dto);
 
     if (res.success) {
