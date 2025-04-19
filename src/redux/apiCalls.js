@@ -70,7 +70,6 @@ import {
 } from "./formSlice";
 
 
-
 // Auth ------------------------------------------------------------------
 export const login = async (dispatch, user) => {
   dispatch(loginStart());
@@ -378,6 +377,25 @@ export const deleteApartment = async (dispatch, apartmentId) => {
     return {
       success: false,
       message: error.response?.data?.message || "Có lỗi xảy ra khi xóa căn hộ"
+    };
+  }
+};
+
+//view rentor trong căn hộ
+export const getRentorByApartment = async (apartmentName) => {
+  try {
+    const res = await publicRequest.get(`/apartment/get_rentor?apartmentName=${apartmentName}`);
+    return {
+      success: res.data?.status === 200,
+      data: res.data?.data || [],
+      message: res.data?.message || 'Lấy danh sách người thuê thành công'
+    };
+  } catch (error) {
+    console.error("Error fetching renters:", error);
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || 'Có lỗi xảy ra khi lấy danh sách người thuê'
     };
   }
 };
@@ -1058,6 +1076,7 @@ export const getContractOwners = async (apartmentName) => {
   }
 };
 
+//cập nhật hợp đồng mới
 export const updateContractVerification = async (verificationId, startDate, endDate, imageFiles) => {
   try {
     const formData = new FormData();
@@ -1188,6 +1207,178 @@ export const approveForm = async (dispatch, formId, status) => {
       success: false,
       data: {},
       message: error.response?.data?.message || "Duyệt đơn thất bại",
+    };
+  }
+};
+//-------------------------------------------------------------------------CRUD Facility Post------------------------------------------------------------------------------------
+// Get all facilities da duoc duyet
+export const getVerifiedFacilities = async () => {
+  try {
+    const res = await publicRequest.get('/facility/get_verified');
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || 'Lấy danh sách dịch vụ đã duyệt thành công'
+    };
+  } catch (error) {
+    console.error("Error fetching verified facilities:", error);
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || 'Có lỗi xảy ra khi lấy danh sách dịch vụ đã duyệt'
+    };
+  }
+};
+
+//lay bai viet chua duoc duyet
+export const getUnverifiedFacilities = async () => {
+  try {
+    const res = await publicRequest.get('/facility/get_unverified');
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || 'Lấy danh sách dịch vụ chưa duyệt thành công'
+    };
+  } catch (error) {
+    console.error("Error fetching unverified facilities:", error);
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || 'Có lỗi xảy ra khi lấy danh sách dịch vụ chưa duyệt'
+    };
+  }
+};
+
+// Get facility by ID
+export const getFacilityById = async (facilityId) => {
+  try {
+    const res = await publicRequest.get(`/facility/view_facility_post/${facilityId}`);
+    return {
+      success: true,
+      data: res.data.data || {},
+      message: res.data.message || 'Lấy thông tin dịch vụ thành công'
+    };
+  } catch (error) {
+    console.error("Error fetching facility:", error);
+    return {
+      success: false,
+      data: {},
+      message: error.response?.data?.message || 'Có lỗi xảy ra khi lấy thông tin dịch vụ'
+    };
+  }
+};
+
+// Create new facility
+export const createFacility = async (formData) => {
+  try {
+    const res = await publicRequest.post('/facility/create', formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+
+    return {
+      success: res.data?.status === 201,
+      data: res.data?.data,
+      message: res.data?.message || 'Tạo bài đăng thành công'
+    };
+  } catch (error) {
+    console.error("Error creating facility:", error);
+    return {
+      success: false,
+      message: error.response?.data?.message || 'Có lỗi xảy ra khi tạo bài đăng'
+    };
+  }
+};
+
+// Verify facility
+export const verifyFacilityPost = async (facilityId, verifiedUserId) => {
+  try {
+    const res = await publicRequest.post(`/facility/verified/${facilityId}`, {
+      verifiedUserId
+    });
+    return {
+      success: res.data?.status === 201,
+      data: res.data?.data,
+      message: res.data?.message || 'Duyệt bài đăng thành công'
+    };
+  } catch (error) {
+    console.error("Error verifying facility:", error);
+    return {
+      success: false,
+      message: error.response?.data?.message || 'Có lỗi xảy ra khi duyệt bài đăng'
+    };
+  }
+};
+
+// Reject facility
+export const rejectFacilityPost = async (facilityId, verifiedUserId, reason) => {
+  try {
+    const res = await publicRequest.post(`/facility/rejected/${facilityId}`, {
+      verifiedUserId,
+      reason
+    });
+    return {
+      success: res.data?.status === 201,
+      data: res.data?.data,
+      message: res.data?.message || 'Từ chối bài đăng thành công'
+    };
+  } catch (error) {
+    console.error("Error rejecting facility:", error);
+    return {
+      success: false,
+      message: error.response?.data?.message || 'Có lỗi xảy ra khi từ chối bài đăng'
+    };
+  }
+};
+
+export const getFacilityByUserId = async (userId) => {
+  try {
+    const res = await publicRequest.get(`/facility/getFacilityByUser/${userId}`);
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || 'Lấy danh sách bài đăng thành công'
+    };
+  } catch (error) {
+    console.error("Error fetching user facilities:", error);
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || 'Có lỗi xảy ra khi lấy danh sách bài đăng'
+    };
+  }
+};
+
+//update facility
+export const updateFacility = async (facilityId, userId, facilityPostContent, files) => {
+  try {
+    const formData = new FormData();
+    formData.append('userId', userId);
+    formData.append('facilityPostContent', facilityPostContent);
+    
+    if (files?.length > 0) {
+      files.forEach(file => {
+        formData.append('file', file);
+      });
+    }
+
+    const res = await publicRequest.put(`/facility/update/${facilityId}`, formData, {
+      headers: {
+        'Content-Type': 'multipart/form-data'
+      }
+    });
+
+    return {
+      success: res.data?.status === 201,
+      data: res.data?.data,
+      message: res.data?.message || 'Cập nhật bài đăng thành công'
+    };
+  } catch (error) {
+    console.error("Error updating facility:", error);
+    return {
+      success: false,
+      message: error.response?.data?.message || 'Có lỗi xảy ra khi cập nhật bài đăng'
     };
   }
 };
