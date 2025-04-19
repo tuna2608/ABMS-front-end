@@ -14,55 +14,36 @@ import { fetchNotifications } from '../../../redux/apiCalls';
 import { useDispatch, useSelector } from 'react-redux';
 import webSocketService from '../../../services/WebSocketService'; 
 
-// Improved styled components
+// Styled components (giữ nguyên phần này)
 const NotificationCard = styled(Card)`
-  width: 400px;
-  max-height: 500px;
+  width: 450px;
+  max-height: 450px;
   overflow-y: auto;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12);
-  border-radius: 12px;
-  padding: 0;
-  scrollbar-width: thin;
-  
-  &::-webkit-scrollbar {
-    width: 6px;
-  }
-
-  &::-webkit-scrollbar-thumb {
-    background-color: #d9d9d9;
-    border-radius: 3px;
-  }
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  border-radius: 8px;
 `;
 
 const NotificationHeader = styled.div`
   display: flex;
   justify-content: space-between;
   align-items: center;
-  padding: 16px 20px;
+  padding: 12px 16px;
   border-bottom: 1px solid #f0f0f0;
-  background-color: #fafafa;
-  border-radius: 12px 12px 0 0;
 `;
 
 const NotificationTitle = styled.h3`
   margin: 0;
-  font-size: 18px;
-  font-weight: 600;
+  font-size: 16px;
   color: rgba(0, 0, 0, 0.85);
 `;
 
 const NotificationListItem = styled(List.Item)`
-  padding: 16px 20px !important;
-  transition: all 0.2s ease;
-  border-bottom: 1px solid #f0f0f0;
+  padding: 12px 16px !important;
+  transition: background-color 0.3s;
   
   &:hover {
     background-color: #f5f5f5;
     cursor: pointer;
-  }
-  
-  &:last-child {
-    border-bottom: none;
   }
 `;
 
@@ -70,78 +51,29 @@ const NotificationIcon = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  width: 46px;
-  height: 46px;
+  width: 40px;
+  height: 40px;
   border-radius: 50%;
-  margin-right: 16px;
-  flex-shrink: 0;
+  margin-right: 12px;
 `;
 
 const NotificationContent = styled.div`
   flex-grow: 1;
-  line-height: 1.5;
-`;
-
-const NotificationMessage = styled.div`
-  margin-bottom: 6px;
-  font-size: 14px;
-  color: rgba(0, 0, 0, 0.85);
 `;
 
 const NotificationTime = styled.span`
   color: #8c8c8c;
   font-size: 12px;
-  display: block;
 `;
 
 const LoadingContainer = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  padding: 32px;
-  height: 200px;
+  padding: 24px;
 `;
 
-const MarkAsReadButton = styled(Button)`
-  color: #1890ff;
-  font-weight: 500;
-  padding: 4px 8px;
-  
-  &:disabled {
-    color: #d9d9d9;
-  }
-`;
-
-const UnreadIndicator = styled.div`
-  position: absolute;
-  top: 50%;
-  left: 6px;
-  width: 8px;
-  height: 8px;
-  border-radius: 50%;
-  background-color: #1890ff;
-  transform: translateY(-50%);
-`;
-
-const NotificationBadge = styled(Badge)`
-  .ant-badge-count {
-    box-shadow: 0 0 0 1px #fff;
-  }
-`;
-
-const NotificationButton = styled(Button)`
-  width: 250px;
-  height: 50px;
-  border-radius: 50%;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  background-color: white;
-  color: var(--cheadline);
-  border: none;
-`;
-
-// Helper functions (keep unchanged)
+// Helper functions (giữ nguyên phần này)
 const getNotificationIcon = (type) => {
     switch (type?.toLowerCase()) {
         case 'deposit':
@@ -180,8 +112,8 @@ const NotificationWrapper = () => {
     const [notifications, setNotifications] = useState([]);
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
-    const [open, setOpen] = useState(false); // Changed from 'visible' to 'open'
-    const [unreadCount, setUnreadCount] = useState(0);
+    const [visible, setVisible] = useState(false);
+    const [unreadCount, setUnreadCount] = useState(0); // Thêm state theo dõi số thông báo chưa đọc
 
     const currentUser = useSelector((state) => state.user.currentUser);
     const dispatch = useDispatch();
@@ -253,10 +185,10 @@ const NotificationWrapper = () => {
 
     // Tải thông báo khi hiển thị dropdown
     useEffect(() => {
-        if (open && currentUser?.userId) {
+        if (visible && currentUser?.userId) {
             loadNotifications();
         }
-    }, [open, currentUser?.userId, loadNotifications]);
+    }, [visible, currentUser?.userId, loadNotifications]);
 
     const handleMarkAllAsRead = async () => {
         try {
@@ -295,103 +227,120 @@ const NotificationWrapper = () => {
         
         // Xử lý điều hướng hoặc hành động khác dựa vào loại thông báo
         console.log('Notification clicked:', notification);
+        
+        // Ví dụ:
+        // if (notification.notificationType === 'deposit') {
+        //   history.push(`/deposits/${notification.referenceId}`);
+        // } else if (notification.notificationType === 'message') {
+        //   history.push('/chat');
+        // }
     };
 
-    const handleOpenChange = (flag) => {
-        setOpen(flag);
-    };
+    const notificationDropdownContent = (
+        <NotificationCard>
+            <NotificationHeader>
+                <NotificationTitle>Thông Báo</NotificationTitle>
+                <Button
+                    type="text"
+                    size="small"
+                    onClick={handleMarkAllAsRead}
+                    disabled={loading || unreadCount === 0}
+                >
+                    Đánh dấu đã đọc
+                </Button>
+            </NotificationHeader>
 
-    // Create menu items for dropdown
-    const notificationMenu = {
-        items: [
-            {
-                key: 'notifications',
-                label: (
-                    <NotificationCard>
-                        <NotificationHeader>
-                            <NotificationTitle>Thông Báo</NotificationTitle>
-                            <MarkAsReadButton
-                                type="text"
-                                size="small"
-                                onClick={handleMarkAllAsRead}
-                                disabled={loading || unreadCount === 0}
-                            >
-                                Đánh dấu đã đọc
-                            </MarkAsReadButton>
-                        </NotificationHeader>
-
-                        {loading ? (
-                            <LoadingContainer>
-                                <Spin indicator={<LoadingOutlined style={{ fontSize: 28 }} spin />} />
-                            </LoadingContainer>
-                        ) : error ? (
-                            <Empty
-                                description={error}
-                                style={{ padding: '32px' }}
-                                image={Empty.PRESENTED_IMAGE_SIMPLE}
-                            />
-                        ) : notifications.length > 0 ? (
-                            <List
-                                dataSource={notifications}
-                                renderItem={(item) => {
-                                    const { icon, color } = getNotificationIcon(item.notificationType);
-                                    return (
-                                        <NotificationListItem 
-                                            onClick={() => handleNotificationClick(item)}
-                                            style={{ 
-                                                backgroundColor: !item.status ? 'rgba(24, 144, 255, 0.05)' : 'transparent',
-                                                position: 'relative'
-                                            }}
-                                        >
-                                            {!item.status && <UnreadIndicator />}
-                                            <div style={{ display: 'flex', alignItems: 'flex-start' }}>
-                                                <NotificationIcon style={{ backgroundColor: `${color}1A` }}>
-                                                    {React.cloneElement(icon, {
-                                                        style: { color: color, fontSize: '20px' }
-                                                    })}
-                                                </NotificationIcon>
-                                                <NotificationContent>
-                                                    <NotificationMessage>
-                                                        {item.notificationContent}
-                                                    </NotificationMessage>
-                                                    <NotificationTime>{formatTime(item.date)}</NotificationTime>
-                                                </NotificationContent>
-                                            </div>
-                                        </NotificationListItem>
-                                    );
+            {loading ? (
+                <LoadingContainer>
+                    <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} />
+                </LoadingContainer>
+            ) : error ? (
+                <Empty
+                    description={error}
+                    style={{ padding: '24px' }}
+                />
+            ) : notifications.length > 0 ? (
+                <List
+                    dataSource={notifications}
+                    renderItem={(item) => {
+                        const { icon, color } = getNotificationIcon(item.notificationType);
+                        return (
+                            <NotificationListItem 
+                                onClick={() => handleNotificationClick(item)}
+                                style={{ 
+                                    backgroundColor: !item.status ? 'rgba(24, 144, 255, 0.05)' : 'transparent',
+                                    position: 'relative'
                                 }}
-                            />
-                        ) : (
-                            <Empty
-                                description="Không có thông báo mới"
-                                style={{ padding: '32px' }}
-                            />
-                        )}
-                    </NotificationCard>
-                ),
-            },
-        ],
+                            >
+                                {!item.status && (
+                                    <div 
+                                        style={{ 
+                                            position: 'absolute', 
+                                            top: '50%', 
+                                            left: '4px', 
+                                            width: '6px', 
+                                            height: '6px', 
+                                            borderRadius: '50%', 
+                                            backgroundColor: '#1890ff',
+                                            transform: 'translateY(-50%)'
+                                        }} 
+                                    />
+                                )}
+                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                    <NotificationIcon style={{ backgroundColor: `${color}1A` }}>
+                                        {React.cloneElement(icon, {
+                                            style: { color: color, fontSize: '16px' }
+                                        })}
+                                    </NotificationIcon>
+                                    <NotificationContent>
+                                        <div style={{ marginBottom: 4 }}>
+                                            {item.notificationContent}
+                                        </div>
+                                        <NotificationTime>{formatTime(item.date)}</NotificationTime>
+                                    </NotificationContent>
+                                </div>
+                            </NotificationListItem>
+                        );
+                    }}
+                />
+            ) : (
+                <Empty
+                    description="Không có thông báo mới"
+                    style={{ padding: '24px' }}
+                />
+            )}
+        </NotificationCard>
+    );
+
+    const handleVisibleChange = (flag) => {
+        setVisible(flag);
     };
 
     return (
         <Dropdown
-            menu={notificationMenu} // Replaced 'overlay' with 'menu'
+            overlay={notificationDropdownContent}s
             trigger={['click']}
             placement="bottomRight"
-            onOpenChange={handleOpenChange} // Replaced 'onVisibleChange' with 'onOpenChange'
-            open={open} // Replaced 'visible' with 'open'
-            destroyPopupOnHide={true}
+            onVisibleChange={handleVisibleChange}
+            visible={visible}
         >
-            <NotificationBadge
+            <Badge
                 count={unreadCount}
                 overflowCount={10}
-                offset={[-5, 5]}
             >
-                <NotificationButton
+                <Button
                     type="text"
-                    icon={<BellOutlined style={{ fontSize: '20px' }} />}
+                    icon={<BellOutlined />}
+                    style={{
+                        width: '50px',
+                        height: '50px',
+                        borderRadius: '50%',
+                        backgroundColor: 'white',
+                        color: 'var(--cheadline)',
+                        fontSize: '20px'
+                    }}
                 />
-            </NotificationBadge>
+            </Badge>
         </Dropdown>
     );
 };
