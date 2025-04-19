@@ -73,7 +73,8 @@ const ServicePage = () => {
   const [facilityDetail, setFacilityDetail] = useState(null);
   const [detailModalVisible, setDetailModalVisible] = useState(false);
   
-  const pageSize = 8;
+  // Thay đổi pageSize từ 8 xuống 6
+  const pageSize = 6;
 
   const fetchFacilities = async () => {
     setLoading(true);
@@ -110,6 +111,8 @@ const ServicePage = () => {
 
   useEffect(() => {
     fetchFacilities();
+    // Reset về trang đầu tiên khi chuyển tab
+    setCurrentPage(1);
   }, [activeTab, currentUser?.userId]);
 
   const onSearch = (value) => {
@@ -214,6 +217,11 @@ const ServicePage = () => {
     return filtered;
   };
 
+  // Tính toán các dịch vụ hiển thị trên trang hiện tại
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const currentFacilities = getFilteredFacilities().slice(startIndex, endIndex);
+
   const renderPartnerServices = () => (
     <>
       <Flex justify="space-between" align="center" wrap="wrap" gap={16} style={{ marginBottom: 24 }}>
@@ -229,7 +237,7 @@ const ServicePage = () => {
 
       <Row gutter={[24, 24]}>
         {loading
-          ? Array(4)
+          ? Array(6) // Hiển thị 6 skeleton loading thay vì 4
               .fill(null)
               .map((_, index) => (
                 <Col xs={24} sm={12} md={8} lg={6} key={`loading-${index}`}>
@@ -242,7 +250,7 @@ const ServicePage = () => {
                   </Card>
                 </Col>
               ))
-          : getFilteredFacilities().map((facility) => (
+          : currentFacilities.map((facility) => ( // Sử dụng currentFacilities thay vì getFilteredFacilities()
               <Col xs={24} sm={12} md={8} lg={6} key={facility.id}>
                 <Card
                   hoverable
@@ -595,7 +603,9 @@ const ServicePage = () => {
             loading={loading}
             pagination={{
               pageSize: 10,
-              showTotal: total => `Tổng ${total} bài viết`
+              showTotal: total => `Tổng ${total} bài viết`,
+              current: currentPage,
+              onChange: (page) => setCurrentPage(page)
             }}
           />
         </TabPane>

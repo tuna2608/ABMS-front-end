@@ -302,8 +302,8 @@ function HeaderComponent() {
               </Dropdown>
             ) : (
               <>
-                <Button onClick={() => navigate("/login")}>Login</Button>
-                <Button onClick={() => navigate("/register")}>Register</Button>
+                <Button onClick={() => navigate("/login")}>Đăng nhập</Button>
+                <Button onClick={() => navigate("/register")}>Đăng ký</Button>
               </>
             )}
           </NavbarListItem>
