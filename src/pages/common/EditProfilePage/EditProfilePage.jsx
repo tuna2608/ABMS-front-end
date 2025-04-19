@@ -302,7 +302,7 @@ const ProfileEditPage = () => {
             textAlign: 'center', 
             fontWeight: 700 
           }}>
-            Edit Profile
+            Thay đổi thông tin 
           </Title>
           
           <AvatarContainer>
@@ -327,13 +327,13 @@ const ProfileEditPage = () => {
               >
                 <div className="ant-upload">
                   <p className="ant-upload-text">
-                    Click or drag file to upload profile picture
+                    Bấm hoặc thả tệp vào khung này
                   </p>
                 </div>
               </FileUploadContainer>
             ) : (
               <ChangeButton onClick={triggerFileInput}>
-                Change Picture
+                Thay đổi hình ảnh
               </ChangeButton>
             )}
           </AvatarContainer>
@@ -362,7 +362,7 @@ const ProfileEditPage = () => {
             onFinish={handleSubmit}
           >
             <FormSection>
-              <Form.Item label="Username:" name="userName">
+              <Form.Item label="Tên tài khoản:" name="userName">
                 <Input disabled />
               </Form.Item>
 
@@ -372,27 +372,27 @@ const ProfileEditPage = () => {
             </FormSection>
 
             <FormSection>
-              <Form.Item label="Fullname:" name="fullName">
+              <Form.Item label="Họ và tên:" name="fullName">
                 <Input />
               </Form.Item>
 
-              <Form.Item label="Phone:" name="phone">
+              <Form.Item label="Số điện thoại:" name="phone">
                 <Input />
               </Form.Item>
             </FormSection>
             
             <FormSection>
-              <Form.Item label="Birthday:" name="birthday">
+              <Form.Item label="Ngày sinh:" name="birthday">
                 <DatePicker style={{ width: "100%" }} />
               </Form.Item>
-              <Form.Item label="Job:" name="job">
+              <Form.Item label="Công việc:" name="job">
                 <Input />
               </Form.Item>
             </FormSection>
             
             <FormSection>
               <FullWidthSection>
-                <Form.Item label="Description" name="description">
+                <Form.Item label="Mô tả" name="description">
                   <Input.TextArea rows={4} />
                 </Form.Item>
               </FullWidthSection>
@@ -405,7 +405,7 @@ const ProfileEditPage = () => {
                 disabled={loading}
                 loading={loading}
               >
-                SAVE CHANGES
+                Lưu thay đổi
               </SaveButton>
             </Form.Item>
           </Form>
