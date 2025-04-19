@@ -24,9 +24,9 @@ import {
   editProfile,
   getImageCloud,
   getListBank,
+  requestCreateReCoin,
 } from "../../../redux/apiCalls";
 import moment from "moment";
-import { Option } from "antd/es/mentions";
 
 const { Title } = Typography;
 
@@ -193,7 +193,7 @@ const ProfileEditPage = () => {
     birthday: userCurrent ? dayjs(userCurrent.birthday) : dayjs(defaultValue),
   });
   const [listBank, setListBank] = useState([]);
-  const [bankSelect,setBankSelect] = useState({});
+  const [bankSelect, setBankSelect] = useState({});
 
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
@@ -207,11 +207,14 @@ const ProfileEditPage = () => {
   const [isBankInfoModalVisible, setIsBankInfoModalVisible] = useState(false);
   const [isCoinRequestModalVisible, setIsCoinRequestModalVisible] =
     useState(false);
-  const [coinRequestAmount, setCoinRequestAmount] = useState(0);
+  const [coinRequestAmount, setCoinRequestAmount] = useState(
+    user.accountBallance
+  );
   const [bankInfo, setBankInfo] = useState({
     bankName: "",
     bankNumber: "",
     accountName: "",
+    bankPin: "",
   });
 
   const dispatch = useDispatch();
@@ -225,17 +228,12 @@ const ProfileEditPage = () => {
       const res = await getListBank();
       if (res.success) {
         setListBank(res.data);
-        // console.log(res.data);
       } else {
         message.error(res.message);
       }
     } catch (error) {
       message.error("Không thể lấy danh sách ngân hàng");
     }
-  }
-
-  const handleSelectBank = (value)=>{
-    setBankSelect(value)
   }
 
   const triggerFileInput = () => {
@@ -308,24 +306,60 @@ const ProfileEditPage = () => {
   };
 
   // New handler for bank info submission
-  const handleBankInfoSubmit = (values) => {
+  const handleBankInfoSubmit = async (values) => {
     // console.log(values);
-    setBankInfo(values);
+    const filteredBank = listBank.filter((bank) => bank.bin === values.bankPin);
+    // console.log("bank"+ JSON.stringify(filteredBank[0]));
+    const bankSelect = {
+      ...values,
+      bankName: filteredBank[0].name,
+    };
+    setBankInfo(bankSelect);
     setIsBankInfoModalVisible(false);
     setIsCoinRequestModalVisible(true);
   };
 
   // New handler for coin transfer request
-  const handleCoinTransferRequest = () => {
+  const handleCoinTransferRequest = async () => {
+    console.log(coinRequestAmount);
+    
     if (coinRequestAmount <= 0) {
       message.error("Số tiền yêu cầu phải lớn hơn 0");
       return;
     }
 
-    message.success("Yêu cầu chuyển coin đã được gửi");
-    setIsCoinRequestModalVisible(false);
-    setCoinRequestAmount(0);
-    navigate("/adminHome/coin");
+    if (coinRequestAmount >= user.accountBallance) {
+      message.error("Số tiền yêu cầu phải lớn hơn 0");
+      return;
+    }
+
+    const formData = {
+      userRequestId: user.userId,
+      bankNumber: bankInfo.bankNumber,
+      bankName: bankInfo.bankName,
+      bankPin: bankInfo.bankPin,
+      accountName: bankInfo.accountName,
+      content: "Rut coin",
+      amount: coinRequestAmount,
+    };
+
+    try {
+      const res = await requestCreateReCoin(formData);
+      console.log(res);
+      
+      if (res.success) {
+        message.success(res.message)
+      }else{
+        message.error(res.message)
+      }
+    } catch (error) {
+      message.error("Không thể thực hiện tạo yêu cầu rút coin")
+    }
+
+    // message.success("Yêu cầu chuyển coin đã được gửi");
+    // setIsCoinRequestModalVisible(false);
+    // setCoinRequestAmount(0);
+    // navigate("/adminHome/coin");
   };
 
   return (
@@ -461,18 +495,18 @@ const ProfileEditPage = () => {
           initialValues={bankInfo}
         >
           <Form.Item
-            name="bankName"
+            name="bankPin"
             label="Tên Ngân Hàng"
             rules={[{ required: true, message: "Vui lòng chọn tên ngân hàng" }]}
           >
-            <Select placeholder="Chọn tên ngân hàng" onChange={handleSelectBank}>
+            <Select placeholder="Chọn tên ngân hàng">
               {listBank.map((bank) => (
-                <Option key={bank.id} value={bank.name}>
+                <Select.Option key={bank.id} value={bank.bin}>
                   <Flex>
-                    <Image src={bank.logo} width={50}/>
+                    <Image src={bank.logo} width={50} />
                     {`${bank.shortName} - ${bank.name}`}
                   </Flex>
-                </Option>
+                </Select.Option>
               ))}
             </Select>
           </Form.Item>
@@ -523,6 +557,8 @@ const ProfileEditPage = () => {
           <Form.Item label="Số Coin Muốn Chuyển">
             <Input
               type="number"
+              min={5000}
+              max={user.accountBallance}
               value={coinRequestAmount}
               onChange={(e) => setCoinRequestAmount(Number(e.target.value))}
               placeholder="Nhập số coin muốn chuyển"
