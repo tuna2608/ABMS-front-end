@@ -339,7 +339,7 @@ const ProfileEditPage = () => {
           </AvatarContainer>
 
           <CoinBadge>
-            Available Coins: {user.accountBallance}
+            Coins khả dụng: {user.accountBallance}
             <CoinActionButton 
               icon={<TransactionOutlined />}
               onClick={() => {
