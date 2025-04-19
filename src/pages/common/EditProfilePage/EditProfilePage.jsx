@@ -190,7 +190,7 @@ const ProfileEditPage = () => {
   const defaultValue = moment();
   const [user, setUser] = useState({
     ...userCurrent,
-    birthday: userCurrent ? dayjs(userCurrent.birthday) : dayjs(defaultValue),
+    birthday: userCurrent.birthday ? dayjs(userCurrent.birthday) : dayjs(defaultValue),
   });
   const [listBank, setListBank] = useState([]);
   const [bankSelect, setBankSelect] = useState({});
@@ -321,15 +321,13 @@ const ProfileEditPage = () => {
 
   // New handler for coin transfer request
   const handleCoinTransferRequest = async () => {
-    console.log(coinRequestAmount);
-    
-    if (coinRequestAmount <= 0) {
+    if (Number(coinRequestAmount) <= 0) {
       message.error("Số tiền yêu cầu phải lớn hơn 0");
       return;
     }
 
-    if (coinRequestAmount >= user.accountBallance) {
-      message.error("Số tiền yêu cầu phải lớn hơn 0");
+    if (coinRequestAmount > user.accountBallance) {
+      message.error("Số tiền yêu cầu phải nhỏ hơn bằng số tiền khả dụng");
       return;
     }
 
@@ -345,10 +343,10 @@ const ProfileEditPage = () => {
 
     try {
       const res = await requestCreateReCoin(formData);
-      console.log(res);
-      
+      // console.log(res);
       if (res.success) {
         message.success(res.message)
+        navigate("/coin-request")
       }else{
         message.error(res.message)
       }

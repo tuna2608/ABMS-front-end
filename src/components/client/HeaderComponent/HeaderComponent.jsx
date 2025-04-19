@@ -276,7 +276,6 @@ function HeaderComponent() {
 
         <Col span={20}>
           <NavbarListItem>
-            
             <PostLink onClick={() => navigate("/post")}>
               Bài viết
             </PostLink>
@@ -292,7 +291,6 @@ function HeaderComponent() {
             )}
             
             <NotificationWrapper />
-
             {user ? (
               <Dropdown menu={{ items: items }} placement="bottomRight">
                 <NavItemAVT>

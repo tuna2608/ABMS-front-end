@@ -7,7 +7,7 @@ import {
   WrapperTextLight,
 } from "./style";
 import { EyeTwoTone, EyeInvisibleOutlined } from "@ant-design/icons";
-import { Checkbox, Form, Image, message} from "antd";
+import { Checkbox, Form, Image, message } from "antd";
 import imgLogin from "./../../../assets/common/images/logo-login.png";
 import styled from "styled-components";
 import InputForm from "../../../components/common/InputForm/InputForm";
@@ -16,8 +16,7 @@ import bgLogin from "../../../assets/common/images/bg-login.jpg";
 import { LoadingComponent } from "../../../components/common/LoadingComponent/LoadingComponent";
 import { LinkNav } from "../ForgotPasswordPage/style";
 import { login } from "../../../redux/apiCalls";
-import {useDispatch} from 'react-redux'
-
+import { useDispatch } from "react-redux";
 
 const TextContent = styled.p`
   color: var(--cparagraph);
@@ -44,29 +43,28 @@ const SignInPage = () => {
     return value.length >= 2;
   };
 
-  
   const handleLogin = async () => {
-
-    if(!isValidPassword(password)){
-      message.error("Password must be at least 6 characters long.")
-      return;
-    }
-    const res = await login(dispatch, { usernameOrEmail: email, password });
-    // console.log(res);
-    const messageAPI = res.message
-    if(res.status === 401){
-      message.error(messageAPI)
-      return;
-    }else{
-      message.success(messageAPI)
-      const roleUser = res.data.role;
-      if(roleUser === 'Admin'){
-        navigate('/adminHome')
-      }else if(roleUser === 'Staff'){
-        navigate('/staffHome')
+    try {
+      if (!isValidPassword(password)) {
+        message.error("Password must be at least 6 characters long.");
+        return;
+      }
+      const res = await login(dispatch, { usernameOrEmail: email, password });
+      if (res.success) {
+        message.success(res.message);
+        const roleUser = res.data.role;
+        if (roleUser === "Admin") {
+          navigate("/adminHome");
+        } else if (roleUser === "Staff") {
+          navigate("/staffHome");
+        } else {
+          navigate("/");
+        }
       }else {
-        navigate('/')
-      } 
+        message.error(res.message)
+      }
+    } catch (error) {
+      message.error("Không thể thực hiện đăng nhập");
     }
   };
 
@@ -126,9 +124,7 @@ const SignInPage = () => {
           >
             <Form.Item
               name="usernameOrEmail"
-              rules={[
-                { required: true, message: "Hãy nhập userName!" },
-              ]}
+              rules={[{ required: true, message: "Hãy nhập userName!" }]}
             >
               <InputForm
                 placeholder={"Email hoặc tài khoản"}
@@ -205,10 +201,11 @@ const SignInPage = () => {
             </WrapperTextLight>
           </LinkNav>
           <LinkNav>
-            <p>Chưa có tài khoản ?
-            <WrapperTextLight onClick={() => navigate("/register")}>
-              Đăng ký ngay
-            </WrapperTextLight>
+            <p>
+              Chưa có tài khoản ?
+              <WrapperTextLight onClick={() => navigate("/register")}>
+                Đăng ký ngay
+              </WrapperTextLight>
             </p>
           </LinkNav>
         </WrapperContainerLeft>

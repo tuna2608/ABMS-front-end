@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { 
-  Card, 
-  Button, 
-  message, 
+import React, { useEffect, useState } from "react";
+import {
+  Card,
+  Button,
+  message,
   Typography,
   Tag,
   Modal,
@@ -12,17 +12,20 @@ import {
   Drawer,
   Descriptions,
   Divider,
-  Image
-} from 'antd';
-import { 
-  MoneyCollectOutlined, 
-  BankOutlined, 
+  Image,
+} from "antd";
+import {
+  MoneyCollectOutlined,
+  BankOutlined,
   CheckOutlined,
   CloseOutlined,
   EyeOutlined,
   QrcodeOutlined,
-  CheckCircleOutlined
-} from '@ant-design/icons';
+  CheckCircleOutlined,
+} from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { acceptReCoin, getAllReCoin, rejectReCoin } from "../../redux/apiCalls";
 
 const { Text } = Typography;
 
@@ -31,17 +34,17 @@ const formatCurrency = (amount) => {
   // Chuyển số thành string
   const numStr = String(amount);
   // Thêm dấu phẩy ngăn cách hàng nghìn
-  let result = '';
+  let result = "";
   let counter = 0;
-  
+
   for (let i = numStr.length - 1; i >= 0; i--) {
     counter++;
     result = numStr[i] + result;
     if (counter % 3 === 0 && i !== 0) {
-      result = ',' + result;
+      result = "," + result;
     }
   }
-  
+
   return result;
 };
 
@@ -49,78 +52,130 @@ const formatCurrency = (amount) => {
 const sampleTransferRequests = [
   {
     id: 1,
-    userId: 'U001',
-    username: 'nguyen_van_a',
-    fullName: 'Nguyễn Văn A',
+    userId: "U001",
+    username: "nguyen_van_a",
+    fullName: "Nguyễn Văn A",
     amount: 500000,
-    status: 'pending',
+    status: "pending",
     bankInfo: {
-      bankName: 'Vietcombank',
-      accountNumber: '1234567890',
-      accountName: 'NGUYEN VAN A'
+      bankName: "Vietcombank",
+      accountNumber: "1234567890",
+      accountName: "NGUYEN VAN A",
     },
-    requestDate: '2024-04-10'
+    requestDate: "2024-04-10",
   },
   {
     id: 2,
-    userId: 'U002',
-    username: 'tran_thi_b',
-    fullName: 'Trần Thị B',
+    userId: "U002",
+    username: "tran_thi_b",
+    fullName: "Trần Thị B",
     amount: 1000000,
-    status: 'pending',
+    status: "pending",
     bankInfo: {
-      bankName: 'BIDV',
-      accountNumber: '0987654321',
-      accountName: 'TRAN THI B'
+      bankName: "BIDV",
+      accountNumber: "0987654321",
+      accountName: "TRAN THI B",
     },
-    requestDate: '2024-04-11'
+    requestDate: "2024-04-11",
   },
   {
     id: 3,
-    userId: 'U003',
-    username: 'le_van_c',
-    fullName: 'Lê Văn C',
+    userId: "U003",
+    username: "le_van_c",
+    fullName: "Lê Văn C",
     amount: 750000,
-    status: 'completed',
+    status: "completed",
     bankInfo: {
-      bankName: 'Techcombank',
-      accountNumber: '2345678901',
-      accountName: 'LE VAN C'
+      bankName: "Techcombank",
+      accountNumber: "2345678901",
+      accountName: "LE VAN C",
     },
-    requestDate: '2024-04-09'
+    requestDate: "2024-04-09",
   },
   {
     id: 4,
-    userId: 'U004',
-    username: 'pham_thi_d',
-    fullName: 'Phạm Thị D',
+    userId: "U004",
+    username: "pham_thi_d",
+    fullName: "Phạm Thị D",
     amount: 300000,
-    status: 'rejected',
+    status: "rejected",
     bankInfo: {
-      bankName: 'TPBank',
-      accountNumber: '3456789012',
-      accountName: 'PHAM THI D'
+      bankName: "TPBank",
+      accountNumber: "3456789012",
+      accountName: "PHAM THI D",
     },
-    requestDate: '2024-04-08'
-  }
+    requestDate: "2024-04-08",
+  },
 ];
 
 const CoinManagement = () => {
-  const [transferRequests, setTransferRequests] = useState(sampleTransferRequests);
+  const navigate = useNavigate();
+  const userCurrent = useSelector((state) => state.user.currentUser);
+  const [loading, setLoading] = useState(false);
+  const [reCoins, setReCoins] = useState([
+    {
+      reCoinId: 1,
+      bankNumber: "53110009169999",
+      bankName: "Ngân hàng TMCP Đầu tư và Phát triển Việt Nam",
+      bankPin: "970418",
+      accountName: "NGUYEN ANH TU",
+      amount: 5000.0,
+      imgQR:
+        "https://img.vietqr.io/image/970418-53110009169999-compact2.jpg?amount=5000.0&addInfo=Rut+coin&accountName=NGUYEN+ANH+TU",
+      imgBill: null,
+      status: "processing",
+      userRequestId: 4,
+      content: null,
+      dateTime: null,
+      fullName: "Chủ căn hộ Tú1",
+    },
+  ]);
+
+  const [transferRequests, setTransferRequests] = useState(
+    sampleTransferRequests
+  );
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [qrModalVisible, setQrModalVisible] = useState(false);
   const [rejectModalVisible, setRejectModalVisible] = useState(false);
 
+  useEffect(() => {
+    callGetAllReCoin();
+  }, []);
+
+  async function callGetAllReCoin() {
+    setLoading(true);
+    try {
+      const res = await getAllReCoin();
+      // console.log(res);
+      if (res.success) {
+        if (res.data) {
+          setReCoins(res.data);
+        }
+        message.success(res.message);
+      } else {
+        message.error(res.message);
+      }
+    } catch (error) {
+      message.error("Không thể lấy danh sách tất cả yêu cầu rút tiền");
+    } finally {
+      setLoading(false);
+    }
+  }
+
   // Status tag renderer
   const renderStatus = (status) => {
     const statusMap = {
-      pending: { color: 'orange', text: 'Chờ Xử Lý' },
-      completed: { color: 'green', text: 'Đã Hoàn Thành' },
-      rejected: { color: 'red', text: 'Đã Từ Chối' }
+      pending: { color: "orange", text: "Chờ Xử Lý" },
+      processing: { color: "blue", text: "Đang chờ xác nhận" },
+      completed: { color: "green", text: "Đã Hoàn Thành" },
+      reject: { color: "red", text: "Đã Từ Chối" },
     };
-    
-    const { color, text } = statusMap[status] || { color: 'default', text: status };
+
+    const { color, text } = statusMap[status] || {
+      color: "default",
+      text: status,
+    };
     return <Tag color={color}>{text}</Tag>;
   };
 
@@ -143,35 +198,67 @@ const CoinManagement = () => {
   };
 
   // Confirm transfer completion
-  const confirmTransferCompleted = () => {
+  const confirmTransferCompleted = async () => {
     if (!selectedRequest) return;
-    
-    // Update the request status
-    const updatedRequests = transferRequests.map(req => 
-      req.id === selectedRequest.id ? { ...req, status: 'completed' } : req
-    );
-    setTransferRequests(updatedRequests);
-    
-    // Show success message
-    message.success(`Đã xác nhận chuyển ${formatCurrency(selectedRequest.amount)} VND cho ${selectedRequest.fullName}`);
-    
+
+    const formData = {
+      reCoinId: selectedRequest.reCoinId,
+      imgBill: "",
+      reason: "",
+    };
+
+    try {
+      const res = await acceptReCoin(formData);
+      // console.log(res);
+      if (res.success) {
+        message.success(res.message);
+        window.location.href = "/adminHome/coin";
+      } else {
+        message.error(res.message);
+      }
+    } catch (error) {
+      message.error("Không thể xác nhận chuyển tiền thành công");
+    } finally {
+    }
     // Close QR modal
     setQrModalVisible(false);
   };
 
   // Confirm rejection
-  const confirmReject = () => {
+  const confirmReject = async () => {
     if (!selectedRequest) return;
-    
+
+    const formData = {
+      reCoinId: selectedRequest.reCoinId,
+      imgBill: "",
+      reason: "",
+    };
+
+    try {
+      const res = await rejectReCoin(formData);
+      // console.log(res);
+      if (res.success) {
+        message.success(res.message);
+        window.location.href = "/adminHome/coin";
+      } else {
+        message.error(res.message);
+      }
+    } catch (error) {
+      message.error("Không thể từ chối yêu cầu rút tiền");
+    } finally {
+    }
+
     // Update the request status
-    const updatedRequests = transferRequests.map(req => 
-      req.id === selectedRequest.id ? { ...req, status: 'rejected' } : req
-    );
-    setTransferRequests(updatedRequests);
-    
-    // Show success message
-    message.success(`Đã từ chối yêu cầu chuyển coin của ${selectedRequest.fullName}`);
-    
+    // const updatedRequests = transferRequests.map((req) =>
+    //   req.id === selectedRequest.id ? { ...req, status: "rejected" } : req
+    // );
+    // setTransferRequests(updatedRequests);
+
+    // // Show success message
+    // message.success(
+    //   `Đã từ chối yêu cầu chuyển coin của ${selectedRequest.fullName}`
+    // );
+
     // Close reject modal
     setRejectModalVisible(false);
   };
@@ -179,60 +266,70 @@ const CoinManagement = () => {
   // Table columns configuration
   const columns = [
     {
-      title: 'Người Yêu Cầu',
-      dataIndex: 'fullName',
-      key: 'fullName',
+      title: "Người Yêu Cầu",
+      dataIndex: "fullName",
+      key: "fullName",
       render: (text, record) => (
         <>
           <Text strong>{text}</Text>
           <br />
-          <Text type="secondary">({record.username})</Text>
+          <Text type="secondary">{record.username}</Text>
         </>
       ),
     },
     {
-      title: 'Số Tiền',
-      dataIndex: 'amount',
-      key: 'amount',
+      title: "Số Tiền",
+      dataIndex: "amount",
+      key: "amount",
       render: (amount) => (
-        <Text strong style={{ color: '#1890ff' }}>
+        <Text strong style={{ color: "#1890ff" }}>
           {formatCurrency(amount)} VND
         </Text>
       ),
     },
     {
-      title: 'Ngày Yêu Cầu',
-      dataIndex: 'requestDate',
-      key: 'requestDate',
+      title: "Ngày Yêu Cầu",
+      dataIndex: "dateTime",
+      key: "dateTime",
     },
     {
-      title: 'Trạng Thái',
-      dataIndex: 'status',
-      key: 'status',
+      title: "Ngày Phản hồi",
+      dataIndex: "dateAcceptReject",
+      key: "dateAcceptReject",
+    },
+    {
+      title: "Ngày Hoàn Thành",
+      dataIndex: "dateComplete",
+      key: "dateComplete",
+    },
+    {
+      title: "Trạng Thái",
+      dataIndex: "status",
+      key: "status",
       render: renderStatus,
     },
     {
-      title: 'Thao Tác',
-      key: 'action',
+      title: "Thao Tác",
+      key: "action",
       render: (_, record) => (
         <Space size="small">
-          <Button 
-            icon={<EyeOutlined />} 
-            onClick={() => viewRequestDetails(record)} 
+          <Button
+            icon={<EyeOutlined />}
+            onClick={() => viewRequestDetails(record)}
             title="Xem chi tiết"
           />
-          {record.status === 'pending' && (
+          {record.status === "pending" && (
             <>
-              <Button 
-                type="primary" 
-                icon={<CheckOutlined />} 
-                onClick={() => handleApprove(record)} 
+              <Button
+                type="primary"
+                icon={<CheckOutlined />}
+                onClick={() => handleApprove(record)}
                 title="Duyệt"
               />
-              <Button 
-                danger 
-                icon={<CloseOutlined />} 
-                onClick={() => handleReject(record)} 
+              <Button
+                danger
+                icon={<CloseOutlined />}
+                onClick={() => handleReject(record)}
                 title="Từ chối"
               />
             </>
@@ -243,7 +340,7 @@ const CoinManagement = () => {
   ];
 
   return (
-    <Card 
+    <Card
       title={
         <Space>
           <MoneyCollectOutlined />
@@ -252,9 +349,9 @@ const CoinManagement = () => {
       }
     >
       {/* Table of transfer requests */}
-      <Table 
-        dataSource={transferRequests} 
-        columns={columns} 
+      <Table
+        dataSource={reCoins}
+        columns={columns}
         rowKey="id"
         pagination={{ pageSize: 10 }}
       />
@@ -267,10 +364,10 @@ const CoinManagement = () => {
         onClose={() => setDrawerVisible(false)}
         open={drawerVisible}
         extra={
-          selectedRequest?.status === 'pending' && (
+          selectedRequest?.status === "pending" && (
             <Space>
-              <Button 
-                type="primary" 
+              <Button
+                type="primary"
                 icon={<CheckOutlined />}
                 onClick={() => {
                   setDrawerVisible(false);
@@ -279,8 +376,8 @@ const CoinManagement = () => {
               >
                 Duyệt
               </Button>
-              <Button 
-                danger 
+              <Button
+                danger
                 icon={<CloseOutlined />}
                 onClick={() => {
                   setDrawerVisible(false);
@@ -299,11 +396,11 @@ const CoinManagement = () => {
               <Descriptions.Item label="Họ Tên">
                 {selectedRequest.fullName}
               </Descriptions.Item>
-              <Descriptions.Item label="Tên Đăng Nhập">
+              {/* <Descriptions.Item label="Tên Đăng Nhập">
                 {selectedRequest.username}
-              </Descriptions.Item>
+              </Descriptions.Item> */}
               <Descriptions.Item label="Số Tiền Yêu Cầu">
-                <Text strong style={{ color: '#1890ff' }}>
+                <Text strong style={{ color: "#1890ff" }}>
                   {formatCurrency(selectedRequest.amount)} VND
                 </Text>
               </Descriptions.Item>
@@ -319,13 +416,13 @@ const CoinManagement = () => {
 
             <Descriptions title="Thông Tin Tài Khoản Ngân Hàng" column={1}>
               <Descriptions.Item label="Tên Ngân Hàng">
-                {selectedRequest.bankInfo.bankName}
+                {selectedRequest.bankName}
               </Descriptions.Item>
               <Descriptions.Item label="Số Tài Khoản">
-                {selectedRequest.bankInfo.accountNumber}
+                {selectedRequest.bankNumber}
               </Descriptions.Item>
               <Descriptions.Item label="Tên Tài Khoản">
-                {selectedRequest.bankInfo.accountName}
+                {selectedRequest.accountName}
               </Descriptions.Item>
             </Descriptions>
           </>
@@ -346,40 +443,40 @@ const CoinManagement = () => {
           <Button key="cancel" onClick={() => setQrModalVisible(false)}>
             Hủy
           </Button>,
-          <Button 
-            key="confirm" 
-            type="primary" 
+          <Button
+            key="confirm"
+            type="primary"
             icon={<CheckCircleOutlined />}
             onClick={confirmTransferCompleted}
           >
             Đã Chuyển Khoản
-          </Button>
+          </Button>,
         ]}
       >
         {selectedRequest && (
           <>
             <Descriptions column={1} size="small">
               <Descriptions.Item label="Người Nhận">
-                {selectedRequest.bankInfo.accountName}
+                {selectedRequest.accountName}
               </Descriptions.Item>
               <Descriptions.Item label="Số Tài Khoản">
-                {selectedRequest.bankInfo.accountNumber}
+                {selectedRequest.bankNumber}
               </Descriptions.Item>
               <Descriptions.Item label="Ngân Hàng">
-                {selectedRequest.bankInfo.bankName}
+                {selectedRequest.bankName}
               </Descriptions.Item>
               <Descriptions.Item label="Số Tiền">
-                <Text strong style={{ color: '#1890ff' }}>
+                <Text strong style={{ color: "#1890ff" }}>
                   {formatCurrency(selectedRequest.amount)} VND
                 </Text>
               </Descriptions.Item>
             </Descriptions>
-            
-            <div style={{ textAlign: 'center', margin: '20px 0' }}>
-              <Image 
-                src="/api/placeholder/200/200" 
+
+            <div style={{ textAlign: "center", margin: "20px 0" }}>
+              <Image
+                src={selectedRequest.imgQR}
                 alt="QR Code for Bank Transfer"
-                style={{ maxWidth: '200px' }}
+                style={{ maxWidth: "200px" }}
               />
               <div style={{ marginTop: 8 }}>
                 <Text type="secondary">Quét mã QR để chuyển khoản</Text>
@@ -408,7 +505,9 @@ const CoinManagement = () => {
         {selectedRequest && (
           <>
             <p>
-              Bạn có chắc muốn từ chối yêu cầu chuyển {formatCurrency(selectedRequest.amount)} VND của {selectedRequest.fullName} không?
+              Bạn có chắc muốn từ chối yêu cầu chuyển{" "}
+              {formatCurrency(selectedRequest.amount)} VND của{" "}
+              {selectedRequest.fullName} không?
             </p>
             <Alert
               message="Lưu ý"
