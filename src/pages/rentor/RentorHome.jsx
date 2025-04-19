@@ -11,6 +11,7 @@ import ContractView from "./ContractView";
 import PaymentView from "./PaymentView";
 import zaloLogo from '../../assets/common/images/logo-zalo-vector-7.jpg';
 
+
 const { Sider, Content, Header } = Layout;
 
 const RentorHome = () => {
@@ -55,7 +56,7 @@ const RentorHome = () => {
         return <ApartmentListView />;
       case "my-bills":
         return <MyBillsPage />;
-      case "contract":
+        case "contract":
         return <ContractView />;
       case "payment":
         return <PaymentView />;

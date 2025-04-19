@@ -12,6 +12,7 @@ import ContractView from "./ContractView";
 import PaymentView from "./PaymentView";
 import ChatPage from "../client/ChatPage/ChatPage";
 
+
 const { Sider, Content, Header } = Layout;
 const OwnerHome = () => {
   const [collapsed, setCollapsed] = useState(false);

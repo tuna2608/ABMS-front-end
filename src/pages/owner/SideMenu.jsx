@@ -7,7 +7,7 @@ import {
   FileProtectOutlined,
   WalletOutlined,
   FileAddOutlined,
-  MessageOutlined
+  MessageOutlined,
 } from "@ant-design/icons";
 
 const SideMenu = ({ setCurrentView }) => {

@@ -16,7 +16,7 @@ import PaymentManagement from './PaymentManagement';
 import CoinManagement from './CoinManagement';
 import ServicePostReview from './ServicePostReview';
 import FinancialReports from './FinancialReports';
-import SystemSettings from './SystemSettings';
+import AdminFormManagement from './FormManagement';
 
 const { Content, Header } = Layout;
 
@@ -59,8 +59,8 @@ const AdminHome = () => {
   return <ServicePostReview />;
       case "reports":
         return <FinancialReports />;
-      case "settings":
-        return <SystemSettings />;
+        case "form-management":
+          return <AdminFormManagement />;
       default:
         return <AdminDashboard />;
     }
@@ -102,7 +102,7 @@ const AdminHome = () => {
             <Route path="/coin" element={renderActiveContent()} />
             <Route path="/service" element={renderActiveContent()} />
             <Route path="/reports" element={renderActiveContent()} />
-            <Route path="/settings" element={renderActiveContent()} />
+            <Route path="/form-management" element={renderActiveContent()} />
             <Route path="*" element={<Navigate to="/adminHome/dashboard" replace />} />
           </Routes>
         </Content>

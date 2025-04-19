@@ -395,7 +395,6 @@ const CoinManagement = () => {
           </>
         )}
       </Modal>
-
       {/* Rejection Confirmation Modal */}
       <Modal
         title="Xác Nhận Từ Chối Yêu Cầu"

@@ -164,7 +164,7 @@ const ServicePostReview = () => {
   // Table columns
   const columns = [
     {
-      title: 'Bài đăng',
+      title: 'Bài viết',
       dataIndex: 'title',
       render: (text, record) => (
         <Space>
