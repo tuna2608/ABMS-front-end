@@ -68,6 +68,7 @@ import {
   createFormFailure,
   updateFormStatusSuccess,
 } from "./formSlice";
+import axios from "axios";
 
 
 // Auth ------------------------------------------------------------------
@@ -1379,6 +1380,128 @@ export const updateFacility = async (facilityId, userId, facilityPostContent, fi
     return {
       success: false,
       message: error.response?.data?.message || 'Có lỗi xảy ra khi cập nhật bài đăng'
+    };
+  }
+};
+
+//----------------------------ReCoin------------------------------------//
+
+//Lấy danh sách ngân hàng
+export const getListBank = async () => {
+  try {
+    const res = await axios.get(`https://api.vietqr.io/v2/banks`);
+    return {
+      success: true,
+      data: res.data.data || {},
+      message: res.data.message || "Lấy danh sách ngân hàng thành công",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: {},
+      message: error.response?.data?.message || "Lỗi lấy danh sách ngân hàng",
+    };
+  }
+};
+//Tạo yêu cầu rút tiền
+export const requestCreateReCoin = async (formData) => {
+  try {
+    const res = await publicRequest.post(`/recoin/add`,formData);
+    return {
+      success: true,
+      data: res.data.data || {},
+      message: res.data.message || "Tạo yêu cầu rút tiền thành công",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: {},
+      message: error.response?.data?.message || "Lỗi tạo yêu cầu rút tiền",
+    };
+  }
+};
+//Lấy tất cả danh sách yêu cầu rút tiền
+export const getAllReCoin = async () => {
+  try {
+    const res = await publicRequest.get(`/recoin/getAll`);
+    return {
+      success: true,
+      data: res.data.data || {},
+      message: res.data.message || "Lấy tất cả danh sách yêu cầu rút tiền thành công",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: {},
+      message: error.response?.data?.message || "Lỗi lấy tất cả danh sách yêu cầu rút tiền",
+    };
+  }
+};
+//Lấy danh sách yêu cầu rút tiền của người dùng
+export const getReCoinByUserId = async (userId) => {
+  try {
+    const res = await publicRequest.get(`/recoin/getByUserId/${userId}`);
+    return {
+      success: true,
+      data: res.data.data || {},
+      message: res.data.message || "Lấy danh sách yêu cầu rút tiền của người dùng thành công",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: {},
+      message: error.response?.data?.message || "Lỗi lấy danh sách yêu cầu rút tiền của người dùng",
+    };
+  }
+};
+
+export const acceptReCoin = async (formData) => {
+  try {
+    const res = await publicRequest.post(`/recoin/accept`,formData);
+    return {
+      success: true,
+      data: res.data.data || {},
+      message: res.data.message || "Đã xác nhận chuyển tiền thành công",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: {},
+      message: error.response?.data?.message || "Lỗi xác nhận chuyển tiền",
+    };
+  }
+};
+
+export const rejectReCoin = async (formData) => {
+  try {
+    const res = await publicRequest.post(`/recoin/reject`,formData);
+    return {
+      success: true,
+      data: res.data.data || {},
+      message: res.data.message || "Từ chối yêu cầu rút tiền thành công",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: {},
+      message: error.response?.data?.message || "Lỗi từ chối yêu cầu rút tiền",
+    };
+  }
+};
+
+export const acceptReceivedReCoin = async (formData) => {
+  try {
+    const res = await publicRequest.post(`/recoin/acceptReceived`,formData);
+    return {
+      success: true,
+      data: res.data.data || {},
+      message: res.data.message || "Xác nhận rút tiền thành công",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: {},
+      message: error.response?.data?.message || "Lỗi xác nhận rút tiền",
     };
   }
 };
