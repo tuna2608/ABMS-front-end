@@ -1097,6 +1097,7 @@ export const updateContractVerification = async (verificationId, startDate, endD
   }
 };
 
+//----------------------------------------------------------------------------------------------CRUD Forms---------------------------------------------------------------------------------
 // Get a single form
 export const getForm = async (dispatch, formId) => {
   dispatch(getFormStart());
