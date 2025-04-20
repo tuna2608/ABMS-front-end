@@ -13,7 +13,6 @@ import {
   Descriptions,
   Divider,
   Image,
-  Upload,
 } from "antd";
 import {
   MoneyCollectOutlined,
@@ -23,7 +22,6 @@ import {
   EyeOutlined,
   QrcodeOutlined,
   CheckCircleOutlined,
-  UploadOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -140,9 +138,6 @@ const CoinManagement = () => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [qrModalVisible, setQrModalVisible] = useState(false);
   const [rejectModalVisible, setRejectModalVisible] = useState(false);
-  const [transferImage, setTransferImage] = useState(null);
-  const [transferImageUrl, setTransferImageUrl] = useState("");
-  const [uploadLoading, setUploadLoading] = useState(false);
 
   useEffect(() => {
     callGetAllReCoin();
@@ -193,9 +188,6 @@ const CoinManagement = () => {
   // Handle approval action
   const handleApprove = (record) => {
     setSelectedRequest(record);
-    // Reset the transfer image when opening a new approval modal
-    setTransferImage(null);
-    setTransferImageUrl("");
     setQrModalVisible(true);
   };
 
@@ -205,44 +197,13 @@ const CoinManagement = () => {
     setRejectModalVisible(true);
   };
 
-  // Handle file upload
-  const handleUpload = ({ file }) => {
-    setUploadLoading(true);
-    
-    // For demo purposes, we'll simulate uploading and just store the file locally
-    // In a real application, you would upload this to your server
-    const reader = new FileReader();
-    reader.readAsDataURL(file);
-    reader.onload = () => {
-      setTransferImage(file);
-      setTransferImageUrl(reader.result);
-      setUploadLoading(false);
-      message.success('Ảnh chuyển khoản đã được tải lên');
-    };
-    reader.onerror = (error) => {
-      message.error('Lỗi khi tải ảnh');
-      setUploadLoading(false);
-    };
-    
-    // Return false to prevent default upload behavior
-    return false;
-  };
-
   // Confirm transfer completion
   const confirmTransferCompleted = async () => {
     if (!selectedRequest) return;
 
-    if (!transferImage) {
-      message.error('Vui lòng tải lên ảnh chứng minh đã chuyển khoản');
-      return;
-    }
-
-    // In a real application, you would handle the file upload to your server
-    // and get the image URL back or use the file directly
-    
     const formData = {
       reCoinId: selectedRequest.reCoinId,
-      imgBill: transferImageUrl, // In real app, this would be the URL from your server
+      imgBill: "",
       reason: "",
     };
 
@@ -258,9 +219,9 @@ const CoinManagement = () => {
     } catch (error) {
       message.error("Không thể xác nhận chuyển tiền thành công");
     } finally {
-      // Close QR modal
-      setQrModalVisible(false);
     }
+    // Close QR modal
+    setQrModalVisible(false);
   };
 
   // Confirm rejection
@@ -285,9 +246,21 @@ const CoinManagement = () => {
     } catch (error) {
       message.error("Không thể từ chối yêu cầu rút tiền");
     } finally {
-      // Close reject modal
-      setRejectModalVisible(false);
     }
+
+    // Update the request status
+    // const updatedRequests = transferRequests.map((req) =>
+    //   req.id === selectedRequest.id ? { ...req, status: "rejected" } : req
+    // );
+    // setTransferRequests(updatedRequests);
+
+    // // Show success message
+    // message.success(
+    //   `Đã từ chối yêu cầu chuyển coin của ${selectedRequest.fullName}`
+    // );
+
+    // Close reject modal
+    setRejectModalVisible(false);
   };
 
   // Table columns configuration
@@ -365,24 +338,6 @@ const CoinManagement = () => {
       ),
     },
   ];
-
-  // Upload props
-  const uploadProps = {
-    name: 'file',
-    beforeUpload: (file) => {
-      const isImage = file.type.startsWith('image/');
-      if (!isImage) {
-        message.error('Chỉ có thể tải lên tệp hình ảnh!');
-      }
-      const isLt2M = file.size / 1024 / 1024 < 2;
-      if (!isLt2M) {
-        message.error('Hình ảnh phải nhỏ hơn 2MB!');
-      }
-      return isImage && isLt2M;
-    },
-    customRequest: handleUpload,
-    showUploadList: false,
-  };
 
   return (
     <Card
@@ -493,9 +448,8 @@ const CoinManagement = () => {
             type="primary"
             icon={<CheckCircleOutlined />}
             onClick={confirmTransferCompleted}
-            disabled={!transferImage}
           >
-            Xác Nhận Đã Chuyển Khoản
+            Đã Chuyển Khoản
           </Button>,
         ]}
       >
@@ -529,39 +483,15 @@ const CoinManagement = () => {
               </div>
             </div>
 
-            <Divider />
-            
-            <div style={{ marginBottom: 16 }}>
-              <Text strong>Tải lên ảnh chứng minh đã chuyển khoản</Text>
-              <div style={{ margin: "16px 0" }}>
-                <Upload {...uploadProps}>
-                  <Button icon={<UploadOutlined />} loading={uploadLoading}>
-                    Chọn ảnh
-                  </Button>
-                </Upload>
-              </div>
-              
-              {transferImageUrl && (
-                <div style={{ marginTop: 16, textAlign: "center" }}>
-                  <Image
-                    src={transferImageUrl}
-                    alt="Ảnh chứng minh chuyển khoản"
-                    style={{ maxWidth: "100%", maxHeight: "200px" }}
-                  />
-                </div>
-              )}
-            </div>
-
             <Alert
               message="Xác nhận sau khi chuyển khoản"
-              description="Vui lòng tải lên ảnh chứng minh đã chuyển khoản và nhấn nút 'Xác Nhận Đã Chuyển Khoản' để hoàn tất yêu cầu."
+              description="Sau khi hoàn tất chuyển khoản, vui lòng nhấn nút 'Đã Chuyển Khoản' để xác nhận và hoàn tất yêu cầu."
               type="info"
               showIcon
             />
           </>
         )}
       </Modal>
-      
       {/* Rejection Confirmation Modal */}
       <Modal
         title="Xác Nhận Từ Chối Yêu Cầu"
