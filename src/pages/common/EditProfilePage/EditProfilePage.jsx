@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   Form,
   Input,
@@ -8,7 +8,10 @@ import {
   Upload,
   message,
   Modal,
-  Alert
+  Alert,
+  Select,
+  Flex,
+  Image,
 } from "antd";
 import { useNavigate } from "react-router-dom";
 import dayjs from "dayjs";
@@ -17,7 +20,12 @@ import { useDispatch, useSelector } from "react-redux";
 import { TransactionOutlined } from "@ant-design/icons";
 
 import avtBase from "../../../assets/common/images/avtbase.jpg";
-import { editProfile, getImageCloud } from "../../../redux/apiCalls";
+import {
+  editProfile,
+  getImageCloud,
+  getListBank,
+  requestCreateReCoin,
+} from "../../../redux/apiCalls";
 import moment from "moment";
 
 const { Title } = Typography;
@@ -37,7 +45,7 @@ const MainContent = styled.div`
   max-width: 800px;
   background-color: white;
   border-radius: 20px;
-  box-shadow: 0 15px 35px rgba(50,50,93,.1), 0 5px 15px rgba(0,0,0,.07);
+  box-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
   padding: 40px;
 `;
 
@@ -146,7 +154,7 @@ const SaveButton = styled(Button)`
     background-color: #3a5ec7;
     border-color: #3a5ec7;
     transform: translateY(-3px);
-    box-shadow: 0 7px 14px rgba(50,50,93,.1), 0 3px 6px rgba(0,0,0,.08);
+    box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
   }
 `;
 
@@ -182,31 +190,56 @@ const ProfileEditPage = () => {
   const defaultValue = moment();
   const [user, setUser] = useState({
     ...userCurrent,
-    birthday: (userCurrent) ? dayjs(userCurrent.birthday) : dayjs(defaultValue),
+    birthday: userCurrent.birthday ? dayjs(userCurrent.birthday) : dayjs(defaultValue),
   });
+  const [listBank, setListBank] = useState([]);
+  const [bankSelect, setBankSelect] = useState({});
 
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(user.userImgUrl || avtBase);
+  const [selectedImage, setSelectedImage] = useState(
+    user.userImgUrl || avtBase
+  );
   const [selectedFile, setSelectedFile] = useState(null);
   const [isInitialUpload, setIsInitialUpload] = useState(!user.userImgUrl);
 
   // New states for coin transfer
   const [isBankInfoModalVisible, setIsBankInfoModalVisible] = useState(false);
-  const [isCoinRequestModalVisible, setIsCoinRequestModalVisible] = useState(false);
-  const [coinRequestAmount, setCoinRequestAmount] = useState(0);
+  const [isCoinRequestModalVisible, setIsCoinRequestModalVisible] =
+    useState(false);
+  const [coinRequestAmount, setCoinRequestAmount] = useState(
+    user.accountBallance
+  );
   const [bankInfo, setBankInfo] = useState({
-    bankName: '',
-    accountNumber: '',
-    accountName: ''
+    bankName: "",
+    bankNumber: "",
+    accountName: "",
+    bankPin: "",
   });
 
   const dispatch = useDispatch();
 
+  useEffect(() => {
+    callGetListBanks();
+  }, []);
+
+  async function callGetListBanks() {
+    try {
+      const res = await getListBank();
+      if (res.success) {
+        setListBank(res.data);
+      } else {
+        message.error(res.message);
+      }
+    } catch (error) {
+      message.error("Không thể lấy danh sách ngân hàng");
+    }
+  }
+
   const triggerFileInput = () => {
-    const fileInput = document.createElement('input');
-    fileInput.type = 'file';
-    fileInput.accept = 'image/*';
+    const fileInput = document.createElement("input");
+    fileInput.type = "file";
+    fileInput.accept = "image/*";
     fileInput.onchange = (event) => {
       const file = event.target.files[0];
       if (file) {
@@ -273,23 +306,58 @@ const ProfileEditPage = () => {
   };
 
   // New handler for bank info submission
-  const handleBankInfoSubmit = (values) => {
-    setBankInfo(values);
+  const handleBankInfoSubmit = async (values) => {
+    // console.log(values);
+    const filteredBank = listBank.filter((bank) => bank.bin === values.bankPin);
+    // console.log("bank"+ JSON.stringify(filteredBank[0]));
+    const bankSelect = {
+      ...values,
+      bankName: filteredBank[0].name,
+    };
+    setBankInfo(bankSelect);
     setIsBankInfoModalVisible(false);
     setIsCoinRequestModalVisible(true);
   };
 
   // New handler for coin transfer request
-  const handleCoinTransferRequest = () => {
-    if (coinRequestAmount <= 0) {
-      message.error('Số tiền yêu cầu phải lớn hơn 0');
+  const handleCoinTransferRequest = async () => {
+    if (Number(coinRequestAmount) <= 0) {
+      message.error("Số tiền yêu cầu phải lớn hơn 0");
       return;
     }
 
-    message.success('Yêu cầu chuyển coin đã được gửi');
-    setIsCoinRequestModalVisible(false);
-    setCoinRequestAmount(0);
-    navigate('/adminHome/coin');
+    if (coinRequestAmount > user.accountBallance) {
+      message.error("Số tiền yêu cầu phải nhỏ hơn bằng số tiền khả dụng");
+      return;
+    }
+
+    const formData = {
+      userRequestId: user.userId,
+      bankNumber: bankInfo.bankNumber,
+      bankName: bankInfo.bankName,
+      bankPin: bankInfo.bankPin,
+      accountName: bankInfo.accountName,
+      content: "Rut coin",
+      amount: coinRequestAmount,
+    };
+
+    try {
+      const res = await requestCreateReCoin(formData);
+      // console.log(res);
+      if (res.success) {
+        message.success(res.message)
+        navigate("/coin-request")
+      }else{
+        message.error(res.message)
+      }
+    } catch (error) {
+      message.error("Không thể thực hiện tạo yêu cầu rút coin")
+    }
+
+    // message.success("Yêu cầu chuyển coin đã được gửi");
+    // setIsCoinRequestModalVisible(false);
+    // setCoinRequestAmount(0);
+    // navigate("/adminHome/coin");
   };
 
   return (
@@ -304,15 +372,12 @@ const ProfileEditPage = () => {
           }}>
             Thay đổi thông tin 
           </Title>
-          
+
           <AvatarContainer>
             <AvatarWrapper>
-              <AvatarImage 
-                src={selectedImage} 
-                alt="Profile Avatar" 
-              />
+              <AvatarImage src={selectedImage} alt="Profile Avatar" />
             </AvatarWrapper>
-            
+
             {isInitialUpload ? (
               <FileUploadContainer
                 name="avatar"
@@ -351,7 +416,7 @@ const ProfileEditPage = () => {
                 }
               }}
             >
-              Yêu Cầu Chuyển Coin
+              Tạo yêu cầu rút Coin
             </CoinActionButton>
           </CoinBadge>
 
@@ -380,7 +445,7 @@ const ProfileEditPage = () => {
                 <Input />
               </Form.Item>
             </FormSection>
-            
+
             <FormSection>
               <Form.Item label="Ngày sinh:" name="birthday">
                 <DatePicker style={{ width: "100%" }} />
@@ -389,7 +454,7 @@ const ProfileEditPage = () => {
                 <Input />
               </Form.Item>
             </FormSection>
-            
+
             <FormSection>
               <FullWidthSection>
                 <Form.Item label="Mô tả" name="description">
@@ -424,30 +489,39 @@ const ProfileEditPage = () => {
           onFinish={handleBankInfoSubmit}
           initialValues={bankInfo}
         >
-          <Form.Item 
-            name="bankName" 
+          <Form.Item
+            name="bankPin"
             label="Tên Ngân Hàng"
-            rules={[{ required: true, message: 'Vui lòng nhập tên ngân hàng' }]}
+            rules={[{ required: true, message: "Vui lòng chọn tên ngân hàng" }]}
           >
-            <Input placeholder="Nhập tên ngân hàng" />
+            <Select placeholder="Chọn tên ngân hàng">
+              {listBank.map((bank) => (
+                <Select.Option key={bank.id} value={bank.bin}>
+                  <Flex>
+                    <Image src={bank.logo} width={50} />
+                    {`${bank.shortName} - ${bank.name}`}
+                  </Flex>
+                </Select.Option>
+              ))}
+            </Select>
           </Form.Item>
-          <Form.Item 
-            name="accountNumber" 
+          <Form.Item
+            name="bankNumber"
             label="Số Tài Khoản"
-            rules={[{ required: true, message: 'Vui lòng nhập số tài khoản' }]}
+            rules={[{ required: true, message: "Vui lòng nhập số tài khoản" }]}
           >
             <Input placeholder="Nhập số tài khoản" />
           </Form.Item>
-          <Form.Item 
-            name="accountName" 
+          <Form.Item
+            name="accountName"
             label="Tên Tài Khoản"
-            rules={[{ required: true, message: 'Vui lòng nhập tên tài khoản' }]}
+            rules={[{ required: true, message: "Vui lòng nhập tên tài khoản" }]}
           >
             <Input placeholder="Nhập tên tài khoản" />
           </Form.Item>
           <Form.Item>
             <Button type="primary" htmlType="submit" block>
-              Lưu Thông Tin
+              Tạo yêu cầu
             </Button>
           </Form.Item>
         </Form>
@@ -459,38 +533,43 @@ const ProfileEditPage = () => {
         open={isCoinRequestModalVisible}
         onCancel={() => setIsCoinRequestModalVisible(false)}
         footer={[
-          <Button key="cancel" onClick={() => setIsCoinRequestModalVisible(false)}>
+          <Button
+            key="cancel"
+            onClick={() => setIsCoinRequestModalVisible(false)}
+          >
             Hủy
           </Button>,
-          <Button 
-            key="submit" 
-            type="primary" 
+          <Button
+            key="submit"
+            type="primary"
             onClick={handleCoinTransferRequest}
           >
             Gửi Yêu Cầu
-          </Button>
+          </Button>,
         ]}
       >
         <Form layout="vertical">
           <Form.Item label="Số Coin Muốn Chuyển">
-            <Input 
-              type="number" 
+            <Input
+              type="number"
+              min={5000}
+              max={user.accountBallance}
               value={coinRequestAmount}
               onChange={(e) => setCoinRequestAmount(Number(e.target.value))}
               placeholder="Nhập số coin muốn chuyển"
             />
           </Form.Item>
-          <div style={{ marginBottom: '15px' }}>
+          <div style={{ marginBottom: "15px" }}>
             <strong>Thông Tin Tài Khoản:</strong>
             <p>Ngân Hàng: {bankInfo.bankName}</p>
-            <p>Số Tài Khoản: {bankInfo.accountNumber}</p>
+            <p>Số Tài Khoản: {bankInfo.bankNumber}</p>
             <p>Tên Tài Khoản: {bankInfo.accountName}</p>
           </div>
-          <Alert 
-            message="Lưu Ý" 
-            description="Yêu cầu chuyển coin sẽ được quản trị viên xử lý. Vui lòng kiểm tra số dư và thông tin tài khoản ngân hàng." 
-            type="info" 
-            showIcon 
+          <Alert
+            message="Lưu Ý"
+            description="Yêu cầu chuyển coin sẽ được quản trị viên xử lý. Vui lòng kiểm tra số dư và thông tin tài khoản ngân hàng."
+            type="info"
+            showIcon
           />
         </Form>
       </Modal>

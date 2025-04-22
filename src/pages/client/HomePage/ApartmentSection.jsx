@@ -9,6 +9,7 @@ import {
   HeartOutlined
 } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom"; // Import useNavigate hook
 import { getAllPosts } from "../../../redux/apiCalls"; // Adjust the path based on your project structure
 
 const ApartmentSectionWrapper = styled.section`
@@ -92,6 +93,7 @@ const ApartmentCard = styled.div`
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
   transition: transform 0.2s, box-shadow 0.2s;
+  cursor: pointer; /* Add cursor pointer to indicate clickable */
 
   &:hover {
     transform: translateY(-4px);
@@ -193,6 +195,7 @@ const HeartButton = styled.button`
   color: #9ca3af;
   cursor: pointer;
   font-size: 16px;
+  z-index: 10; /* Ensure heart button is above the card for separate clicks */
 
   &:hover {
     color: #ef4444;
@@ -281,6 +284,7 @@ function ApartmentSection({ handleViewMore }) {
   const propertiesPerPage = 4;
   
   const dispatch = useDispatch();
+  const navigate = useNavigate(); // Initialize the navigate hook
 
   useEffect(() => {
     async function fetchProperties() {
@@ -313,6 +317,18 @@ function ApartmentSection({ handleViewMore }) {
 
   const handleNextApartment = () => {
     setCurrentPage((prev) => (prev < totalPages - 1 ? prev + 1 : 0));
+  };
+
+  // Function to navigate to the detail page
+  const goToDetails = (postId, event) => {
+    navigate(`/post-detail/${postId}`);
+    console.log(`Đang chuyển đến trang chi tiết của căn hộ ID: ${postId}`);
+  };
+
+  // Handle heart button click separately (stop propagation)
+  const handleHeartClick = (event) => {
+    event.stopPropagation(); // Prevent triggering the card click
+    // Here you could add favorite logic
   };
 
   // Format price function from PostList component
@@ -357,7 +373,10 @@ function ApartmentSection({ handleViewMore }) {
 
       <ApartmentGrid>
         {mappedProperties.map((property) => (
-          <ApartmentCard key={property.id}>
+          <ApartmentCard 
+            key={property.id} 
+            onClick={(e) => goToDetails(property.id, e)}
+          >
             <ApartmentImage>
               <img src={property.image} alt={property.title} />
               <ImageCount>
@@ -382,7 +401,7 @@ function ApartmentSection({ handleViewMore }) {
 
             <CardFooter>
               <span>{property.createdAt}</span>
-              <HeartButton>
+              <HeartButton onClick={(e) => handleHeartClick(e)}>
                 <HeartOutlined />
               </HeartButton>
             </CardFooter>

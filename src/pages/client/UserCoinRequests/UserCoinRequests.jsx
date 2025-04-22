@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
-import { 
-  Card, 
-  Button, 
-  message, 
+import React, { useEffect, useState } from "react";
+import {
+  Card,
+  Button,
+  message,
   Typography,
   Tag,
   Modal,
@@ -12,16 +12,19 @@ import {
   Drawer,
   Descriptions,
   Divider,
-  Image
-} from 'antd';
-import { 
-  MoneyCollectOutlined, 
+  Image,
+} from "antd";
+import {
+  MoneyCollectOutlined,
   CheckCircleOutlined,
   EyeOutlined,
   FileImageOutlined,
   HistoryOutlined,
-  ClockCircleOutlined
-} from '@ant-design/icons';
+  ClockCircleOutlined,
+} from "@ant-design/icons";
+import { useNavigate } from "react-router-dom";
+import { useSelector } from "react-redux";
+import { acceptReceivedReCoin, getReCoinByUserId } from "../../../redux/apiCalls";
 
 const { Text } = Typography;
 
@@ -30,90 +33,151 @@ const formatCurrency = (amount) => {
   // Chuyển số thành string
   const numStr = String(amount);
   // Thêm dấu phẩy ngăn cách hàng nghìn
-  let result = '';
+  let result = "";
   let counter = 0;
-  
+
   for (let i = numStr.length - 1; i >= 0; i--) {
     counter++;
     result = numStr[i] + result;
     if (counter % 3 === 0 && i !== 0) {
-      result = ',' + result;
+      result = "," + result;
     }
   }
-  
+
   return result;
 };
 
 // Sample data for user's transfer requests
-const sampleUserRequests = [
-  {
-    id: 1,
-    amount: 500000,
-    status: 'pending',
-    bankInfo: {
-      bankName: 'Vietcombank',
-      accountNumber: '1234567890',
-      accountName: 'NGUYEN VAN A'
-    },
-    requestDate: '2024-04-10',
-    transferProof: null
-  },
-  {
-    id: 2,
-    amount: 1000000,
-    status: 'processing',
-    bankInfo: {
-      bankName: 'Vietcombank',
-      accountNumber: '1234567890',
-      accountName: 'NGUYEN VAN A'
-    },
-    requestDate: '2024-04-09',
-    transferProof: '/api/placeholder/600/400'
-  },
-  {
-    id: 3,
-    amount: 750000,
-    status: 'completed',
-    bankInfo: {
-      bankName: 'Vietcombank',
-      accountNumber: '1234567890',
-      accountName: 'NGUYEN VAN A'
-    },
-    requestDate: '2024-04-05',
-    transferProof: '/api/placeholder/600/400',
-    completedDate: '2024-04-06'
-  },
-  {
-    id: 4,
-    amount: 300000,
-    status: 'rejected',
-    bankInfo: {
-      bankName: 'Vietcombank',
-      accountNumber: '1234567890',
-      accountName: 'NGUYEN VAN A'
-    },
-    requestDate: '2024-04-01',
-    rejectedDate: '2024-04-02'
-  }
-];
+// const sampleUserRequests = [
+//   {
+//     id: 1,
+//     amount: 500000,
+//     status: "pending",
+//     bankInfo: {
+//       bankName: "Vietcombank",
+//       accountNumber: "1234567890",
+//       accountName: "NGUYEN VAN A",
+//     },
+//     requestDate: "2024-04-10",
+//     transferProof: null,
+//   },
+//   {
+//     id: 2,
+//     amount: 1000000,
+//     status: "processing",
+//     bankInfo: {
+//       bankName: "Vietcombank",
+//       accountNumber: "1234567890",
+//       accountName: "NGUYEN VAN A",
+//     },
+//     requestDate: "2024-04-09",
+//     transferProof: "/api/placeholder/600/400",
+//   },
+//   {
+//     id: 3,
+//     amount: 750000,
+//     status: "completed",
+//     bankInfo: {
+//       bankName: "Vietcombank",
+//       accountNumber: "1234567890",
+//       accountName: "NGUYEN VAN A",
+//     },
+//     requestDate: "2024-04-05",
+//     transferProof: "/api/placeholder/600/400",
+//     completedDate: "2024-04-06",
+//   },
+//   {
+//     id: 4,
+//     amount: 300000,
+//     status: "rejected",
+//     bankInfo: {
+//       bankName: "Vietcombank",
+//       accountNumber: "1234567890",
+//       accountName: "NGUYEN VAN A",
+//     },
+//     requestDate: "2024-04-01",
+//     rejectedDate: "2024-04-02",
+//   },
+//   {
+//     id: 4,
+//     amount: 300000,
+//     status: "accepted",
+//     bankInfo: {
+//       bankName: "Vietcombank",
+//       accountNumber: "1234567890",
+//       accountName: "NGUYEN VAN A",
+//     },
+//     requestDate: "2024-04-01",
+//     rejectedDate: "2024-04-02",
+//   },
+// ];
 
 const UserCoinRequests = () => {
-  const [userRequests, setUserRequests] = useState(sampleUserRequests);
+  const navigate = useNavigate();
+  const userCurrent = useSelector((state) => state.user.currentUser);
+  const [loading, setLoading] = useState(false);
+  const [reCoins, setReCoins] = useState([
+    // {
+    //   reCoinId: 1,
+    //   bankNumber: "53110009169999",
+    //   bankName: "Ngân hàng TMCP Đầu tư và Phát triển Việt Nam",
+    //   bankPin: "970418",
+    //   accountName: "NGUYEN ANH TU",
+    //   amount: 5000.0,
+    //   imgQR:
+    //     "https://img.vietqr.io/image/970418-53110009169999-compact2.jpg?amount=5000.0&addInfo=Rut+coin&accountName=NGUYEN+ANH+TU",
+    //   imgBill: null,
+    //   status: "processing",
+    //   userRequestId: 4,
+    //   content: null,
+    //   dateTime: null,
+    //   fullName: "Chủ căn hộ Tú1",
+    // },
+  ]);
+
+  // const [userRequests, setUserRequests] = useState(sampleUserRequests);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [proofImageVisible, setProofImageVisible] = useState(false);
   const [confirmReceiptVisible, setConfirmReceiptVisible] = useState(false);
+  useEffect(() => {
+    callGetReCoinByUserId(userCurrent.userId);
+  }, [userCurrent]);
+
+  async function callGetReCoinByUserId(userId) {
+    setLoading(true);
+    try {
+      const res = await getReCoinByUserId(userId);
+      // console.log(res);
+      if (res.success) {
+        if (res.data) {
+          setReCoins(res.data);
+        }
+        message.success(res.message);
+      } else {
+        message.error(res.message);
+      }
+    } catch (error) {
+      message.error("Không thể lấy danh sách yêu cầu của ngừoi dùng");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   // Status tag renderer
   const renderStatus = (status) => {
     const statusMap = {
-      pending: { color: 'orange', text: 'Chờ Xử Lý' },
-      processing: { color: 'blue', text: 'Đang Xử Lý' },
-      completed: { color: 'green', text: 'Đã Hoàn Thành' },
-      rejected: { color: 'red', text: 'Đã Từ Chối' }
+      pending: { color: "orange", text: "Chờ Xử Lý" },
+      processing: { color: "blue", text: "Đang Xử Lý" },
+      completed: { color: "green", text: "Đã Hoàn Thành" },
+      // accepted: { color: "purple", text: "Đã Chuyển" },
+      rejected: { color: "red", text: "Đã Từ Chối" },
     };
-    
-    const { color, text } = statusMap[status] || { color: 'default', text: status };
+
+    const { color, text } = statusMap[status] || {
+      color: "default",
+      text: status,
+    };
     return <Tag color={color}>{text}</Tag>;
   };
 
@@ -136,18 +200,47 @@ const UserCoinRequests = () => {
   };
 
   // Confirm user has received the money
-  const confirmReceived = () => {
+  const confirmReceived = async () => {
     if (!selectedRequest) return;
-    
+
+    const formData ={
+      reCoinId: selectedRequest.reCoinId,
+      imgBill: "",
+      reason: ""
+    }
+
+    try {
+      const res = await acceptReceivedReCoin(formData);
+      // console.log(res);
+      if(res.success){
+        message.success(res.message)
+        window.location.href = "/coin-request";
+      }else{
+        message.error(res.message)
+      }
+    } catch (error) {
+      message.error("Không thể xác nhận rút tiền thành công")
+    }finally{
+
+    }
+
     // Update the request status
-    const updatedRequests = userRequests.map(req => 
-      req.id === selectedRequest.id ? { ...req, status: 'completed', completedDate: new Date().toISOString().split('T')[0] } : req
-    );
-    setUserRequests(updatedRequests);
-    
+    // const updatedRequests = userRequests.map((req) =>
+    //   req.id === selectedRequest.id
+    //     ? {
+    //         ...req,
+    //         status: "completed",
+    //         completedDate: new Date().toISOString().split("T")[0],
+    //       }
+    //     : req
+    // );
+    // setUserRequests(updatedRequests);
+
     // Show success message
-    message.success(`Đã xác nhận nhận được ${formatCurrency(selectedRequest.amount)} VND`);
-    
+    // message.success(
+    //   `Đã xác nhận nhận được ${formatCurrency(selectedRequest.amount)} VND`
+    // );
+
     // Close confirmation modal
     setConfirmReceiptVisible(false);
   };
@@ -155,47 +248,57 @@ const UserCoinRequests = () => {
   // Table columns configuration
   const columns = [
     {
-      title: 'Ngày Yêu Cầu',
-      dataIndex: 'requestDate',
-      key: 'requestDate',
+      title: "Ngày Yêu Cầu",
+      dataIndex: "dateTime",
+      key: "dateTime",
     },
     {
-      title: 'Số Tiền',
-      dataIndex: 'amount',
-      key: 'amount',
+      title: "Ngày Phản hồi",
+      dataIndex: "dateAcceptReject",
+      key: "dateAcceptReject",
+    },
+    {
+      title: "Ngày Hoàn Thành",
+      dataIndex: "dateComplete",
+      key: "dateComplete",
+    },
+    {
+      title: "Số Tiền",
+      dataIndex: "amount",
+      key: "amount",
       render: (amount) => (
-        <Text strong style={{ color: '#1890ff' }}>
+        <Text strong style={{ color: "#1890ff" }}>
           {formatCurrency(amount)} VND
         </Text>
       ),
     },
     {
-      title: 'Trạng Thái',
-      dataIndex: 'status',
-      key: 'status',
+      title: "Trạng Thái",
+      dataIndex: "status",
+      key: "status",
       render: renderStatus,
     },
     {
-      title: 'Thao Tác',
-      key: 'action',
+      title: "Thao Tác",
+      key: "action",
       render: (_, record) => (
         <Space size="small">
-          <Button 
-            icon={<EyeOutlined />} 
-            onClick={() => viewRequestDetails(record)} 
+          <Button
+            icon={<EyeOutlined />}
+            onClick={() => viewRequestDetails(record)}
             title="Xem chi tiết"
           />
-          {record.status === 'processing' && record.transferProof && (
+          {record.status === "processing" && (
             <>
-              <Button 
-                icon={<FileImageOutlined />} 
-                onClick={() => viewTransferProof(record)} 
+              <Button
+                icon={<FileImageOutlined />}
+                onClick={() => viewTransferProof(record)}
                 title="Xem ảnh chuyển khoản"
               />
-              <Button 
-                type="primary" 
-                icon={<CheckCircleOutlined />} 
-                onClick={() => handleConfirmReceipt(record)} 
+              <Button
+                type="primary"
+                icon={<CheckCircleOutlined />}
+                onClick={() => handleConfirmReceipt(record)}
                 title="Xác nhận đã nhận tiền"
               >
                 Xác nhận
@@ -208,18 +311,26 @@ const UserCoinRequests = () => {
   ];
 
   return (
-    <Card 
+    <Card
       title={
         <Space>
           <MoneyCollectOutlined />
-          <span>Yêu Cầu Chuyển Coin Của Tôi</span>
+          <span>
+            Yêu Cầu Chuyển Coin Của Tôi{" "}
+            <span style={{ color: "blue" }}>
+              Số coins khả dụng:{" "}
+              <span style={{ color: "orange" }}>
+                {userCurrent.accountBallance} VND
+              </span>
+            </span>{" "}
+          </span>
         </Space>
       }
     >
       {/* Table of user transfer requests */}
-      <Table 
-        dataSource={userRequests} 
-        columns={columns} 
+      <Table
+        dataSource={reCoins}
+        columns={columns}
         rowKey="id"
         pagination={{ pageSize: 10 }}
       />
@@ -232,9 +343,9 @@ const UserCoinRequests = () => {
         onClose={() => setDrawerVisible(false)}
         open={drawerVisible}
         extra={
-          selectedRequest?.status === 'processing' && (
-            <Button 
-              type="primary" 
+          selectedRequest?.status === "processing" && (
+            <Button
+              type="primary"
               icon={<CheckCircleOutlined />}
               onClick={() => {
                 setDrawerVisible(false);
@@ -250,7 +361,7 @@ const UserCoinRequests = () => {
           <>
             <Descriptions title="Thông Tin Yêu Cầu" column={1}>
               <Descriptions.Item label="Số Tiền Yêu Cầu">
-                <Text strong style={{ color: '#1890ff' }}>
+                <Text strong style={{ color: "#1890ff" }}>
                   {formatCurrency(selectedRequest.amount)} VND
                 </Text>
               </Descriptions.Item>
@@ -266,7 +377,7 @@ const UserCoinRequests = () => {
               {selectedRequest.completedDate && (
                 <Descriptions.Item label="Ngày Hoàn Thành">
                   <Space>
-                    <CheckCircleOutlined style={{ color: '#52c41a' }} />
+                    <CheckCircleOutlined style={{ color: "#52c41a" }} />
                     {selectedRequest.completedDate}
                   </Space>
                 </Descriptions.Item>
@@ -282,35 +393,36 @@ const UserCoinRequests = () => {
 
             <Descriptions title="Thông Tin Tài Khoản Ngân Hàng" column={1}>
               <Descriptions.Item label="Tên Ngân Hàng">
-                {selectedRequest.bankInfo.bankName}
+                {selectedRequest.bankName}
               </Descriptions.Item>
               <Descriptions.Item label="Số Tài Khoản">
-                {selectedRequest.bankInfo.accountNumber}
+                {selectedRequest.bankNumber}
               </Descriptions.Item>
               <Descriptions.Item label="Tên Tài Khoản">
-                {selectedRequest.bankInfo.accountName}
+                {selectedRequest.accountName}
               </Descriptions.Item>
             </Descriptions>
 
-            {selectedRequest.status === 'processing' && selectedRequest.transferProof && (
-              <>
-                <Divider />
-                <div style={{ textAlign: 'center' }}>
-                  <Button 
-                    type="primary" 
-                    icon={<FileImageOutlined />}
-                    onClick={() => {
-                      setDrawerVisible(false);
-                      viewTransferProof(selectedRequest);
-                    }}
-                  >
-                    Xem Ảnh Chuyển Khoản
-                  </Button>
-                </div>
-              </>
-            )}
+            {selectedRequest.status === "processing" &&
+              selectedRequest.imgBill && (
+                <>
+                  <Divider />
+                  <div style={{ textAlign: "center" }}>
+                    <Button
+                      type="primary"
+                      icon={<FileImageOutlined />}
+                      onClick={() => {
+                        setDrawerVisible(false);
+                        viewTransferProof(selectedRequest);
+                      }}
+                    >
+                      Xem Ảnh Chuyển Khoản
+                    </Button>
+                  </div>
+                </>
+              )}
 
-            {selectedRequest.status === 'pending' && (
+            {selectedRequest.status === "pending" && (
               <>
                 <Divider />
                 <Alert
@@ -323,7 +435,7 @@ const UserCoinRequests = () => {
               </>
             )}
 
-            {selectedRequest.status === 'rejected' && (
+            {selectedRequest.status === "rejected" && (
               <>
                 <Divider />
                 <Alert
@@ -347,10 +459,10 @@ const UserCoinRequests = () => {
           <Button key="back" onClick={() => setProofImageVisible(false)}>
             Đóng
           </Button>,
-          selectedRequest?.status === 'processing' && (
-            <Button 
-              key="confirm" 
-              type="primary" 
+          selectedRequest?.status === "processing" && (
+            <Button
+              key="confirm"
+              type="primary"
               icon={<CheckCircleOutlined />}
               onClick={() => {
                 setProofImageVisible(false);
@@ -359,25 +471,26 @@ const UserCoinRequests = () => {
             >
               Xác Nhận Đã Nhận Tiền
             </Button>
-          )
+          ),
         ]}
         width={700}
       >
         {selectedRequest && (
-          <div style={{ textAlign: 'center' }}>
-            <Image 
-              src={selectedRequest.transferProof} 
+          <div style={{ textAlign: "center" }}>
+            <Image
+              src={selectedRequest.transferProof}
               alt="Ảnh chuyển khoản"
-              style={{ maxWidth: '100%' }}
+              style={{ maxWidth: "100%" }}
             />
             <Descriptions style={{ marginTop: 16 }} column={1}>
               <Descriptions.Item label="Số Tiền">
-                <Text strong style={{ color: '#1890ff' }}>
+                <Text strong style={{ color: "#1890ff" }}>
                   {formatCurrency(selectedRequest.amount)} VND
                 </Text>
               </Descriptions.Item>
               <Descriptions.Item label="Tài Khoản Nhận">
-                {selectedRequest.bankInfo.accountName} - {selectedRequest.bankInfo.accountNumber} - {selectedRequest.bankInfo.bankName}
+                {selectedRequest.accountName} - {selectedRequest.bankNumber} -{" "}
+                {selectedRequest.bankName}
               </Descriptions.Item>
             </Descriptions>
           </div>
@@ -396,7 +509,9 @@ const UserCoinRequests = () => {
         {selectedRequest && (
           <>
             <p>
-              Bạn xác nhận đã nhận được số tiền {formatCurrency(selectedRequest.amount)} VND vào tài khoản {selectedRequest.bankInfo.bankName} của mình?
+              Bạn xác nhận đã nhận được số tiền{" "}
+              {formatCurrency(selectedRequest.amount)} VND vào tài khoản{" "}
+              {selectedRequest.bankName} của mình?
             </p>
             <Alert
               message="Lưu ý"

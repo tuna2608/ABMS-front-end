@@ -226,7 +226,7 @@ const UserFormList = () => {
             Danh sách đơn đã gửi
           </Title>
         </div>
-        <Button type="primary" ghost onClick={() => navigate("/form")}>
+        <Button type="primary" ghost onClick={() => navigate("/form-request")}>
           + Gửi đơn mới
         </Button>
       </HeaderSection>
@@ -258,7 +258,7 @@ const UserFormList = () => {
             <Button 
               type="primary" 
               style={{ marginTop: 16 }} 
-              onClick={() => navigate("/form")}
+              onClick={() => navigate("/form-request")}
             >
               Gửi đơn mới
             </Button>
@@ -268,7 +268,7 @@ const UserFormList = () => {
 
       <Modal
         title={<Title level={4}>Chi tiết đơn</Title>}
-        visible={modalVisible}
+        open={modalVisible}
         onCancel={() => setModalVisible(false)}
         footer={[
           <Button key="close" onClick={() => setModalVisible(false)}>

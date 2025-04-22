@@ -262,7 +262,7 @@ function HeaderComponent() {
           ></Image>
         </Logo>
 
-        <Col span={10}>
+        {/* <Col span={10}>
           {(user?.role === 'Owner' || user?.role === 'Rentor') && (
             <Search
               placeholder="Tìm kiếm dịch vụ bạn muốn ?"
@@ -272,11 +272,10 @@ function HeaderComponent() {
               onSearch={onSearch}
             />
           )}
-        </Col>
+        </Col> */}
 
-        <Col span={10}>
+        <Col span={20}>
           <NavbarListItem>
-            
             <PostLink onClick={() => navigate("/post")}>
               Bài viết
             </PostLink>
@@ -292,7 +291,6 @@ function HeaderComponent() {
             )}
             
             <NotificationWrapper />
-
             {user ? (
               <Dropdown menu={{ items: items }} placement="bottomRight">
                 <NavItemAVT>
@@ -302,8 +300,8 @@ function HeaderComponent() {
               </Dropdown>
             ) : (
               <>
-                <Button onClick={() => navigate("/login")}>Login</Button>
-                <Button onClick={() => navigate("/register")}>Register</Button>
+                <Button onClick={() => navigate("/login")}>Đăng nhập</Button>
+                <Button onClick={() => navigate("/register")}>Đăng ký</Button>
               </>
             )}
           </NavbarListItem>

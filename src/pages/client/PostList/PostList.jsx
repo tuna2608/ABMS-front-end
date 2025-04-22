@@ -66,12 +66,13 @@ const PostList = () => {
   const [selectedArea, setSelectedArea] = useState("Tất cả");
   const [currentPage, setCurrentPage] = useState(1);
 
-  const pageSize = 8;
+  // Thay đổi pageSize từ 8 xuống 6
+  const pageSize = 6;
 
   const dispatch = useDispatch();
 
   const navigate = useNavigate();
-
+  
   useEffect(() => {
     async function getPostList() {
       setLoading(true);
@@ -106,6 +107,39 @@ const PostList = () => {
     navigate(`/post-detail/${postId}`);
     console.log(`Đang chuyển đến trang chi tiết của căn hộ ID: ${postId}`);
   };
+
+  // Lọc dữ liệu dựa trên tìm kiếm và bộ lọc
+  const filteredApartments = apartments.filter(apartment => {
+    // Lọc theo tìm kiếm
+    const searchMatch = searchText === "" || 
+      apartment.title.toLowerCase().includes(searchText.toLowerCase()) ||
+      apartment.content.toLowerCase().includes(searchText.toLowerCase()) ||
+      apartment.apartment?.apartmentName?.toLowerCase().includes(searchText.toLowerCase());
+    
+    // Lọc theo danh mục
+    let categoryMatch = true;
+    if (selectedCategory !== "Tất cả") {
+      // Thực hiện logic phù hợp với danh mục của bạn
+      // Đây là logic giả định, bạn cần điều chỉnh theo dữ liệu thực tế
+      if (selectedCategory === "Đã cho thuê" && apartment.depositCheck !== "done") categoryMatch = false;
+      if (selectedCategory === "Đang đặt cọc" && apartment.depositCheck !== "depositing") categoryMatch = false;
+      // Thêm các điều kiện khác nếu cần
+    }
+    
+    // Lọc theo khu vực
+    let areaMatch = true;
+    if (selectedArea !== "Tất cả") {
+      // Giả sử thông tin khu vực nằm trong apartment.apartment.area hoặc tương tự
+      areaMatch = apartment.apartment?.area === selectedArea;
+    }
+    
+    return searchMatch && categoryMatch && areaMatch;
+  });
+
+  // Tính toán các bài post hiển thị trên trang hiện tại
+  const startIndex = (currentPage - 1) * pageSize;
+  const endIndex = startIndex + pageSize;
+  const currentPosts = filteredApartments.slice(startIndex, endIndex);
 
   return (
     <div style={{ padding: "20px", backgroundColor: "#f5f5f5", minHeight: "100vh" }}>
@@ -193,11 +227,11 @@ const PostList = () => {
 
         <Row gutter={[24, 24]}>
           {loading
-            ? // Hiển thị skeleton loading
-              Array(4)
+            ? // Hiển thị skeleton loading (6 skeleton thay vì 4)
+              Array(6)
                 .fill(null)
                 .map((_, index) => (
-                  <Col xs={24} sm={12} md={8} lg={6} key={`loading-${index}`}>
+                  <Col xs={24} sm={12} md={8} key={`loading-${index}`}>
                     <Card style={{ borderRadius: '8px', overflow: 'hidden', height: '100%' }}>
                       <Skeleton.Image
                         style={{ width: "100%", height: 200 }}
@@ -207,9 +241,9 @@ const PostList = () => {
                     </Card>
                   </Col>
                 ))
-            : // Hiển thị danh sách căn hộ dạng card
-              apartments.map((apartment) => (
-                <Col xs={24} sm={12} md={8} lg={6} key={apartment.postId}>
+            : // Hiển thị danh sách căn hộ dạng card (chỉ hiển thị các bài post trong trang hiện tại)
+              currentPosts.map((apartment) => (
+                <Col xs={24} sm={12} md={8} key={apartment.postId}>
                   <Card
                     hoverable
                     style={{ 
@@ -365,7 +399,7 @@ const PostList = () => {
           <Pagination
             current={currentPage}
             pageSize={pageSize}
-            total={apartments.length}
+            total={filteredApartments.length}
             onChange={(page) => setCurrentPage(page)}
             showSizeChanger={false}
             showTotal={(total) => `Tổng cộng ${total} căn hộ`}

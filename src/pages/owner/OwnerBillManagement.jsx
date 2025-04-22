@@ -102,9 +102,9 @@ const BillPage = () => {
     setLoading(true);
     try {
       const res = await getAllBillOwner(dispatch, userId);
-      // console.log(res.data.length === 0);
       if (res.success) {
         setBills(res.data);
+        // console.log();
       } else {
         message.error(res.message);
       }
@@ -223,7 +223,7 @@ const BillPage = () => {
               onClick={() => showBillDetails(record.billCode)}
             />
           </Tooltip>
-          {record.apartmentStatus === "Unrent" && (
+          {record.apartmentStatus === "unrent" && (
             <Button
               type="primary"
               icon={<PayCircleOutlined />}
@@ -288,8 +288,6 @@ const BillPage = () => {
     }
   };
 
-
-
   // Show bill details modal
   const showBillDetails = (billCode) => {
     setCurrentBill({ billCode });
@@ -332,8 +330,10 @@ const BillPage = () => {
     const res = await createBillMonthPaid(dispatch,formData);
     if(res.success){
       message.success(res.message);
-      navigate("/ownerHome/bill-management");
       setCreateBillVisible(false);
+      window.location.href = "/ownerHome/bill-management";
+      // navigate("/ownerHome/bill-management");
+      
     }else{
       message.error(res.message);
     }
