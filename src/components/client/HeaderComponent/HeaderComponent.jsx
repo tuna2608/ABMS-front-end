@@ -8,126 +8,67 @@ import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux'
 import { logoutDispatch } from "../../../redux/apiCalls";
 import avtBase from "../../../assets/common/images/avtbase.jpg";
-import NotificationWrapper from "./NotificationWrapper"; // Import the new component
+import NotificationWrapper from "./NotificationWrapper";
 
 const { Search } = Input;
 
-const TopBar = styled.div`
+
+
+const WrapperHeader = styled.div`
+  height: 70px;
+  padding: 0 120px;
+  background-color: var(--cheadline);
   display: flex;
   align-items: center;
   justify-content: space-between;
-  background: #f3f3f3;
-  padding: 8px 120px;
-  font-size: 14px;
-  font-weight: 500;
 `;
 
-const TopBarInfo = styled.div`
-  display: flex;
-  align-items: center;
-  gap: 24px;
-  color: var(--cheadline);
-
-  span {
-    margin-right: 16px;
-  }
-`;
-
-const TopBarIcon = styled.a`
-  color: var(--cheadline);
-  font-size: 24px;
-  margin-left: 16px;
-
-  &:hover {
-    color: var(--csecondary);
-  }
-`;
-
-const WrapperHeader = styled(Row)`
-  height: 100px;
-  padding: 0 120px;
-  background-color: var(--cheadline);
-  align-items: center;
-`;
-
-const Logo = styled(Col)`
-  color: white;
+const Logo = styled.div`
   height: 100%;
-
-  &:hover {
-    cursor: pointer;
-  }
-`;
-
-const NavbarListItem = styled(Flex)`
-  gap: 20px;
-  justify-content: end;
-`;
-
-const PostLink = styled(Button)`
-  color: white;
-  background-color: transparent;
-  border: none;
-  font-size: 16px;
-  transition: color 0.3s;
-
-  &:hover {
-    color: var(--csecondary);
-    background-color: transparent;
-  }
-`;
-const ServiceLink = styled(Button)`
-  color: white;
-  background-color: transparent;
-  border: none;
-  font-size: 16px;
-  transition: color 0.3s;
-
-  &:hover {
-    color: var(--csecondary);
-    background-color: transparent;
-  }
-`;
-const FormLink = styled(Button)`
-  color: white;
-  background-color: transparent;
-  border: none;
-  font-size: 16px;
-  transition: color 0.3s;
-
-  &:hover {
-    color: var(--csecondary);
-    background-color: transparent;
-  }
-`;
-
-const NavItemAVT = styled.div`
   display: flex;
-  padding: 0 16px;
-  justify-content: center;
   align-items: center;
-  gap: 20px;
-  height: 50px;
-  background-color: white;
-  color: var(--cheadline);
-  font-size: 20px;
-  border-radius: 10px;
-
+  
   &:hover {
     cursor: pointer;
-    background-color: var(--csecondary);
-    color: white;
+  }
+`;
+
+const NavbarListItem = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 30px;
+`;
+
+const NavLink = styled(Button)`
+  color: white;
+  background-color: transparent;
+  border: none;
+  font-size: 16px;
+  font-weight: 500;
+  padding: 0;
+  height: auto;
+  transition: color 0.3s;
+
+  &:hover {
+    color: var(--csecondary);
+    background-color: transparent;
+  }
+`;
+
+const AvatarWrapper = styled.div`
+  cursor: pointer;
+  transition: transform 0.2s;
+  
+  &:hover {
+    transform: scale(1.05);
   }
 `;
 
 function HeaderComponent() {
   const user = useSelector((state) => state.user.currentUser);
-  
   const dispatch = useDispatch();
-
   const navigate = useNavigate();
-  const onSearch = (value, _e, info) => console.log(info?.source, value);
-
+  
   function handleLogout() {
     logoutDispatch(dispatch);
     navigate("/login");
@@ -154,7 +95,7 @@ function HeaderComponent() {
         label: <div onClick={() => navigate("/rentorHome")}>Kênh người thuê</div>,
       });
     }
-    if ( user?.role === 'User') {
+    if (user?.role === 'User') {
       baseItems.push({
         key: "3",
         label: <div onClick={() => navigate("/deposit-apartment")}>Căn hộ đã đặt cọc</div>,
@@ -192,8 +133,7 @@ function HeaderComponent() {
     const baseItems = [
       {
         key: "1",
-        label: <div onClick={() => {console.log('tat ca thong bao');
-        }}>Tất cả thông báo</div>,
+        label: <div onClick={() => {console.log('tat ca thong bao');}}>Tất cả thông báo</div>,
       }
     ];
     
@@ -210,7 +150,7 @@ function HeaderComponent() {
       });
     }
     
-    // Add logout option
+    // Add notifications
     baseItems.push({
       key: "4",
       label: <div onClick={handleLogout}>Thông báo 1 </div>,
@@ -227,85 +167,74 @@ function HeaderComponent() {
 
   return (
     <>
-      <TopBar>
-        <TopBarInfo>
-          <span>Phone number: 0775420232</span>
-          <span>Email: pnamhuynhle@gmail.com</span>
-        </TopBarInfo>
-
-        <div>
-          <TopBarIcon href="#">
-            <FacebookFilled />
-          </TopBarIcon>
-          <TopBarIcon href="#">
-            <InstagramFilled />
-          </TopBarIcon>
-        </div>
-      </TopBar>
       
       <WrapperHeader>
-        <Logo span={4} onClick={() =>{
-          const roleUser = user.role;
+        <Logo onClick={() => {
+          const roleUser = user?.role;
           if(roleUser === 'Admin'){
             navigate('/adminHome')
-          }else if(roleUser === 'Staff'){
+          } else if(roleUser === 'Staff'){
             navigate('/staffHome')
-          }else {
+          } else {
             navigate('/')
           } 
-        } }>
+        }}>
           <Image
             src={logoMenu}
-            width="175px"
-            height="100%"
+            width="140px"
             preview={false}
-          ></Image>
+          />
         </Logo>
 
-        {/* <Col span={10}>
+        <NavbarListItem>
+          <NavLink onClick={() => navigate("/post")}>
+            Bài viết
+          </NavLink>
+          <NavLink onClick={() => navigate("/service")}>
+            Dịch vụ
+          </NavLink>
           {(user?.role === 'Owner' || user?.role === 'Rentor') && (
-            <Search
-              placeholder="Tìm kiếm dịch vụ bạn muốn ?"
-              allowClear
-              enterButton="Tìm kiếm"
-              size="large"
-              onSearch={onSearch}
-            />
+            <Dropdown menu={{ items: formItems }} placement="bottom">
+              <NavLink>
+                Đơn từ
+              </NavLink>
+            </Dropdown>
           )}
-        </Col> */}
-
-        <Col span={20}>
-          <NavbarListItem>
-            <PostLink onClick={() => navigate("/post")}>
-              Bài viết
-            </PostLink>
-            <ServiceLink onClick={() => navigate("/service")}>
-              Dịch vụ
-            </ServiceLink>
-            {(user?.role === 'Owner' || user?.role === 'Rentor') && (
-              <Dropdown menu={{ items: formItems }} placement="bottom">
-                <FormLink>
-                  Đơn từ
-                </FormLink>
-              </Dropdown>
-            )}
-            
-            <NotificationWrapper />
-            {user ? (
-              <Dropdown menu={{ items: items }} placement="bottomRight">
-                <NavItemAVT>
-                  <p>{user.userName} - {user.role}</p>
-                  <Image preview={false} style={{borderRadius:'100%'}} width='40px' height='40px' src={user.userImgUrl || avtBase}/>
-                </NavItemAVT>
-              </Dropdown>
-            ) : (
-              <>
-                <Button onClick={() => navigate("/login")}>Đăng nhập</Button>
-                <Button onClick={() => navigate("/register")}>Đăng ký</Button>
-              </>
-            )}
-          </NavbarListItem>
-        </Col>
+          
+          <NotificationWrapper />
+          
+          {user ? (
+            <Dropdown menu={{ items: items }} placement="bottomRight">
+              <AvatarWrapper>
+                <Image 
+                  preview={false} 
+                  style={{borderRadius:'100%'}} 
+                  width='40px' 
+                  height='40px' 
+                  src={user.userImgUrl || avtBase}
+                />
+              </AvatarWrapper>
+            </Dropdown>
+          ) : (
+            <>
+              <Button 
+                type="primary" 
+                ghost 
+                size="middle" 
+                onClick={() => navigate("/login")}
+              >
+                Đăng nhập
+              </Button>
+              <Button 
+                type="primary" 
+                size="middle" 
+                onClick={() => navigate("/register")}
+              >
+                Đăng ký
+              </Button>
+            </>
+          )}
+        </NavbarListItem>
       </WrapperHeader>
     </>
   );
