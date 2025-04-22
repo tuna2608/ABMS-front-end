@@ -2,7 +2,6 @@ import React, { useState, useEffect, useCallback } from 'react';
 import { Dropdown, Badge, List, Empty, Card, Button, message, Spin } from 'antd';
 import {
     BellOutlined,
-    CheckCircleOutlined,
     MessageOutlined,
     InfoCircleOutlined,
     LoadingOutlined,
@@ -14,9 +13,9 @@ import { fetchNotifications } from '../../../redux/apiCalls';
 import { useDispatch, useSelector } from 'react-redux';
 import webSocketService from '../../../services/WebSocketService'; 
 
-// Styled components (giữ nguyên phần này)
+// Styled components
 const NotificationCard = styled(Card)`
-  width: 450px;
+  width: 600px;
   max-height: 450px;
   overflow-y: auto;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
@@ -73,7 +72,26 @@ const LoadingContainer = styled.div`
   padding: 24px;
 `;
 
-// Helper functions (giữ nguyên phần này)
+// New styled component for notification button to match avatar style
+const NotificationButton = styled.div`
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%;
+  background-color: rgba(255, 255, 255, 0.1);
+  color: white;
+  font-size: 18px;
+  cursor: pointer;
+  transition: all 0.2s;
+  
+  &:hover {
+    background-color: rgba(255, 255, 255, 0.2);
+  }
+`;
+
+// Helper functions
 const getNotificationIcon = (type) => {
     switch (type?.toLowerCase()) {
         case 'deposit':
@@ -113,7 +131,7 @@ const NotificationWrapper = () => {
     const [loading, setLoading] = useState(false);
     const [error, setError] = useState(null);
     const [visible, setVisible] = useState(false);
-    const [unreadCount, setUnreadCount] = useState(0); // Thêm state theo dõi số thông báo chưa đọc
+    const [unreadCount, setUnreadCount] = useState(0);
 
     const currentUser = useSelector((state) => state.user.currentUser);
     const dispatch = useDispatch();
@@ -227,13 +245,6 @@ const NotificationWrapper = () => {
         
         // Xử lý điều hướng hoặc hành động khác dựa vào loại thông báo
         console.log('Notification clicked:', notification);
-        
-        // Ví dụ:
-        // if (notification.notificationType === 'deposit') {
-        //   history.push(`/deposits/${notification.referenceId}`);
-        // } else if (notification.notificationType === 'message') {
-        //   history.push('/chat');
-        // }
     };
 
     const notificationDropdownContent = (
@@ -318,7 +329,7 @@ const NotificationWrapper = () => {
 
     return (
         <Dropdown
-            overlay={notificationDropdownContent}s
+            overlay={notificationDropdownContent}
             trigger={['click']}
             placement="bottomRight"
             onVisibleChange={handleVisibleChange}
@@ -327,19 +338,11 @@ const NotificationWrapper = () => {
             <Badge
                 count={unreadCount}
                 overflowCount={10}
+                offset={[-5, 5]}
             >
-                <Button
-                    type="text"
-                    icon={<BellOutlined />}
-                    style={{
-                        width: '50px',
-                        height: '50px',
-                        borderRadius: '50%',
-                        backgroundColor: 'white',
-                        color: 'var(--cheadline)',
-                        fontSize: '20px'
-                    }}
-                />
+                <NotificationButton>
+                    <BellOutlined />
+                </NotificationButton>
             </Badge>
         </Dropdown>
     );

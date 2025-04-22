@@ -1,17 +1,20 @@
-import { Badge, Button, Col, Dropdown, Flex, Image, Row } from "antd";
-import React from "react";
-import { FacebookFilled, InstagramFilled } from "@ant-design/icons";
+import { Button, Dropdown, Image } from "antd";
+import React, { useState, useEffect } from "react";
+import { 
+  FileTextOutlined, 
+  UserOutlined, 
+  LogoutOutlined, 
+  FormOutlined, 
+  HomeOutlined, 
+  DollarOutlined,
+} from "@ant-design/icons";
 import styled from "styled-components";
 import logoMenu from "../../../assets/common/images/logo-menu.png";
-import { Input } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useDispatch, useSelector } from 'react-redux'
 import { logoutDispatch } from "../../../redux/apiCalls";
 import avtBase from "../../../assets/common/images/avtbase.jpg";
 import NotificationWrapper from "./NotificationWrapper";
-
-const { Search } = Input;
-
 
 
 const WrapperHeader = styled.div`
@@ -21,6 +24,13 @@ const WrapperHeader = styled.div`
   display: flex;
   align-items: center;
   justify-content: space-between;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000;
+  transition: box-shadow 0.3s ease;
+  box-shadow: ${props => props.scrolled ? '0 2px 10px rgba(0, 0, 0, 0.15)' : 'none'};
 `;
 
 const Logo = styled.div`
@@ -33,10 +43,25 @@ const Logo = styled.div`
   }
 `;
 
-const NavbarListItem = styled.div`
+const NavbarContainer = styled.div`
+  display: flex;
+  flex: 1;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0 20px;
+`;
+
+const NavbarLeft = styled.div`
   display: flex;
   align-items: center;
   gap: 30px;
+  margin-left: 25px;
+`;
+
+const NavbarRight = styled.div`
+  display: flex;
+  align-items: center;
+  gap: 20px;
 `;
 
 const NavLink = styled(Button)`
@@ -48,6 +73,9 @@ const NavLink = styled(Button)`
   padding: 0;
   height: auto;
   transition: color 0.3s;
+  display: flex;
+  align-items: center;
+  gap: 5px;
 
   &:hover {
     color: var(--csecondary);
@@ -64,10 +92,35 @@ const AvatarWrapper = styled.div`
   }
 `;
 
+// Spacer component to prevent content from being hidden under fixed header
+const HeaderSpacer = styled.div`
+  height: 70px;
+  width: 100%;
+`;
+
 function HeaderComponent() {
   const user = useSelector((state) => state.user.currentUser);
   const dispatch = useDispatch();
   const navigate = useNavigate();
+  const [scrolled, setScrolled] = useState(false);
+  
+  useEffect(() => {
+    const handleScroll = () => {
+      const scrollPosition = window.scrollY;
+      if (scrollPosition > 10) {
+        setScrolled(true);
+      } else {
+        setScrolled(false);
+      }
+    };
+
+    window.addEventListener('scroll', handleScroll);
+    
+    // Clean up the event listener when component unmounts
+    return () => {
+      window.removeEventListener('scroll', handleScroll);
+    };
+  }, []);
   
   function handleLogout() {
     logoutDispatch(dispatch);
@@ -79,6 +132,7 @@ function HeaderComponent() {
     const baseItems = [
       {
         key: "1",
+        icon: <UserOutlined />,
         label: <div onClick={() => navigate('/edit-profile')}>Thông tin cá nhân</div>,
       }
     ];
@@ -87,28 +141,33 @@ function HeaderComponent() {
     if (user?.role === 'Owner') {
       baseItems.push({
         key: "2",
+        icon: <HomeOutlined />,
         label: <div onClick={() => navigate("/ownerHome")}>Kênh chủ căn hộ</div>,
       });
     } else if (user?.role === 'Rentor') {
       baseItems.push({
         key: "2",
+        icon: <HomeOutlined />,
         label: <div onClick={() => navigate("/rentorHome")}>Kênh người thuê</div>,
       });
     }
     if (user?.role === 'User') {
       baseItems.push({
         key: "3",
+        icon: <HomeOutlined />,
         label: <div onClick={() => navigate("/deposit-apartment")}>Căn hộ đã đặt cọc</div>,
       });
     }
     baseItems.push({
       key: "4",
+      icon: <DollarOutlined />,
       label: <div onClick={() => navigate("/coin-request")}>Yêu cầu hoàn tiền</div>,
     });
     
     // Add logout option
     baseItems.push({
       key: "5",
+      icon: <LogoutOutlined />,
       label: <div onClick={handleLogout}>Đăng xuất</div>,
     });
     
@@ -121,54 +180,20 @@ function HeaderComponent() {
   const formItems = [
     {
       key: "1",
+      icon: <FormOutlined />,
       label: <div onClick={() => navigate("/form-request")}>Gửi đơn</div>,
     },
     {
       key: "2",
+      icon: <FileTextOutlined />,
       label: <div onClick={() => navigate("/form-list")}>Danh sách đơn</div>,
     }
   ];
 
-  const getDropdownNotis = () => {
-    const baseItems = [
-      {
-        key: "1",
-        label: <div onClick={() => {console.log('tat ca thong bao');}}>Tất cả thông báo</div>,
-      }
-    ];
-    
-    // Add role-specific channel options
-    if (user?.role === 'Owner') {
-      baseItems.push({
-        key: "2",
-        label: <div onClick={() => navigate("/ownerHome")}>Kênh chủ căn hộ</div>,
-      });
-    } else if (user?.role === 'Rentor') {
-      baseItems.push({
-        key: "2",
-        label: <div onClick={() => navigate("/rentorHome")}>Kênh người thuê</div>,
-      });
-    }
-    
-    // Add notifications
-    baseItems.push({
-      key: "4",
-      label: <div onClick={handleLogout}>Thông báo 1 </div>,
-    });
-    baseItems.push({
-      key: "5",
-      label: <div onClick={handleLogout}>Thông báo 2 </div>,
-    });
-    
-    return baseItems;
-  };
-
-  const notis = getDropdownNotis();
 
   return (
     <>
-      
-      <WrapperHeader>
+      <WrapperHeader scrolled={scrolled}>
         <Logo onClick={() => {
           const roleUser = user?.role;
           if(roleUser === 'Admin'){
@@ -186,56 +211,61 @@ function HeaderComponent() {
           />
         </Logo>
 
-        <NavbarListItem>
-          <NavLink onClick={() => navigate("/post")}>
-            Bài viết
-          </NavLink>
-          <NavLink onClick={() => navigate("/service")}>
-            Dịch vụ
-          </NavLink>
-          {(user?.role === 'Owner' || user?.role === 'Rentor') && (
-            <Dropdown menu={{ items: formItems }} placement="bottom">
-              <NavLink>
-                Đơn từ
-              </NavLink>
-            </Dropdown>
-          )}
-          
-          <NotificationWrapper />
-          
-          {user ? (
-            <Dropdown menu={{ items: items }} placement="bottomRight">
-              <AvatarWrapper>
-                <Image 
-                  preview={false} 
-                  style={{borderRadius:'100%'}} 
-                  width='40px' 
-                  height='40px' 
-                  src={user.userImgUrl || avtBase}
-                />
-              </AvatarWrapper>
-            </Dropdown>
-          ) : (
-            <>
-              <Button 
-                type="primary" 
-                ghost 
-                size="middle" 
-                onClick={() => navigate("/login")}
-              >
-                Đăng nhập
-              </Button>
-              <Button 
-                type="primary" 
-                size="middle" 
-                onClick={() => navigate("/register")}
-              >
-                Đăng ký
-              </Button>
-            </>
-          )}
-        </NavbarListItem>
+        <NavbarContainer>
+          <NavbarLeft>
+            <NavLink onClick={() => navigate("/post")}>
+              Bài viết
+            </NavLink>
+            <NavLink onClick={() => navigate("/service")}>
+               Dịch vụ
+            </NavLink>
+            {(user?.role === 'Owner' || user?.role === 'Rentor') && (
+              <Dropdown menu={{ items: formItems }} placement="bottom">
+                <NavLink>
+                   Đơn từ
+                </NavLink>
+              </Dropdown>
+            )}
+          </NavbarLeft>
+
+          <NavbarRight>
+            <NotificationWrapper />
+            
+            {user ? (
+              <Dropdown menu={{ items: items }} placement="bottomRight">
+                <AvatarWrapper>
+                  <Image 
+                    preview={false} 
+                    style={{borderRadius:'100%'}} 
+                    width='40px' 
+                    height='40px' 
+                    src={user.userImgUrl || avtBase}
+                  />
+                </AvatarWrapper>
+              </Dropdown>
+            ) : (
+              <>
+                <Button 
+                  type="primary" 
+                  ghost 
+                  size="middle" 
+                  onClick={() => navigate("/login")}
+                >
+                  Đăng nhập
+                </Button>
+                <Button 
+                  type="primary" 
+                  size="middle" 
+                  onClick={() => navigate("/register")}
+                >
+                  Đăng ký
+                </Button>
+              </>
+            )}
+          </NavbarRight>
+        </NavbarContainer>
       </WrapperHeader>
+      <HeaderSpacer />
     </>
   );
 }
