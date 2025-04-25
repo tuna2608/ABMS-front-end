@@ -7,6 +7,7 @@ import {
   FormOutlined, 
   HomeOutlined, 
   DollarOutlined,
+  EditOutlined
 } from "@ant-design/icons";
 import styled from "styled-components";
 import logoMenu from "../../../assets/common/images/logo-menu.png";
@@ -163,10 +164,15 @@ function HeaderComponent() {
       icon: <DollarOutlined />,
       label: <div onClick={() => navigate("/coin-request")}>Yêu cầu hoàn tiền</div>,
     });
+    baseItems.push({
+      key: "5",
+      icon: <EditOutlined />,
+      label: <div onClick={() => navigate("/change-password")}>Đổi mật khẩu</div>,
+    });
     
     // Add logout option
     baseItems.push({
-      key: "5",
+      key: "6",
       icon: <LogoutOutlined />,
       label: <div onClick={handleLogout}>Đăng xuất</div>,
     });
