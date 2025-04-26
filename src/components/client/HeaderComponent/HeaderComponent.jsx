@@ -101,6 +101,7 @@ const HeaderSpacer = styled.div`
 
 function HeaderComponent() {
   const user = useSelector((state) => state.user.currentUser);
+  
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
@@ -146,7 +147,7 @@ function HeaderComponent() {
           <div onClick={() => navigate("/ownerHome")}>Kênh chủ căn hộ</div>
         ),
       });
-    } else if (user?.role === "Rentor") {
+    } else if (user?.isRentor === true) {
       baseItems.push({
         key: "2",
         icon: <HomeOutlined />,
@@ -233,7 +234,6 @@ function HeaderComponent() {
                 <NavLink onClick={() => navigate("/service")}>Dịch vụ</NavLink>
               </>
             )}
-
             {(user?.role === "Owner" || user?.role === "Rentor") && (
               <Dropdown menu={{ items: formItems }} placement="bottom">
                 <NavLink>Đơn từ</NavLink>
@@ -243,7 +243,6 @@ function HeaderComponent() {
 
           <NavbarRight>
             <NotificationWrapper />
-
             {user ? (
               <Dropdown menu={{ items: items }} placement="bottomRight">
                 <AvatarWrapper>
