@@ -1077,6 +1077,24 @@ export const getContractOwners = async (apartmentName) => {
   }
 };
 
+export const getContractRentor = async (rentorId) => {
+  try {
+    const res = await publicRequest.get(`/verification/getByRentorId/${rentorId}`);
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || 'Lấy danh sách hợp đồng của người thuê thành công'
+    };
+  } catch (error) {
+    console.error("Error fetching contract owners:", error);
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || 'Có lỗi xảy ra khi lấy danh sách hợp đồng của người thuê'
+    };
+  }
+};
+
 //cập nhật hợp đồng mới
 export const updateContractVerification = async (verificationId, startDate, endDate, imageFiles) => {
   try {

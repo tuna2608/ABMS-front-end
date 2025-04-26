@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { 
   Card, 
   Table, 
@@ -12,8 +12,9 @@ import {
   FileProtectOutlined, 
   DownloadOutlined, 
 } from "@ant-design/icons";
-import styled from 'styled-components';
 import moment from "moment";
+import { useSelector } from "react-redux";
+import { getContractRentor } from "../../redux/apiCalls";
 
 // Hàm format tiền tệ
 const formatCurrency = (value) => {
@@ -23,11 +24,38 @@ const formatCurrency = (value) => {
 
 // ContractView Component
 const ContractView = () => {
+  const [currentUser] = useState(
+    useSelector((state) => state.user.currentUser)
+  );
+
   const [contracts, setContracts] = useState([]);
+  const [loading,setLoading] = useState(false);
   const [selectedContract, setSelectedContract] = useState(null);
   const [isContractModalVisible, setIsContractModalVisible] = useState(false);
 
-  
+
+
+  useEffect(()=>{
+    callGetContractByRentorId(currentUser)
+  },[currentUser])
+
+  async function callGetContractByRentorId(currentUser){
+    setLoading(true)
+    try {
+      const rentorId = currentUser.userId;
+      const res = await getContractRentor(rentorId);
+      if(res.success){
+        setContracts(res.data);
+        message.success(res.message)
+      }else{
+        message.error(res.message)
+      }
+    } catch (error) {
+      message.error("Không thể lấy danh sách hợp đồng của người thuê")
+    }finally{
+      setLoading(false)
+    }
+  }
 
   // Hàm tải hợp đồng
   const handleDownloadContract = () => {
@@ -54,32 +82,27 @@ const ContractView = () => {
       key: "apartmentName",
     },
     {
-      title: "Số hợp đồng",
-      dataIndex: "contractNumber",
-      key: "contractNumber",
-    },
-    {
       title: "Ngày bắt đầu",
-      dataIndex: "startDate",
-      key: "startDate",
+      dataIndex: "contractStartDate",
+      key: "contractStartDate",
       render: (date) => moment(date).format("DD/MM/YYYY")
     },
     {
       title: "Ngày kết thúc",
-      dataIndex: "endDate",
-      key: "endDate",
+      dataIndex: "contractEndDate",
+      key: "contractEndDate",
       render: (date) => moment(date).format("DD/MM/YYYY")
     },
     {
       title: "Trạng thái",
-      dataIndex: "status",
-      key: "status",
-      render: (status) => {
+      dataIndex: "verified",
+      key: "verified",
+      render: (verified) => {
         const statusMap = {
-          active: { color: "green", text: "Đang hiệu lực" },
-          expired: { color: "red", text: "Đã hết hạn" }
+          true: { color: "green", text: "Đang hiệu lực" },
+          false: { color: "red", text: "Đã hết hạn" }
         };
-        const statusInfo = statusMap[status];
+        const statusInfo = statusMap[verified];
         return <Tag color={statusInfo.color}>{statusInfo.text}</Tag>;
       }
     },
@@ -106,6 +129,7 @@ const ContractView = () => {
 
     return (
       <Modal
+        key={selectedContract.apartmentName}
         title="Chi tiết hợp đồng"
         open={isContractModalVisible}
         onCancel={() => setIsContractModalVisible(false)}
@@ -171,8 +195,7 @@ const ContractView = () => {
       <Table 
         dataSource={contracts} 
         columns={contractColumns}
-        rowKey="id"
-        locale={{ emptyText: 'Không có dữ liệu' }}
+        rowKey={(record)=>record.apartmentName}
       />
       {renderContractModal()}
     </Card>
