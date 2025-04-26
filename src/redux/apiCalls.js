@@ -1352,13 +1352,14 @@ export const getFacilityByUserId = async (userId) => {
 };
 
 //update facility
-export const updateFacility = async (facilityId, userId, facilityPostContent, files) => {
+export const updateFacility = async (facilityId, userId, facilityHeader, facilityPostContent, files) => {
   try {
     const formData = new FormData();
     formData.append('userId', userId);
+    formData.append('facilityHeader', facilityHeader); // Thêm dòng này
     formData.append('facilityPostContent', facilityPostContent);
-    
-    if (files?.length > 0) {
+
+    if (Array.isArray(files) && files.length > 0) {
       files.forEach(file => {
         formData.append('file', file);
       });

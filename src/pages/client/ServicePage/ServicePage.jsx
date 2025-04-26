@@ -5,7 +5,6 @@ import {
   Col,
   Space,
   Input,
-  Select,
   Pagination,
   Skeleton,
   Typography,
@@ -27,7 +26,6 @@ import {
   Table
 } from "antd";
 import {
-  HomeOutlined,
   SearchOutlined,
   EnvironmentOutlined,
   EyeOutlined,
@@ -48,13 +46,10 @@ import {
   updateFacility
 } from "../../../redux/apiCalls";
 import { useSelector } from "react-redux";
-import { CreateServiceModal, UpdateServiceModal } from './CreateServiceModal';
+import { CreateServiceModal } from './CreateServiceModal';
+import { UpdateServiceModal } from './UpdateServiceModal';
 
-const { Search } = Input;
-const { Option } = Select;
-const { Title, Text, Paragraph } = Typography;
-const { TabPane } = Tabs;
-const { TextArea } = Input;
+const { Text, Paragraph } = Typography;
 
 const ServicePage = () => {
   const location = useLocation();
@@ -62,7 +57,7 @@ const ServicePage = () => {
   
   const currentUser = useSelector((state) => state.user.currentUser);
   
-  const [activeTab, setActiveTab] = useState("partnerServices"); // Default to partner services
+  const [activeTab, setActiveTab] = useState("partnerServices"); 
   const [loading, setLoading] = useState(false);
   const [searchText, setSearchText] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
@@ -83,14 +78,13 @@ const ServicePage = () => {
       if (activeTab === 'partnerServices') {
         response = await getVerifiedFacilities();
       } else {
-        // For buildingServices tab, get user's posts
         response = await getFacilityByUserId(currentUser?.userId);
       }
 
       if (response?.success && response.data) {
         const transformedData = response.data.map(facility => ({
           id: facility.facilityId,
-          title: facility.facilityPostContent || 'Không có tiêu đề',
+          title: facility.facilityHeader || 'Không có tiêu đề',       
           content: facility.facilityPostContent || 'Không có nội dung',
           status: facility.status || 'pending',
           provider: facility.userName || 'Chưa có thông tin',
@@ -134,17 +128,28 @@ const ServicePage = () => {
 
   const handleCreateService = async (values) => {
     try {
-      setLoading(true);
+      // Validate required fields
+      if (!values.title || !values.content || !values.images?.fileList?.length) {
+        message.error('Vui lòng điền đầy đủ thông tin và tải lên ít nhất 1 ảnh');
+        return;
+      }
 
+      setLoading(true);
       const formData = new FormData();
+      
+      // Append basic fields
       formData.append('userId', currentUser.userId);
+      formData.append('facilityHeader', values.title);
       formData.append('facilityPostContent', values.content);
 
       // Handle image uploads
-      const fileList = values.images?.fileList;
+      const fileList = values.images.fileList;
       if (fileList?.length > 0) {
         fileList.forEach(file => {
-          formData.append('file', file.originFileObj);
+          // Ensure we're sending the actual file object
+          if (file.originFileObj) {
+            formData.append('file', file.originFileObj);
+          }
         });
       }
 
@@ -153,45 +158,57 @@ const ServicePage = () => {
       if (response.success) {
         message.success(response.message || 'Tạo bài đăng thành công');
         setIsCreateModalVisible(false);
-        // Refresh facilities list
-        fetchFacilities();
+        await fetchFacilities();
       } else {
-        message.error(response.message || 'Không thể tạo bài đăng');
+        throw new Error(response.message || 'Không thể tạo bài đăng');
       }
     } catch (error) {
       console.error("Error creating facility:", error);
-      message.error('Có lỗi xảy ra khi tạo bài đăng');
+      message.error(error.message || 'Có lỗi xảy ra khi tạo bài đăng');
     } finally {
       setLoading(false);
     }
   };
 
   const handleEditClick = (record) => {
-    setSelectedService(record);
+    setSelectedService({
+      id: record.id,
+      title: record.title,
+      content: record.content,
+      images: record.images?.map((url, index) => ({
+        uid: `-${index}`,
+        name: `image-${index}`,
+        status: 'done',
+        url: url,
+        thumbUrl: url,
+      })) || [],
+      userId: currentUser.userId
+    });
     setIsUpdateModalVisible(true);
   };
 
   const handleUpdateService = async (facilityId, formData) => {
     try {
       setLoading(true);
+      const files = Array.from(formData.getAll('file') || []);
       const response = await updateFacility(
-        facilityId, 
+        facilityId,
         currentUser.userId,
+        formData.get('facilityHeader'),
         formData.get('facilityPostContent'),
-        Array.from(formData.getAll('file'))
+        files
       );
-
       if (response.success) {
         message.success('Cập nhật bài viết thành công');
         setIsUpdateModalVisible(false);
         setSelectedService(null);
-        fetchFacilities(); // Refresh the list
+        await fetchFacilities();
       } else {
-        message.error(response.message || 'Có lỗi xảy ra khi cập nhật bài viết');
+        throw new Error(response.message || 'Có lỗi xảy ra khi cập nhật bài viết');
       }
     } catch (error) {
       console.error("Error updating facility:", error);
-      message.error('Có lỗi xảy ra khi cập nhật bài viết');
+      message.error(error.message || 'Có lỗi xảy ra khi cập nhật bài viết');
     } finally {
       setLoading(false);
     }
@@ -225,7 +242,7 @@ const ServicePage = () => {
   const renderPartnerServices = () => (
     <>
       <Flex justify="space-between" align="center" wrap="wrap" gap={16} style={{ marginBottom: 24 }}>
-        <Search
+        <Input.Search
           placeholder="Tìm kiếm dịch vụ liên kết..."
           onSearch={onSearch}
           style={{ width: 320 }}
@@ -436,9 +453,9 @@ const ServicePage = () => {
                 {facilityDetail.userName?.[0]?.toUpperCase()}
               </Avatar>
               <div style={{ flex: 1 }}>
-                <Title level={4} style={{ margin: 0 }}>
+                <Text strong style={{ margin: 0 }}>
                   {facilityDetail.facilityPostContent}
-                </Title>
+                </Text>
                 <Text type="secondary">
                   Đăng bởi: {facilityDetail.userName}
                 </Text>
@@ -568,22 +585,24 @@ const ServicePage = () => {
         type="card"
         tabBarStyle={{ marginBottom: 24 }}
         tabBarExtra={
-          <Button 
-            type="primary"
-            icon={<PlusOutlined />}
-            onClick={() => setIsCreateModalVisible(true)}
-          >
-            Tạo bài viết
-          </Button>
+          activeTab === "buildingServices" && (
+            <Button 
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={() => setIsCreateModalVisible(true)}
+            >
+              Tạo bài viết
+            </Button>
+          )
         }
       >
-        <TabPane
+        <Tabs.TabPane
           tab={<span><ShopOutlined /> Dịch vụ liên kết</span>}
           key="partnerServices"
         >
           {renderPartnerServices()}
-        </TabPane>
-        <TabPane
+        </Tabs.TabPane>
+        <Tabs.TabPane
           tab={<span><BuildOutlined /> Bài viết của bạn</span>}
           key="buildingServices"
         >
@@ -608,7 +627,7 @@ const ServicePage = () => {
               onChange: (page) => setCurrentPage(page)
             }}
           />
-        </TabPane>
+        </Tabs.TabPane>
       </Tabs>
 
       <CreateServiceModal 
@@ -616,6 +635,7 @@ const ServicePage = () => {
         onCancel={() => setIsCreateModalVisible(false)}
         onSubmit={handleCreateService}
         loading={loading}
+        currentUser={currentUser}  
       />
       
       <UpdateServiceModal 

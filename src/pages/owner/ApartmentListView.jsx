@@ -25,9 +25,7 @@ const { Option } = Select;
 const { Search } = Input;
 
 const ApartmentListView = () => {
-  const [currentUser] = useState(
-    useSelector((state) => state.user.currentUser)
-  );
+  const currentUser = useSelector((state) => state.user.currentUser);
 
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(4);
@@ -35,19 +33,29 @@ const ApartmentListView = () => {
   const [loading, setLoading] = useState(false);
   const [renters, setRenters] = useState({});
 
-  useEffect(() => {
-    const initData = async () => {
-      await fetchApartments(currentUser);
-      // Fetch renters for each apartment
-      apartments.forEach((apt) => {
-        fetchRenters(apt.apartmentName);
-      });
-    };
 
-    initData();
+  useEffect(() => {
+    if (currentUser) {
+      fetchApartments(currentUser);
+    }
   }, [currentUser]);
 
+  useEffect(() => {
+    const fetchRentersForApartments = async () => {
+      if (apartments.length > 0) {
+        const promises = apartments.map(apt => fetchRenters(apt.apartmentName));
+        await Promise.all(promises);
+      }
+    };
+
+    fetchRentersForApartments();
+  }, [apartments]);
+
   const fetchApartments = async (currentUser) => {
+    if (!currentUser) {
+      return;
+    }
+    
     setLoading(true);
     try {
       const response = await getApartments();
@@ -81,9 +89,12 @@ const ApartmentListView = () => {
           ...prev,
           [apartmentName]: response.data,
         }));
+      } else {
+        console.warn(`No renters found for apartment ${apartmentName}`);
       }
     } catch (error) {
-      console.error("Error fetching renters:", error);
+      console.error(`Error fetching renters for ${apartmentName}:`, error);
+      message.error(`Không thể tải thông tin người thuê cho căn hộ ${apartmentName}`);
     }
   };
 

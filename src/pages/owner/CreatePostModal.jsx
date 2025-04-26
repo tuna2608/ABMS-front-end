@@ -99,8 +99,8 @@ const CreatePostModal = ({ isModalOpen, setIsModalOpen, apartments, currentUser,
 
         if (selectedApartment) {
             postForm.setFieldsValue({
-                numberOfBathrooms: selectedApartment.number_of_bathrooms,
-                numberOfBedrooms: selectedApartment.number_of_bedrooms,
+                numberOfBathrooms: selectedApartment.numberOfBathrooms,
+                numberOfBedrooms: selectedApartment.numberOfBedrooms,
                 floor: selectedApartment.floor,
                 area: selectedApartment.area,
                 direction: selectedApartment.direction
@@ -207,8 +207,8 @@ const CreatePostModal = ({ isModalOpen, setIsModalOpen, apartments, currentUser,
             const selectedApartment = apartments.find(apt => apt.apartmentId === formValues.apartmentId);
             const aiContent = await generateAIPostContent({
                 postType: formValues.postType || 'Cho thuê',
-                numberOfBedrooms: selectedApartment.number_of_bedrooms,
-                numberOfBathrooms: selectedApartment.number_of_bathrooms,
+                numberOfBedrooms: selectedApartment.numberOfBedrooms,
+                numberOfBathrooms: selectedApartment.numberOfBathrooms,
                 area: selectedApartment.area,
                 floor: selectedApartment.floor,
                 direction: selectedApartment.direction
