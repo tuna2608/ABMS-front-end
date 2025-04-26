@@ -55,22 +55,6 @@ const CoinManagement = () => {
   const userCurrent = useSelector((state) => state.user.currentUser);
   const [loading, setLoading] = useState(false);
   const [reCoins, setReCoins] = useState([
-    // {
-    //   reCoinId: 1,
-    //   bankNumber: "53110009169999",
-    //   bankName: "Ngân hàng TMCP Đầu tư và Phát triển Việt Nam",
-    //   bankPin: "970418",
-    //   accountName: "NGUYEN ANH TU",
-    //   amount: 5000.0,
-    //   imgQR:
-    //     "https://img.vietqr.io/image/970418-53110009169999-compact2.jpg?amount=5000.0&addInfo=Rut+coin&accountName=NGUYEN+ANH+TU",
-    //   imgBill: null,
-    //   status: "processing",
-    //   userRequestId: 4,
-    //   content: null,
-    //   dateTime: null,
-    //   fullName: "Chủ căn hộ Tú1",
-    // },
   ]);
 
   

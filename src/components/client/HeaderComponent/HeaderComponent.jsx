@@ -1,22 +1,21 @@
 import { Button, Dropdown, Image } from "antd";
 import React, { useState, useEffect } from "react";
-import { 
-  FileTextOutlined, 
-  UserOutlined, 
-  LogoutOutlined, 
-  FormOutlined, 
-  HomeOutlined, 
+import {
+  FileTextOutlined,
+  UserOutlined,
+  LogoutOutlined,
+  FormOutlined,
+  HomeOutlined,
   DollarOutlined,
-  EditOutlined
+  EditOutlined,
 } from "@ant-design/icons";
 import styled from "styled-components";
 import logoMenu from "../../../assets/common/images/logo-menu.png";
 import { useNavigate } from "react-router-dom";
-import { useDispatch, useSelector } from 'react-redux'
+import { useDispatch, useSelector } from "react-redux";
 import { logoutDispatch } from "../../../redux/apiCalls";
 import avtBase from "../../../assets/common/images/avtbase.jpg";
 import NotificationWrapper from "./NotificationWrapper";
-
 
 const WrapperHeader = styled.div`
   height: 70px;
@@ -31,14 +30,15 @@ const WrapperHeader = styled.div`
   right: 0;
   z-index: 1000;
   transition: box-shadow 0.3s ease;
-  box-shadow: ${props => props.scrolled ? '0 2px 10px rgba(0, 0, 0, 0.15)' : 'none'};
+  box-shadow: ${(props) =>
+    props.scrolled ? "0 2px 10px rgba(0, 0, 0, 0.15)" : "none"};
 `;
 
 const Logo = styled.div`
   height: 100%;
   display: flex;
   align-items: center;
-  
+
   &:hover {
     cursor: pointer;
   }
@@ -87,7 +87,7 @@ const NavLink = styled(Button)`
 const AvatarWrapper = styled.div`
   cursor: pointer;
   transition: transform 0.2s;
-  
+
   &:hover {
     transform: scale(1.05);
   }
@@ -104,7 +104,7 @@ function HeaderComponent() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const [scrolled, setScrolled] = useState(false);
-  
+
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY;
@@ -114,15 +114,13 @@ function HeaderComponent() {
         setScrolled(false);
       }
     };
-
-    window.addEventListener('scroll', handleScroll);
-    
+    window.addEventListener("scroll", handleScroll);
     // Clean up the event listener when component unmounts
     return () => {
-      window.removeEventListener('scroll', handleScroll);
+      window.removeEventListener("scroll", handleScroll);
     };
   }, []);
-  
+
   function handleLogout() {
     logoutDispatch(dispatch);
     navigate("/login");
@@ -134,49 +132,62 @@ function HeaderComponent() {
       {
         key: "1",
         icon: <UserOutlined />,
-        label: <div onClick={() => navigate('/edit-profile')}>Thông tin cá nhân</div>,
-      }
+        label: (
+          <div onClick={() => navigate("/edit-profile")}>Thông tin cá nhân</div>
+        ),
+      },
     ];
-    
     // Add role-specific channel options
-    if (user?.role === 'Owner') {
+    if (user?.role === "Owner") {
       baseItems.push({
         key: "2",
         icon: <HomeOutlined />,
-        label: <div onClick={() => navigate("/ownerHome")}>Kênh chủ căn hộ</div>,
+        label: (
+          <div onClick={() => navigate("/ownerHome")}>Kênh chủ căn hộ</div>
+        ),
       });
-    } else if (user?.role === 'Rentor') {
+    } else if (user?.role === "Rentor") {
       baseItems.push({
         key: "2",
         icon: <HomeOutlined />,
-        label: <div onClick={() => navigate("/rentorHome")}>Kênh người thuê</div>,
+        label: (
+          <div onClick={() => navigate("/rentorHome")}>Kênh người thuê</div>
+        ),
       });
     }
-    if (user?.role === 'User') {
+    if (user?.role === "User") {
       baseItems.push({
         key: "3",
         icon: <HomeOutlined />,
-        label: <div onClick={() => navigate("/deposit-apartment")}>Căn hộ đã đặt cọc</div>,
+        label: (
+          <div onClick={() => navigate("/deposit-apartment")}>
+            Căn hộ đã đặt cọc
+          </div>
+        ),
       });
     }
     baseItems.push({
       key: "4",
       icon: <DollarOutlined />,
-      label: <div onClick={() => navigate("/coin-request")}>Yêu cầu hoàn tiền</div>,
+      label: (
+        <div onClick={() => navigate("/coin-request")}>Yêu cầu hoàn tiền</div>
+      ),
     });
     baseItems.push({
       key: "5",
       icon: <EditOutlined />,
-      label: <div onClick={() => navigate("/change-password")}>Đổi mật khẩu</div>,
+      label: (
+        <div onClick={() => navigate("/change-password")}>Đổi mật khẩu</div>
+      ),
     });
-    
+
     // Add logout option
     baseItems.push({
       key: "6",
       icon: <LogoutOutlined />,
       label: <div onClick={handleLogout}>Đăng xuất</div>,
     });
-    
+
     return baseItems;
   };
 
@@ -193,75 +204,71 @@ function HeaderComponent() {
       key: "2",
       icon: <FileTextOutlined />,
       label: <div onClick={() => navigate("/form-list")}>Danh sách đơn</div>,
-    }
+    },
   ];
-
 
   return (
     <>
       <WrapperHeader scrolled={scrolled}>
-        <Logo onClick={() => {
-          const roleUser = user?.role;
-          if(roleUser === 'Admin'){
-            navigate('/adminHome')
-          } else if(roleUser === 'Staff'){
-            navigate('/staffHome')
-          } else {
-            navigate('/')
-          } 
-        }}>
-          <Image
-            src={logoMenu}
-            width="140px"
-            preview={false}
-          />
+        <Logo
+          onClick={() => {
+            const roleUser = user?.role;
+            if (roleUser === "Admin") {
+              navigate("/adminHome");
+            } else if (roleUser === "Staff") {
+              navigate("/staffHome");
+            } else {
+              navigate("/");
+            }
+          }}
+        >
+          <Image src={logoMenu} width="140px" preview={false} />
         </Logo>
 
         <NavbarContainer>
           <NavbarLeft>
-            <NavLink onClick={() => navigate("/post")}>
-              Bài viết
-            </NavLink>
-            <NavLink onClick={() => navigate("/service")}>
-               Dịch vụ
-            </NavLink>
-            {(user?.role === 'Owner' || user?.role === 'Rentor') && (
+            {(user?.role !== "Staff" && user?.role !== "Admin") && (
+              <>
+                <NavLink onClick={() => navigate("/post")}>Bài viết</NavLink>
+                <NavLink onClick={() => navigate("/service")}>Dịch vụ</NavLink>
+              </>
+            )}
+
+            {(user?.role === "Owner" || user?.role === "Rentor") && (
               <Dropdown menu={{ items: formItems }} placement="bottom">
-                <NavLink>
-                   Đơn từ
-                </NavLink>
+                <NavLink>Đơn từ</NavLink>
               </Dropdown>
             )}
           </NavbarLeft>
 
           <NavbarRight>
             <NotificationWrapper />
-            
+
             {user ? (
               <Dropdown menu={{ items: items }} placement="bottomRight">
                 <AvatarWrapper>
-                  <Image 
-                    preview={false} 
-                    style={{borderRadius:'100%'}} 
-                    width='40px' 
-                    height='40px' 
+                  <Image
+                    preview={false}
+                    style={{ borderRadius: "100%" }}
+                    width="40px"
+                    height="40px"
                     src={user.userImgUrl || avtBase}
                   />
                 </AvatarWrapper>
               </Dropdown>
             ) : (
               <>
-                <Button 
-                  type="primary" 
-                  ghost 
-                  size="middle" 
+                <Button
+                  type="primary"
+                  ghost
+                  size="middle"
                   onClick={() => navigate("/login")}
                 >
                   Đăng nhập
                 </Button>
-                <Button 
-                  type="primary" 
-                  size="middle" 
+                <Button
+                  type="primary"
+                  size="middle"
                   onClick={() => navigate("/register")}
                 >
                   Đăng ký
