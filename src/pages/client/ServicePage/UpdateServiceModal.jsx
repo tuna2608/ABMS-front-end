@@ -4,42 +4,58 @@ import { PlusOutlined } from '@ant-design/icons';
 
 const { TextArea } = Input;
 
-export const CreateServiceModal = ({ visible, onCancel, onSubmit, loading, currentUser }) => {
+export const UpdateServiceModal = ({ visible, onCancel, onSubmit, loading, initialValues }) => {
+  const [form] = Form.useForm();
+
   const handleSubmit = async (values) => {
     try {
       const formData = new FormData();
-      
-      // Append basic fields
-      formData.append('userId', currentUser?.userId);
+      formData.append('userId', initialValues.userId);
       formData.append('facilityHeader', values.title);
       formData.append('facilityPostContent', values.content);
-      
-      // Handle file uploads
-      const fileList = values.images?.fileList;
-      if (fileList?.length > 0) {
-        fileList.forEach(file => {
-          if (file.originFileObj) {
-            formData.append('file', file.originFileObj);
-          }
-        });
-      }
 
-      await onSubmit(values);
+      // Chỉ gửi file mới
+      const fileList = values.images?.fileList || [];
+      fileList.forEach(file => {
+        if (file.originFileObj) {
+          formData.append('file', file.originFileObj);
+        }
+      });
+
+      await onSubmit(initialValues.id, formData);
     } catch (error) {
-      console.error("Error creating facility:", error);
-      message.error('Có lỗi xảy ra khi tạo bài viết');
+      console.error("Error updating facility:", error);
+      message.error(error.message || 'Có lỗi xảy ra khi cập nhật bài viết');
     }
   };
 
+  // Reset form when initialValues change
+  React.useEffect(() => {
+    if (visible && initialValues) {
+      form.setFieldsValue({
+        title: initialValues.title,
+        content: initialValues.content,
+        images: { fileList: initialValues.images || [] }
+      });
+    }
+  }, [visible, initialValues, form]);
+
   return (
     <Modal
-      title="Tạo bài viết mới"
+      title="Cập nhật bài viết"
       open={visible}
-      onCancel={onCancel}
+      onCancel={() => {
+        form.resetFields();
+        onCancel();
+      }}
       footer={null}
       width={600}
     >
-      <Form layout="vertical" onFinish={handleSubmit}>
+      <Form 
+        form={form}
+        layout="vertical" 
+        onFinish={handleSubmit}
+      >
         <Form.Item
           name="title"
           label="Tiêu đề bài viết"
@@ -86,6 +102,7 @@ export const CreateServiceModal = ({ visible, onCancel, onSubmit, loading, curre
               return false; // Return false to prevent auto upload
             }}
             maxCount={5}
+            defaultFileList={initialValues?.images}
             accept="image/*"
           >
             <div>
@@ -96,11 +113,17 @@ export const CreateServiceModal = ({ visible, onCancel, onSubmit, loading, curre
         </Form.Item>
 
         <Form.Item style={{ marginBottom: 0, textAlign: 'right' }}>
-          <Button style={{ marginRight: 8 }} onClick={onCancel}>
+          <Button 
+            style={{ marginRight: 8 }} 
+            onClick={() => {
+              form.resetFields();
+              onCancel();
+            }}
+          >
             Hủy
           </Button>
           <Button type="primary" htmlType="submit" loading={loading}>
-            Đăng bài
+            Cập nhật
           </Button>
         </Form.Item>
       </Form>
