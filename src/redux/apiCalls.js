@@ -482,7 +482,7 @@ export const importFile = async (formData) => {
     return {
       success: false,
       data: [],
-      message: error.response?.data?.message || "Lỗi khi lấy danh sách lượng tiêu thụ"
+      message: error.response?.data?.message || "Lỗi khi tải lên tệp danh sách tiêu thụ"
     };
   }
 }

@@ -19,7 +19,7 @@ import {
   DownloadOutlined 
 } from "@ant-design/icons";
 import moment from "moment";
-import { createBillConsumption, getAllConsumption } from "../../redux/apiCalls";
+import { createBillConsumption, getAllConsumption, importFile } from "../../redux/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -28,6 +28,7 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
     useSelector((state) => state.user.currentUser)
   );
   const [loading, setLoading] = useState(false);
+  const [loadingImport,setLoadingImport] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const defaultValue = moment().subtract(1, "months");
@@ -191,7 +192,29 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
     console.log(selectedDate.format("YYYY-MM"));
   };
 
-  const handleImportFile = () => {};
+  const handleImportFile = async (event) => {
+    const file = event.target.files[0];
+
+    if (file) {
+      const formData = new FormData();
+      formData.append("file", file);
+      formData.append("createdUserId", currentUser.userId);
+      setLoadingImport(true);
+      try {
+        const response = await importFile(formData);
+        if(response.success){
+          console.log(response.data);
+          message.success(response.message);
+        }else{
+          message.error(response.message)
+        }
+      } catch (error) {
+        console.error('Không thể upload', error);
+      } finally {
+        setLoadingImport(false);
+      }
+    }
+  };
 
   return (
     <Card
@@ -223,12 +246,17 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
           >
             Tải mẫu đơn
           </Button>
-          <Button
+          <Input
+            type="file"
+            onChange={handleImportFile}
             style={{ backgroundColor: "var(--fgreen)", color: "white" }}
-            onClick={handleImportFile}
-          >
-            Import CSV
-          </Button>
+            // onClick={handleImportFile}
+          />
+          
+
+          {/* <Button
+            Import CSV */}
+          {/* </Input> */}
         </Flex>
       </Flex>
 
