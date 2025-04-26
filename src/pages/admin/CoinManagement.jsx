@@ -25,7 +25,7 @@ import {
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { acceptReCoin, getAllReCoin, rejectReCoin } from "../../redux/apiCalls";
+import { acceptReCoin, getAllReCoin, login, rejectReCoin } from "../../redux/apiCalls";
 
 const { Text } = Typography;
 
@@ -48,92 +48,32 @@ const formatCurrency = (amount) => {
   return result;
 };
 
-// Sample data for multiple transfer requests
-const sampleTransferRequests = [
-  {
-    id: 1,
-    userId: "U001",
-    username: "nguyen_van_a",
-    fullName: "Nguyễn Văn A",
-    amount: 500000,
-    status: "pending",
-    bankInfo: {
-      bankName: "Vietcombank",
-      accountNumber: "1234567890",
-      accountName: "NGUYEN VAN A",
-    },
-    requestDate: "2024-04-10",
-  },
-  {
-    id: 2,
-    userId: "U002",
-    username: "tran_thi_b",
-    fullName: "Trần Thị B",
-    amount: 1000000,
-    status: "pending",
-    bankInfo: {
-      bankName: "BIDV",
-      accountNumber: "0987654321",
-      accountName: "TRAN THI B",
-    },
-    requestDate: "2024-04-11",
-  },
-  {
-    id: 3,
-    userId: "U003",
-    username: "le_van_c",
-    fullName: "Lê Văn C",
-    amount: 750000,
-    status: "completed",
-    bankInfo: {
-      bankName: "Techcombank",
-      accountNumber: "2345678901",
-      accountName: "LE VAN C",
-    },
-    requestDate: "2024-04-09",
-  },
-  {
-    id: 4,
-    userId: "U004",
-    username: "pham_thi_d",
-    fullName: "Phạm Thị D",
-    amount: 300000,
-    status: "rejected",
-    bankInfo: {
-      bankName: "TPBank",
-      accountNumber: "3456789012",
-      accountName: "PHAM THI D",
-    },
-    requestDate: "2024-04-08",
-  },
-];
+
 
 const CoinManagement = () => {
   const navigate = useNavigate();
   const userCurrent = useSelector((state) => state.user.currentUser);
   const [loading, setLoading] = useState(false);
   const [reCoins, setReCoins] = useState([
-    {
-      reCoinId: 1,
-      bankNumber: "53110009169999",
-      bankName: "Ngân hàng TMCP Đầu tư và Phát triển Việt Nam",
-      bankPin: "970418",
-      accountName: "NGUYEN ANH TU",
-      amount: 5000.0,
-      imgQR:
-        "https://img.vietqr.io/image/970418-53110009169999-compact2.jpg?amount=5000.0&addInfo=Rut+coin&accountName=NGUYEN+ANH+TU",
-      imgBill: null,
-      status: "processing",
-      userRequestId: 4,
-      content: null,
-      dateTime: null,
-      fullName: "Chủ căn hộ Tú1",
-    },
+    // {
+    //   reCoinId: 1,
+    //   bankNumber: "53110009169999",
+    //   bankName: "Ngân hàng TMCP Đầu tư và Phát triển Việt Nam",
+    //   bankPin: "970418",
+    //   accountName: "NGUYEN ANH TU",
+    //   amount: 5000.0,
+    //   imgQR:
+    //     "https://img.vietqr.io/image/970418-53110009169999-compact2.jpg?amount=5000.0&addInfo=Rut+coin&accountName=NGUYEN+ANH+TU",
+    //   imgBill: null,
+    //   status: "processing",
+    //   userRequestId: 4,
+    //   content: null,
+    //   dateTime: null,
+    //   fullName: "Chủ căn hộ Tú1",
+    // },
   ]);
 
-  const [transferRequests, setTransferRequests] = useState(
-    sampleTransferRequests
-  );
+  
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [qrModalVisible, setQrModalVisible] = useState(false);
@@ -147,9 +87,13 @@ const CoinManagement = () => {
     setLoading(true);
     try {
       const res = await getAllReCoin();
-      // console.log(res);
+      console.log(res.data);
       if (res.success) {
         if (res.data) {
+          if (typeof res.data === 'object' && res.data !== null && !Array.isArray(res.data)) {
+            message.success(res.message);
+            return;
+          }
           setReCoins(res.data);
         }
         message.success(res.message);
@@ -352,8 +296,9 @@ const CoinManagement = () => {
       <Table
         dataSource={reCoins}
         columns={columns}
-        rowKey="id"
+        rowKey={record => record.reCoinId}
         pagination={{ pageSize: 10 }}
+        loading={loading}
       />
 
       {/* Request Details Drawer */}
