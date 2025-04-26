@@ -339,19 +339,19 @@ const PostDetail = () => {
               />
             </Descriptions.Item>
             <Descriptions.Item label="Hướng nhà">
-              {apartment?.direction}
+              {apartment?.apartment.direction}
             </Descriptions.Item>
             <Descriptions.Item label="Nội thất">
               {apartment?.furnishing}
             </Descriptions.Item>
             <Descriptions.Item label="Tầng số">
-              {apartment?.floor}
+              {apartment?.apartment.floor}
             </Descriptions.Item>
             <Descriptions.Item label="Tòa nhà">
               {apartment?.buildingName}
             </Descriptions.Item>
             <Descriptions.Item label="Tiền cọc">
-              {apartment?.depositAmount}
+              {apartment?.depositPrice}
             </Descriptions.Item>
             <Descriptions.Item label="Thời hạn hợp đồng">
               {apartment?.contractTerm}
@@ -695,7 +695,21 @@ const PostDetail = () => {
                     Nhắn tin liên hệ
                   </Button>
                 )}
-                {userCurrent && apartment.depositUserId !== userCurrent.userId && (
+                {/* { if(userCurrent && apartment.depositUserId !== userCurrent.userId && apartment.postType === "Cho thuê"){
+                  (
+                    <Button
+                      style={{ background: "var(--forange)", color: "white" }}
+                      icon={<MoneyCollectOutlined />}
+                      disabled={apartment.depositCheck === 'done'}
+                      onClick={()=>setIsDepositeOpen(true)}
+                      block
+                    >
+                      Đặt cọc
+                    </Button>
+                  )
+                }} */}
+
+                {userCurrent && apartment.depositUserId !== userCurrent.userId && apartment.postType === "Cho thuê" &&(
                   <Button
                     style={{ background: "var(--forange)", color: "white" }}
                     icon={<MoneyCollectOutlined />}
@@ -706,7 +720,8 @@ const PostDetail = () => {
                     Đặt cọc
                   </Button>
                 )}
-                {userCurrent && apartment.depositUserId === userCurrent.userId && (
+
+                {userCurrent && apartment.depositUserId === userCurrent.userId && apartment.postType === "Cho thuê" &&(
                   <Button
                     style={{ background: "var(--fred)", color: "white" }}
                     icon={<MoneyCollectOutlined />}
@@ -752,7 +767,7 @@ const PostDetail = () => {
                 <Descriptions.Item label="Người liên hệ">
                   <Space>
                     <UserOutlined />
-                    <Text>{apartment.contactName}</Text>
+                    <Text>{apartment.apartment.householder}</Text>
                   </Space>
                 </Descriptions.Item>
                 <Descriptions.Item label="Số điện thoại">

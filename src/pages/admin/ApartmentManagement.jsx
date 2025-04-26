@@ -220,11 +220,13 @@ const ApartmentManagement = () => {
         const statusMap = {
           'unrented': 'Còn Trống',
           'rented': 'Đã Cho Thuê',
+          'sold': 'Đã Bán',
           'MAINTENANCE': 'Đang Bảo Trì'
         };
         const colorMap = {
           'unrented': 'green',
           'rented': 'blue',
+          'sold': 'purple',
           'MAINTENANCE': 'orange'
         };
         return (
