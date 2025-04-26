@@ -104,6 +104,7 @@ function HeaderComponent() {
   
   const dispatch = useDispatch();
   const navigate = useNavigate();
+
   const [scrolled, setScrolled] = useState(false);
 
   useEffect(() => {
@@ -210,7 +211,7 @@ function HeaderComponent() {
 
   return (
     <>
-      <WrapperHeader scrolled={scrolled}>
+      <WrapperHeader>
         <Logo
           onClick={() => {
             const roleUser = user?.role;
