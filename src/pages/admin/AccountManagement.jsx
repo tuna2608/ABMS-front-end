@@ -233,7 +233,7 @@ const AccountManagement = () => {
         verificationFormType: accountToApprove.verificationType || 2,
         email: accountToApprove.email,
         phoneNumber: accountToApprove.phone,
-        userRole: accountToApprove.role || "Rentor",
+        userRole: accountToApprove.role || "Rentor", 
         contractStartDate:
           accountToApprove.contractStartDate?.toISOString() || null,
         contractEndDate:

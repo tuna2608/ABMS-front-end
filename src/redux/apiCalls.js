@@ -894,9 +894,9 @@ export const getResidentList = async (dispatch) => {
 export const verifyAndAddUser = async (dispatch, verifyUserResponseDTO) => {
   dispatch(addUserStart());
   try {
-    console.log("Data sent to /user/add API:", verifyUserResponseDTO);
+    // console.log("Data sent to /user/add API:", verifyUserResponseDTO);
     const res = await userRequest.post("/user/add", verifyUserResponseDTO);
-    console.log("Response from /user/add API:", res.data);
+    // console.log("Response from /user/add API:", res.data);
     dispatch(addUserSuccess(res.data));
     await getResidentList(dispatch);
     return {

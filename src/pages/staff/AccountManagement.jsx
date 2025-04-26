@@ -42,7 +42,7 @@ const AccountManagement = () => {
           message.error(unrentedResponse.message);
         }
       } catch (error) {
-        console.error("Error in fetching unrented apartments:", error);
+        console.error("Không thể lấy căn hộ chưa cho thuê");
       }
     };
 
@@ -55,7 +55,7 @@ const AccountManagement = () => {
           message.error(noHouseholderResponse.message);
         }
       } catch (error) {
-        console.error("Error in fetching apartments without householder:", error);
+        console.error("Không thể lấy căn hộ chưa có chủ", error);
       }
     };
 

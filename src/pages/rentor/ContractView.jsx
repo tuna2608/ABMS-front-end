@@ -27,6 +27,8 @@ const ContractView = () => {
   const [selectedContract, setSelectedContract] = useState(null);
   const [isContractModalVisible, setIsContractModalVisible] = useState(false);
 
+  
+
   // Hàm tải hợp đồng
   const handleDownloadContract = () => {
     // Thay thế URL này bằng link Google Drive trực tiếp có thể tải xuống
