@@ -235,7 +235,7 @@ function HeaderComponent() {
                 <NavLink onClick={() => navigate("/service")}>Dịch vụ</NavLink>
               </>
             )}
-            {(user?.role === "Owner" || user?.role === "Rentor") && (
+            {(user?.role === "Owner" || user?.isRentor === true) && (
               <Dropdown menu={{ items: formItems }} placement="bottom">
                 <NavLink>Đơn từ</NavLink>
               </Dropdown>

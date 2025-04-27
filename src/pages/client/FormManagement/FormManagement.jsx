@@ -1,10 +1,26 @@
-import React, { useState } from 'react';
-import { Form, Input, Select, Button, Upload, Typography, Card, Divider, Row, Col, message } from 'antd';
-import { UploadOutlined, SendOutlined, DownloadOutlined } from '@ant-design/icons';
-import styled from 'styled-components';
-import { useDispatch ,useSelector} from 'react-redux';
-import { createForm } from '../../../redux/apiCalls'; // cập nhật lại đường dẫn phù hợp
-import { useNavigate } from 'react-router-dom';
+import React, { useEffect, useState } from "react";
+import {
+  Form,
+  Input,
+  Select,
+  Button,
+  Upload,
+  Typography,
+  Card,
+  Divider,
+  Row,
+  Col,
+  message,
+} from "antd";
+import {
+  UploadOutlined,
+  SendOutlined,
+  DownloadOutlined,
+} from "@ant-design/icons";
+import styled from "styled-components";
+import { useDispatch, useSelector } from "react-redux";
+import { createForm, getApartments } from "../../../redux/apiCalls"; // cập nhật lại đường dẫn phù hợp
+import { useNavigate } from "react-router-dom";
 
 const { Title, Text, Paragraph } = Typography;
 const { Option } = Select;
@@ -90,13 +106,46 @@ const FormManagement = () => {
   const navigate = useNavigate();
   const [file, setFile] = useState(null);
   const currentUser = useSelector((state) => state.user.currentUser);
+  
+
+  const [apartments, setApartments] = useState([]);
+  const [loading, setLoading] = useState(false);
+
+  useEffect(() => {
+    fetchApartments(currentUser);
+  }, [currentUser]);
+
+  const fetchApartments = async (currentUser) => {
+    setLoading(true);
+    try {
+      const response = await getApartments();
+      if (response.success) {
+        const apartmentsRentor = response.data.filter((item) =>
+          item.users.includes(currentUser.userName)
+        );
+        setApartments(
+          apartmentsRentor.map((apt) => ({
+            ...apt,
+            key: apt.apartmentId,
+          }))
+        );
+      } else {
+        message.error(response.message);
+      }
+    } catch (error) {
+      console.error("Error fetching apartments:", error);
+      message.error("Không thể tải danh sách căn hộ");
+    } finally {
+      setLoading(false);
+    }
+  };
 
   const applicationTypes = [
-    { value: 'apartment_renovation', label: 'Đăng ký thi công nội thất' },
-    { value: 'apartment_transfer', label: 'Đơn chuyển căn hộ' },
-    { value: 'maintenance_request', label: 'Đơn yêu cầu bảo trì' },
-    { value: 'complaint_form', label: 'Đơn khiếu nại' },
-    { value: 'facility_booking', label: 'Đơn đăng ký sử dụng tiện ích' },
+    { value: "apartment_renovation", label: "Đăng ký thi công nội thất" },
+    { value: "apartment_transfer", label: "Đơn chuyển căn hộ" },
+    { value: "maintenance_request", label: "Đơn yêu cầu bảo trì" },
+    { value: "complaint_form", label: "Đơn khiếu nại" },
+    { value: "facility_booking", label: "Đơn đăng ký sử dụng tiện ích" },
   ];
 
   const onFinish = async (values) => {
@@ -122,7 +171,7 @@ const FormManagement = () => {
       form.resetFields();
       setFile(null);
       // Chuyển hướng đến trang danh sách đơn sau khi gửi thành công
-      navigate('/form-list');
+      navigate("/form-list");
     } else {
       message.error(res.message || "Tạo đơn thất bại");
     }
@@ -139,7 +188,7 @@ const FormManagement = () => {
   return (
     <StyledCard>
       <HeaderSection>
-        <Title level={2} style={{ color: 'white', margin: 0 }}>
+        <Title level={2} style={{ color: "white", margin: 0 }}>
           Gửi đơn cho Ban Quản lý Chung cư
         </Title>
       </HeaderSection>
@@ -150,13 +199,17 @@ const FormManagement = () => {
             <Text strong>Lưu ý:</Text> Khi gửi đơn/email đến các phòng ban
           </Paragraph>
           <Paragraph>
-            Bộ phận xử lý đơn sẽ trả lời đơn/email của cư dân trong vòng 48h (trừ đơn rút tiền, đơn phúc tra, chuyển căn hộ...).
+            Bộ phận xử lý đơn sẽ trả lời đơn/email của cư dân trong vòng 48h
+            (trừ đơn rút tiền, đơn phúc tra, chuyển căn hộ...).
           </Paragraph>
           <Paragraph>
-            Để hạn chế SPAM, sẽ giảm thời gian trả lời đơn/email có tính chất SPAM theo nguyên tắc: Khi cư dân gửi N đơn/email (N&gt;1) cho cùng một yêu cầu thì thời gian trả lời trong vòng N*48h.
+            Để hạn chế SPAM, sẽ giảm thời gian trả lời đơn/email có tính chất
+            SPAM theo nguyên tắc: Khi cư dân gửi N đơn/email (N&gt;1) cho cùng
+            một yêu cầu thì thời gian trả lời trong vòng N*48h.
           </Paragraph>
           <Paragraph>
-            Vì vậy cư dân cần nhắc trước khi gửi đơn/email với cùng một nội dung để nhận được trả lời/giải quyết nhanh nhất theo quy định.
+            Vì vậy cư dân cần nhắc trước khi gửi đơn/email với cùng một nội dung
+            để nhận được trả lời/giải quyết nhanh nhất theo quy định.
           </Paragraph>
         </NoteSection>
 
@@ -164,14 +217,14 @@ const FormManagement = () => {
           form={form}
           layout="vertical"
           onFinish={onFinish}
-          initialValues={{ application_type: 'apartment_renovation' }}
+          initialValues={{ application_type: "apartment_renovation" }}
         >
           <Row gutter={24}>
             <Col span={24}>
               <ApplicationTypeLabel>Loại đơn:</ApplicationTypeLabel>
               <Form.Item name="application_type">
                 <Select>
-                  {applicationTypes.map(type => (
+                  {applicationTypes.map((type) => (
                     <Option key={type.value} value={type.value}>
                       {type.label}
                     </Option>
@@ -188,11 +241,21 @@ const FormManagement = () => {
           <Row gutter={24}>
             <Col span={24} md={12}>
               <Form.Item
-                label="Số căn hộ"
                 name="apartment_number"
-                rules={[{ required: true, message: 'Vui lòng nhập số căn hộ' }]}
+                label="Căn hộ"
+                rules={[{ required: true, message: "Vui lòng chọn căn hộ" }]}
               >
-                <Input />
+                <Select placeholder="Chọn căn hộ">
+                  {apartments &&
+                    apartments.map((apartment) => (
+                      <Option
+                        key={apartment.apartmentId}
+                        value={apartment.apartmentName}
+                      >
+                        {apartment.apartmentName}
+                      </Option>
+                    ))}
+                </Select>
               </Form.Item>
             </Col>
 
@@ -200,9 +263,9 @@ const FormManagement = () => {
               <Form.Item
                 label="Họ và tên"
                 name="resident_name"
-                rules={[{ required: true, message: 'Vui lòng nhập họ và tên' }]}
+                rules={[{ required: true, message: "Vui lòng nhập họ và tên" }]}
               >
-                <Input />
+                <Input defaultValue={currentUser.fullName} disabled/>
               </Form.Item>
             </Col>
           </Row>
@@ -212,7 +275,7 @@ const FormManagement = () => {
               <Form.Item
                 label="Lý do"
                 name="reason"
-                rules={[{ required: true, message: 'Vui lòng nhập lý do' }]}
+                rules={[{ required: true, message: "Vui lòng nhập lý do" }]}
               >
                 <TextArea rows={6} />
               </Form.Item>
@@ -226,20 +289,32 @@ const FormManagement = () => {
                   <p className="ant-upload-drag-icon">
                     <UploadOutlined />
                   </p>
-                  <p className="ant-upload-text">Kéo thả file vào đây hoặc click để chọn file</p>
+                  <p className="ant-upload-text">
+                    Kéo thả file vào đây hoặc click để chọn file
+                  </p>
                 </UploadArea>
-                <SupportedFormats>
-                  Hỗ trợ định dạng: .xlsx, .pdf, .docx, .doc, .xls, .jpg, .png, .zip
-                </SupportedFormats>
-                <DownloadButton icon={<DownloadOutlined />} href="https://drive.google.com/file/d/1fxwKwvBvGRdDVE-wkQsCzzyUl52mUpnl/view?usp=sharing" target="_blank" rel="noopener noreferrer">
-                  Tải mẫu đơn tại đây
-                </DownloadButton>
               </Form.Item>
+              <SupportedFormats>
+                Hỗ trợ định dạng: .xlsx, .pdf, .docx, .doc, .xls, .jpg, .png,
+                .zip
+              </SupportedFormats>
+              <DownloadButton
+                icon={<DownloadOutlined />}
+                href="https://drive.google.com/file/d/1fxwKwvBvGRdDVE-wkQsCzzyUl52mUpnl/view?usp=sharing"
+                target="_blank"
+                rel="noopener noreferrer"
+              >
+                Tải mẫu đơn tại đây
+              </DownloadButton>
             </Col>
           </Row>
 
           <FormFooter>
-            <SubmitButton type="primary" htmlType="submit" icon={<SendOutlined />}>
+            <SubmitButton
+              type="primary"
+              htmlType="submit"
+              icon={<SendOutlined />}
+            >
               Gửi
             </SubmitButton>
           </FormFooter>
