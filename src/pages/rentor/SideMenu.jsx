@@ -38,15 +38,15 @@ const SideMenu = ({ setCurrentView }) => {
         navigate("/rentorHome/contract");
       },
     },
-    {
-      key: "payment",
-      icon: <DollarOutlined />,
-      label: "Thanh toán",
-      onClick: () => {
-        setCurrentView("payment");
-        navigate("/rentorHome/payment");
-      },
-    },
+    // {
+    //   key: "payment",
+    //   icon: <DollarOutlined />,
+    //   label: "Thanh toán",
+    //   onClick: () => {
+    //     setCurrentView("payment");
+    //     navigate("/rentorHome/payment");
+    //   },
+    // },
   ];
 
   return (

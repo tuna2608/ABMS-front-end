@@ -271,6 +271,23 @@ export const depositCreate = async (formData) => {
   }
 };
 
+export const getAllPayment = async () => {
+  try {
+    const res = await publicRequest.post(`/payment/getAll`);
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || 'Lấy danh sách thanh toán thành công'
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || "Lỗi khi lấy danh sách thanh toán"
+    };
+  }
+};
+
 export const depositSuccess = async (formData) => {
   try {
     const res = await publicRequest.post(`/payment/deposit_success`, formData);

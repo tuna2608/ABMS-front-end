@@ -1,6 +1,24 @@
-import React, { useState} from "react";
-import { Card, Space, Table, Button, Modal, Form, Input, Select, DatePicker,  Tag, message, Steps, Result, } from "antd";
-import {  CreditCardOutlined, BankOutlined, QrcodeOutlined } from "@ant-design/icons";
+import React, { useState } from "react";
+import {
+  Card,
+  Space,
+  Table,
+  Button,
+  Modal,
+  Form,
+  Input,
+  Select,
+  DatePicker,
+  Tag,
+  message,
+  Steps,
+  Result,
+} from "antd";
+import {
+  CreditCardOutlined,
+  BankOutlined,
+  QrcodeOutlined,
+} from "@ant-design/icons";
 import moment from "moment";
 
 const { Option } = Select;
@@ -9,10 +27,10 @@ const { Step } = Steps;
 // Hàm format tiền tệ
 const formatCurrency = (value) => {
   // Kiểm tra nếu value không phải là số
-  if (typeof value !== 'number') return '0 VND';
-  
+  if (typeof value !== "number") return "0 VND";
+
   // Format số tiền theo định dạng Việt Nam
-  return new Intl.NumberFormat('vi-VN').format(value) + ' VND';
+  return new Intl.NumberFormat("vi-VN").format(value) + " VND";
 };
 
 const PaymentView = () => {
@@ -27,35 +45,16 @@ const PaymentView = () => {
   // Mock data for payment history
   const [paymentHistory, setPaymentHistory] = useState([
     {
-      id: 1,
+      paymentId: 2,
+      paymentStatus: true,
+      paymentDate: "2025-04-27T18:13:43.168771",
+      paymentInfo: "Bill thue nha",
+      paymentType: "bill",
+      userId: 7,
       billId: 2,
-      apartmentName: "Căn hộ 2PN Vinhomes Central Park",
-      billContent: "Hóa đơn tháng 2",
-      amount: 950000,
-      status: "paid",
-      paymentDate: "2024-02-15",
-      paymentMethod: "bank",
+      apartmentName: "A102",
+      amount: 5000.0,
     },
-    {
-      id: 2,
-      billId: 3,
-      apartmentName: "Căn hộ 2PN Vinhomes Central Park",
-      billContent: "Hóa đơn tháng 3",
-      amount: 980000,
-      status: "pending",
-      paymentDate: null,
-      paymentMethod: null,
-    },
-    {
-      id: 3,
-      billId: 4,
-      apartmentName: "Căn hộ 2PN Vinhomes Central Park",
-      billContent: "Hóa đơn dịch vụ",
-      amount: 500000,
-      status: "overdue",
-      paymentDate: null,
-      paymentMethod: null,
-    }
   ]);
 
   // Payment history columns configuration
@@ -67,8 +66,8 @@ const PaymentView = () => {
     },
     {
       title: "Nội dung hóa đơn",
-      dataIndex: "billContent",
-      key: "billContent",
+      dataIndex: "paymentInfo",
+      key: "paymentInfo",
     },
     {
       title: "Số tiền",
@@ -78,15 +77,17 @@ const PaymentView = () => {
     },
     {
       title: "Trạng thái",
-      dataIndex: "status",
-      key: "status",
-      render: (status) => {
+      dataIndex: "paymentType",
+      key: "paymentType",
+      render: (paymentType) => {
         const statusMap = {
-          paid: { color: "green", text: "Đã thanh toán" },
-          pending: { color: "orange", text: "Chờ thanh toán" },
-          overdue: { color: "red", text: "Quá hạn" },
+          bill: { color: "green", text: "Hóa đơn" },
+          deposit: { color: "blue", text: "Đặt cọc" }
         };
-        const statusInfo = statusMap[status] || { color: "default", text: status };
+        const statusInfo = statusMap[paymentType] || {
+          color: "default",
+          text: paymentType,
+        };
         return <Tag color={statusInfo.color}>{statusInfo.text}</Tag>;
       },
     },
@@ -94,40 +95,46 @@ const PaymentView = () => {
       title: "Ngày thanh toán",
       dataIndex: "paymentDate",
       key: "paymentDate",
-      render: (date) => date ? moment(date).format("DD/MM/YYYY") : "Chưa thanh toán",
+      render: (date) =>
+        date ? moment(date).format("DD/MM/YYYY") : "Chưa thanh toán",
     },
-    {
-      title: "Phương thức",
-      dataIndex: "paymentMethod",
-      key: "paymentMethod",
-      render: (method) => {
-        const methodMap = {
-          bank: { icon: <BankOutlined />, text: "Chuyển khoản ngân hàng" },
-          credit: { icon: <CreditCardOutlined />, text: "Thẻ tín dụng" },
-          qr: { icon: <QrcodeOutlined />, text: "Mã QR" },
-        };
-        const methodInfo = methodMap[method] || { icon: null, text: "Chưa chọn" };
-        return method ? (
-          <Space>
-            {methodInfo.icon}
-            {methodInfo.text}
-          </Space>
-        ) : "Chưa chọn";
-      },
-    },
-    {
-      title: "Hành động",
-      key: "actions",
-      render: (_, record) => (
-        <Button 
-          type="primary" 
-          disabled={record.status !== "pending" && record.status !== "overdue"}
-          onClick={() => handlePayBill(record)}
-        >
-          Thanh toán
-        </Button>
-      ),
-    },
+    // {
+    //   title: "Phương thức",
+    //   dataIndex: "paymentMethod",
+    //   key: "paymentMethod",
+    //   render: (method) => {
+    //     const methodMap = {
+    //       bank: { icon: <BankOutlined />, text: "Chuyển khoản ngân hàng" },
+    //       credit: { icon: <CreditCardOutlined />, text: "Thẻ tín dụng" },
+    //       qr: { icon: <QrcodeOutlined />, text: "Mã QR" },
+    //     };
+    //     const methodInfo = methodMap[method] || {
+    //       icon: null,
+    //       text: "Chưa chọn",
+    //     };
+    //     return method ? (
+    //       <Space>
+    //         {methodInfo.icon}
+    //         {methodInfo.text}
+    //       </Space>
+    //     ) : (
+    //       "Chưa chọn"
+    //     );
+    //   },
+    // },
+    // {
+    //   title: "Hành động",
+    //   key: "actions",
+    //   render: (_, record) => (
+    //     <Button
+    //       type="primary"
+    //       disabled={record.status !== "pending" && record.status !== "overdue"}
+    //       onClick={() => handlePayBill(record)}
+    //     >
+    //       Thanh toán
+    //     </Button>
+    //   ),
+    // },
   ];
 
   // Handle initiating bill payment
@@ -147,33 +154,36 @@ const PaymentView = () => {
 
   // Simulate payment processing
   const processPayment = () => {
-    form.validateFields().then((values) => {
-      setIsPaymentProcessing(true);
-      
-      // Simulate payment processing
-      setTimeout(() => {
-        // Update payment history
-        const updatedHistory = paymentHistory.map(item => 
-          item.id === selectedBill.id 
-            ? {
-                ...item, 
-                status: "paid", 
-                paymentDate: moment().format("YYYY-MM-DD"),
-                paymentMethod: paymentMethod
-              }
-            : item
-        );
-        
-        setPaymentHistory(updatedHistory);
-        
-        // Move to next step
-        setPaymentStep(1);
-        setIsPaymentProcessing(false);
-        setIsPaymentComplete(true);
-      }, 2000);
-    }).catch((errorInfo) => {
-      message.error("Vui lòng điền đầy đủ thông tin");
-    });
+    form
+      .validateFields()
+      .then((values) => {
+        setIsPaymentProcessing(true);
+
+        // Simulate payment processing
+        setTimeout(() => {
+          // Update payment history
+          const updatedHistory = paymentHistory.map((item) =>
+            item.id === selectedBill.id
+              ? {
+                  ...item,
+                  status: "paid",
+                  paymentDate: moment().format("YYYY-MM-DD"),
+                  paymentMethod: paymentMethod,
+                }
+              : item
+          );
+
+          setPaymentHistory(updatedHistory);
+
+          // Move to next step
+          setPaymentStep(1);
+          setIsPaymentProcessing(false);
+          setIsPaymentComplete(true);
+        }, 2000);
+      })
+      .catch((errorInfo) => {
+        message.error("Vui lòng điền đầy đủ thông tin");
+      });
   };
 
   // Render payment modal content based on current step
@@ -181,16 +191,18 @@ const PaymentView = () => {
     if (paymentStep === 0) {
       return (
         <Form form={form} layout="vertical">
-          <Form.Item 
-            name="cardNumber" 
+          <Form.Item
+            name="cardNumber"
             label="Số thẻ/Tài khoản"
-            rules={[{ required: true, message: "Vui lòng nhập số thẻ/tài khoản" }]}
+            rules={[
+              { required: true, message: "Vui lòng nhập số thẻ/tài khoản" },
+            ]}
           >
             <Input placeholder="Nhập số thẻ hoặc số tài khoản" />
           </Form.Item>
-          
-          <Form.Item 
-            name="paymentMethod" 
+
+          <Form.Item
+            name="paymentMethod"
             label="Phương thức thanh toán"
             initialValue="bank"
           >
@@ -212,25 +224,29 @@ const PaymentView = () => {
               </Option>
             </Select>
           </Form.Item>
-          
+
           {paymentMethod === "credit" && (
             <>
-              <Form.Item 
-                name="cardName" 
+              <Form.Item
+                name="cardName"
                 label="Tên chủ thẻ"
-                rules={[{ required: true, message: "Vui lòng nhập tên chủ thẻ" }]}
+                rules={[
+                  { required: true, message: "Vui lòng nhập tên chủ thẻ" },
+                ]}
               >
                 <Input placeholder="Nhập tên chủ thẻ" />
               </Form.Item>
-              <Form.Item 
-                name="expiryDate" 
+              <Form.Item
+                name="expiryDate"
                 label="Ngày hết hạn"
-                rules={[{ required: true, message: "Vui lòng nhập ngày hết hạn" }]}
+                rules={[
+                  { required: true, message: "Vui lòng nhập ngày hết hạn" },
+                ]}
               >
-                <DatePicker 
-                  placeholder="Chọn ngày hết hạn" 
-                  format="MM/YYYY" 
-                  picker="month" 
+                <DatePicker
+                  placeholder="Chọn ngày hết hạn"
+                  format="MM/YYYY"
+                  picker="month"
                 />
               </Form.Item>
             </>
@@ -238,21 +254,23 @@ const PaymentView = () => {
         </Form>
       );
     }
-    
+
     // Payment success step
     return (
       <Result
         status="success"
         title="Thanh toán thành công"
-        subTitle={`Bạn đã thanh toán ${formatCurrency(selectedBill.amount)} cho ${selectedBill.billContent}`}
+        subTitle={`Bạn đã thanh toán ${formatCurrency(
+          selectedBill.amount
+        )} cho ${selectedBill.billContent}`}
         extra={[
-          <Button 
-            type="primary" 
+          <Button
+            type="primary"
             key="close"
             onClick={() => setPaymentModalVisible(false)}
           >
             Đóng
-          </Button>
+          </Button>,
         ]}
       />
     );
@@ -261,10 +279,10 @@ const PaymentView = () => {
   return (
     <div>
       <Card title="Lịch sử thanh toán">
-        <Table 
-          dataSource={paymentHistory} 
+        <Table
+          dataSource={paymentHistory}
           columns={paymentColumns}
-          rowKey="id"
+          rowKey="paymentId"
         />
       </Card>
 
@@ -273,19 +291,24 @@ const PaymentView = () => {
         open={paymentModalVisible}
         onCancel={() => setPaymentModalVisible(false)}
         footer={
-          paymentStep === 0 ? [
-            <Button key="cancel" onClick={() => setPaymentModalVisible(false)}>
-              Hủy
-            </Button>,
-            <Button 
-              key="submit" 
-              type="primary" 
-              loading={isPaymentProcessing}
-              onClick={processPayment}
-            >
-              Xác nhận thanh toán
-            </Button>
-          ] : null
+          paymentStep === 0
+            ? [
+                <Button
+                  key="cancel"
+                  onClick={() => setPaymentModalVisible(false)}
+                >
+                  Hủy
+                </Button>,
+                <Button
+                  key="submit"
+                  type="primary"
+                  loading={isPaymentProcessing}
+                  onClick={processPayment}
+                >
+                  Xác nhận thanh toán
+                </Button>,
+              ]
+            : null
         }
       >
         <Steps current={paymentStep}>
@@ -293,9 +316,7 @@ const PaymentView = () => {
           <Step title="Hoàn tất" />
         </Steps>
 
-        <div style={{ marginTop: 20 }}>
-          {renderPaymentModalContent()}
-        </div>
+        <div style={{ marginTop: 20 }}>{renderPaymentModalContent()}</div>
       </Modal>
     </div>
   );
