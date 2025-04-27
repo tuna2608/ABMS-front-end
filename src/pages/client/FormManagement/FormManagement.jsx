@@ -109,6 +109,7 @@ const FormManagement = () => {
   
 
   const [apartments, setApartments] = useState([]);
+  const [ownerApartments, setOwnerApartments] = useState([]);
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
@@ -125,6 +126,15 @@ const FormManagement = () => {
         );
         setApartments(
           apartmentsRentor.map((apt) => ({
+            ...apt,
+            key: apt.apartmentId,
+          }))
+        );
+        const apartmentsOwner = response.data.filter((item) =>
+          item.householder === currentUser.userName
+        );
+        setOwnerApartments(
+          apartmentsOwner.map((apt) => ({
             ...apt,
             key: apt.apartmentId,
           }))
@@ -246,8 +256,17 @@ const FormManagement = () => {
                 rules={[{ required: true, message: "Vui lòng chọn căn hộ" }]}
               >
                 <Select placeholder="Chọn căn hộ">
-                  {apartments &&
+                  {currentUser && currentUser.isRentor === true && apartments && 
                     apartments.map((apartment) => (
+                      <Option
+                        key={apartment.apartmentId}
+                        value={apartment.apartmentName}
+                      >
+                        {apartment.apartmentName}
+                      </Option>
+                    ))}
+                  {currentUser.role === "Owner" && ownerApartments && 
+                    ownerApartments.map((apartment) => (
                       <Option
                         key={apartment.apartmentId}
                         value={apartment.apartmentName}
