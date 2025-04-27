@@ -24,6 +24,7 @@ import moment from "moment";
 import {
   createBillConsumption,
   getAllConsumption,
+  getConsumptionByMonthYear,
   importFile,
 } from "../../redux/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
@@ -199,30 +200,28 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
     }
   };
 
-  const handleFilter = () => {
-    console.log(selectedDate.format("YYYY-MM"));
-  };
-
-  const handleImportFile = async (event) => {
-    const file = event.target.files[0];
-    if (file) {
-      const formData = new FormData();
-      formData.append("file", file);
-      formData.append("createdUserId", currentUser.userId);
+  const handleFilter = async () => {
+    if(selectedDate){
+      const month = selectedDate.month() + 1; // dayjs: 0-indexed month
+      const year = selectedDate.year();
+      // console.log(month+"-"+year);
       try {
-        const response = await importFile(formData);
-        if (response.success) {
-          console.log(response.data);
-          message.success(response.message);
-        } else {
-          message.error(response.message);
+        const res = await getConsumptionByMonthYear(month,year);
+        if(res.success){
+          // console.log(res.data);
+          setConsumptions(res.data)
+          message.success(res.message)
+        }else{
+          message.error(res.message)
         }
       } catch (error) {
-        console.error("Không thể upload", error);
-      } finally {
-        setLoadingImport(false);
+        message.error("Không thể lọc số liệu tiêu thụ theo tháng năm");
       }
+
+    }else{
+      message.error("Hãy chọn tháng và năm")
     }
+    
   };
 
   const handleUpload = async () => {
@@ -274,7 +273,7 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
         <Flex align="center" style={{ gap: "20px" }}>
           <DatePicker
             picker="month"
-            value={defaultValue}
+            defaultValue={defaultValue}
             onChange={handleDateChange}
             placeholder="Chọn tháng và năm"
           />

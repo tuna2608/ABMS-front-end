@@ -465,6 +465,23 @@ export const getAllConsumption = async (dispatch) => {
   }
 }
 
+export const getConsumptionByMonthYear = async (month,year) => {
+  try {
+    const res = await publicRequest.get(`/consumption/viewByMonthYear?month=${month}&year=${year}`);
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || ''
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || "Lỗi khi lấy danh sách lượng tiêu thụ"
+    };
+  }
+}
+
 // import file excel to save to database
 export const importFile = async (formData) => {
   try {
