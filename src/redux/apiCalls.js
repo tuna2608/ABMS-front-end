@@ -1479,7 +1479,7 @@ export const getReCoinByUserId = async (userId) => {
     const res = await publicRequest.get(`/recoin/getByUserId/${userId}`);
     return {
       success: true,
-      data: res.data.data || {},
+      data: res.data.data || [],
       message: res.data.message || "Lấy danh sách yêu cầu rút tiền của người dùng thành công",
     };
   } catch (error) {

@@ -168,6 +168,7 @@ function HeaderComponent() {
         ),
       });
     }
+    if(user?.role !== "Admin" && user?.role !== "Staff")
     baseItems.push({
       key: "4",
       icon: <DollarOutlined />,
