@@ -11,15 +11,21 @@ import {
   Flex,
   message,
   Empty,
+  Upload,
 } from "antd";
-import { 
-  DollarOutlined, 
-  PlusOutlined, 
-  EditOutlined, 
-  DownloadOutlined 
+import {
+  DollarOutlined,
+  PlusOutlined,
+  EditOutlined,
+  DownloadOutlined,
+  UploadOutlined,
 } from "@ant-design/icons";
 import moment from "moment";
-import { createBillConsumption, getAllConsumption, importFile } from "../../redux/apiCalls";
+import {
+  createBillConsumption,
+  getAllConsumption,
+  importFile,
+} from "../../redux/apiCalls";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
@@ -28,12 +34,14 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
     useSelector((state) => state.user.currentUser)
   );
   const [loading, setLoading] = useState(false);
-  const [loadingImport,setLoadingImport] = useState(false);
+  const [loadingImport, setLoadingImport] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
   const defaultValue = moment().subtract(1, "months");
   const [selectedDate, setSelectedDate] = useState(defaultValue);
   const [consumptions, setConsumptions] = useState([]);
+  const [fileList, setFileList] = useState([]);
+  const createdUserId = currentUser.userId;
 
   useEffect(() => {
     callGetAllConsumption();
@@ -62,18 +70,21 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
   // Hàm tải mẫu đơn
   const handleDownloadTemplate = () => {
     // Thay thế URL này bằng link Google Drive trực tiếp có thể tải xuống
-    const templateUrl = 'https://drive.google.com/drive/folders/1F5E7XpvsAoIrVOXZ0KBq3t3ryOsy28QA?usp=drive_link';
-    
+    const templateUrl =
+      "https://drive.google.com/drive/folders/1F5E7XpvsAoIrVOXZ0KBq3t3ryOsy28QA?usp=drive_link";
+
     try {
       // Mở link tải xuống trong tab mới
-      window.open(templateUrl, '_blank');
-      
+      window.open(templateUrl, "_blank");
+
       // Hiển thị thông báo thành công
-      message.success('Đang tải mẫu đơn. Vui lòng kiểm tra trình duyệt của bạn.');
+      message.success(
+        "Đang tải mẫu đơn. Vui lòng kiểm tra trình duyệt của bạn."
+      );
     } catch (error) {
       // Xử lý lỗi nếu có
-      message.error('Có lỗi xảy ra khi tải mẫu đơn. Vui lòng thử lại.');
-      console.error('Download error:', error);
+      message.error("Có lỗi xảy ra khi tải mẫu đơn. Vui lòng thử lại.");
+      console.error("Download error:", error);
     }
   };
 
@@ -194,26 +205,59 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
 
   const handleImportFile = async (event) => {
     const file = event.target.files[0];
-
     if (file) {
       const formData = new FormData();
       formData.append("file", file);
       formData.append("createdUserId", currentUser.userId);
-      setLoadingImport(true);
       try {
         const response = await importFile(formData);
-        if(response.success){
+        if (response.success) {
           console.log(response.data);
           message.success(response.message);
-        }else{
-          message.error(response.message)
+        } else {
+          message.error(response.message);
         }
       } catch (error) {
-        console.error('Không thể upload', error);
+        console.error("Không thể upload", error);
       } finally {
         setLoadingImport(false);
       }
     }
+  };
+
+  const handleUpload = async () => {
+    if (fileList.length === 0) {
+      message.error("Please select a file first.");
+      return;
+    }
+    const formData = new FormData();
+    formData.append("file", fileList[0]);
+    formData.append("createdUserId", createdUserId);
+    setLoadingImport(true);
+    try {
+      const response = await importFile(formData);
+      if (response.success) {
+        console.log(response.data);
+        message.success(response.message);
+      } else {
+        message.error(response.message);
+      }
+    } catch (error) {
+      message.error("Không thể upload file");
+    } finally {
+      setLoadingImport(false);
+    }
+  };
+
+  const props = {
+    beforeUpload: (file) => {
+      setFileList([file]); // Only keep one file
+      return false; // Prevent automatic upload by Ant Design
+    },
+    onRemove: () => {
+      setFileList([]);
+    },
+    fileList,
   };
 
   return (
@@ -246,16 +290,16 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
           >
             Tải mẫu đơn
           </Button>
-          <Input
-            type="file"
-            onChange={handleImportFile}
-            style={{ backgroundColor: "var(--fgreen)", color: "white" }}
-            // onClick={handleImportFile}
-          />
-
-          {/* <Button
-            Import CSV */}
-          {/* </Input> */}
+          <Upload {...props}>
+            <Button icon={<UploadOutlined />}>Select File</Button>
+          </Upload>
+          <Button
+            type="primary"
+            onClick={handleUpload}
+            disabled={fileList.length === 0}
+          >
+            Upload
+          </Button>
         </Flex>
       </Flex>
 
