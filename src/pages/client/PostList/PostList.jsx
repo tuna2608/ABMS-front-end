@@ -242,8 +242,8 @@ const PostList = () => {
                   </Col>
                 ))
             : // Hiển thị danh sách căn hộ dạng card (chỉ hiển thị các bài post trong trang hiện tại)
-              currentPosts.map((apartment) => (
-                <Col xs={24} sm={12} md={8} key={apartment.postId}>
+              currentPosts.map((post) => (
+                <Col xs={24} sm={12} md={8} key={post.postId}>
                   <Card
                     hoverable
                     style={{ 
@@ -262,8 +262,8 @@ const PostList = () => {
                         }}
                       >
                         <img
-                          alt={apartment.title}
-                          src={apartment.postImages[0]}
+                          alt={post.title}
+                          src={post.postImages[0]}
                           style={{
                             width: "100%",
                             height: "100%",
@@ -272,13 +272,13 @@ const PostList = () => {
                           }}
                         />
                         <Badge
-                          count={apartment.depositCheck}
+                          count={post.depositCheck}
                           style={{
                             position: "absolute",
                             top: 10,
                             right: 10,
                             backgroundColor:
-                              statusColors[apartment.depositCheck],
+                              statusColors[post.depositCheck],
                           }}
                         />
                         <div
@@ -293,14 +293,14 @@ const PostList = () => {
                           }}
                         >
                           <Text style={{ color: "white", fontWeight: "bold" }}>
-                            {apartment.userName}
+                            {post.userName}
                           </Text>
                         </div>
                       </div>
                     }
                     onClick={() => {
-                      if (apartment.depositCheck == null) {
-                        goToDetails(apartment.postId);
+                      if (post.depositCheck == null) {
+                        goToDetails(post.postId);
                       }
                     }}
                     actions={[
@@ -313,24 +313,24 @@ const PostList = () => {
                       <Tooltip title="Phòng ngủ & phòng tắm">
                         <Space>
                           <UserOutlined key="rooms" />
-                          {`${apartment.apartment.numberOfBedrooms}PN, ${apartment.apartment.numberOfBathrooms}VS`}
+                          {`${post.apartment.numberOfBedrooms}PN, ${post.apartment.numberOfBathrooms}VS`}
                         </Space>
                       </Tooltip>,
                       <Tooltip title="Lượt xem">
                         <Space>
                           <EyeOutlined key="view" />
-                          {apartment.views}
+                          {post.views}
                         </Space>
                       </Tooltip>,
                     ]}
                   >
                     <Card.Meta
                       title={
-                        <Tooltip title={apartment.title}>
+                        <Tooltip title={post.title}>
                           <div style={{ fontSize: '16px', fontWeight: 600, color: '#4b7bec' }}>
-                            {apartment.title.length > 28
-                              ? `${apartment.title.substring(0, 28)}...`
-                              : apartment.title}
+                            {post.title.length > 28
+                              ? `${post.title.substring(0, 28)}...`
+                              : post.title}
                           </div>
                         </Tooltip>
                       }
@@ -340,7 +340,7 @@ const PostList = () => {
                             ellipsis={{ rows: 2 }}
                             style={{ height: 40, color: '#666', marginBottom: 12 }}
                           >
-                            {apartment.content}
+                            {post.content}
                           </Paragraph>
                           <Space direction="vertical" style={{ width: "100%" }}>
                             <div>
@@ -348,10 +348,10 @@ const PostList = () => {
                                 <Flex align="center">
                                   <EnvironmentOutlined style={{ color: '#4b7bec', marginRight: 5 }} />
                                   <Text type="secondary">
-                                    {apartment.apartment.apartmentName}
+                                    {post.apartment.apartmentName}
                                   </Text>
                                 </Flex>
-                                {apartment.depositCheck === "done" && (
+                                {post.depositCheck === "done" && (
                                   <Tag
                                     icon={<CheckCircleOutlined />}
                                     color="error"
@@ -365,7 +365,7 @@ const PostList = () => {
                             <div>
                               <DollarOutlined style={{ color: '#ff4d4f', marginRight: 5 }} />
                               <Text strong style={{ color: '#ff4d4f', fontSize: '16px' }}>
-                                {formatPrice(apartment.price)}
+                                {formatPrice(post.price)}
                               </Text>
                             </div>
                             <div style={{ marginTop: 8 }}>
@@ -374,14 +374,14 @@ const PostList = () => {
                                 size="small"
                                 style={{ 
                                   borderRadius: '4px', 
-                                  background: apartment.depositCheck !== "done" ? '#4b7bec' : '#d9d9d9',
+                                  background: post.depositCheck !== "done" ? '#4b7bec' : '#d9d9d9',
                                   width: '100%'
                                 }}
                                 onClick={(e) => {
                                   e.stopPropagation();
-                                  goToDetails(apartment.postId);
+                                  goToDetails(post.postId);
                                 }}
-                                disabled={apartment.depositCheck === "done"}
+                                disabled={post.depositCheck === "done"}
                               >
                                 Xem chi tiết <ArrowRightOutlined />
                               </Button>

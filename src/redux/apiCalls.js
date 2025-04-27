@@ -1428,7 +1428,7 @@ export const getListBank = async () => {
     const res = await axios.get(`https://api.vietqr.io/v2/banks`);
     return {
       success: true,
-      data: res.data.data || {},
+      data: res.data.data || [],
       message: res.data.message || "Lấy danh sách ngân hàng thành công",
     };
   } catch (error) {
@@ -1462,7 +1462,7 @@ export const getAllReCoin = async () => {
     const res = await publicRequest.get(`/recoin/getAll`);
     return {
       success: true,
-      data: res.data.data || {},
+      data: res.data.data || [],
       message: res.data.message || "Lấy tất cả danh sách yêu cầu rút tiền thành công",
     };
   } catch (error) {
