@@ -284,7 +284,7 @@ const FormManagement = () => {
                 name="resident_name"
                 rules={[{ required: true, message: "Vui lòng nhập họ và tên" }]}
               >
-                <Input defaultValue={currentUser.fullName} disabled={currentUser.fullName}/>
+                <Input defaultValue={currentUser.fullName} disabled={(currentUser.fullName !== null)}/>
               </Form.Item>
             </Col>
           </Row>
