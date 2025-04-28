@@ -1095,7 +1095,7 @@ export const broadcastNotification = async (notificationData, role) => {
 //lấy danh sách hợp đồng theo căn hộ
 export const getContractOwners = async (apartmentName) => {
   try {
-    const res = await publicRequest.get(`/user/list_contract_owner?apartmentName=${apartmentName}`);
+    const res = await publicRequest.get(`/verification/list_contract_owner?apartmentName=${apartmentName}`);
     return {
       success: true,
       data: res.data.data || [],
@@ -1149,7 +1149,7 @@ export const updateContractVerification = async (verificationId, startDate, endD
       });
     }
 
-    const res = await publicRequest.put('/user/update_verification', formData, {
+    const res = await publicRequest.put('/verification/update_verification', formData, {
       headers: {
         'Content-Type': 'multipart/form-data'
       }
