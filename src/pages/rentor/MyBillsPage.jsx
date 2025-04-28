@@ -99,8 +99,8 @@ const MyBillsPage = () => {
       billId: record.billId,
       productName: record.billContent,
       description: (record.billType === "monthPaid") ? "Bill thue nha" : record.billContent,
-      returnUrl: "http://localhost:3000/payment/success",
-      cancelUrl: "http://localhost:3000/payment/cancel",
+      returnUrl: "https://abms-front-end.vercel.app/payment/success",
+      cancelUrl: "https://abms-front-end.vercel.app/payment/cancel",
       price: record.amount,
     };
     try {

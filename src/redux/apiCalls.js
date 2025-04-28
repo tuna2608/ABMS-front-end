@@ -252,8 +252,8 @@ export const getAllDeposits = async () => {
 export const depositCreate = async (formData) => {
   const form = {
     ...formData,
-    successUrl: `http://localhost:3000/payment/success`,
-    cancelUrl: `http://localhost:3000/payment/cancel`,
+    successUrl: `https://abms-front-end.vercel.app/payment/success`,
+    cancelUrl: `https://abms-front-end.vercel.app/payment/cancel`,
   }
   try {
     const res = await publicRequest.post(`/deposit/create`, form);
