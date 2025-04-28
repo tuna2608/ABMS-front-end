@@ -88,7 +88,7 @@ const ServicePage = () => {
           content: facility.facilityPostContent || 'Không có nội dung',
           status: facility.status || 'pending',
           provider: facility.userName || 'Chưa có thông tin',
-          image: facility.imageFiles?.[0] || 'default-image.png',
+          image: facility.images?.[0] || 'default-image.png',
           images: facility.imageFiles || [],
           rating: facility.rating || 0,
           views: facility.views || 0
@@ -286,7 +286,7 @@ const ServicePage = () => {
                         overflow: "hidden",
                       }}
                     >
-                      <img
+                      <Image
                         alt={facility.title}
                         src={facility.image}
                         style={{
