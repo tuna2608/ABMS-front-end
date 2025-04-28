@@ -190,7 +190,9 @@ const ProfileEditPage = () => {
   const defaultValue = moment();
   const [user, setUser] = useState({
     ...userCurrent,
-    birthday: userCurrent.birthday ? dayjs(userCurrent.birthday) : dayjs(defaultValue),
+    birthday: userCurrent.birthday
+      ? dayjs(userCurrent.birthday)
+      : dayjs(defaultValue),
   });
   const [listBank, setListBank] = useState([]);
   const [bankSelect, setBankSelect] = useState({});
@@ -254,12 +256,15 @@ const ProfileEditPage = () => {
 
   const handleSubmit = async (values) => {
     setLoading(true);
-
     let formattedDate;
     let formData = {
-      ...values,
-      password: userCurrent.password,
       userId: user.userId,
+      userImgUrl: null,
+      fullName: values.fullName || userCurrent.fullName,
+      phone: values.phone || userCurrent.phone,
+      birthday: null,
+      description: values.description || userCurrent.description,
+      job: values.job || userCurrent.job,
     };
     if (values.birthday) {
       formattedDate = values.birthday.format("YYYY-MM-DD");
@@ -268,20 +273,23 @@ const ProfileEditPage = () => {
         birthday: formattedDate,
       };
     }
-
-    if (selectedFile) {
-      const formData1 = new FormData();
-      formData1.append("file", selectedFile);
-      const res = await getImageCloud(formData1);
-      const messageApi = res.message;
-      if (res.status === 403) {
-        message.error(messageApi);
-      } else {
-        const userImgUrl = res.data;
-        formData = {
-          ...formData,
-          userImgUrl: userImgUrl,
-        };
+    if (selectedFile !== null) {
+      try {
+        const formData1 = new FormData();
+        formData1.append("file", selectedFile);
+        const res = await getImageCloud(formData1);
+        if (res.success) {
+          message.success(res.message);
+          const userImgUrl = res.data;
+          formData = {
+            ...formData,
+            userImgUrl: userImgUrl,
+          };
+        } else {
+          message.error(res.message);
+        }
+      } catch (error) {
+        message.error("Không thể tải ảnh lên");
       }
     } else {
       formData = {
@@ -289,20 +297,20 @@ const ProfileEditPage = () => {
         userImgUrl: null,
       };
     }
-
-    const resEdit = await editProfile(dispatch, formData);
-    const messageAPI = resEdit.data.message;
-    if (
-      resEdit.status === 401 ||
-      resEdit.status === 400 ||
-      resEdit.status === 403
-    ) {
-      message.error(messageAPI);
-    } else {
-      message.success(messageAPI);
+    try {
+      const resEdit = await editProfile(dispatch,formData);
+      if(resEdit.success){
+        message.success(resEdit.message)
+      }
+      else {
+        message.error(resEdit.message)
+      }
+    } catch (error) {
+      message.error("Không thể thay đổi thông tin cá nhân")
+    }finally{
       setIsInitialUpload(false);
+      setLoading(false);
     }
-    setLoading(false);
   };
 
   // New handler for bank info submission
@@ -345,32 +353,30 @@ const ProfileEditPage = () => {
       const res = await requestCreateReCoin(formData);
       // console.log(res);
       if (res.success) {
-        message.success(res.message)
-        navigate("/coin-request")
-      }else{
-        message.error(res.message)
+        message.success(res.message);
+        navigate("/coin-request");
+      } else {
+        message.error(res.message);
       }
     } catch (error) {
-      message.error("Không thể thực hiện tạo yêu cầu rút coin")
+      message.error("Không thể thực hiện tạo yêu cầu rút coin");
     }
-
-    // message.success("Yêu cầu chuyển coin đã được gửi");
-    // setIsCoinRequestModalVisible(false);
-    // setCoinRequestAmount(0);
-    // navigate("/adminHome/coin");
   };
 
   return (
     <PageContainer>
       <MainContent>
         <FormContainer>
-          <Title level={2} style={{ 
-            color: "#4b7bec", 
-            marginBottom: 30, 
-            textAlign: 'center', 
-            fontWeight: 700 
-          }}>
-            Thay đổi thông tin 
+          <Title
+            level={2}
+            style={{
+              color: "#4b7bec",
+              marginBottom: 30,
+              textAlign: "center",
+              fontWeight: 700,
+            }}
+          >
+            Thay đổi thông tin
           </Title>
 
           <AvatarContainer>
@@ -405,7 +411,7 @@ const ProfileEditPage = () => {
 
           <CoinBadge>
             Coins khả dụng: {user.accountBallance}
-            <CoinActionButton 
+            <CoinActionButton
               icon={<TransactionOutlined />}
               onClick={() => {
                 // If no bank info, show bank info modal first

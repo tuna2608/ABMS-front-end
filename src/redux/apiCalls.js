@@ -140,21 +140,37 @@ export const getImageCloud = async (formData) => {
         'Content-Type': 'multipart/form-data'
       }
     });
-    return res.data
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || 'Tải ảnh lên thành công'
+    };
   } catch (error) {
-    return error.response
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || 'Có lỗi xảy ra khi tải ảnh lên'
+    };
   }
 };
 
-export const editProfile = async (dispatch, formData) => {
+export const editProfile = async (dispatch,formData) => {
   dispatch(editProfileStart());
   try {
-    const res = await userRequest.put(`/user/edit_profile`, formData);
+    const res = await publicRequest.put(`/user/edit_profile`, formData);
     dispatch(editProfileSuccess(res.data.data))
-    return res.data
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || 'Thay đổi thông tin cá nhân thành công'
+    };
   } catch (error) {
     dispatch(editProfileFail())
-    return error.response
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || 'Có lỗi xảy ra khi thay đổi thông tin cá nhân'
+    };
   }
 };
 
