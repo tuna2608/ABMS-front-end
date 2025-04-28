@@ -44,7 +44,6 @@ const formatCurrency = (amount) => {
       result = "," + result;
     }
   }
-
   return result;
 };
 

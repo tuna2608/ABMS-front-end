@@ -215,6 +215,7 @@ const MyBillsPage = () => {
         dataSource={bills}
         rowKey="id"
         pagination={{ pageSize: 5 }}
+        loading={loading}
       />
 
       {/* Bill Details Modal */}
@@ -231,7 +232,7 @@ const MyBillsPage = () => {
           <Button key="close" onClick={() => setBillModalVisible(false)}>
             Đóng
           </Button>,
-          selectedBill?.status === "Chưa thanh toán" && (
+          selectedBill?.status === "unpaid" && (
             <Button
               key="pay"
               type="primary"
@@ -258,17 +259,17 @@ const MyBillsPage = () => {
               <Descriptions.Item label="Tháng">
                 {selectedBill.billDate}
               </Descriptions.Item>
-              <Descriptions.Item label="Tiêu thụ nước">
-                {selectedBill.waterUsage} m³
+              <Descriptions.Item label="Tiêu thụ nước tháng trước">
+                {selectedBill.lastMonthWaterConsumption} m³
               </Descriptions.Item>
-              <Descriptions.Item label="Chi phí nước">
-                {selectedBill.waterCost.toLocaleString()} VND
+              <Descriptions.Item label="Tiêu thụ nước tháng này">
+                {selectedBill.waterConsumption} m³
               </Descriptions.Item>
               <Descriptions.Item label="Phí quản lý">
-                {selectedBill.managementFee.toLocaleString()} VND
+                {selectedBill.managementFee} VND
               </Descriptions.Item>
               <Descriptions.Item label="Chi phí khác">
-                {selectedBill.others.toLocaleString()} VND
+                {selectedBill.others} VND
               </Descriptions.Item>
               <Descriptions.Item label="Ngày đến hạn">
                 {selectedBill.dueDate}
@@ -277,8 +278,8 @@ const MyBillsPage = () => {
                 <Tag
                   color={
                     selectedBill.status === "Đã thanh toán"
-                      ? "green"
-                      : "volcano"
+                      ? "red"
+                      : "green"
                   }
                 >
                   {selectedBill.status}
