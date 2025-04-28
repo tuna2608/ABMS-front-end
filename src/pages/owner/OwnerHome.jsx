@@ -126,22 +126,26 @@ Khách hàng có thể mất một phần hoặc toàn bộ tiền đặt cọc 
       </Sider>
       <Layout>
         <Header
-          style={{
-            background: "#fff",
-            padding: 0,
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
-          <Button
-            type="text"
-            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            onClick={toggleCollapsed}
-            style={{ fontSize: "16px", width: 64, height: 64 }}
-          />
-          <div style={{ marginRight: 20 }}></div>
-        </Header>
+                  style={{
+                    background: "#fff",
+                    padding: 0,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "flex-end", // Position elements at the end
+                  }}
+                >
+                  <Button
+                    type="text"
+                    icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                    onClick={toggleCollapsed}
+                    style={{
+                      fontSize: "16px",
+                      width: 64,
+                      height: 64,
+                      marginRight: 16, // Add margin from the right edge
+                    }}
+                  />
+                </Header>
         <Content
           style={{ margin: "24px 16px", padding: 24, background: "#fff" }}
         >

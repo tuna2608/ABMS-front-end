@@ -1,7 +1,13 @@
 import React, { useState, useEffect } from "react";
 import { Layout, Card, Button } from "antd";
 import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
-import { Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
+import {
+  Routes,
+  Route,
+  Navigate,
+  useLocation,
+  useNavigate,
+} from "react-router-dom";
 
 // Import custom components
 import SidebarMenu from "./SidebarMenu";
@@ -20,29 +26,32 @@ const StaffHome = () => {
   const [activeMenuItem, setActiveMenuItem] = useState("apartment-list");
   const [selectedDeposit, setSelectedDeposit] = useState(null);
   const [isDepositDetailVisible, setIsDepositDetailVisible] = useState(false);
-  
+
   const location = useLocation();
   const navigate = useNavigate();
 
   // Sync URL with active menu item
   useEffect(() => {
     // Extract the current path segment from the URL
-    const pathSegment = location.pathname.split('/').pop();
-    
+    const pathSegment = location.pathname.split("/").pop();
+
     // Check if the URL has a valid menu item path
     const validMenuItems = [
-      "apartment-list", 
-      "deposit-management", 
-      "card-management", 
-      "bill-management", 
-      "utility-management", 
+      "apartment-list",
+      "deposit-management",
+      "card-management",
+      "bill-management",
+      "utility-management",
       "account-management",
-      "form-management" // Add form-management to valid menu items
+      "form-management", // Add form-management to valid menu items
     ];
-    
+
     if (validMenuItems.includes(pathSegment)) {
       setActiveMenuItem(pathSegment);
-    } else if (location.pathname === "/staffHome" || location.pathname === "/staffHome/") {
+    } else if (
+      location.pathname === "/staffHome" ||
+      location.pathname === "/staffHome/"
+    ) {
       // If we're at the root of staffHome, redirect to the default view
       navigate("/staffHome/apartment-list");
     }
@@ -93,30 +102,40 @@ const StaffHome = () => {
             padding: 0,
             display: "flex",
             alignItems: "center",
-            justifyContent: "space-between",
+            justifyContent: "flex-end", // Position elements at the end
           }}
         >
           <Button
             type="text"
             icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
             onClick={toggleCollapsed}
-            style={{ fontSize: "16px", width: 64, height: 64 }}
+            style={{
+              fontSize: "16px",
+              width: 64,
+              height: 64,
+              marginRight: 16, // Add margin from the right edge
+            }}
           />
-          <div style={{ marginRight: 20 }}></div>
         </Header>
 
         <Content
           style={{ margin: "24px 16px", padding: 24, background: "#fff" }}
         >
           <Routes>
-            <Route path="/" element={<Navigate to="/staffHome/apartment-list" replace />} />
+            <Route
+              path="/"
+              element={<Navigate to="/staffHome/apartment-list" replace />}
+            />
             <Route path="/apartment-list" element={renderContent()} />
             <Route path="/deposit-management" element={renderContent()} />
             <Route path="/card-management" element={renderContent()} />
             <Route path="/bill-management" element={renderContent()} />
             <Route path="/utility-management" element={renderContent()} />
             <Route path="/account-management" element={renderContent()} />
-            <Route path="*" element={<Navigate to="/staffHome/apartment-list" replace />} />
+            <Route
+              path="*"
+              element={<Navigate to="/staffHome/apartment-list" replace />}
+            />
           </Routes>
         </Content>
       </Layout>

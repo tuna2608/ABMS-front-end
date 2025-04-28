@@ -76,14 +76,27 @@ const AdminHome = () => {
       />
 
       <Layout>
-        <Header style={{ padding: 0, background: "#fff" }}>
-          <Button
-            type="text"
-            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-            onClick={toggleCollapsed}
-            style={{ fontSize: '16px', width: 64, height: 64 }}
-          />
-        </Header>
+        <Header
+                  style={{
+                    background: "#fff",
+                    padding: 0,
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "flex-end", // Position elements at the end
+                  }}
+                >
+                  <Button
+                    type="text"
+                    icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+                    onClick={toggleCollapsed}
+                    style={{
+                      fontSize: "16px",
+                      width: 64,
+                      height: 64,
+                      marginRight: 16, // Add margin from the right edge
+                    }}
+                  />
+                </Header>
         <Content style={{ 
           margin: "24px 16px", 
           padding: 24, 
