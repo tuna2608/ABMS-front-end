@@ -224,9 +224,6 @@ const PostManagementView = () => {
                     onClick={() => {
                         setIsModalOpen(true);
                     }}
-                    style={{
-                        background: 'rgba(30, 58, 138, 0.92)',
-                    }}
                 >
                     Thêm Bài Viết
                 </Button>
