@@ -33,6 +33,8 @@ const SignInPage = () => {
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
 
+  const [loading,setLoading] = useState(false);
+
   // Validation
   const isValidEmail = (value) => {
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -44,6 +46,7 @@ const SignInPage = () => {
   };
 
   const handleLogin = async () => {
+    setLoading(true)
     try {
       if (!isValidPassword(password)) {
         message.error("Password must be at least 6 characters long.");
@@ -65,6 +68,8 @@ const SignInPage = () => {
       }
     } catch (error) {
       message.error("Không thể thực hiện đăng nhập");
+    }finally{
+      setLoading(false)
     }
   };
 
@@ -164,7 +169,7 @@ const SignInPage = () => {
               <Checkbox>Remember me</Checkbox>
             </Form.Item>
             <Form.Item label={null}>
-              <LoadingComponent isPending={false}>
+              <LoadingComponent isPending={loading}>
                 <ButtonComponent
                   htmlType="submit"
                   disabled={!email.length || !password.length}
