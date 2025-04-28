@@ -103,8 +103,8 @@ const CreatePostModal = ({ isModalVisible, onCancel, apartments, onSuccess, curr
             const selectedApartment = apartments.find(apt => apt.apartmentId === values.apartmentId);
             const aiContent = await generateAIPostContent({
                 postType: 'Bán', // Always use 'Bán'
-                numberOfBedrooms: selectedApartment.number_of_bedrooms,
-                numberOfBathrooms: selectedApartment.number_of_bathrooms,
+                numberOfBedrooms: selectedApartment.numberOfBedrooms,
+                numberOfBathrooms: selectedApartment.numberOfBathrooms,
                 area: selectedApartment.area,
                 floor: selectedApartment.floor,
                 direction: selectedApartment.direction
