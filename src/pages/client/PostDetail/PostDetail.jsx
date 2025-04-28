@@ -88,87 +88,6 @@ const sampleMessages = [
   },
 ];
 
-// Dữ liệu mẫu chi tiết căn hộ
-const apartmentDetails = {
-  id: 1,
-  title: "Căn hộ cao cấp Vinhomes Central Park",
-  description:
-    "Căn hộ ban công rộng, view sông, nội thất cao cấp, an ninh 24/7, thiết kế hiện đại, đầy đủ tiện nghi. Khu dân cư văn minh, gần trung tâm thương mại, trường học quốc tế và công viên. Phù hợp với gia đình hoặc người nước ngoài làm việc tại Việt Nam.",
-  address: "Số 208 Nguyễn Hữu Cảnh, Phường 22, Quận Bình Thạnh, TP.HCM",
-  price: 5800000,
-  area: 70,
-  bedrooms: 2,
-  bathrooms: 2,
-  floor: 15,
-  direction: "Đông Nam",
-  furnishing: "Đầy đủ nội thất",
-  buildingName: "Landmark 81",
-  owner: "Văn Phú Invest",
-  contactName: "Nguyễn Thị Hồng",
-  contactPhone: "0912345678",
-  contactEmail: "hongnt@gmail.com",
-  avatar: "https://xsgames.co/randomusers/avatar.php?g=pixel&key=1",
-  date: "2025-03-12",
-  category: "Cho thuê",
-  tags: [
-    "Cao cấp",
-    "Đầy đủ nội thất",
-    "View sông",
-    "An ninh 24/7",
-    "Gần trung tâm",
-  ],
-  views: 145,
-  status: "Còn trống",
-  depositAmount: "11.600.000 VNĐ",
-  contractTerm: "12 tháng",
-  utilities: [
-    "Hồ bơi",
-    "Phòng gym",
-    "Sân tennis",
-    "Siêu thị",
-    "Nhà trẻ",
-    "Bảo vệ 24/7",
-    "Thang máy",
-    "Máy lạnh",
-    "Máy giặt",
-    "Tủ lạnh",
-    "Bếp điện",
-    "Nước nóng",
-  ],
-  images: [
-    "https://picsum.photos/800/600?random=1",
-    "https://picsum.photos/800/600?random=2",
-    "https://picsum.photos/800/600?random=3",
-    "https://picsum.photos/800/600?random=4",
-    "https://picsum.photos/800/600?random=5",
-  ],
-  similar: [
-    {
-      id: 2,
-      title: "Studio căn hộ The Sun Avenue",
-      price: 3500000,
-      area: 35,
-      address: "Quận 2, TP.HCM",
-      image: "https://picsum.photos/200/150?random=6",
-    },
-    {
-      id: 3,
-      title: "Căn hộ 2 phòng ngủ Gateway Thảo Điền",
-      price: 6000000,
-      area: 65,
-      address: "Quận 2, TP.HCM",
-      image: "https://picsum.photos/200/150?random=7",
-    },
-    {
-      id: 5,
-      title: "Căn hộ 1 phòng ngủ Sunrise City",
-      price: 4200000,
-      area: 50,
-      address: "Quận 7, TP.HCM",
-      image: "https://picsum.photos/200/150?random=8",
-    },
-  ],
-};
 
 // Custom arrow components for Carousel that don't pass down DOM props
 const NextArrow = (props) => {
@@ -304,7 +223,6 @@ const PostDetail = () => {
     message.success("Đang chuyển đến trang quản lý chat");
     // Giả lập điều hướng đến trang chat
     window.location.href = "/chat-page";
-
     setShowAdminRoleModal(false);
   };
 
@@ -610,47 +528,6 @@ const PostDetail = () => {
             <Tabs defaultActiveKey="1" items={tabItems} />
 
             <Divider />
-
-            {/* <Title level={4}>Các căn hộ tương tự</Title> */}
-            {/* <Row gutter={[16, 16]}>
-              {apartment.similar.map(item => (
-                <Col xs={24} sm={12} md={8} key={item.id}>
-                  <Card
-                    hoverable
-                    cover={
-                      <img 
-                        alt={item.title}
-                        src={item.image}
-                        style={{ width: '100%', height: 150, objectFit: 'cover' }}
-                      />
-                    }
-                    onClick={() => {
-                      console.log(`Chuyển đến trang chi tiết của căn hộ ID: ${item.id}`);
-                    }}
-                  >
-                    <Card.Meta
-                      title={item.title}
-                      description={
-                        <>
-                          <div>
-                            <EnvironmentOutlined style={{ marginRight: 5 }} />
-                            <Text type="secondary">{item.address}</Text>
-                          </div>
-                          <div>
-                            <DollarOutlined style={{ marginRight: 5 }} />
-                            <Text strong>{formatPrice(item.price)}</Text>
-                          </div>
-                          <div>
-                            <AreaChartOutlined style={{ marginRight: 5 }} />
-                            <Text>{item.area} m²</Text>
-                          </div>
-                        </>
-                      }
-                    />
-                  </Card>
-                </Col>
-              ))}
-            </Row> */}
           </Col>
 
           <Col xs={24} lg={8}>
@@ -681,7 +558,7 @@ const PostDetail = () => {
               <Divider style={{ margin: "12px 0" }} />
 
               <Space direction="vertical" style={{ width: "100%" }}>
-                {userCurrent && apartment.userId !== userCurrent.userId && (
+                {userCurrent && apartment.apartment.householder !== null && apartment.userId !== userCurrent.userId && (
                   <Button
                     type="primary"
                     block
@@ -695,7 +572,7 @@ const PostDetail = () => {
                     Nhắn tin liên hệ
                   </Button>
                 )}
-                {userCurrent && apartment.depositUserId !== userCurrent.userId && (
+                {userCurrent && apartment.apartment.householder !== null && apartment.depositUserId !== userCurrent.userId && (
                   <Button
                     style={{ background: "var(--forange)", color: "white" }}
                     icon={<MoneyCollectOutlined />}
