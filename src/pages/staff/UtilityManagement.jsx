@@ -292,10 +292,12 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
           <Upload {...props}>
             <Button icon={<UploadOutlined />}>Select File</Button>
           </Upload>
+
           <Button
             type="primary"
             onClick={handleUpload}
             disabled={fileList.length === 0}
+            loading={loadingImport}
           >
             Upload
           </Button>
