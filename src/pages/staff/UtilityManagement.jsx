@@ -303,7 +303,6 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
           </Button>
         </Flex>
       </Flex>
-
       {consumptions.length === 0 ? (
         <Empty />
       ) : (

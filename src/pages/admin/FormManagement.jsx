@@ -43,7 +43,7 @@ const AdminFormManagement = () => {
           return {
             id: item.formId,
             formType: item.formType,
-            apartmentNumber: userInfo.apartment.find(a => a.apartmentId === item.apartmentId).apartmentName || 'N/A',
+            apartmentNumber: item.apartmentName,
             residentName: userInfo.fullName || 'N/A',
             submissionDate: item.createdAt,
             status: item.status,
