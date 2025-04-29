@@ -915,7 +915,7 @@ export const getResidentList = async (dispatch) => {
         ...user,
         imageFiles: Array.isArray(user.imageFiles) ? user.imageFiles : []
       }));
-      const filterUser = processedData.filter(user=>user.verified === true)
+      const filterUser = processedData.filter(user=>user.verified === false)
       dispatch(getUserSuccess(filterUser));
       return res.data;
     } else if (res.data && Array.isArray(res.data)) {

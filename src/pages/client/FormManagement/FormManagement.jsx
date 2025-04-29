@@ -21,6 +21,7 @@ import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { createForm, getApartments } from "../../../redux/apiCalls"; // cập nhật lại đường dẫn phù hợp
 import { useNavigate } from "react-router-dom";
+import { LoadingComponent } from "../../../components/common/LoadingComponent/LoadingComponent";
 
 const { Title, Text, Paragraph } = Typography;
 const { Option } = Select;
@@ -107,7 +108,6 @@ const FormManagement = () => {
   const [file, setFile] = useState(null);
   const currentUser = useSelector((state) => state.user.currentUser);
   
-
   const [apartments, setApartments] = useState([]);
   const [ownerApartments, setOwnerApartments] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -130,8 +130,8 @@ const FormManagement = () => {
             key: apt.apartmentId,
           }))
         );
-        const apartmentsOwner = response.data.filter((item) =>
-          item.householder === currentUser.userName
+        const apartmentsOwner = response.data.filter(
+          (item) => item.householder === currentUser.userName
         );
         setOwnerApartments(
           apartmentsOwner.map((apt) => ({
@@ -168,11 +168,11 @@ const FormManagement = () => {
       status: "pending",
       apartmentId: values.apartment_number, // giả lập, cần lấy từ dữ liệu thực tế
       file: file,
-      residentName: values.resident_name,
+      residentName: values.resident_name || currentUser.fullName,
       apartmentNumber: values.apartment_number,
       reason: values.reason,
     };
-
+    
     const userId = currentUser.userId; // lấy user id đăng nhập
     const res = await createForm(dispatch, userId, dto);
 
@@ -196,150 +196,161 @@ const FormManagement = () => {
   };
 
   return (
-    <StyledCard>
-      <HeaderSection>
-        <Title level={2} style={{ color: "white", margin: 0 }}>
-          Gửi đơn cho Ban Quản lý Chung cư
-        </Title>
-      </HeaderSection>
+    <LoadingComponent isPending={loading}>
+      <StyledCard>
+        <HeaderSection>
+          <Title level={2} style={{ color: "white", margin: 0 }}>
+            Gửi đơn cho Ban Quản lý Chung cư
+          </Title>
+        </HeaderSection>
 
-      <FormSection>
-        <NoteSection>
-          <Paragraph>
-            <Text strong>Lưu ý:</Text> Khi gửi đơn/email đến các phòng ban
-          </Paragraph>
-          <Paragraph>
-            Bộ phận xử lý đơn sẽ trả lời đơn/email của cư dân trong vòng 48h
-            (trừ đơn rút tiền, đơn phúc tra, chuyển căn hộ...).
-          </Paragraph>
-          <Paragraph>
-            Để hạn chế SPAM, sẽ giảm thời gian trả lời đơn/email có tính chất
-            SPAM theo nguyên tắc: Khi cư dân gửi N đơn/email (N&gt;1) cho cùng
-            một yêu cầu thì thời gian trả lời trong vòng N*48h.
-          </Paragraph>
-          <Paragraph>
-            Vì vậy cư dân cần nhắc trước khi gửi đơn/email với cùng một nội dung
-            để nhận được trả lời/giải quyết nhanh nhất theo quy định.
-          </Paragraph>
-        </NoteSection>
+        <FormSection>
+          <NoteSection>
+            <Paragraph>
+              <Text strong>Lưu ý:</Text> Khi gửi đơn/email đến các phòng ban
+            </Paragraph>
+            <Paragraph>
+              Bộ phận xử lý đơn sẽ trả lời đơn/email của cư dân trong vòng 48h
+              (trừ đơn rút tiền, đơn phúc tra, chuyển căn hộ...).
+            </Paragraph>
+            <Paragraph>
+              Để hạn chế SPAM, sẽ giảm thời gian trả lời đơn/email có tính chất
+              SPAM theo nguyên tắc: Khi cư dân gửi N đơn/email (N&gt;1) cho cùng
+              một yêu cầu thì thời gian trả lời trong vòng N*48h.
+            </Paragraph>
+            <Paragraph>
+              Vì vậy cư dân cần nhắc trước khi gửi đơn/email với cùng một nội
+              dung để nhận được trả lời/giải quyết nhanh nhất theo quy định.
+            </Paragraph>
+          </NoteSection>
 
-        <Form
-          form={form}
-          layout="vertical"
-          onFinish={onFinish}
-          initialValues={{ application_type: "apartment_renovation" }}
-        >
-          <Row gutter={24}>
-            <Col span={24}>
-              <ApplicationTypeLabel>Loại đơn:</ApplicationTypeLabel>
-              <Form.Item name="application_type">
-                <Select>
-                  {applicationTypes.map((type) => (
-                    <Option key={type.value} value={type.value}>
-                      {type.label}
-                    </Option>
-                  ))}
-                </Select>
-              </Form.Item>
-            </Col>
-          </Row>
-
-          <StyledDivider />
-
-          <Title level={4}>THÔNG TIN CƯ DÂN</Title>
-
-          <Row gutter={24}>
-            <Col span={24} md={12}>
-              <Form.Item
-                name="apartment_number"
-                label="Căn hộ"
-                rules={[{ required: true, message: "Vui lòng chọn căn hộ" }]}
-              >
-                <Select placeholder="Chọn căn hộ">
-                  {currentUser && currentUser.isRentor === true && apartments && 
-                    apartments.map((apartment) => (
-                      <Option
-                        key={apartment.apartmentId}
-                        value={apartment.apartmentName}
-                      >
-                        {apartment.apartmentName}
+          <Form
+            form={form}
+            layout="vertical"
+            onFinish={(e)=>onFinish(e)}
+            initialValues={{ application_type: "apartment_renovation" }}
+          >
+            <Row gutter={24}>
+              <Col span={24}>
+                <ApplicationTypeLabel>Loại đơn:</ApplicationTypeLabel>
+                <Form.Item name="application_type">
+                  <Select>
+                    {applicationTypes.map((type) => (
+                      <Option key={type.value} value={type.value}>
+                        {type.label}
                       </Option>
                     ))}
-                  {currentUser.role === "Owner" && ownerApartments && 
-                    ownerApartments.map((apartment) => (
-                      <Option
-                        key={apartment.apartmentId}
-                        value={apartment.apartmentName}
-                      >
-                        {apartment.apartmentName}
-                      </Option>
-                    ))}
-                </Select>
-              </Form.Item>
-            </Col>
+                  </Select>
+                </Form.Item>
+              </Col>
+            </Row>
 
-            <Col span={24} md={12}>
-              <Form.Item
-                label="Họ và tên"
-                name="resident_name"
-                rules={[{ required: true, message: "Vui lòng nhập họ và tên" }]}
+            <StyledDivider />
+
+            <Title level={4}>THÔNG TIN CƯ DÂN</Title>
+
+            <Row gutter={24}>
+              <Col span={24} md={12}>
+                <Form.Item
+                  name="apartment_number"
+                  label="Căn hộ"
+                  rules={[{ required: true, message: "Vui lòng chọn căn hộ" }]}
+                >
+                  <Select placeholder="Chọn căn hộ">
+                    {currentUser &&
+                      currentUser.isRentor === true &&
+                      apartments &&
+                      apartments.map((apartment) => (
+                        <Option
+                          key={apartment.apartmentId}
+                          value={apartment.apartmentName}
+                        >
+                          {apartment.apartmentName}
+                        </Option>
+                      ))}
+                    {currentUser.role === "Owner" &&
+                      ownerApartments &&
+                      ownerApartments.map((apartment) => (
+                        <Option
+                          key={apartment.apartmentId}
+                          value={apartment.apartmentName}
+                        >
+                          {apartment.apartmentName}
+                        </Option>
+                      ))}
+                  </Select>
+                </Form.Item>
+              </Col>
+
+              <Col span={24} md={12}>
+                <Form.Item
+                  label="Họ và tên"
+                  name="resident_name"
+                  // rules={[
+                  //   { required: true, message: "Vui lòng nhập họ và tên" },
+                  // ]}
+                >
+                  <Input
+                    // value={currentUser.fullName}
+                    defaultValue={currentUser.fullName}
+                    disabled={currentUser.fullName !== null}
+                  />
+                </Form.Item>
+              </Col>
+            </Row>
+
+            <Row gutter={24}>
+              <Col span={24}>
+                <Form.Item
+                  label="Lý do"
+                  name="reason"
+                  rules={[{ required: true, message: "Vui lòng nhập lý do" }]}
+                >
+                  <TextArea rows={6} />
+                </Form.Item>
+              </Col>
+            </Row>
+
+            <Row gutter={24}>
+              <Col span={24}>
+                <Form.Item label="Tệp đính kèm" name="attachment">
+                  <UploadArea {...uploadProps}>
+                    <p className="ant-upload-drag-icon">
+                      <UploadOutlined />
+                    </p>
+                    <p className="ant-upload-text">
+                      Kéo thả file vào đây hoặc click để chọn file
+                    </p>
+                  </UploadArea>
+                </Form.Item>
+                <SupportedFormats>
+                  Hỗ trợ định dạng: .xlsx, .pdf, .docx, .doc, .xls, .jpg, .png,
+                  .zip
+                </SupportedFormats>
+                <DownloadButton
+                  icon={<DownloadOutlined />}
+                  href="https://drive.google.com/file/d/1fxwKwvBvGRdDVE-wkQsCzzyUl52mUpnl/view?usp=sharing"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
+                  Tải mẫu đơn tại đây
+                </DownloadButton>
+              </Col>
+            </Row>
+
+            <FormFooter>
+              <SubmitButton
+                type="primary"
+                htmlType="submit"
+                icon={<SendOutlined />}
               >
-                <Input defaultValue={currentUser.fullName} disabled={(currentUser.fullName !== null)}/>
-              </Form.Item>
-            </Col>
-          </Row>
-
-          <Row gutter={24}>
-            <Col span={24}>
-              <Form.Item
-                label="Lý do"
-                name="reason"
-                rules={[{ required: true, message: "Vui lòng nhập lý do" }]}
-              >
-                <TextArea rows={6} />
-              </Form.Item>
-            </Col>
-          </Row>
-
-          <Row gutter={24}>
-            <Col span={24}>
-              <Form.Item label="Tệp đính kèm" name="attachment">
-                <UploadArea {...uploadProps}>
-                  <p className="ant-upload-drag-icon">
-                    <UploadOutlined />
-                  </p>
-                  <p className="ant-upload-text">
-                    Kéo thả file vào đây hoặc click để chọn file
-                  </p>
-                </UploadArea>
-              </Form.Item>
-              <SupportedFormats>
-                Hỗ trợ định dạng: .xlsx, .pdf, .docx, .doc, .xls, .jpg, .png,
-                .zip
-              </SupportedFormats>
-              <DownloadButton
-                icon={<DownloadOutlined />}
-                href="https://drive.google.com/file/d/1fxwKwvBvGRdDVE-wkQsCzzyUl52mUpnl/view?usp=sharing"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Tải mẫu đơn tại đây
-              </DownloadButton>
-            </Col>
-          </Row>
-
-          <FormFooter>
-            <SubmitButton
-              type="primary"
-              htmlType="submit"
-              icon={<SendOutlined />}
-            >
-              Gửi
-            </SubmitButton>
-          </FormFooter>
-        </Form>
-      </FormSection>
-    </StyledCard>
+                Gửi
+              </SubmitButton>
+            </FormFooter>
+          </Form>
+        </FormSection>
+      </StyledCard>
+    </LoadingComponent>
   );
 };
 
