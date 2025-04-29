@@ -6,6 +6,7 @@ import { useNavigate } from "react-router-dom";
 import { depositSuccess, paymentBillSuccess } from "../../../redux/apiCalls";
 import { current } from "@reduxjs/toolkit";
 import { useSelector } from "react-redux";
+import { LoadingComponent } from "../../../components/common/LoadingComponent/LoadingComponent";
 
 const PaymentSuccess = () => {
   const [currentUser] = useState(
@@ -20,6 +21,7 @@ const PaymentSuccess = () => {
   );
   // console.log(paymentBillRequest);
 
+  const [loading, setLoading] = useState(false);
   useEffect(() => {
     if (depositRequest) {
       // console.log(depositRequest);
@@ -34,24 +36,28 @@ const PaymentSuccess = () => {
   }, [currentUser]);
 
   async function callDepositeSuccess() {
+    setLoading(true);
     try {
       const res = await depositSuccess(depositRequest);
-      if(res.success){
+      if (res.success) {
         message.success(res.message);
-      }else{
+      } else {
         message.error(res.message);
       }
     } catch (error) {
-      message.error("Không thể thực hiện thanh toán thành công")
+      message.error("Không thể thực hiện thanh toán thành công");
+    } finally {
+      setLoading(false);
     }
   }
 
   async function callPaymentBillSuccess(currentUser) {
+    setLoading(true);
     const formData = {
       billId: paymentBillRequest.billId,
       paymentInfo: paymentBillRequest.description,
       amount: paymentBillRequest.price,
-      userPaymentId: currentUser.userId
+      userPaymentId: currentUser.userId,
     };
 
     try {
@@ -63,35 +69,43 @@ const PaymentSuccess = () => {
       }
     } catch (error) {
       message.error("Không thể thực hiện thanh toán hóa đơn thành công");
+    } finally {
+      setLoading(false);
     }
   }
 
   return (
-    <div className="payment-success bg-white min-h-screen flex items-center justify-center">
-      <Result
-        icon={
-          <CheckCircleOutlined style={{ color: "#52c41a", fontSize: 72 }} />
-        }
-        title={
-          <h1 className="text-4xl font-bold mb-4 text-center">
-            Payment Successful!
-          </h1>
-        }
-        extra={
-          <>
-            <div className="text-lg mb-8 text-center text-gray-600">
-              <p>Thank you for your payment.</p>
-              <p>Your transaction has been completed successfully.</p>
-            </div>
-            <div className="text-center">
-              <Button onClick={() => navigate("/")} type="primary" size="large">
-                Back to Home
-              </Button>
-            </div>
-          </>
-        }
-      />
-    </div>
+    <LoadingComponent isPending={loading}>
+      <div className="payment-success bg-white min-h-screen flex items-center justify-center">
+        <Result
+          icon={
+            <CheckCircleOutlined style={{ color: "#52c41a", fontSize: 72 }} />
+          }
+          title={
+            <h1 className="text-4xl font-bold mb-4 text-center">
+              Payment Successful!
+            </h1>
+          }
+          extra={
+            <>
+              <div className="text-lg mb-8 text-center text-gray-600">
+                <p>Thank you for your payment.</p>
+                <p>Your transaction has been completed successfully.</p>
+              </div>
+              <div className="text-center">
+                <Button
+                  onClick={() => navigate("/")}
+                  type="primary"
+                  size="large"
+                >
+                  Back to Home
+                </Button>
+              </div>
+            </>
+          }
+        />
+      </div>
+    </LoadingComponent>
   );
 };
 
