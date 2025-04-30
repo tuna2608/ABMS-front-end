@@ -13,8 +13,6 @@ import {
 import {
   HomeOutlined,
   SearchOutlined,
-  FilterOutlined,
-  EnvironmentOutlined,
   MailOutlined,
   PhoneOutlined,
 } from "@ant-design/icons";
@@ -286,12 +284,6 @@ const ApartmentListView = () => {
     { value: "maintenance", label: "Đang bảo trì" },
   ];
 
-  const areaOptions = [
-    { value: "district1", label: "Quận 1" },
-    { value: "district2", label: "Quận 2" },
-    { value: "district3", label: "Quận 3" },
-    { value: "thuThiem", label: "Thủ Thiêm" },
-  ];
 
   // Pagination change handler
   const handlePaginationChange = (page) => {
@@ -316,27 +308,8 @@ const ApartmentListView = () => {
             allowClear
           />
 
-          <Space>
-            <FilterOutlined />
-            <Select defaultValue="Tất cả" style={{ width: 150 }}>
-              {statusOptions.map((status) => (
-                <Option key={status.value} value={status.value}>
-                  {status.label}
-                </Option>
-              ))}
-            </Select>
-          </Space>
 
-          <Space>
-            <EnvironmentOutlined />
-            <Select defaultValue="Tất cả" style={{ width: 150 }}>
-              {areaOptions.map((area) => (
-                <Option key={area.value} value={area.value}>
-                  {area.label}
-                </Option>
-              ))}
-            </Select>
-          </Space>
+
         </Space>
 
         <Table

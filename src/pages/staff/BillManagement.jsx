@@ -205,29 +205,9 @@ const BillManagement = () => {
           <span>Quản Lý Hóa Đơn</span>
         </Space>
       }
-      extra={
-        <Button
-          type="primary"
-          icon={<FileAddOutlined />}
-          onClick={() => showBillModal()}
-        >
-          Tạo Hóa Đơn Mới
-        </Button>
-      }
+
     >
-      {/* Filtering Section */}
-      <Flex style={{ marginBottom: "16px" }} justify="space-between">
-        <Flex align="center" style={{ gap: "20px" }}>
-          <DatePicker picker="month" placeholder="Chọn tháng" />
-          <Select placeholder="Trạng Thái" style={{ width: 120 }}>
-            <Select.Option value="Paid">Đã Thanh Toán</Select.Option>
-            <Select.Option value="Unpaid">Chưa Thanh Toán</Select.Option>
-            <Select.Option value="Overdue">Quá Hạn</Select.Option>
-          </Select>
-          <Button type="default">Lọc</Button>
-        </Flex>
-        <Button>Xuất Báo Cáo</Button>
-      </Flex>
+
 
       {/* Bill Table */}
       <Table

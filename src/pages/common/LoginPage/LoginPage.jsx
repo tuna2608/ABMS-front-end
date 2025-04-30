@@ -42,7 +42,7 @@ const SignInPage = () => {
   };
 
   const isValidPassword = (value) => {
-    return value.length >= 2;
+    return value.length >= 6;
   };
 
   const handleLogin = async () => {
@@ -143,6 +143,7 @@ const SignInPage = () => {
               name="password"
               rules={[
                 { required: true, message: "Please input your password!" },
+                { min: 6, message: "Mật khẩu phải có ít nhất 6 ký tự!" }
               ]}
             >
               <div style={{ position: "relative" }}>

@@ -12,7 +12,6 @@ import DepositManagement from './DepositManagement';
 import AccountManagement from './AccountManagement';
 import ApartmentManagement from './ApartmentManagement';
 import PostManagementView from '../admin/PostManagement';
-import PaymentManagement from './PaymentManagement';
 import CoinManagement from './CoinManagement';
 import ServicePostReview from './ServicePostReview';
 import FinancialReports from './FinancialReports';
@@ -51,8 +50,6 @@ const AdminHome = () => {
         return <ApartmentManagement />;
       case "postsList":
         return <PostManagementView view="list" />;
-        case "payments":
-  return <PaymentManagement />;
   case "coin":
   return <CoinManagement />;
   case "service":
@@ -111,7 +108,6 @@ const AdminHome = () => {
             <Route path="/accounts/list" element={renderActiveContent()} />
             <Route path="/apartments" element={renderActiveContent()} />
             <Route path="/posts/list" element={renderActiveContent()} />
-            <Route path="/payments" element={renderActiveContent()} />
             <Route path="/coin" element={renderActiveContent()} />
             <Route path="/service" element={renderActiveContent()} />
             <Route path="/reports" element={renderActiveContent()} />

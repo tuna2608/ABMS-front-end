@@ -5,7 +5,6 @@ import {
   HomeOutlined,
   FormOutlined,
   FileProtectOutlined,
-  WalletOutlined,
   FileAddOutlined,
   MessageOutlined,
 } from "@ant-design/icons";
@@ -22,7 +21,6 @@ const SideMenu = ({ setCurrentView }) => {
       'list': 'list',
       'post-management': 'post',
       'contract-management': 'contract',
-      'payment-management': 'payment',
       'bill-management': 'bill-management',
       'document-upload': 'upload',
       'messages': 'chatpage'
@@ -55,12 +53,6 @@ const SideMenu = ({ setCurrentView }) => {
       icon: <FileProtectOutlined />,
       label: "Quản lý hợp đồng",
       onClick: () => handleMenuClick("contract", "contract-management"),
-    },
-    {
-      key: "4",
-      icon: <WalletOutlined />,
-      label: "Quản lý thanh toán",
-      onClick: () => handleMenuClick("payment", "payment-management"),
     },
     {
       key: "5",

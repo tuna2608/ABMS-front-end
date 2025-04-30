@@ -11,11 +11,9 @@ import {
 
 // Import custom components
 import SidebarMenu from "./SidebarMenu";
-import DepositManagement from "./DepositManagement";
 import ApartmentList from "./ApartmentList";
 import UtilityManagement from "./UtilityManagement";
 import AccountManagement from "./AccountManagement";
-import CardManagement from "./CardManagement";
 import BillManagement from "./BillManagement";
 import DepositDetailModal from "./DepositDetailModal";
 
@@ -65,17 +63,6 @@ const StaffHome = () => {
     switch (activeMenuItem) {
       case "apartment-list":
         return <ApartmentList />;
-      case "deposit-management":
-        return (
-          <DepositManagement
-            onViewDepositDetail={(deposit) => {
-              setSelectedDeposit(deposit);
-              setIsDepositDetailVisible(true);
-            }}
-          />
-        );
-      case "card-management":
-        return <CardManagement />;
       case "bill-management":
         return <BillManagement />;
       case "utility-management":
@@ -127,8 +114,6 @@ const StaffHome = () => {
               element={<Navigate to="/staffHome/apartment-list" replace />}
             />
             <Route path="/apartment-list" element={renderContent()} />
-            <Route path="/deposit-management" element={renderContent()} />
-            <Route path="/card-management" element={renderContent()} />
             <Route path="/bill-management" element={renderContent()} />
             <Route path="/utility-management" element={renderContent()} />
             <Route path="/account-management" element={renderContent()} />

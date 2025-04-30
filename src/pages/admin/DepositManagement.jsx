@@ -6,22 +6,16 @@ import {
   Statistic,
   Table,
   Space,
-  Button,
-  Input,
-  Select,
   Tag,
-  Flex,
   message,
 } from "antd";
-import { SafetyOutlined, SearchOutlined,EyeOutlined } from "@ant-design/icons";
+import { SafetyOutlined} from "@ant-design/icons";
 import { getAllDeposits } from "../../redux/apiCalls";
 
-const { Option } = Select;
 
 const DepositManagement = () => {
   const [loading, setLoading] = useState(false);
-  const [depositFilterStatus, setDepositFilterStatus] = useState("all");
-  const [searchText, setSearchText] = useState("");
+  const [setDepositFilterStatus] = useState("all");
 
   const [deposits, setDeposits] = useState([
     {
@@ -119,20 +113,7 @@ const DepositManagement = () => {
         return <Tag color={colorMap[status] || "default"}>{textMap[status]}</Tag>;
       },
     },
-    {
-      title: "Hành động",
-      key: "actions",
-      render: (_, record) => (
-        <Flex gap={12}>
-          <Button
-            type="primary"
-            icon={<EyeOutlined />}
-          >
-            Xem chi tiết
-          </Button>
-        </Flex>
-      ),
-    },
+
   ];
 
   return (
@@ -142,11 +123,6 @@ const DepositManagement = () => {
           <SafetyOutlined />
           <span>Quản lý đặt cọc</span>
         </Space>
-      }
-      extra={
-        <Button type="primary" onClick={() => {}}>
-          Tạo giao dịch đặt cọc mới
-        </Button>
       }
     >
       {/* Phần còn lại của component giữ nguyên như cũ */}
@@ -211,29 +187,6 @@ const DepositManagement = () => {
         </Col>
       </Row>
 
-      <Space style={{ marginBottom: 20 }} size="large" wrap>
-        <Input
-          prefix={<SearchOutlined />}
-          placeholder="Tìm kiếm mã giao dịch, căn hộ"
-          style={{ width: 300 }}
-          allowClear
-          value={searchText}
-          onChange={(e) => setSearchText(e.target.value)}
-        />
-
-        <Space>
-          <Select
-            value={depositFilterStatus}
-            style={{ width: 150 }}
-            onChange={setDepositFilterStatus}
-          >
-            <Option value="all">Tất cả trạng thái</Option>
-            <Option value="ongoing">Đang Đặt Cọc</Option>
-            <Option value="done">Hoàn Thành</Option>
-            <Option value="none">Chưa Đặt Cọc</Option>
-          </Select>
-        </Space>
-      </Space>
 
       <Table
         columns={depositColumns}

@@ -39,16 +39,7 @@ const { Title, Text, Paragraph } = Typography;
 // Các danh mục căn hộ
 const categories = ["Tất cả", "Cho thuê", "Bán", "Đã cho thuê", "Đang đặt cọc"];
 
-// Các khu vực
-const areas = [
-  "Tất cả",
-  "Ngũ Hành Sơn",
-  "Cẩm Lệ",
-  "Sơn Trà",
-  "Liên Chiểu",
-  "Hòa Vang",
-  "Hải Châu"
-];
+
 
 // Màu trạng thái
 const statusColors = {
@@ -207,21 +198,7 @@ const PostList = () => {
               </Select>
             </Flex>
             
-            <Flex align="center" gap={8}>
-              <EnvironmentOutlined style={{ color: '#4b7bec' }} />
-              <Select
-                defaultValue="Tất cả"
-                style={{ width: 180 }}
-                onChange={onAreaChange}
-                size="large"
-              >
-                {areas.map((area) => (
-                  <Option key={area} value={area}>
-                    {area}
-                  </Option>
-                ))}
-              </Select>
-            </Flex>
+  
           </Flex>
         </Flex>
 

@@ -5,8 +5,6 @@ import {
   HomeOutlined,
   DollarOutlined,
   UserOutlined,
-  SafetyOutlined,
-  CreditCardOutlined,
 } from "@ant-design/icons";
 
 const { Sider } = Layout;
@@ -31,18 +29,6 @@ const SidebarMenu = ({ collapsed, setCollapsed, activeMenuItem, setActiveMenuIte
       icon: <UserOutlined />,
       label: "Xác thực tài khoản",
       onClick: () => handleMenuClick("account-management"),
-    },
-    {
-      key: "deposit-management",
-      icon: <SafetyOutlined />,
-      label: "Quản lý đặt cọc",
-      onClick: () => handleMenuClick("deposit-management"),
-    },
-    {
-      key: "card-management",
-      icon: <CreditCardOutlined />,
-      label: "Quản lý thẻ",
-      onClick: () => handleMenuClick("card-management"),
     },
     {
       key: "bill-management",

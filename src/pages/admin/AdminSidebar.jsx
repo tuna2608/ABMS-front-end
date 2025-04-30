@@ -97,12 +97,6 @@ const AdminSidebar = ({ collapsed, activeTab, setActiveTab, toggleCollapsed }) =
       ]
     },
     {
-      key: "payments", // New payment management menu item
-      icon: <CreditCardOutlined />,
-      label: "Quản lý thanh toán",
-      onClick: () => handleMenuClick("payments", "payments")
-    },
-    {
       key: "coin", // New payment management menu item
       icon: <CreditCardOutlined />,
       label: "Quản lý coin",
