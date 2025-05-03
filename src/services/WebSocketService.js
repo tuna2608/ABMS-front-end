@@ -28,7 +28,7 @@ class WebSocketService {
     
     // Tạo STOMP client đúng cách
     this.stompClient = new Client({
-      webSocketFactory: () => new SockJS('http://localhost:8080/ws'),
+      webSocketFactory: () => new SockJS('https://abms-be.onrender.com/ws'),
       debug: function (str) {
         // console.log(str); // Bỏ comment nếu muốn xem logs
       },
