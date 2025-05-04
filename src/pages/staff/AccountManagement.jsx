@@ -311,7 +311,7 @@ const AccountManagement = () => {
                 <Col span={12}>
                   <Form.Item
                     name="fullName"
-                    label="Tên hợp đồng"
+                    label="Họ và tên"
                     rules={[{ required: true, message: 'Vui lòng nhập tên hợp đồng!' }]}
                   >
                     <Input
