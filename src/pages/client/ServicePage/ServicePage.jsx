@@ -313,7 +313,7 @@ const ServicePage = () => {
                         }}
                       >
                         <Image
-                          width={320}
+                          width="100%"
                           height={200}
                           alt={facility.title}
                           src={facility.image}
