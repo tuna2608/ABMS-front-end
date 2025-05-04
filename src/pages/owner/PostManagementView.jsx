@@ -98,7 +98,8 @@ const PostManagementView = () => {
             try {
                 const apartmentsResponse = await getOwnApartments(currentUser.userId);
                 if (apartmentsResponse.success) {
-                    setApartments(apartmentsResponse.data);
+                    const apartmentUnrented = apartmentsResponse.data.filter(apartment => apartment.status === "unrented")
+                    setApartments(apartmentUnrented);
                 }
                 try {
                     const postsResponse = await getPostsByUserId(dispatch, currentUser.userId);
