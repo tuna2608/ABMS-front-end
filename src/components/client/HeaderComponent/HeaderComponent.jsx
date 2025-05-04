@@ -1,4 +1,4 @@
-import { Button, Dropdown, Image } from "antd";
+import { Button, Dropdown, Flex, Image } from "antd";
 import React, { useState, useEffect } from "react";
 import {
   FileTextOutlined,
@@ -101,7 +101,7 @@ const HeaderSpacer = styled.div`
 
 function HeaderComponent() {
   const user = useSelector((state) => state.user.currentUser);
-  
+
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
@@ -168,14 +168,14 @@ function HeaderComponent() {
         ),
       });
     }
-    if(user?.role !== "Admin" && user?.role !== "Staff")
-    baseItems.push({
-      key: "4",
-      icon: <DollarOutlined />,
-      label: (
-        <div onClick={() => navigate("/coin-request")}>Yêu cầu hoàn tiền</div>
-      ),
-    });
+    if (user?.role !== "Admin" && user?.role !== "Staff")
+      baseItems.push({
+        key: "4",
+        icon: <DollarOutlined />,
+        label: (
+          <div onClick={() => navigate("/coin-request")}>Yêu cầu hoàn tiền</div>
+        ),
+      });
     baseItems.push({
       key: "5",
       icon: <EditOutlined />,
@@ -230,7 +230,7 @@ function HeaderComponent() {
 
         <NavbarContainer>
           <NavbarLeft>
-            {(user?.role !== "Staff" && user?.role !== "Admin") && (
+            {user?.role !== "Staff" && user?.role !== "Admin" && (
               <>
                 <NavLink onClick={() => navigate("/post")}>Bài viết</NavLink>
                 <NavLink onClick={() => navigate("/service")}>Dịch vụ</NavLink>
@@ -248,13 +248,16 @@ function HeaderComponent() {
             {user ? (
               <Dropdown menu={{ items: items }} placement="bottomRight">
                 <AvatarWrapper>
-                  <Image
-                    preview={false}
-                    style={{ borderRadius: "100%" }}
-                    width="40px"
-                    height="40px"
-                    src={user.userImgUrl || avtBase}
-                  />
+                  <Flex align="center" justify="center" gap={20}  style={{backgroundColor: "white", padding: '5px 20px', borderRadius: '10px'}}>
+                    <h3 style={{color: "var(--cstroke)"}}>{`${user.role}`}</h3>
+                    <Image
+                      preview={false}
+                      style={{ borderRadius: "100%" }}
+                      width="40px"
+                      height="40px"
+                      src={user.userImgUrl || avtBase}
+                    />
+                  </Flex>
                 </AvatarWrapper>
               </Dropdown>
             ) : (
