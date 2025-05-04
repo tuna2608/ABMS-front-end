@@ -107,6 +107,7 @@ function HeaderComponent() {
 
   const [scrolled, setScrolled] = useState(false);
 
+  
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY;

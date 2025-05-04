@@ -215,10 +215,10 @@ const NotificationWrapper = () => {
 
   // Tải thông báo khi hiển thị dropdown
   useEffect(() => {
-    if (visible && currentUser?.userId) {
+    if (currentUser?.userId) {
       loadNotifications();
     }
-  }, [visible, currentUser?.userId, loadNotifications]);
+  }, [currentUser?.userId, loadNotifications]);
 
   const handleMarkAllAsRead = async () => {
     try {
