@@ -563,6 +563,24 @@ export const createBillMonthPaid = async (dispatch, formData) => {
     };
   }
 }
+
+//create bill
+export const createBillManagement = async (formData) => {
+  try {
+    const res = await publicRequest.post(`/bill/createBillManagement`, formData);
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || ''
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || "Lỗi khi tạo hóa đơn"
+    };
+  }
+}
 // get tat ca hoa don
 export const getAllBill = async (dispatch) => {
   try {

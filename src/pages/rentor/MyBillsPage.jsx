@@ -149,7 +149,7 @@ const MyBillsPage = () => {
         const colorMap = {
           water: "blue",
           monthPaid: "purple",
-          Rent: "green",
+          managementFee: "red",
         };
         return <Tag color={colorMap[billType] || "default"}>{billType}</Tag>;
       },
@@ -174,7 +174,7 @@ const MyBillsPage = () => {
           >
             Xem chi tiết
           </Button>
-          {record.status === "unpaid" && (
+          {record.status === "unpaid" && record.billType !== "managementFee" &&(
             <Button
               type="primary"
               style={{ backgroundColor: "green" }}

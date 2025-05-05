@@ -12,20 +12,31 @@ import {
   Tag,
   Flex,
   message,
+  Col,
+  Divider,
+  Row,
 } from "antd";
 import {
   FileAddOutlined,
   DeleteOutlined,
   EditOutlined,
   FilePdfOutlined,
+  PlusOutlined,
 } from "@ant-design/icons";
 import moment from "moment";
-import { getAllBill } from "../../redux/apiCalls";
+import { createBillManagement, getAllBill, getApartments } from "../../redux/apiCalls";
+import { Option } from "antd/es/mentions";
+import { useSelector } from "react-redux";
 
 const BillManagement = () => {
+  const [currentUser, setCurrentUser] = useState(
+    useSelector((state) => state.user.currentUser)
+  );
   const defaultValue = moment().subtract(1, "months");
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
+  const [createBillVisible, setCreateBillVisible] = useState(false);
+  const [apartmentHouseholder, setApartmentHouseholder] = useState(null);
   const [currentBill, setCurrentBill] = useState(null);
   const [form] = Form.useForm();
   const [bills, setBills] = useState([
@@ -48,7 +59,28 @@ const BillManagement = () => {
 
   useEffect(() => {
     callGetAllBill();
+    callGetAllApartment();
   }, []);
+
+  async function callGetAllApartment() {
+    setLoading(true);
+    try {
+      const res = await getApartments();
+      // console.log(res.data.length === 0);
+      if (res.success) {
+        const apartmentsChoice = res.data.filter(
+          (apartment) => apartment.householder !== null
+        );
+        setApartmentHouseholder(apartmentsChoice);
+      } else {
+        message.error(res.message);
+      }
+    } catch (error) {
+      message("Không thể lấy danh sách căn hộ!");
+    } finally {
+      setLoading(false);
+    }
+  }
 
   async function callGetAllBill() {
     setLoading(true);
@@ -83,34 +115,6 @@ const BillManagement = () => {
       });
     }
   };
-
-  // Handle bill creation/update
-  const handleSaveBill = (values) => {
-    const newBill = {
-      ...values,
-      id: currentBill
-        ? currentBill.id
-        : `HD-${moment().format("YYYY-MM")}-${bills.length + 1}`,
-      dueDate: values.dueDate ? values.dueDate.format("YYYY-MM-DD") : null,
-      createdDate: values.createdDate
-        ? values.createdDate.format("YYYY-MM-DD")
-        : moment().format("YYYY-MM-DD"),
-    };
-
-    if (currentBill) {
-      // Update existing bill
-      setBills(
-        bills.map((bill) => (bill.id === currentBill.id ? newBill : bill))
-      );
-    } else {
-      // Add new bill
-      setBills([...bills, newBill]);
-    }
-
-    setIsModalVisible(false);
-    message.success("Hóa đơn đã được lưu thành công");
-  };
-
   // Delete bill
   const handleDeleteBill = (billId) => {
     Modal.confirm({
@@ -197,18 +201,58 @@ const BillManagement = () => {
     },
   ];
 
+  const showCreateBillModal = () => {
+    form.resetFields();
+    setCreateBillVisible(true);
+  };
+  const handleCreateBill = async (values) => {
+    const month = defaultValue.month() + 1;
+    const year = defaultValue.year();
+    const formData = {
+      apartmentName: values.apartment,
+      billContent: `${values.billType} ${values.period} ${month}/${year}`,
+      userName: currentUser.userName,
+      consumptionId: null,
+      createdUserId: currentUser.userId,
+      surcharge: 0,
+      period: values.period,
+      amount: values.amount,
+    };
+    try {
+      const res = await createBillManagement(formData);
+      if (res.success) {
+        message.success(res.message);
+        setCreateBillVisible(false);
+        window.location.href = "/staffHome/bill-management";
+      } else {
+        message.error(res.message);
+      }
+    } catch (error) {
+      message.error("Không thể tạo hóa đơn");
+    }
+  };
+
   return (
     <Card
       title={
         <Space>
-          <FileAddOutlined />
-          <span>Quản Lý Hóa Đơn</span>
+          <Flex justify="space-between" align="center" gap={20}>
+            <div>
+              <FileAddOutlined />
+              <span> Quản Lý Hóa Đơn</span>
+            </div>
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={showCreateBillModal}
+              style={{ borderRadius: "4px" }}
+            >
+              Tạo hóa đơn mới
+            </Button>
+          </Flex>
         </Space>
       }
-
     >
-
-
       {/* Bill Table */}
       <Table
         columns={columns}
@@ -216,85 +260,82 @@ const BillManagement = () => {
         rowKey="id"
         pagination={{ pageSize: 5 }}
       />
-
-      {/* Create/Edit Bill Modal */}
       <Modal
-        title={currentBill ? "Chỉnh Sửa Hóa Đơn" : "Tạo Hóa Đơn Mới"}
-        open={isModalVisible}
-        onCancel={() => setIsModalVisible(false)}
-        footer={null}
+        title="Tạo hóa đơn mới"
+        open={createBillVisible}
+        onCancel={() => setCreateBillVisible(false)}
+        width={800}
+        footer={[
+          <Button key="back" onClick={() => setCreateBillVisible(false)}>
+            Hủy
+          </Button>,
+          <Button key="submit" type="primary" onClick={() => form.submit()}>
+            Tạo hóa đơn
+          </Button>,
+        ]}
       >
-        <Form form={form} layout="vertical" onFinish={handleSaveBill}>
-          <Form.Item
-            name="apartmentId"
-            label="Căn Hộ"
-            rules={[{ required: true, message: "Vui lòng nhập mã căn hộ" }]}
-          >
-            <Input placeholder="Nhập mã căn hộ" />
-          </Form.Item>
-
-          <Form.Item
-            name="tenantName"
-            label="Tên Người Thuê"
-            rules={[
-              { required: true, message: "Vui lòng nhập tên người thuê" },
-            ]}
-          >
-            <Input placeholder="Nhập tên người thuê" />
-          </Form.Item>
-
-          <Form.Item
-            name="billType"
-            label="Loại Hóa Đơn"
-            rules={[{ required: true, message: "Vui lòng chọn loại hóa đơn" }]}
-          >
-            <Select placeholder="Chọn loại hóa đơn">
-              <Select.Option value="Điện">Điện</Select.Option>
-              <Select.Option value="Maintenance">Bảo Trì</Select.Option>
-              <Select.Option value="Rent">Tiền Thuê</Select.Option>
-            </Select>
-          </Form.Item>
-
-          <Form.Item
-            name="amount"
-            label="Số Tiền"
-            rules={[{ required: true, message: "Vui lòng nhập số tiền" }]}
-          >
-            <Input type="number" placeholder="Nhập số tiền" suffix="VND" />
-          </Form.Item>
-
-          <Form.Item
-            name="status"
-            label="Trạng Thái"
-            rules={[{ required: true, message: "Vui lòng chọn trạng thái" }]}
-          >
-            <Select placeholder="Chọn trạng thái">
-              <Select.Option value="Paid">Đã Thanh Toán</Select.Option>
-              <Select.Option value="Unpaid">Chưa Thanh Toán</Select.Option>
-              <Select.Option value="Overdue">Quá Hạn</Select.Option>
-            </Select>
-          </Form.Item>
-
-          <Form.Item
-            name="dueDate"
-            label="Ngày Đến Hạn"
-            rules={[{ required: true, message: "Vui lòng chọn ngày đến hạn" }]}
-          >
-            <DatePicker style={{ width: "100%" }} />
-          </Form.Item>
-
-          <Form.Item name="details" label="Chi Tiết">
-            <Input.TextArea
-              rows={3}
-              placeholder="Nhập chi tiết hóa đơn (không bắt buộc)"
-            />
-          </Form.Item>
-
-          <Form.Item>
-            <Button type="primary" htmlType="submit" block>
-              {currentBill ? "Cập Nhật Hóa Đơn" : "Tạo Hóa Đơn"}
-            </Button>
-          </Form.Item>
+        <Form form={form} layout="vertical" onFinish={handleCreateBill}>
+          <Divider orientation="left">Thông tin cơ bản</Divider>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                name="billType"
+                label="Loại hóa đơn"
+                rules={[
+                  { required: true, message: "Vui lòng chọn loại hóa đơn" },
+                ]}
+              >
+                <Select placeholder="Chọn loại hóa đơn">
+                  <Option value="Hóa đơn quản lý căn hộ">Phí quản lý căn hộ</Option>
+                  <Option value="Hóa đơn khác">Khác</Option>
+                </Select>
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                name="apartment"
+                label="Căn hộ"
+                rules={[{ required: true, message: "Vui lòng chọn căn hộ" }]}
+              >
+                <Select placeholder="Chọn căn hộ">
+                  {apartmentHouseholder &&
+                    apartmentHouseholder.map((apartment) => (
+                      <Option
+                        key={apartment.apartmentId}
+                        value={apartment.apartmentName}
+                      >
+                        {apartment.apartmentName}
+                      </Option>
+                    ))}
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
+          <Row gutter={16}>
+            <Col span={12}>
+              <Form.Item
+                name="amount"
+                label="Số tiền"
+                rules={[{ required: true, message: "Vui lòng nhập số tiền" }]}
+              >
+                <Input placeholder="Số tiền" />
+              </Form.Item>
+            </Col>
+            <Col span={12}>
+              <Form.Item
+                name="period"
+                label="Hóa đơn theo kỳ hạn:"
+                rules={[
+                  { required: true, message: "Vui lòng chọn kỳ hóa đơn" },
+                ]}
+              >
+                <Select placeholder="Chọn kỳ hóa đơn">
+                  <Option value="Tháng">Tháng</Option>
+                  <Option value="Quý">Quý</Option>
+                </Select>
+              </Form.Item>
+            </Col>
+          </Row>
         </Form>
       </Modal>
     </Card>

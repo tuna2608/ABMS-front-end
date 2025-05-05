@@ -184,7 +184,7 @@ const BillPage = () => {
               onClick={() => showBillDetails(record.billCode)}
             />
           </Tooltip>
-          {record.apartmentStatus === "unrent" && (
+          {record.status === "unpaid" && ((record.billType === "water" && record.apartmentStatus === "unrented") || record.billType === "managementFee" )&& (
             <Button
               type="primary"
               size="small"
