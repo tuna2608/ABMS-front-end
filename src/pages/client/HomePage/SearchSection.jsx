@@ -157,6 +157,7 @@ function SearchSection({
               onChange={(e) => setPrice(e.target.value)}
             >
               <option value="">Giá tiền</option>
+              <option value="2">Dưới 2 triệu</option>
               <option value="3">Dưới 3 triệu</option>
               <option value="5">Dưới 5 triệu</option>
               <option value="10">Dưới 10 triệu</option>

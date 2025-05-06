@@ -15,7 +15,7 @@ import {
   Tag,
   Button,
   Divider,
-  message
+  message,
 } from "antd";
 import {
   HomeOutlined,
@@ -27,7 +27,7 @@ import {
   EyeOutlined,
   ArrowRightOutlined,
   CheckCircleOutlined,
-  AppstoreOutlined
+  AppstoreOutlined,
 } from "@ant-design/icons";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
@@ -51,16 +51,11 @@ const PostList = () => {
   const queryParams = new URLSearchParams(location.search);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const search = queryParams.get('search');
-  const area = queryParams.get('area');
-  const price = queryParams.get('price');
-  const type = queryParams.get('type');
-  const rooms = queryParams.get('rooms');
-  console.log(search);
-  console.log(area);
-  console.log(price);
-  console.log(type);
-  console.log(rooms);
+  const [search, setSearch] = useState(queryParams.get("search"));
+  const [area, setArea] = useState(queryParams.get("area"));
+  const [price, setPrice] = useState(queryParams.get("price"));
+  const [type, setType] = useState(queryParams.get("type"));
+  const [rooms, setRooms] = useState(queryParams.get("rooms"));
 
   const [searchText, setSearchText] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Tất cả");
@@ -79,18 +74,37 @@ const PostList = () => {
     setLoading(true);
     try {
       const res = await getAllPosts(dispatch);
-      if(res.success){
-        // console.log(res.data);
-        setPosts(res.data)
-      }else{
+      if (res.success) {
+        let postList = res.data;
+        if (area) {
+          postList = postList.filter(
+            (post) => Number(post.apartment.area) <= Number(area)
+          );
+        }
+
+        if (price) {
+          const targetPrice = Number(price) * 1_000_000;
+          postList = postList.filter(
+            (post) => Number(post.price) <= targetPrice
+          );
+        }
+        if (type) {
+          postList = postList.filter((post) => post.postType === type);
+        }
+        if (rooms) {
+          postList = postList.filter(
+            (post) => Number(post.apartment.numberOfBedrooms) === Number(rooms)
+          );
+        }
+        setPosts(postList);
+      } else {
         message.error(res.message);
       }
     } catch (error) {
-      message.error("Không thể lấy danh sách bài viết")
-    }finally{
+      message.error("Không thể lấy danh sách bài viết");
+    } finally {
       setLoading(false);
     }
-    
   }
 
   const onSearch = (value) => {
@@ -118,29 +132,40 @@ const PostList = () => {
   };
 
   // Lọc dữ liệu dựa trên tìm kiếm và bộ lọc
-  const filteredPosts = posts.filter(apartment => {
+  const filteredPosts = posts.filter((apartment) => {
     // Lọc theo tìm kiếm
-    const searchMatch = searchText === "" || 
+    const searchMatch =
+      searchText === "" ||
       apartment.title.toLowerCase().includes(searchText.toLowerCase()) ||
       apartment.content.toLowerCase().includes(searchText.toLowerCase()) ||
-      apartment.apartment?.apartmentName?.toLowerCase().includes(searchText.toLowerCase());
+      apartment.apartment?.apartmentName
+        ?.toLowerCase()
+        .includes(searchText.toLowerCase());
     // Lọc theo danh mục
     let categoryMatch = true;
     if (selectedCategory !== "Tất cả") {
       // Thực hiện logic phù hợp với danh mục của bạn
       // Đây là logic giả định, bạn cần điều chỉnh theo dữ liệu thực tế
-      if (selectedCategory === "Đã cho thuê" && apartment.depositCheck !== "done") categoryMatch = false;
-      if (selectedCategory === "Đang đặt cọc" && apartment.depositCheck !== "depositing") categoryMatch = false;
+      if (
+        selectedCategory === "Đã cho thuê" &&
+        apartment.depositCheck !== "done"
+      )
+        categoryMatch = false;
+      if (
+        selectedCategory === "Đang đặt cọc" &&
+        apartment.depositCheck !== "depositing"
+      )
+        categoryMatch = false;
       // Thêm các điều kiện khác nếu cần
     }
-    
+
     // Lọc theo khu vực
     let areaMatch = true;
     if (selectedArea !== "Tất cả") {
       // Giả sử thông tin khu vực nằm trong apartment.apartment.area hoặc tương tự
       areaMatch = apartment.apartment?.area === selectedArea;
     }
-    
+
     return searchMatch && categoryMatch && areaMatch;
   });
 
@@ -150,45 +175,62 @@ const PostList = () => {
   const currentPosts = filteredPosts.slice(startIndex, endIndex);
 
   return (
-    <div style={{ padding: "20px", backgroundColor: "#f5f5f5", minHeight: "100vh" }}>
-      <Card 
+    <div
+      style={{
+        padding: "20px",
+        backgroundColor: "#f5f5f5",
+        minHeight: "100vh",
+      }}
+    >
+      <Card
         bordered={false}
-        style={{ borderRadius: '12px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.08)' }}
+        style={{
+          borderRadius: "12px",
+          boxShadow: "0 4px 12px rgba(0, 0, 0, 0.08)",
+        }}
       >
         <div style={{ textAlign: "center", marginBottom: 24 }}>
           <div style={{ display: "inline-block", position: "relative" }}>
-            <Title 
-              level={2} 
-              style={{ 
-                margin: 0, 
-                color: '#4b7bec',
-                position: 'relative',
-                display: 'inline-block',
-                padding: '0 16px'
+            <Title
+              level={2}
+              style={{
+                margin: 0,
+                color: "#4b7bec",
+                position: "relative",
+                display: "inline-block",
+                padding: "0 16px",
               }}
             >
               <HomeOutlined style={{ marginRight: 12 }} />
               DANH SÁCH CĂN HỘ CHUNG CƯ
             </Title>
-            <div style={{ 
-              position: 'absolute', 
-              bottom: '-8px', 
-              left: '50%', 
-              transform: 'translateX(-50%)', 
-              width: '80px', 
-              height: '3px', 
-              backgroundColor: '#4b7bec', 
-              borderRadius: '2px' 
-            }} />
+            <div
+              style={{
+                position: "absolute",
+                bottom: "-8px",
+                left: "50%",
+                transform: "translateX(-50%)",
+                width: "80px",
+                height: "3px",
+                backgroundColor: "#4b7bec",
+                borderRadius: "2px",
+              }}
+            />
           </div>
-          <Text type="secondary" style={{ display: 'block', marginTop: 12 }}>
+          <Text type="secondary" style={{ display: "block", marginTop: 12 }}>
             Khám phá các căn hộ chất lượng cao với đầy đủ tiện nghi
           </Text>
         </div>
 
-        <Divider style={{ margin: '16px 0 24px' }} />
+        <Divider style={{ margin: "16px 0 24px" }} />
 
-        <Flex justify="space-between" align="center" wrap="wrap" gap={16} style={{ marginBottom: 24 }}>
+        <Flex
+          justify="space-between"
+          align="center"
+          wrap="wrap"
+          gap={16}
+          style={{ marginBottom: 24 }}
+        >
           <Search
             placeholder="Tìm kiếm căn hộ theo tên, khu vực..."
             onSearch={onSearch}
@@ -200,7 +242,7 @@ const PostList = () => {
 
           <Flex gap={16} wrap="wrap">
             <Flex align="center" gap={8}>
-              <AppstoreOutlined style={{ color: '#4b7bec' }} />
+              <AppstoreOutlined style={{ color: "#4b7bec" }} />
               <Select
                 defaultValue="Tất cả"
                 style={{ width: 150 }}
@@ -214,8 +256,6 @@ const PostList = () => {
                 ))}
               </Select>
             </Flex>
-            
-  
           </Flex>
         </Flex>
 
@@ -226,7 +266,13 @@ const PostList = () => {
                 .fill(null)
                 .map((_, index) => (
                   <Col xs={24} sm={12} md={8} key={`loading-${index}`}>
-                    <Card style={{ borderRadius: '8px', overflow: 'hidden', height: '100%' }}>
+                    <Card
+                      style={{
+                        borderRadius: "8px",
+                        overflow: "hidden",
+                        height: "100%",
+                      }}
+                    >
                       <Skeleton.Image
                         style={{ width: "100%", height: 200 }}
                         active
@@ -240,12 +286,12 @@ const PostList = () => {
                 <Col xs={24} sm={12} md={8} key={post.postId}>
                   <Card
                     hoverable
-                    style={{ 
-                      borderRadius: '8px', 
-                      overflow: 'hidden', 
-                      height: '100%',
-                      transition: 'all 0.3s',
-                      boxShadow: '0 2px 8px rgba(0, 0, 0, 0.08)'
+                    style={{
+                      borderRadius: "8px",
+                      overflow: "hidden",
+                      height: "100%",
+                      transition: "all 0.3s",
+                      boxShadow: "0 2px 8px rgba(0, 0, 0, 0.08)",
                     }}
                     cover={
                       <div
@@ -262,7 +308,7 @@ const PostList = () => {
                             width: "100%",
                             height: "100%",
                             objectFit: "cover",
-                            transition: 'transform 0.3s',
+                            transition: "transform 0.3s",
                           }}
                         />
                         <Badge
@@ -271,8 +317,7 @@ const PostList = () => {
                             position: "absolute",
                             top: 10,
                             right: 10,
-                            backgroundColor:
-                              statusColors[post.depositCheck],
+                            backgroundColor: statusColors[post.depositCheck],
                           }}
                         />
                         <div
@@ -281,7 +326,8 @@ const PostList = () => {
                             bottom: 0,
                             left: 0,
                             right: 0,
-                            background: "linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0))",
+                            background:
+                              "linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0))",
                             padding: "16px 12px 8px",
                             color: "white",
                           }}
@@ -321,7 +367,13 @@ const PostList = () => {
                     <Card.Meta
                       title={
                         <Tooltip title={post.title}>
-                          <div style={{ fontSize: '16px', fontWeight: 600, color: '#4b7bec' }}>
+                          <div
+                            style={{
+                              fontSize: "16px",
+                              fontWeight: 600,
+                              color: "#4b7bec",
+                            }}
+                          >
                             {post.title.length > 28
                               ? `${post.title.substring(0, 28)}...`
                               : post.title}
@@ -332,7 +384,11 @@ const PostList = () => {
                         <>
                           <Paragraph
                             ellipsis={{ rows: 2 }}
-                            style={{ height: 40, color: '#666', marginBottom: 12 }}
+                            style={{
+                              height: 40,
+                              color: "#666",
+                              marginBottom: 12,
+                            }}
                           >
                             {post.content}
                           </Paragraph>
@@ -340,7 +396,9 @@ const PostList = () => {
                             <div>
                               <Flex justify="space-between" align="center">
                                 <Flex align="center">
-                                  <EnvironmentOutlined style={{ color: '#4b7bec', marginRight: 5 }} />
+                                  <EnvironmentOutlined
+                                    style={{ color: "#4b7bec", marginRight: 5 }}
+                                  />
                                   <Text type="secondary">
                                     {post.apartment.apartmentName}
                                   </Text>
@@ -349,7 +407,10 @@ const PostList = () => {
                                   <Tag
                                     icon={<CheckCircleOutlined />}
                                     color="error"
-                                    style={{padding:'4px 8px', fontSize: '14px'}}
+                                    style={{
+                                      padding: "4px 8px",
+                                      fontSize: "14px",
+                                    }}
                                   >
                                     Đã cọc
                                   </Tag>
@@ -357,8 +418,13 @@ const PostList = () => {
                               </Flex>
                             </div>
                             <div>
-                              <DollarOutlined style={{ color: '#ff4d4f', marginRight: 5 }} />
-                              <Text strong style={{ color: '#ff4d4f', fontSize: '16px' }}>
+                              <DollarOutlined
+                                style={{ color: "#ff4d4f", marginRight: 5 }}
+                              />
+                              <Text
+                                strong
+                                style={{ color: "#ff4d4f", fontSize: "16px" }}
+                              >
                                 {formatPrice(post.price)}
                               </Text>
                             </div>
@@ -366,10 +432,13 @@ const PostList = () => {
                               <Button
                                 type="primary"
                                 size="small"
-                                style={{ 
-                                  borderRadius: '4px', 
-                                  background: post.depositCheck !== "done" ? '#4b7bec' : '#d9d9d9',
-                                  width: '100%'
+                                style={{
+                                  borderRadius: "4px",
+                                  background:
+                                    post.depositCheck !== "done"
+                                      ? "#4b7bec"
+                                      : "#d9d9d9",
+                                  width: "100%",
                                 }}
                                 onClick={(e) => {
                                   e.stopPropagation();
