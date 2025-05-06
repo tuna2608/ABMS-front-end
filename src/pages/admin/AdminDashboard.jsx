@@ -1,19 +1,20 @@
-import React, { useEffect, useState } from 'react';
-import { Card, Row, Col, Statistic, Table, Space, message } from 'antd';
+import React, { useEffect, useState } from "react";
+import { Card, Row, Col, Statistic, Table, Space, message } from "antd";
 import {
   UserOutlined,
   SafetyOutlined,
   ClockCircleOutlined,
   ApartmentOutlined,
   FileDoneOutlined,
-  DashboardOutlined
+  DashboardOutlined,
 } from "@ant-design/icons";
-import { getAllDeposits, getAllPayment } from '../../redux/apiCalls';
+import { getAllDeposits, getAllPayment } from "../../redux/apiCalls";
 
 const AdminDashboard = () => {
-  const [loading,setLoading] = useState(false);
-  const [deposits,setDeposits] = useState(null);
-  const [payments,setPayments] = useState(null);
+  const [loading, setLoading] = useState(false);
+  const [deposits, setDeposits] = useState(null);
+  const [payments, setPayments] = useState(null);
+  const [doanhThu, setDoanhThu] = useState(0);
 
   // Dashboard Statistics
   const dashboardStats = {
@@ -22,22 +23,22 @@ const AdminDashboard = () => {
     pendingTransactions: 5,
     activeApartments: 45,
     completedTransactions: 23,
-    totalUsers: 256
+    totalUsers: 256,
   };
 
-  useEffect(()=>{
+  useEffect(() => {
     setLoading(true);
     callGetAllDeposits();
     callGetAllPayments();
     setLoading(false);
-  },[])
+  }, []);
 
-  async function callGetAllDeposits(){
-    setLoading(true)
+  async function callGetAllDeposits() {
+    setLoading(true);
     try {
       const res = await getAllDeposits();
       if (res.success) {
-        setDeposits(res.data)
+        setDeposits(res.data);
         // message.success(res.message)
       } else {
         message.error(res.message);
@@ -47,12 +48,17 @@ const AdminDashboard = () => {
     }
   }
 
-  async function callGetAllPayments(){
-    setLoading(true)
+  async function callGetAllPayments() {
+    setLoading(true);
     try {
       const res = await getAllPayment();
       if (res.success) {
-        setPayments(res.data)
+        setPayments(res.data);
+        const totalK = res.data
+          .filter((item) => item.billType === "managementFee")
+          .reduce((sum, item) => sum + item.amount, 0);
+        console.log(totalK);
+        setDoanhThu(totalK);
       } else {
         message.error(res.message);
       }
@@ -62,10 +68,10 @@ const AdminDashboard = () => {
   }
 
   return (
-    <Card 
+    <Card
       title={
         <Space>
-          <DashboardOutlined /> 
+          <DashboardOutlined />
           <span>Bảng điều khiển</span>
         </Space>
       }
@@ -76,9 +82,9 @@ const AdminDashboard = () => {
           <Card hoverable>
             <Statistic
               title="Tổng doanh thu"
-              value={dashboardStats.totalRevenue}
+              value={doanhThu}
               precision={0}
-              valueStyle={{ color: '#3f8600' }}
+              valueStyle={{ color: "#3f8600" }}
               prefix="VNĐ"
               suffix=""
             />
@@ -91,7 +97,7 @@ const AdminDashboard = () => {
             <Statistic
               title="Đặt cọc mới"
               value={dashboardStats.newDeposits}
-              valueStyle={{ color: '#1890ff' }}
+              valueStyle={{ color: "#1890ff" }}
               suffix="giao dịch"
               prefix={<SafetyOutlined />}
             />
@@ -104,7 +110,7 @@ const AdminDashboard = () => {
             <Statistic
               title="Giao dịch chờ"
               value={dashboardStats.pendingTransactions}
-              valueStyle={{ color: '#faad14' }}
+              valueStyle={{ color: "#faad14" }}
               suffix="giao dịch"
               prefix={<ClockCircleOutlined />}
             />
@@ -117,7 +123,7 @@ const AdminDashboard = () => {
             <Statistic
               title="Căn hộ hoạt động"
               value={dashboardStats.activeApartments}
-              valueStyle={{ color: '#52c41a' }}
+              valueStyle={{ color: "#52c41a" }}
               suffix="căn hộ"
               prefix={<ApartmentOutlined />}
             />
@@ -130,7 +136,7 @@ const AdminDashboard = () => {
             <Statistic
               title="Giao dịch hoàn thành"
               value={dashboardStats.completedTransactions}
-              valueStyle={{ color: '#1890ff' }}
+              valueStyle={{ color: "#1890ff" }}
               suffix="giao dịch"
               prefix={<FileDoneOutlined />}
             />
@@ -143,7 +149,7 @@ const AdminDashboard = () => {
             <Statistic
               title="Người dùng"
               value={dashboardStats.totalUsers}
-              valueStyle={{ color: '#722ed1' }}
+              valueStyle={{ color: "#722ed1" }}
               suffix="tài khoản"
               prefix={<UserOutlined />}
             />
@@ -153,16 +159,31 @@ const AdminDashboard = () => {
         {/* Hoạt động gần đây */}
         <Col span={24}>
           <Card title="Hoạt động gần đây">
-            <Table 
+            <Table
               columns={[
-                { title: 'Loại', dataIndex: 'type', key: 'type' },
-                { title: 'Chi tiết', dataIndex: 'details', key: 'details' },
-                { title: 'Thời gian', dataIndex: 'time', key: 'time' }
+                { title: "Loại", dataIndex: "type", key: "type" },
+                { title: "Chi tiết", dataIndex: "details", key: "details" },
+                { title: "Thời gian", dataIndex: "time", key: "time" },
               ]}
               dataSource={[
-                { key: '1', type: 'Đặt cọc', details: 'Căn hộ A1202', time: '2 phút trước' },
-                { key: '2', type: 'Tạo tài khoản', details: 'Huỳnh Lê Phương Nam', time: '15 phút trước' },
-                { key: '3', type: 'Thanh toán', details: 'Hóa đơn dịch vụ', time: '1 giờ trước' }
+                {
+                  key: "1",
+                  type: "Đặt cọc",
+                  details: "Căn hộ A1202",
+                  time: "2 phút trước",
+                },
+                {
+                  key: "2",
+                  type: "Tạo tài khoản",
+                  details: "Huỳnh Lê Phương Nam",
+                  time: "15 phút trước",
+                },
+                {
+                  key: "3",
+                  type: "Thanh toán",
+                  details: "Hóa đơn dịch vụ",
+                  time: "1 giờ trước",
+                },
               ]}
               pagination={false}
             />

@@ -289,7 +289,7 @@ export const depositCreate = async (formData) => {
 
 export const getAllPayment = async () => {
   try {
-    const res = await publicRequest.post(`/payment/getAll`);
+    const res = await publicRequest.get(`/bill/viewAll`);
     return {
       success: true,
       data: res.data.data || [],
