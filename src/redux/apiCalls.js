@@ -1254,6 +1254,23 @@ export const getAllForms = async (dispatch) => {
   }
 };
 
+export const getFormsByUserId = async (userId) => {
+  try {
+    const res = await publicRequest.get(`/api/forms/user/${userId}`);
+    return {
+      success: true,
+      data: res.data.forms || [],
+      message: res.data.message || "Lấy danh sách đơn từ thành công",
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || "Không thể lấy danh sách đơn từ",
+    };
+  }
+};
+
 // Create new form (with file)
 export const createForm = async (dispatch, userId, dto) => {
   dispatch(createFormStart());
