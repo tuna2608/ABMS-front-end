@@ -1,5 +1,5 @@
-import React from 'react';
-import { Card, Row, Col, Statistic, Table, Space } from 'antd';
+import React, { useEffect, useState } from 'react';
+import { Card, Row, Col, Statistic, Table, Space, message } from 'antd';
 import {
   UserOutlined,
   SafetyOutlined,
@@ -8,8 +8,13 @@ import {
   FileDoneOutlined,
   DashboardOutlined
 } from "@ant-design/icons";
+import { getAllDeposits, getAllPayment } from '../../redux/apiCalls';
 
 const AdminDashboard = () => {
+  const [loading,setLoading] = useState(false);
+  const [deposits,setDeposits] = useState(null);
+  const [payments,setPayments] = useState(null);
+
   // Dashboard Statistics
   const dashboardStats = {
     totalRevenue: 987654321,
@@ -19,6 +24,42 @@ const AdminDashboard = () => {
     completedTransactions: 23,
     totalUsers: 256
   };
+
+  useEffect(()=>{
+    setLoading(true);
+    callGetAllDeposits();
+    callGetAllPayments();
+    setLoading(false);
+  },[])
+
+  async function callGetAllDeposits(){
+    setLoading(true)
+    try {
+      const res = await getAllDeposits();
+      if (res.success) {
+        setDeposits(res.data)
+        // message.success(res.message)
+      } else {
+        message.error(res.message);
+      }
+    } catch (error) {
+      message("Không thể thực hiện lấy danh sách đặt cọc!");
+    }
+  }
+
+  async function callGetAllPayments(){
+    setLoading(true)
+    try {
+      const res = await getAllPayment();
+      if (res.success) {
+        setPayments(res.data)
+      } else {
+        message.error(res.message);
+      }
+    } catch (error) {
+      message("Không thể thực hiện lấy danh sách thanh toan!");
+    }
+  }
 
   return (
     <Card 

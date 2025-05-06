@@ -14,10 +14,10 @@ import {
   Col,
   Divider,
   Tooltip,
-  Popconfirm, 
+  Popconfirm,
   message,
   Tag,
-  Card
+  Card,
 } from "antd";
 import {
   PlusOutlined,
@@ -30,7 +30,7 @@ import {
   SendOutlined,
   ExclamationCircleOutlined,
   ClockCircleOutlined,
-  EditOutlined
+  EditOutlined,
 } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
@@ -57,6 +57,7 @@ const BillPage = () => {
   const [currentBill, setCurrentBill] = useState(null);
   const [selectedDate, setSelectedDate] = useState(defaultValue);
   const [loading, setLoading] = useState(false);
+  const [loadingPayment,setLoadingPayment] = useState(false);
   const [myApartment, setMyApartment] = useState();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -120,7 +121,7 @@ const BillPage = () => {
           water: "blue",
           Maintenance: "green",
           Rent: "purple",
-          monthPaid: "orange"
+          monthPaid: "orange",
         };
         return <Tag color={colorMap[billType] || "default"}>{billType}</Tag>;
       },
@@ -184,17 +185,21 @@ const BillPage = () => {
               onClick={() => showBillDetails(record.billCode)}
             />
           </Tooltip>
-          {record.status === "unpaid" && ((record.billType === "water" && record.apartmentStatus === "unrented") || record.billType === "managementFee" )&& (
-            <Button
-              type="primary"
-              size="small"
-              icon={<PayCircleOutlined />}
-              disabled={record.status === "paid"}
-              onClick={() => handlePayment(record)}
-            >
-              Thanh toán
-            </Button>
-          )}
+          {record.status === "unpaid" &&
+            ((record.billType === "water" &&
+              record.apartmentStatus === "unrented") ||
+              record.billType === "managementFee") && (
+              <Button
+                type="primary"
+                size="small"
+                icon={<PayCircleOutlined />}
+                disabled={record.status === "paid"}
+                onClick={() => handlePayment(record)}
+                loading={loadingPayment}
+              >
+                Thanh toán
+              </Button>
+            )}
           <Tooltip title="In hóa đơn">
             <Button type="text" icon={<PrinterOutlined />} />
           </Tooltip>
@@ -223,11 +228,13 @@ const BillPage = () => {
     const formData = {
       billId: record.billId,
       productName: record.billContent,
-      description: record.billContent,
+      description:
+        record.billType === "managementFee" ? "Bill quan ly" : record.billContent,
       returnUrl: "https://abms-front-end.vercel.app/payment/success",
       cancelUrl: "https://abms-front-end.vercel.app/payment/cancel",
       price: record.amount,
     };
+    setLoadingPayment(true);
     try {
       const res = await paymentBill(formData);
       if (res.success) {
@@ -239,6 +246,8 @@ const BillPage = () => {
       }
     } catch (error) {
       message.error("Không thể thực hiện thanh toán hóa đơn!");
+    } finally {
+      setLoadingPayment(false);
     }
   };
 
@@ -268,10 +277,10 @@ const BillPage = () => {
       period: values.period,
       amount: values.amount,
     };
-    
+
     try {
       const res = await createBillMonthPaid(dispatch, formData);
-      if(res.success){
+      if (res.success) {
         message.success(res.message);
         setCreateBillVisible(false);
         window.location.href = "/ownerHome/bill-management";
@@ -286,14 +295,21 @@ const BillPage = () => {
   return (
     <div style={{ minHeight: "100vh", background: "#fff", padding: "20px" }}>
       {/* Header section - exactly matching Quản Lý Bài Viết */}
-      <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center", marginBottom: "20px" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "space-between",
+          alignItems: "center",
+          marginBottom: "20px",
+        }}
+      >
         <div style={{ display: "flex", alignItems: "center" }}>
           <DollarOutlined style={{ marginRight: "8px" }} />
           <Typography.Text strong>Quản lý hóa đơn</Typography.Text>
         </div>
-        <Button 
-          type="primary" 
-          icon={<PlusOutlined />} 
+        <Button
+          type="primary"
+          icon={<PlusOutlined />}
           onClick={showCreateBillModal}
           style={{ borderRadius: "4px" }}
         >
@@ -302,11 +318,13 @@ const BillPage = () => {
       </div>
 
       {/* Content section with white background - matching Quản Lý Bài Viết */}
-      <div style={{ 
-        background: "#fff", 
-        borderRadius: "4px", 
-        padding: "0" 
-      }}>
+      <div
+        style={{
+          background: "#fff",
+          borderRadius: "4px",
+          padding: "0",
+        }}
+      >
         <Table
           columns={billColumns}
           dataSource={bills}
@@ -319,9 +337,9 @@ const BillPage = () => {
             showQuickJumper: true,
             showTotal: (total) => `Tổng cộng ${total} hóa đơn`,
           }}
-          style={{ 
+          style={{
             borderRadius: "4px",
-            overflow: "hidden" 
+            overflow: "hidden",
           }}
         />
       </div>

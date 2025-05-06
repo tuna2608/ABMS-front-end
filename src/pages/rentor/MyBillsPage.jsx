@@ -34,6 +34,7 @@ const MyBillsPage = () => {
   const [billModalVisible, setBillModalVisible] = useState(false);
   const [selectedBill, setSelectedBill] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [loadingPayment,setLoadingPayment] = useState(false);
   const dispatch = useDispatch();
 
   // Mock data for bills
@@ -103,6 +104,7 @@ const MyBillsPage = () => {
       cancelUrl: "https://abms-front-end.vercel.app/payment/cancel",
       price: record.amount,
     };
+    setLoadingPayment(true);
     try {
       const res = await paymentBill(formData);
       if (res.success) {
@@ -115,6 +117,7 @@ const MyBillsPage = () => {
     } catch (error) {
       message.error("Không thể thực hiện thanh toán hóa đơn!");
     } finally {
+      setLoadingPayment(false);
     }
   };
 
@@ -180,6 +183,7 @@ const MyBillsPage = () => {
               style={{ backgroundColor: "green" }}
               icon={<CheckOutlined />}
               onClick={() => handlePayment(record)}
+              loading={loadingPayment}
             >
               Thanh toán
             </Button>
@@ -240,6 +244,7 @@ const MyBillsPage = () => {
                 setBillModalVisible(false);
                 // handlePay(selectedBill.id);
               }}
+              loading={loadingPayment}
             >
               Thanh toán ngay
             </Button>
