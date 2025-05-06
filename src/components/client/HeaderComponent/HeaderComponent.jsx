@@ -71,7 +71,7 @@ const NavLink = styled(Button)`
   border: none;
   font-size: 16px;
   font-weight: 500;
-  padding: 0;
+  padding: 5px 10px;
   height: auto;
   transition: color 0.3s;
   display: flex;

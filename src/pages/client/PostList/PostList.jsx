@@ -14,7 +14,8 @@ import {
   Flex,
   Tag,
   Button,
-  Divider
+  Divider,
+  message
 } from "antd";
 import {
   HomeOutlined,
@@ -39,8 +40,6 @@ const { Title, Text, Paragraph } = Typography;
 // Các danh mục căn hộ
 const categories = ["Tất cả", "Cho thuê", "Bán", "Đã cho thuê", "Đang đặt cọc"];
 
-
-
 // Màu trạng thái
 const statusColors = {
   0: "green",
@@ -49,9 +48,20 @@ const statusColors = {
 
 const PostList = () => {
   const location = useLocation();
-  const query = new URLSearchParams(location.search);
-  const [apartments, setApartments] = useState([]);
+  const queryParams = new URLSearchParams(location.search);
+  const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
+  const search = queryParams.get('search');
+  const area = queryParams.get('area');
+  const price = queryParams.get('price');
+  const type = queryParams.get('type');
+  const rooms = queryParams.get('rooms');
+  console.log(search);
+  console.log(area);
+  console.log(price);
+  console.log(type);
+  console.log(rooms);
+
   const [searchText, setSearchText] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Tất cả");
   const [selectedArea, setSelectedArea] = useState("Tất cả");
@@ -59,21 +69,29 @@ const PostList = () => {
 
   // Thay đổi pageSize từ 8 xuống 6
   const pageSize = 6;
-
   const dispatch = useDispatch();
-
   const navigate = useNavigate();
-  
   useEffect(() => {
-    async function getPostList() {
-      setLoading(true);
+    getPostList();
+  }, []);
+
+  async function getPostList() {
+    setLoading(true);
+    try {
       const res = await getAllPosts(dispatch);
-      console.log(res.data);
-      setApartments(res.data);
+      if(res.success){
+        // console.log(res.data);
+        setPosts(res.data)
+      }else{
+        message.error(res.message);
+      }
+    } catch (error) {
+      message.error("Không thể lấy danh sách bài viết")
+    }finally{
       setLoading(false);
     }
-    getPostList();
-  }, [dispatch]);
+    
+  }
 
   const onSearch = (value) => {
     setSearchText(value);
@@ -100,13 +118,12 @@ const PostList = () => {
   };
 
   // Lọc dữ liệu dựa trên tìm kiếm và bộ lọc
-  const filteredApartments = apartments.filter(apartment => {
+  const filteredPosts = posts.filter(apartment => {
     // Lọc theo tìm kiếm
     const searchMatch = searchText === "" || 
       apartment.title.toLowerCase().includes(searchText.toLowerCase()) ||
       apartment.content.toLowerCase().includes(searchText.toLowerCase()) ||
       apartment.apartment?.apartmentName?.toLowerCase().includes(searchText.toLowerCase());
-    
     // Lọc theo danh mục
     let categoryMatch = true;
     if (selectedCategory !== "Tất cả") {
@@ -130,7 +147,7 @@ const PostList = () => {
   // Tính toán các bài post hiển thị trên trang hiện tại
   const startIndex = (currentPage - 1) * pageSize;
   const endIndex = startIndex + pageSize;
-  const currentPosts = filteredApartments.slice(startIndex, endIndex);
+  const currentPosts = filteredPosts.slice(startIndex, endIndex);
 
   return (
     <div style={{ padding: "20px", backgroundColor: "#f5f5f5", minHeight: "100vh" }}>
@@ -284,7 +301,7 @@ const PostList = () => {
                       <Tooltip title="Diện tích">
                         <Space>
                           <AreaChartOutlined key="area" />
-                          {`200 m²`}
+                          {`${post.apartment.area} m²`}
                         </Space>
                       </Tooltip>,
                       <Tooltip title="Phòng ngủ & phòng tắm">
@@ -376,7 +393,7 @@ const PostList = () => {
           <Pagination
             current={currentPage}
             pageSize={pageSize}
-            total={filteredApartments.length}
+            total={filteredPosts.length}
             onChange={(page) => setCurrentPage(page)}
             showSizeChanger={false}
             showTotal={(total) => `Tổng cộng ${total} căn hộ`}

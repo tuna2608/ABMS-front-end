@@ -113,7 +113,7 @@ const PrevArrow = (props) => {
 };
 
 const PostDetail = () => {
-  const [apartment, setApartment] = useState(null);
+  const [post, setPost] = useState(null);
   const [owner, setOwner] = useState(null);
   const [loading, setLoading] = useState(true);
   const [contactModalVisible, setContactModalVisible] = useState(false);
@@ -146,7 +146,7 @@ const PostDetail = () => {
       const res = await getPostById(dispatch, postId);
       // res.data.postImages.map((image)=>console.log(image))
       const resUser = await getUserByUserName(dispatch, res.data.userName);
-      setApartment(res.data);
+      setPost(res.data);
       // console.log(resUser.data[0]);
       setOwner(resUser.data[0]);
       setLoading(false);
@@ -233,7 +233,7 @@ const PostDetail = () => {
       label: "Thông tin chi tiết",
       children: (
         <>
-          <Paragraph>{apartment?.content}</Paragraph>
+          <Paragraph>{post?.content}</Paragraph>
           {/* <Space wrap>
             {apartment?.tags.map(tag => (
               <Tag color="blue" key={tag}>
@@ -247,33 +247,30 @@ const PostDetail = () => {
             <Descriptions.Item label="Tình trạng">
               <Badge
                 status={
-                  statusColors[apartment?.status] === "green"
+                  statusColors[post?.status] === "green"
                     ? "success"
-                    : statusColors[apartment?.status] === "red"
+                    : statusColors[post?.status] === "red"
                     ? "error"
                     : "warning"
                 }
-                text={apartment?.status}
+                text={post?.apartment.note}
               />
             </Descriptions.Item>
             <Descriptions.Item label="Hướng nhà">
-              {apartment?.direction}
+              {post?.apartment.direction}
             </Descriptions.Item>
             <Descriptions.Item label="Nội thất">
-              {apartment?.furnishing}
+              {post?.apartment.furnishing || `Không có`}
             </Descriptions.Item>
             <Descriptions.Item label="Tầng số">
-              {apartment?.floor}
-            </Descriptions.Item>
-            <Descriptions.Item label="Tòa nhà">
-              {apartment?.buildingName}
+              {post?.apartment?.floor}
             </Descriptions.Item>
             <Descriptions.Item label="Tiền cọc">
-              {apartment?.depositAmount}
+              {`${post?.depositPrice} VND`}
             </Descriptions.Item>
-            <Descriptions.Item label="Thời hạn hợp đồng">
+            {/* <Descriptions.Item label="Thời hạn hợp đồng">
               {apartment?.contractTerm}
-            </Descriptions.Item>
+            </Descriptions.Item> */}
           </Descriptions>
 
           <Divider orientation="left">Tiện ích</Divider>
@@ -320,16 +317,16 @@ const PostDetail = () => {
 
   // Render chat drawer
   const renderChatDrawer = () => {
-    if (!apartment) return null;
+    if (!post) return null;
     return (
       <Drawer
         title={
           <div style={{ display: "flex", alignItems: "center" }}>
-            <Avatar src={apartment.avatar} style={{ marginRight: 12 }} />
+            <Avatar src={post.avatar} style={{ marginRight: 12 }} />
             <div>
-              <div style={{ fontWeight: "bold" }}>{apartment.contactName}</div>
+              <div style={{ fontWeight: "bold" }}>{post.contactName}</div>
               <div style={{ fontSize: 12, color: "#8c8c8c" }}>
-                {apartment.userName}
+                {post.userName}
               </div>
             </div>
           </div>
@@ -444,7 +441,7 @@ const PostDetail = () => {
           <Col xs={24} lg={16}>
             <div style={{ position: "relative" }}>
               <Carousel {...carouselSettings}>
-                {apartment.postImages.map((image, index) => (
+                {post.postImages.map((image, index) => (
                   <div key={index}>
                     <div style={{ height: 500, position: "relative" }}>
                       <img
@@ -461,28 +458,28 @@ const PostDetail = () => {
                 ))}
               </Carousel>
               <Badge
-                count={apartment.status}
+                count={post.status}
                 style={{
                   position: "absolute",
                   top: 10,
                   right: 10,
-                  backgroundColor: statusColors[apartment.status],
+                  backgroundColor: statusColors[post.status],
                   zIndex: 1,
                 }}
               />
             </div>
 
             <Title level={2} style={{ marginTop: 16 }}>
-              {apartment.title}
+              {post.title}
             </Title>
             <Space size="large" wrap>
               <Text>
-                <EnvironmentOutlined /> {apartment.apartment.apartmentName}
+                <EnvironmentOutlined /> {post.apartment.apartmentName}
               </Text>
               {/* <Text><EyeOutlined /> {apartment.views} lượt xem</Text> */}
               <Text>
                 <CalendarOutlined /> Đăng ngày:{" "}
-                {new Date(apartment.postDate).toLocaleDateString("vi-VN")}
+                {new Date(post.postDate).toLocaleDateString("vi-VN")}
               </Text>
             </Space>
 
@@ -492,7 +489,7 @@ const PostDetail = () => {
               <Col xs={16} sm={12} md={8}>
                 <Statistic
                   title="Giá thuê"
-                  value={formatPrice(apartment.price)}
+                  value={formatPrice(post.price)}
                   prefix={<DollarOutlined />}
                   valueStyle={{ color: "#cf1322", fontSize: 18 }}
                 />
@@ -500,7 +497,7 @@ const PostDetail = () => {
               <Col xs={12} sm={8} md={6}>
                 <Statistic
                   title="Diện tích"
-                  value={`200 m²`}
+                  value={`${post.apartment.area} m²`}
                   prefix={<AreaChartOutlined />}
                   valueStyle={{ fontSize: 18 }}
                 />
@@ -508,7 +505,7 @@ const PostDetail = () => {
               <Col xs={12} sm={8} md={6}>
                 <Statistic
                   title="Phòng ngủ"
-                  value={apartment.apartment.numberOfBedrooms}
+                  value={post.apartment.numberOfBedrooms}
                   prefix={<UserOutlined />}
                   valueStyle={{ fontSize: 18 }}
                 />
@@ -516,14 +513,13 @@ const PostDetail = () => {
               <Col xs={12} sm={8} md={4}>
                 <Statistic
                   title="Phòng tắm"
-                  value={apartment.apartment.numberOfBathrooms}
+                  value={post.apartment.numberOfBathrooms}
                   valueStyle={{ fontSize: 18 }}
                 />
               </Col>
             </Row>
 
             <Divider />
-
             {/* Updated Tabs implementation using items */}
             <Tabs defaultActiveKey="1" items={tabItems} />
 
@@ -535,12 +531,12 @@ const PostDetail = () => {
               <Space align="center" style={{ marginBottom: 16 }}>
                 <Avatar
                   size={64}
-                  src={apartment.avatar}
+                  src={post.avatar}
                   icon={<UserOutlined />}
                 />
                 <div>
                   <Text strong style={{ fontSize: 16 }}>
-                    {apartment.contactName}
+                    {post.contactName}
                   </Text>
                   <div>
                     <SafetyCertificateOutlined
@@ -550,7 +546,7 @@ const PostDetail = () => {
                   </div>
                   <div>
                     <BankOutlined style={{ marginRight: 8 }} />
-                    <Text type="secondary">{apartment.userName}</Text>
+                    <Text type="secondary">{post.userName}</Text>
                   </div>
                 </div>
               </Space>
@@ -558,7 +554,7 @@ const PostDetail = () => {
               <Divider style={{ margin: "12px 0" }} />
 
               <Space direction="vertical" style={{ width: "100%" }}>
-                {userCurrent && apartment.apartment.householder !== null && apartment.userId !== userCurrent.userId && (
+                {userCurrent && post.apartment.householder !== null && post.userId !== userCurrent.userId && (
                   <Button
                     type="primary"
                     block
@@ -572,18 +568,18 @@ const PostDetail = () => {
                     Nhắn tin liên hệ
                   </Button>
                 )}
-                {userCurrent && apartment.apartment.householder !== null && apartment.depositUserId !== userCurrent.userId && (
+                {userCurrent && post.apartment.householder !== null && post.depositUserId !== userCurrent.userId && (
                   <Button
                     style={{ background: "var(--forange)", color: "white" }}
                     icon={<MoneyCollectOutlined />}
-                    disabled={apartment.depositCheck === 'done'}
+                    disabled={post.depositCheck === 'done'}
                     onClick={()=>setIsDepositeOpen(true)}
                     block
                   >
                     Đặt cọc
                   </Button>
                 )}
-                {userCurrent && apartment.depositUserId === userCurrent.userId && (
+                {userCurrent && post.depositUserId === userCurrent.userId && (
                   <Button
                     style={{ background: "var(--fred)", color: "white" }}
                     icon={<MoneyCollectOutlined />}
@@ -629,19 +625,19 @@ const PostDetail = () => {
                 <Descriptions.Item label="Người liên hệ">
                   <Space>
                     <UserOutlined />
-                    <Text>{apartment.contactName}</Text>
+                    <Text>{post.contactName}</Text>
                   </Space>
                 </Descriptions.Item>
                 <Descriptions.Item label="Số điện thoại">
                   <Space>
                     <PhoneOutlined />
-                    <Text>{apartment.contactPhone}</Text>
+                    <Text>{post.contactPhone}</Text>
                   </Space>
                 </Descriptions.Item>
                 <Descriptions.Item label="Email">
                   <Space>
                     <MailOutlined />
-                    <Text>{apartment.contactEmail}</Text>
+                    <Text>{post.contactEmail}</Text>
                   </Space>
                 </Descriptions.Item>
               </Descriptions>
@@ -662,7 +658,7 @@ const PostDetail = () => {
       </Card>
 
       <DepositPage
-        postDetail={apartment}
+        postDetail={post}
         isOpen={isDepositeOpen}
         onCancel={() => setIsDepositeOpen(false)}
       />

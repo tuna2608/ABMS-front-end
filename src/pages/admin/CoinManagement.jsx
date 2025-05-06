@@ -47,8 +47,6 @@ const formatCurrency = (amount) => {
   return result;
 };
 
-
-
 const CoinManagement = () => {
   const navigate = useNavigate();
   const userCurrent = useSelector((state) => state.user.currentUser);
@@ -70,7 +68,6 @@ const CoinManagement = () => {
     setLoading(true);
     try {
       const res = await getAllReCoin();
-      console.log(res.data);
       if (res.success) {
         if (res.data) {
           if (typeof res.data === 'object' && res.data !== null && !Array.isArray(res.data)) {

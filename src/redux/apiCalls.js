@@ -459,10 +459,18 @@ export const getAllPosts = async (dispatch) => {
   try {
     const res = await publicRequest.get(`/post`);
     dispatch(getAllPostsSuccess(res.data.data));
-    return res.data;
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || ''
+    };
   } catch (error) {
     dispatch(getAllPostsFailure());
-    return error;
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || "Lỗi khi lấy danh sách bài viết"
+    };
   }
 }
 

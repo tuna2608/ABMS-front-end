@@ -134,7 +134,7 @@ function SearchSection({
               value={rooms}
               onChange={(e) => setRooms(e.target.value)}
             >
-              <option value="">Số phòng</option>
+              <option value="">Số phòng ngủ</option>
               <option value="1">1 phòng</option>
               <option value="2">2 phòng</option>
               <option value="3">3 phòng</option>
@@ -145,8 +145,8 @@ function SearchSection({
           <FilterSelect>
             <Select value={type} onChange={(e) => setType(e.target.value)}>
               <option value="">Hình thức</option>
-              <option value="chothue">Cho thuê</option>
-              <option value="ban">Mua bán</option>
+              <option value="Cho thuê">Cho thuê</option>
+              <option value="Bán">Mua bán</option>
             </Select>
             <SelectArrow>▼</SelectArrow>
           </FilterSelect>

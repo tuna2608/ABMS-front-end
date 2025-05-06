@@ -89,12 +89,8 @@ function HomePage() {
       carouselRef.current.next();
     }
   };
-
-
   // Đã xóa dữ liệu properties mẫu vì sẽ lấy data từ API
-
   const navigate = useNavigate();
-
 
   const handleSearch = () => {
     const queryParams = new URLSearchParams({
