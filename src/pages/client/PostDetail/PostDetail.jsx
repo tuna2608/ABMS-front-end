@@ -579,13 +579,23 @@ const PostDetail = () => {
                     Đặt cọc
                   </Button>
                 )}
-                {userCurrent && post.depositUserId === userCurrent.userId && (
+                {userCurrent && post.depositUserId === userCurrent.userId && post.deposit_check === "done" (
                   <Button
                     style={{ background: "var(--fred)", color: "white" }}
                     icon={<MoneyCollectOutlined />}
                     block
                   >
                     Hủy cọc
+                  </Button>
+                )}
+                {userCurrent && post.depositUserId === userCurrent.userId && post.deposit_check === "ongoing" (
+                  <Button
+                    style={{ background: "var(--fred)", color: "white" }}
+                    icon={<MoneyCollectOutlined />}
+                    disabled
+                    block
+                  >
+                    Đang có người đặt cọc
                   </Button>
                 )}
 
