@@ -474,6 +474,23 @@ export const getAllPosts = async (dispatch) => {
   }
 }
 
+export const getAllPostsNoDispatch = async () => {
+  try {
+    const res = await publicRequest.get(`/post`);
+    return {
+      success: true,
+      data: res.data.data || [],
+      message: res.data.message || ''
+    };
+  } catch (error) {
+    return {
+      success: false,
+      data: [],
+      message: error.response?.data?.message || "Lỗi khi lấy danh sách bài viết"
+    };
+  }
+}
+
 // get bai viet theo id
 export const getPostById = async (dispatch, postId) => {
   dispatch(getPostStart());
