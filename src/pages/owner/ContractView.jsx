@@ -123,7 +123,7 @@ const ContractView = () => {
 
   const handleDownloadTemplate = () => {
     // Thay thế URL này bằng link Google Drive trực tiếp có thể tải xuống
-    const templateUrl = 'https://drive.google.com/drive/folders/1bdFLx_qJY5ybWLUngrfMsDHwjae4mM9E?usp=drive_link';
+    const templateUrl = 'https://drive.google.com/drive/folders/1HFzRCaZObrr5HXM5kieU9akLJ5YqqnVS?usp=sharing';
     
     try {
       // Mở link tải xuống trong tab mới
