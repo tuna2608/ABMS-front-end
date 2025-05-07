@@ -550,8 +550,7 @@ const PostDetail = () => {
               <Space direction="vertical" style={{ width: "100%" }}>
                 {userCurrent &&
                   post.apartment.householder !== null &&
-                  post.userId !== userCurrent.userId &&
-                  post.postType === "Cho thuê" && (
+                  post.userId !== userCurrent.userId && (
                     <Button
                       type="primary"
                       block
