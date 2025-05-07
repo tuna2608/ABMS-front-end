@@ -1,14 +1,16 @@
-import React, { useState } from 'react';
-import styled from 'styled-components';
+import React, { useEffect, useState } from "react";
+import styled from "styled-components";
 import {
   LeftOutlined,
   RightOutlined,
   ArrowRightOutlined,
   StarOutlined,
   ClockCircleOutlined,
-  TeamOutlined
+  TeamOutlined,
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
+import { getVerifiedFacilities } from "../../../redux/apiCalls";
+import { message } from "antd";
 
 const ServiceSectionWrapper = styled.section`
   max-width: 1200px;
@@ -280,83 +282,52 @@ const ServiceNavButton = styled.button`
 
 function ServiceSection() {
   const navigate = useNavigate();
-  
-  // Sample service data
-  const services = [
-    {
-      id: 1,
-      title: "Dịch vụ dọn dẹp căn hộ chuyên nghiệp",
-      price: "200.000đ/giờ",
-      category: "Dọn dẹp",
-      provider: "CleanHome Pro",
-      rating: 4.8,
-      availableTime: "8:00 - 18:00",
-      image: "https://placehold.co/300x180/e6e6e6/808080?text=Cleaning",
-    },
-    {
-      id: 2,
-      title: "Sửa chữa điện nước tận nhà 24/7",
-      price: "300.000đ/lần",
-      category: "Sửa chữa",
-      provider: "FixIt Express",
-      rating: 4.9,
-      availableTime: "0:00 - 24:00",
-      image: "https://placehold.co/300x180/e6e6e6/808080?text=Plumbing",
-    },
-    {
-      id: 3,
-      title: "Bảo trì điều hòa và thiết bị điện tử",
-      price: "400.000đ/lần",
-      category: "Bảo trì",
-      provider: "CoolService",
-      rating: 4.7,
-      availableTime: "8:00 - 17:30",
-      image: "https://placehold.co/300x180/e6e6e6/808080?text=AC+Repair",
-    },
-    {
-      id: 4,
-      title: "Dịch vụ thiết kế nội thất căn hộ",
-      price: "5.000.000đ",
-      category: "Thiết kế",
-      provider: "InteriorPlus",
-      rating: 4.9,
-      availableTime: "9:00 - 18:00",
-      image: "https://placehold.co/300x180/e6e6e6/808080?text=Interior",
-    },
-    {
-      id: 5,
-      title: "Dịch vụ giặt thảm và sofa tại nhà",
-      price: "350.000đ/lần",
-      category: "Giặt ủi",
-      provider: "CleanSoft",
-      rating: 4.6,
-      availableTime: "8:30 - 17:00",
-      image: "https://placehold.co/300x180/e6e6e6/808080?text=Cleaning",
-    },
-    {
-      id: 6,
-      title: "Dịch vụ chuyển nhà trọn gói",
-      price: "2.500.000đ",
-      category: "Vận chuyển",
-      provider: "MoveEasy",
-      rating: 4.8,
-      availableTime: "7:00 - 19:00",
-      image: "https://placehold.co/300x180/e6e6e6/808080?text=Moving",
-    },
-  ];
-
-  // Pagination state
+  const [servicePosts, setServicePosts] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
   const servicesPerPage = 4;
-  
-  // Calculate total pages for pagination indicator
-  const totalPages = Math.ceil(services.length / servicesPerPage);
-  
-  // Get current services for pagination
+  const [totalPages, setTotalPages] = useState(0);
   const indexOfLastService = (currentPage + 1) * servicesPerPage;
   const indexOfFirstService = indexOfLastService - servicesPerPage;
-  const currentServices = services.slice(indexOfFirstService, indexOfLastService);
+  const [currentServices, setCurrentServices] = useState(null);
 
+  // Calculate total pages for pagination indicator
+  useEffect(() => {
+    callGetAllServicePost();
+  }, []);
+
+  async function callGetAllServicePost() {
+    try {
+      const res = await getVerifiedFacilities();
+      if (res.success) {
+        // setServicePosts(res.data);
+        if (res.data !== null) {
+          setTotalPages(Math.ceil(res.data.length / servicesPerPage));
+          // Get current services for pagination
+          setCurrentServices(
+            res.data.slice(indexOfFirstService, indexOfLastService)
+          );
+        }
+      } else {
+        message.error(res.message);
+      }
+    } catch (error) {
+      message.error("Không thể lấy danh sách dịch vụ đã duyệt");
+    }
+  }
+  function formatDate(dateString) {
+    const date = new Date(dateString);
+    
+    const day = String(date.getDate()).padStart(2, '0');
+    const month = String(date.getMonth() + 1).padStart(2, '0'); // months are 0-based
+    const year = date.getFullYear();
+  
+    const hours = String(date.getHours()).padStart(2, '0');
+    const minutes = String(date.getMinutes()).padStart(2, '0');
+  
+    return `${day}-${month}-${year} ${hours}:${minutes}`;
+  }
+
+  // Pagination state
   const handlePrevService = () => {
     setCurrentPage((prev) => (prev === 0 ? totalPages - 1 : prev - 1));
   };
@@ -366,7 +337,7 @@ function ServiceSection() {
   };
 
   const handleViewMore = () => {
-    navigate('/service');
+    navigate("/service");
   };
 
   return (
@@ -379,35 +350,30 @@ function ServiceSection() {
       </SectionTitleContainer>
 
       <ServiceGrid>
-        {currentServices.map((service) => (
+        {currentServices && currentServices.map((service) => (
           <ServiceCard key={service.id}>
             <ServiceImage>
-              <img src={service.image} alt={service.title} />
-              <ServiceTag>{service.category}</ServiceTag>
+              <img src={service.images[0]} alt={service.facilityHeader} />
+              {/* <ServiceTag>{service.category}</ServiceTag> */}
             </ServiceImage>
-
             <ServiceInfo>
               <ServicePrice>
-                <PriceTag>{service.price}</PriceTag>
-                <RatingTag><StarOutlined /> {service.rating}</RatingTag>
+                <PriceTag>{service.facilityHeader}</PriceTag>
+                <RatingTag>
+                  <StarOutlined />{service.rating}
+                </RatingTag>
               </ServicePrice>
-
-              <ServiceTitle>{service.title}</ServiceTitle>
-
+              <ServiceTitle>{service.facilityPostContent}</ServiceTitle>
               <ProviderInfo>
-                <TeamOutlined style={{ marginRight: 6 }} />{" "}
-                {service.provider}
+                <TeamOutlined style={{ marginRight: 6 }} /> {service.userName}
               </ProviderInfo>
             </ServiceInfo>
-
             <CardFooter>
               <span>
                 <ClockCircleOutlined style={{ marginRight: 4 }} />
-                {service.availableTime}
+                {formatDate(service.createdAt)}
               </span>
-              <BookButton>
-                Đặt lịch
-              </BookButton>
+              <BookButton>Đặt lịch</BookButton>
             </CardFooter>
           </ServiceCard>
         ))}

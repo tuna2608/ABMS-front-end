@@ -1,4 +1,4 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
@@ -7,6 +7,8 @@ import HeroSection from "./HeroSection";
 import SearchSection from "./SearchSection";
 import ApartmentSection from ".//ApartmentSection";
 import ServiceSection from "./ServiceSection"; // Import the new ServiceSection component
+import { getVerifiedFacilities } from "../../../redux/apiCalls";
+import { message } from "antd";
 
 // Styled Components
 const Container = styled.div`
@@ -73,6 +75,9 @@ function HomePage() {
   const [price, setPrice] = useState("");
   const [type, setType] = useState("");
   const [rooms, setRooms] = useState("");
+
+  
+
 
   // Carousel functionality
   const carouselRef = useRef(null);
@@ -141,7 +146,7 @@ function HomePage() {
         <SectionDivider />
         
         {/* Service Section */}
-        <ServiceSection />
+        <ServiceSection/>
       </Wrapper>
     </Container>
   );
