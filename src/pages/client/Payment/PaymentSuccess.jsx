@@ -64,6 +64,7 @@ const PaymentSuccess = () => {
       const res = await paymentBillSuccess(formData);
       if (res.success) {
         message.success(res.message);
+
       } else {
         message.error(res.message);
       }
@@ -71,6 +72,9 @@ const PaymentSuccess = () => {
       message.error("Không thể thực hiện thanh toán hóa đơn thành công");
     } finally {
       setLoading(false);
+      setTimeout(() => {
+        navigate('/')
+      }, 1500);
     }
   }
 

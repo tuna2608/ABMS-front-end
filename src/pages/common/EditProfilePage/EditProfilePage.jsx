@@ -572,7 +572,7 @@ const ProfileEditPage = () => {
             <p>Tên Tài Khoản: {bankInfo.accountName}</p>
           </div>
           <Alert
-            message="Lưu Ý"
+            message="Lưu ý"
             description="Yêu cầu chuyển coin sẽ được quản trị viên xử lý. Vui lòng kiểm tra số dư và thông tin tài khoản ngân hàng."
             type="info"
             showIcon

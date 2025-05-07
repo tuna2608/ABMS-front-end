@@ -56,7 +56,7 @@ const AdminDashboard = () => {
       if (res.success) {
         setPayments(res.data);
         const totalK = res.data
-          .filter((item) => item.billType === "managementFee")
+          .filter((item) => item.billType === "managementFee" && item.status === "paid")
           .reduce((sum, item) => sum + item.amount, 0);
         console.log(totalK);
         setDoanhThu(totalK);

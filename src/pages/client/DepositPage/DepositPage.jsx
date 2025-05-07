@@ -86,28 +86,31 @@ const DepositPage = ({
   };
 
   const depositTerms = `
-ĐIỀU KHOẢN HOÀN TRẢ TIỀN ĐẶT CỌC
-
-1. Quy Định Hoàn Trả Tiền Đặt Cọc
-- Chủ nhà sẽ hoàn trả ${postDetail.depositPrice} số tiền đặt cọc sau khi:
-  a) Người thuê thực hiện đúng các cam kết trong hợp đồng
-  b) Không có hư hỏng vượt quá mức sử dụng bình thường
-  c) Thông báo và bàn giao lại mặt bằng đúng thời hạn
-
-2. Điều Kiện Mất Tiền Đặt Cọc
-Khách hàng có thể mất một phần hoặc toàn bộ tiền đặt cọc nếu:
-- Vi phạm các điều khoản trong hợp đồng thuê
-- Hủy hợp đồng trước thời hạn không có lý do chính đáng
-- Gây hư hỏng tài sản vượt quá mức độ sử dụng bình thường
-
-3. Thời Gian Và Phương Thức Hoàn Trả
-- Thời gian hoàn trả: ${postDetail.refundPeriod} làm việc sau khi kết thúc hợp đồng
-- Phương thức: Chuyển khoản ngân hàng theo thông tin do người thuê cung cấp
-
-4. Cam Kết
-- Chúng tôi cam kết minh bạch và rõ ràng trong việc hoàn trả tiền đặt cọc
-- Mọi thắc mắc vui lòng liên hệ trực tiếp với chủ nhà để được giải đáp
-  `;
+ĐIỀU KHOẢN ĐẶT CỌC
+1. Quy Định Về Tiền Đặt Cọc
+Ban quản lý sẽ nắm giữ số tiền đặt cọc 30.000 VNĐ trong suốt thời gian thuê
+Tiền đặt cọc là bảo đảm cho việc thực hiện đúng các nghĩa vụ của người thuê
+Tiền đặt cọc không được sử dụng để thanh toán tiền thuê hàng tháng
+2. Điều Kiện Xử Lý Tiền Đặt Cọc
+Tiền đặt cọc sẽ được hoàn trả đầy đủ khi kết thúc hợp đồng nếu người thuê: 
+a) Thực hiện đúng các cam kết trong hợp đồng 
+b) Không làm hư hỏng tài sản vượt quá mức sử dụng bình thường 
+c) Thanh toán đầy đủ các khoản phí liên quan
+3. Mất Tiền Đặt Cọc
+Người thuê sẽ mất một phần hoặc toàn bộ tiền đặt cọc trong các trường hợp: 
+a) Vi phạm nghiêm trọng các điều khoản trong hợp đồng thuê
+b) Gây hư hỏng tài sản và không chịu khắc phục 
+c) Chấm dứt hợp đồng trước thời hạn mà không thông báo trước 30 ngày d) Còn nợ tiền thuê, tiền dịch vụ hoặc các khoản phí khác khi kết thúc hợp đồng
+4. Cam Kết Về Tiền Đặt Cọc
+Ban quản lý cam kết: 
+a) Không sử dụng tiền đặt cọc vào mục đích cá nhân 
+b) Hoàn trả tiền đặt cọc đúng thời hạn sau khi kiểm tra mặt bằng 
+c) Cung cấp biên lai xác nhận đã nhận tiền đặt cọc
+Người thuê cam kết: 
+a) Bảo quản căn hộ và trang thiết bị trong tình trạng tốt 
+b) Tuân thủ nội quy tòa nhà và các điều khoản trong hợp đồng 
+c) Thanh toán đầy đủ các khoản phí trước khi kết thúc hợp đồng
+`;
 
   return (
     <Modal
