@@ -351,7 +351,7 @@ function ServiceSection() {
 
       <ServiceGrid>
         {currentServices && currentServices.map((service) => (
-          <ServiceCard key={service.id}>
+          <ServiceCard key={service.facilityId}>
             <ServiceImage>
               <img src={service.images[0]} alt={service.facilityHeader} />
               {/* <ServiceTag>{service.category}</ServiceTag> */}
