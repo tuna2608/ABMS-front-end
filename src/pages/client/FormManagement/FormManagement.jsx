@@ -107,10 +107,11 @@ const FormManagement = () => {
   const navigate = useNavigate();
   const [file, setFile] = useState(null);
   const currentUser = useSelector((state) => state.user.currentUser);
-  
+
   const [apartments, setApartments] = useState([]);
   const [ownerApartments, setOwnerApartments] = useState([]);
   const [loading, setLoading] = useState(false);
+  const [loadingSend, setLoadingSend] = useState(false);
 
   useEffect(() => {
     fetchApartments(currentUser);
@@ -159,6 +160,7 @@ const FormManagement = () => {
   ];
 
   const onFinish = async (values) => {
+    setLoadingSend(true);
     if (!file) {
       return message.warning("Vui lòng đính kèm file");
     }
@@ -172,19 +174,24 @@ const FormManagement = () => {
       apartmentNumber: values.apartment_number,
       reason: values.reason,
     };
-    
-    const userId = currentUser.userId; // lấy user id đăng nhập
-    const res = await createForm(dispatch, userId, dto);
 
-    if (res.success) {
-      message.success(res.message || "Tạo đơn thành công");
-      form.resetFields();
-      setFile(null);
-      // Chuyển hướng đến trang danh sách đơn sau khi gửi thành công
-      navigate("/form-list");
-    } else {
-      message.error(res.message || "Tạo đơn thất bại");
-    }
+    const userId = currentUser.userId;
+    try {
+      const res = await createForm(dispatch, userId, dto);
+      if (res.success) {
+        message.success(res.message || "Tạo đơn thành công");
+        form.resetFields();
+        setFile(null);
+        // Chuyển hướng đến trang danh sách đơn sau khi gửi thành công
+        navigate("/form-list");
+      } else {
+        message.error(res.message || "Tạo đơn thất bại");
+      }
+    } catch (error) {
+      message.error("Không thể tạo đơn");
+    }finally{
+      setLoadingSend(false)
+    } // lấy user id đăng nhập
   };
 
   const uploadProps = {
@@ -227,7 +234,7 @@ const FormManagement = () => {
           <Form
             form={form}
             layout="vertical"
-            onFinish={(e)=>onFinish(e)}
+            onFinish={(e) => onFinish(e)}
             initialValues={{ application_type: "apartment_renovation" }}
           >
             <Row gutter={24}>
@@ -343,6 +350,7 @@ const FormManagement = () => {
                 type="primary"
                 htmlType="submit"
                 icon={<SendOutlined />}
+                loading={loadingSend}
               >
                 Gửi
               </SubmitButton>
