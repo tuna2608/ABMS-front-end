@@ -88,7 +88,6 @@ const sampleMessages = [
   },
 ];
 
-
 // Custom arrow components for Carousel that don't pass down DOM props
 const NextArrow = (props) => {
   const { className, style, onClick } = props;
@@ -140,7 +139,6 @@ const PostDetail = () => {
 
   // Giả lập việc lấy dữ liệu từ API
   useEffect(() => {
-    
     async function getPostDetail() {
       setLoading(true);
       const res = await getPostById(dispatch, postId);
@@ -529,11 +527,7 @@ const PostDetail = () => {
           <Col xs={24} lg={8}>
             <Card style={{ marginBottom: 16 }}>
               <Space align="center" style={{ marginBottom: 16 }}>
-                <Avatar
-                  size={64}
-                  src={post.avatar}
-                  icon={<UserOutlined />}
-                />
+                <Avatar size={64} src={post.avatar} icon={<UserOutlined />} />
                 <div>
                   <Text strong style={{ fontSize: 16 }}>
                     {post.contactName}
@@ -554,50 +548,65 @@ const PostDetail = () => {
               <Divider style={{ margin: "12px 0" }} />
 
               <Space direction="vertical" style={{ width: "100%" }}>
-                {userCurrent && post.apartment.householder !== null && post.userId !== userCurrent.userId && (
-                  <Button
-                    type="primary"
-                    block
-                    onClick={() =>
-                      userCurrent ? setIsChatOpen(true) : navigate("/login")
-                    }
-                    style={{ 
-                      background: '#4b7bec',
-                    }}
-                  >
-                    Nhắn tin liên hệ
-                  </Button>
-                )}
-                {userCurrent && post.apartment.householder !== null && post.depositUserId !== userCurrent.userId && (
-                  <Button
-                    style={{ background: "var(--forange)", color: "white" }}
-                    icon={<MoneyCollectOutlined />}
-                    disabled={post.depositCheck === 'done'}
-                    onClick={()=>setIsDepositeOpen(true)}
-                    block
-                  >
-                    Đặt cọc
-                  </Button>
-                )}
-                {userCurrent && post.depositUserId === userCurrent.userId && post.deposit_check === "done" && (
-                  <Button
-                    style={{ background: "var(--fred)", color: "white" }}
-                    icon={<MoneyCollectOutlined />}
-                    block
-                  >
-                    Hủy cọc
-                  </Button>
-                )}
-                {userCurrent && post.depositUserId === userCurrent.userId && post.deposit_check === "ongoing" && (
-                  <Button
-                    style={{ background: "var(--fred)", color: "white" }}
-                    icon={<MoneyCollectOutlined />}
-                    disabled
-                    block
-                  >
-                    Đang có người đặt cọc
-                  </Button>
-                )}
+                {userCurrent &&
+                  post.apartment.householder !== null &&
+                  post.userId !== userCurrent.userId &&
+                  post.postType === "Cho thuê" && (
+                    <Button
+                      type="primary"
+                      block
+                      onClick={() =>
+                        userCurrent ? setIsChatOpen(true) : navigate("/login")
+                      }
+                      style={{
+                        background: "#4b7bec",
+                      }}
+                    >
+                      Nhắn tin liên hệ
+                    </Button>
+                  )}
+                {userCurrent &&
+                  post.apartment.householder !== null &&
+                  post.userId !== userCurrent.userId &&
+                  post.postType === "Cho thuê" && (
+                    <Button
+                      style={{ background: "var(--forange)", color: "white" }}
+                      icon={<MoneyCollectOutlined />}
+                      disabled={post.depositCheck === "done" ? true : false}
+                      onClick={() => setIsDepositeOpen(true)}
+                      block
+                    >
+                      Đặt cọc
+                    </Button>
+                  )}
+                {userCurrent &&
+                  post.apartment.householder !== null &&
+                  post.userId !== userCurrent.userId &&
+                  post.postType === "Cho thuê" &&
+                  post.depositUserId === userCurrent.userId &&
+                  post.depositCheck === "done" && (
+                    <Button
+                      style={{ background: "var(--fred)", color: "white" }}
+                      icon={<MoneyCollectOutlined />}
+                      block
+                    >
+                      Hủy cọc
+                    </Button>
+                  )}
+                {userCurrent &&
+                  post.apartment.householder !== null &&
+                  post.userId !== userCurrent.userId &&
+                  post.postType === "Cho thuê" &&
+                  post.depositUserId === userCurrent.userId &&
+                  post.depositCheck === "ongoing" && (
+                    <Button
+                      style={{ background: "var(--fred)", color: "white" }}
+                      icon={<MoneyCollectOutlined />}
+                      block
+                    >
+                      Đang có người đặt cọc
+                    </Button>
+                  )}
 
                 <Button
                   type="default"
