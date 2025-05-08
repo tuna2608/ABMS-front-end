@@ -69,7 +69,7 @@ const ServicePage = () => {
   const [detailModalVisible, setDetailModalVisible] = useState(false);
 
   // Thay đổi pageSize từ 8 xuống 6
-  const pageSize = 6;
+  const pageSize = 8;
 
   const fetchFacilities = async () => {
     setLoading(true);
