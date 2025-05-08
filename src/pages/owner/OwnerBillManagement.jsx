@@ -57,7 +57,7 @@ const BillPage = () => {
   const [currentBill, setCurrentBill] = useState(null);
   const [selectedDate, setSelectedDate] = useState(defaultValue);
   const [loading, setLoading] = useState(false);
-  const [loadingPayment,setLoadingPayment] = useState(false);
+  const [loadingPayment, setLoadingPayment] = useState(false);
   const [myApartment, setMyApartment] = useState();
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -118,12 +118,24 @@ const BillPage = () => {
       key: "billType",
       render: (billType) => {
         const colorMap = {
-          water: "blue",
-          Maintenance: "green",
-          Rent: "purple",
-          monthPaid: "orange",
+          water: {
+            name: "Nước",
+            color: "blue",
+          },
+          monthPaid: {
+            name: "Thuê nhà",
+            color: "purple",
+          },
+          managementFee: {
+            name: "Phí quản lý",
+            color: "red",
+          },
         };
-        return <Tag color={colorMap[billType] || "default"}>{billType}</Tag>;
+        return (
+          <Tag color={colorMap[billType].color || "default"}>
+            {colorMap[billType].name}
+          </Tag>
+        );
       },
     },
     {
@@ -229,7 +241,9 @@ const BillPage = () => {
       billId: record.billId,
       productName: record.billContent,
       description:
-        record.billType === "managementFee" ? "Bill quan ly" : record.billContent,
+        record.billType === "managementFee"
+          ? "Bill quan ly"
+          : record.billContent,
       returnUrl: "https://abms-front-end.vercel.app/payment/success",
       cancelUrl: "https://abms-front-end.vercel.app/payment/cancel",
       price: record.amount,

@@ -34,7 +34,7 @@ const MyBillsPage = () => {
   const [billModalVisible, setBillModalVisible] = useState(false);
   const [selectedBill, setSelectedBill] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [loadingPayment,setLoadingPayment] = useState(false);
+  const [loadingPayment, setLoadingPayment] = useState(false);
   const dispatch = useDispatch();
 
   // Mock data for bills
@@ -99,7 +99,8 @@ const MyBillsPage = () => {
     const formData = {
       billId: record.billId,
       productName: record.billContent,
-      description: (record.billType === "monthPaid") ? "Bill thue nha" : record.billContent,
+      description:
+        record.billType === "monthPaid" ? "Bill thue nha" : record.billContent,
       returnUrl: "https://abms-front-end.vercel.app/payment/success",
       cancelUrl: "https://abms-front-end.vercel.app/payment/cancel",
       price: record.amount,
@@ -150,20 +151,45 @@ const MyBillsPage = () => {
       key: "billType",
       render: (billType) => {
         const colorMap = {
-          water: "blue",
-          monthPaid: "purple",
-          managementFee: "red",
+          water: {
+            name: "Nước",
+            color: "blue",
+          },
+          monthPaid: {
+            name: "Thuê nhà",
+            color: "purple",
+          },
+          managementFee: {
+            name: "Phí quản lý",
+            color: "red",
+          },
         };
-        return <Tag color={colorMap[billType] || "default"}>{billType}</Tag>;
+        return (
+          <Tag color={colorMap[billType].color || "default"}>
+            {colorMap[billType].name}
+          </Tag>
+        );
       },
     },
     {
       title: "Trạng thái",
       dataIndex: "status",
       key: "status",
-      render: (status) => (
-        <Tag color={status === "paid" ? "green" : "volcano"}>{status}</Tag>
-      ),
+      render: (status) => {
+        const colorMap = {
+          paid: {
+            name: "Đã thanh toán",
+            color: "green",
+          },
+          unpaid: {
+            name: "Chưa thanh toán",
+            color: "volcano",
+          }
+        };
+        return (
+          <Tag color={colorMap[status].color}>{colorMap[status].name}</Tag>
+        );
+      },
     },
     {
       title: "Hành động",
@@ -177,17 +203,18 @@ const MyBillsPage = () => {
           >
             Xem chi tiết
           </Button>
-          {record.status === "unpaid" && record.billType !== "managementFee" &&(
-            <Button
-              type="primary"
-              style={{ backgroundColor: "green" }}
-              icon={<CheckOutlined />}
-              onClick={() => handlePayment(record)}
-              loading={loadingPayment}
-            >
-              Thanh toán
-            </Button>
-          )}
+          {record.status === "unpaid" &&
+            record.billType !== "managementFee" && (
+              <Button
+                type="primary"
+                style={{ backgroundColor: "green" }}
+                icon={<CheckOutlined />}
+                onClick={() => handlePayment(record)}
+                loading={loadingPayment}
+              >
+                Thanh toán
+              </Button>
+            )}
         </Flex>
       ),
     },
@@ -282,9 +309,7 @@ const MyBillsPage = () => {
               <Descriptions.Item label="Trạng thái">
                 <Tag
                   color={
-                    selectedBill.status === "Đã thanh toán"
-                      ? "red"
-                      : "green"
+                    selectedBill.status === "Đã thanh toán" ? "red" : "green"
                   }
                 >
                   {selectedBill.status}
