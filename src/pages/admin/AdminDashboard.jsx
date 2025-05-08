@@ -12,6 +12,7 @@ import {
   getAllDeposits,
   getAllPayment,
   getAllReCoin,
+  getApartments,
 } from "../../redux/apiCalls";
 import { LoadingComponent } from "../../components/common/LoadingComponent/LoadingComponent";
 
@@ -23,6 +24,7 @@ const AdminDashboard = () => {
   const [numDeposite, setNumDeposite] = useState(0);
   const [reCoins, setReCoins] = useState([]);
   const [numRecoinPending, setRecoinPending] = useState(0);
+  const [numApartment,setNumApartment] = useState(0);
 
   // Dashboard Statistics
   const dashboardStats = {
@@ -36,17 +38,36 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     setLoading(true);
+    callGetAllApartment()
     callGetAllReCoin();
     callGetAllDeposits();
     callGetAllPayments();
   }, []);
+
+  async function callGetAllApartment() {
+    try {
+      const res = await getApartments();
+      if (res.success) {
+        const total = await res.data.filter(
+          (item) => item.householder !== null
+        ).length;
+        setNumApartment(total)
+        // console.log(total);
+        // message.success(res.message);
+      } else {
+        message.error(res.message);
+      }
+    } catch (error) {
+      message.error("Không thể lấy danh sách căn hộ");
+    }
+  }
 
   async function callGetAllReCoin() {
     setLoading(true);
     try {
       const res = await getAllReCoin();
       if (res.success) {
-        const total = res.data.filter(
+        const total = await res.data.filter(
           (item) => item.status === "pending"
         ).length;
         // console.log(total);
@@ -65,7 +86,7 @@ const AdminDashboard = () => {
     try {
       const res = await getAllDeposits();
       if (res.success) {
-        const num = res.data ? res.data.length : 0;
+        const num = await res.data ? res.data.length : 0;
         // console.log(num);
         setNumDeposite(num);
         // setDeposits(res.data);
@@ -158,7 +179,7 @@ const AdminDashboard = () => {
             <Card hoverable>
               <Statistic
                 title="Căn hộ hoạt động"
-                value={dashboardStats.activeApartments}
+                value={numApartment}
                 valueStyle={{ color: "#52c41a" }}
                 suffix="căn hộ"
                 prefix={<ApartmentOutlined />}
