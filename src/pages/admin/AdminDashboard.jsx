@@ -16,6 +16,7 @@ const AdminDashboard = () => {
   const [deposits, setDeposits] = useState(null);
   const [payments, setPayments] = useState(null);
   const [doanhThu, setDoanhThu] = useState(0);
+  const [numDeposite,setNumDeposite] = useState(0);
 
   // Dashboard Statistics
   const dashboardStats = {
@@ -31,7 +32,6 @@ const AdminDashboard = () => {
     setLoading(true);
     callGetAllDeposits();
     callGetAllPayments();
-    
   }, []);
 
   async function callGetAllDeposits() {
@@ -39,7 +39,10 @@ const AdminDashboard = () => {
     try {
       const res = await getAllDeposits();
       if (res.success) {
-        setDeposits(res.data);
+        const num = (res.data) ? res.data.length : 0;
+        // console.log(num);
+        setNumDeposite(num);
+        // setDeposits(res.data);
         // message.success(res.message)
       } else {
         message.error(res.message);
@@ -55,10 +58,10 @@ const AdminDashboard = () => {
       const res = await getAllPayment();
       if (res.success) {
         setPayments(res.data);
-        const totalK = res.data
+        const totalK = await res.data
           .filter((item) => item.billType === "managementFee" && item.status === "paid")
           .reduce((sum, item) => sum + item.amount, 0);
-        console.log(totalK);
+        // console.log(totalK);
         setDoanhThu(totalK);
       } else {
         message.error(res.message);
@@ -100,7 +103,7 @@ const AdminDashboard = () => {
             <Card hoverable>
               <Statistic
                 title="Đặt cọc mới"
-                value={dashboardStats.newDeposits}
+                value={numDeposite}
                 valueStyle={{ color: "#1890ff" }}
                 suffix="giao dịch"
                 prefix={<SafetyOutlined />}
