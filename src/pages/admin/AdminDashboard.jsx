@@ -8,7 +8,11 @@ import {
   FileDoneOutlined,
   DashboardOutlined,
 } from "@ant-design/icons";
-import { getAllDeposits, getAllPayment } from "../../redux/apiCalls";
+import {
+  getAllDeposits,
+  getAllPayment,
+  getAllReCoin,
+} from "../../redux/apiCalls";
 import { LoadingComponent } from "../../components/common/LoadingComponent/LoadingComponent";
 
 const AdminDashboard = () => {
@@ -16,7 +20,9 @@ const AdminDashboard = () => {
   const [deposits, setDeposits] = useState(null);
   const [payments, setPayments] = useState(null);
   const [doanhThu, setDoanhThu] = useState(0);
-  const [numDeposite,setNumDeposite] = useState(0);
+  const [numDeposite, setNumDeposite] = useState(0);
+  const [reCoins, setReCoins] = useState([]);
+  const [numRecoinPending, setRecoinPending] = useState(0);
 
   // Dashboard Statistics
   const dashboardStats = {
@@ -30,16 +36,36 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     setLoading(true);
+    callGetAllReCoin();
     callGetAllDeposits();
     callGetAllPayments();
   }, []);
+
+  async function callGetAllReCoin() {
+    setLoading(true);
+    try {
+      const res = await getAllReCoin();
+      if (res.success) {
+        const total = res.data.filter(
+          (item) => item.status === "pending"
+        ).length;
+        // console.log(total);
+        setRecoinPending(total);
+        // message.success(res.message);
+      } else {
+        message.error(res.message);
+      }
+    } catch (error) {
+      message.error("Không thể lấy danh sách tất cả yêu cầu rút tiền");
+    }
+  }
 
   async function callGetAllDeposits() {
     setLoading(true);
     try {
       const res = await getAllDeposits();
       if (res.success) {
-        const num = (res.data) ? res.data.length : 0;
+        const num = res.data ? res.data.length : 0;
         // console.log(num);
         setNumDeposite(num);
         // setDeposits(res.data);
@@ -59,7 +85,10 @@ const AdminDashboard = () => {
       if (res.success) {
         setPayments(res.data);
         const totalK = await res.data
-          .filter((item) => item.billType === "managementFee" && item.status === "paid")
+          .filter(
+            (item) =>
+              item.billType === "managementFee" && item.status === "paid"
+          )
           .reduce((sum, item) => sum + item.amount, 0);
         // console.log(totalK);
         setDoanhThu(totalK);
@@ -68,7 +97,7 @@ const AdminDashboard = () => {
       }
     } catch (error) {
       message("Không thể thực hiện lấy danh sách thanh toan!");
-    }finally{
+    } finally {
       setLoading(false);
     }
   }
@@ -116,7 +145,7 @@ const AdminDashboard = () => {
             <Card hoverable>
               <Statistic
                 title="Giao dịch chờ"
-                value={dashboardStats.pendingTransactions}
+                value={numRecoinPending}
                 valueStyle={{ color: "#faad14" }}
                 suffix="giao dịch"
                 prefix={<ClockCircleOutlined />}

@@ -51,8 +51,7 @@ const CoinManagement = () => {
   const navigate = useNavigate();
   const userCurrent = useSelector((state) => state.user.currentUser);
   const [loading, setLoading] = useState(false);
-  const [reCoins, setReCoins] = useState([
-  ]);
+  const [reCoins, setReCoins] = useState([]);
 
   
   const [selectedRequest, setSelectedRequest] = useState(null);
