@@ -32,8 +32,8 @@ const AdminDashboard = () => {
     newDeposits: 12,
     pendingTransactions: 5,
     activeApartments: 45,
-    completedTransactions: 23,
-    totalUsers: 256,
+    completedTransactions: 21,
+    totalUsers: 13,
   };
 
   useEffect(() => {
@@ -192,7 +192,7 @@ const AdminDashboard = () => {
             <Card hoverable>
               <Statistic
                 title="Giao dịch hoàn thành"
-                value={dashboardStats.completedTransactions}
+                value={dashboardStats.completedTransactions+numDeposite}
                 valueStyle={{ color: "#1890ff" }}
                 suffix="giao dịch"
                 prefix={<FileDoneOutlined />}
