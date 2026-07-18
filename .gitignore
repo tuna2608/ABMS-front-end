@@ -4,6 +4,7 @@
 /node_modules
 /.pnp
 .pnp.js
+.nvmrc
 
 # testing
 /coverage
@@ -31,3 +32,7 @@ pnpm-debug.log*
 .vscode/
 .idea/
 *.swp
+
+# Claude Code — local, personal rules & settings (không commit)
+CLAUDE.local.md
+.claude/settings.local.json
