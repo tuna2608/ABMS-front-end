@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   users: [],
@@ -7,7 +7,7 @@ const initialState = {
 };
 
 export const userSlice = createSlice({
-  name: 'user',
+  name: "user",
   initialState,
   reducers: {
     // Get All
@@ -22,50 +22,49 @@ export const userSlice = createSlice({
     getUserFailure: (state) => {
       state.isFetching = false;
       state.error = true;
-
     },
-    // Delete 
+    // Delete
     deleteUserStart: (state) => {
       state.isFetching = true;
       state.error = false;
     },
     deleteUserSuccess: (state, action) => {
       state.isFetching = false;
-      state.users = state.users.filter((u) => u._id !== action.payload)
+      state.users = state.users.filter((u) => u._id !== action.payload);
       return state;
     },
     deleteUserFailure: (state) => {
       state.isFetching = false;
       state.error = true;
-
     },
-    // Update 
+    // Update
     updateUserStart: (state) => {
       state.isFetching = true;
       state.error = false;
     },
     updateUserSuccess: (state, action) => {
       state.isFetching = false;
-      state.users = state.users.map((u) => u._id === action.payload.id ? action.payload : u)
+      state.users = state.users.map((u) => (u._id === action.payload.id ? action.payload : u));
       return state;
     },
     updateUserFailure: (state) => {
       state.isFetching = false;
       state.error = true;
     },
-    // Add 
+    // Add
     addUserStart: (state) => {
       state.isFetching = true;
       state.error = false;
     },
     addUserSuccess: (state, action) => {
       state.isFetching = false;
-      state.users = [...state.users, action.payload]
+      state.users = [...state.users, action.payload];
     },
     addUserFailure: (state) => {
       state.isFetching = false;
       state.error = true;
-    }, resetUsersSuccess: () => {
+    },
+    resetUsersSuccess: () => {
       return initialState;
     },
   },
@@ -73,10 +72,19 @@ export const userSlice = createSlice({
 
 // Action creators are generated for each case reducer function
 export const {
-  getUserStart, getUserSuccess, getUserFailure,
-  deleteUserStart, deleteUserSuccess, deleteUserFailure,
-  updateUserStart, updateUserSuccess, updateUserFailure,
-  addUserStart, addUserSuccess, addUserFailure,resetUsersSuccess
+  getUserStart,
+  getUserSuccess,
+  getUserFailure,
+  deleteUserStart,
+  deleteUserSuccess,
+  deleteUserFailure,
+  updateUserStart,
+  updateUserSuccess,
+  updateUserFailure,
+  addUserStart,
+  addUserSuccess,
+  addUserFailure,
+  resetUsersSuccess,
 } = userSlice.actions;
 
 export default userSlice.reducer;

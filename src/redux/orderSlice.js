@@ -73,7 +73,7 @@ export const {
   updateOrderStatusSuccess,
   getAllOrdersStart,
   getAllOrdersSuccess,
-  getAllOrdersFailure
+  getAllOrdersFailure,
 } = orderSlice.actions;
 
 export default orderSlice.reducer;

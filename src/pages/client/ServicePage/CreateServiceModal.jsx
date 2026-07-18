@@ -1,6 +1,6 @@
-import React from 'react';
-import { Modal, Form, Input, Upload, Button, message } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import React from "react";
+import { Modal, Form, Input, Upload, Button, message } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
 
 const { TextArea } = Input;
 
@@ -8,47 +8,37 @@ export const CreateServiceModal = ({ visible, onCancel, onSubmit, loading, curre
   const handleSubmit = async (values) => {
     try {
       const formData = new FormData();
-      
+
       // Append basic fields
-      formData.append('userId', currentUser?.userId);
-      formData.append('facilityHeader', values.title);
-      formData.append('facilityPostContent', values.content);
-      
+      formData.append("userId", currentUser?.userId);
+      formData.append("facilityHeader", values.title);
+      formData.append("facilityPostContent", values.content);
+
       // Handle file uploads
       const fileList = values.images?.fileList;
       if (fileList?.length > 0) {
-        fileList.forEach(file => {
+        fileList.forEach((file) => {
           if (file.originFileObj) {
-            formData.append('file', file.originFileObj);
+            formData.append("file", file.originFileObj);
           }
         });
       }
 
       await onSubmit(values);
     } catch (error) {
-      console.error("Error creating facility:", error);
-      message.error('Có lỗi xảy ra khi tạo bài viết');
+      message.error("Có lỗi xảy ra khi tạo bài viết");
     }
   };
 
   return (
-    <Modal
-      title="Tạo bài viết mới"
-      open={visible}
-      onCancel={onCancel}
-      footer={null}
-      width={600}
-    >
+    <Modal title="Tạo bài viết mới" open={visible} onCancel={onCancel} footer={null} width={600}>
       <Form layout="vertical" onFinish={handleSubmit}>
         <Form.Item
           name="title"
           label="Tiêu đề bài viết"
           rules={[{ required: true, message: "Vui lòng nhập tiêu đề bài viết!" }]}
         >
-          <Input 
-            placeholder="Nhập tiêu đề bài viết..." 
-            maxLength={200}
-          />
+          <Input placeholder="Nhập tiêu đề bài viết..." maxLength={200} />
         </Form.Item>
 
         <Form.Item
@@ -56,9 +46,9 @@ export const CreateServiceModal = ({ visible, onCancel, onSubmit, loading, curre
           label="Nội dung bài viết"
           rules={[{ required: true, message: "Vui lòng nhập nội dung bài viết!" }]}
         >
-          <TextArea 
-            rows={6} 
-            placeholder="Mô tả chi tiết về dịch vụ của bạn..." 
+          <TextArea
+            rows={6}
+            placeholder="Mô tả chi tiết về dịch vụ của bạn..."
             showCount
             maxLength={1000}
           />
@@ -73,14 +63,14 @@ export const CreateServiceModal = ({ visible, onCancel, onSubmit, loading, curre
           <Upload
             listType="picture-card"
             beforeUpload={(file) => {
-              const isImage = file.type.startsWith('image/');
+              const isImage = file.type.startsWith("image/");
               if (!isImage) {
-                message.error('Chỉ hỗ trợ file ảnh!');
+                message.error("Chỉ hỗ trợ file ảnh!");
                 return false;
               }
               const isLt2M = file.size / 1024 / 1024 < 2;
               if (!isLt2M) {
-                message.error('Kích thước ảnh phải nhỏ hơn 2MB!');
+                message.error("Kích thước ảnh phải nhỏ hơn 2MB!");
                 return false;
               }
               return false; // Return false to prevent auto upload
@@ -95,7 +85,7 @@ export const CreateServiceModal = ({ visible, onCancel, onSubmit, loading, curre
           </Upload>
         </Form.Item>
 
-        <Form.Item style={{ marginBottom: 0, textAlign: 'right' }}>
+        <Form.Item style={{ marginBottom: 0, textAlign: "right" }}>
           <Button style={{ marginRight: 8 }} onClick={onCancel}>
             Hủy
           </Button>

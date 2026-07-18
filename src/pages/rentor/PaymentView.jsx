@@ -14,11 +14,7 @@ import {
   Steps,
   Result,
 } from "antd";
-import {
-  CreditCardOutlined,
-  BankOutlined,
-  QrcodeOutlined,
-} from "@ant-design/icons";
+import { CreditCardOutlined, BankOutlined, QrcodeOutlined } from "@ant-design/icons";
 import moment from "moment";
 
 const { Option } = Select;
@@ -82,7 +78,7 @@ const PaymentView = () => {
       render: (paymentType) => {
         const statusMap = {
           bill: { color: "green", text: "Hóa đơn" },
-          deposit: { color: "blue", text: "Đặt cọc" }
+          deposit: { color: "blue", text: "Đặt cọc" },
         };
         const statusInfo = statusMap[paymentType] || {
           color: "default",
@@ -95,8 +91,7 @@ const PaymentView = () => {
       title: "Ngày thanh toán",
       dataIndex: "paymentDate",
       key: "paymentDate",
-      render: (date) =>
-        date ? moment(date).format("DD/MM/YYYY") : "Chưa thanh toán",
+      render: (date) => (date ? moment(date).format("DD/MM/YYYY") : "Chưa thanh toán"),
     },
     // {
     //   title: "Phương thức",
@@ -194,18 +189,12 @@ const PaymentView = () => {
           <Form.Item
             name="cardNumber"
             label="Số thẻ/Tài khoản"
-            rules={[
-              { required: true, message: "Vui lòng nhập số thẻ/tài khoản" },
-            ]}
+            rules={[{ required: true, message: "Vui lòng nhập số thẻ/tài khoản" }]}
           >
             <Input placeholder="Nhập số thẻ hoặc số tài khoản" />
           </Form.Item>
 
-          <Form.Item
-            name="paymentMethod"
-            label="Phương thức thanh toán"
-            initialValue="bank"
-          >
+          <Form.Item name="paymentMethod" label="Phương thức thanh toán" initialValue="bank">
             <Select onChange={handlePaymentMethodChange}>
               <Option value="bank">
                 <Space>
@@ -230,24 +219,16 @@ const PaymentView = () => {
               <Form.Item
                 name="cardName"
                 label="Tên chủ thẻ"
-                rules={[
-                  { required: true, message: "Vui lòng nhập tên chủ thẻ" },
-                ]}
+                rules={[{ required: true, message: "Vui lòng nhập tên chủ thẻ" }]}
               >
                 <Input placeholder="Nhập tên chủ thẻ" />
               </Form.Item>
               <Form.Item
                 name="expiryDate"
                 label="Ngày hết hạn"
-                rules={[
-                  { required: true, message: "Vui lòng nhập ngày hết hạn" },
-                ]}
+                rules={[{ required: true, message: "Vui lòng nhập ngày hết hạn" }]}
               >
-                <DatePicker
-                  placeholder="Chọn ngày hết hạn"
-                  format="MM/YYYY"
-                  picker="month"
-                />
+                <DatePicker placeholder="Chọn ngày hết hạn" format="MM/YYYY" picker="month" />
               </Form.Item>
             </>
           )}
@@ -264,11 +245,7 @@ const PaymentView = () => {
           selectedBill.amount
         )} cho ${selectedBill.billContent}`}
         extra={[
-          <Button
-            type="primary"
-            key="close"
-            onClick={() => setPaymentModalVisible(false)}
-          >
+          <Button type="primary" key="close" onClick={() => setPaymentModalVisible(false)}>
             Đóng
           </Button>,
         ]}
@@ -279,11 +256,7 @@ const PaymentView = () => {
   return (
     <div>
       <Card title="Lịch sử thanh toán">
-        <Table
-          dataSource={paymentHistory}
-          columns={paymentColumns}
-          rowKey="paymentId"
-        />
+        <Table dataSource={paymentHistory} columns={paymentColumns} rowKey="paymentId" />
       </Card>
 
       <Modal
@@ -293,10 +266,7 @@ const PaymentView = () => {
         footer={
           paymentStep === 0
             ? [
-                <Button
-                  key="cancel"
-                  onClick={() => setPaymentModalVisible(false)}
-                >
+                <Button key="cancel" onClick={() => setPaymentModalVisible(false)}>
                   Hủy
                 </Button>,
                 <Button

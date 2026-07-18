@@ -1,5 +1,5 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 import { AiOutlinePicture } from "react-icons/ai";
 import { BsFillImageFill } from "react-icons/bs";
 import { FaShare, FaExclamationTriangle, FaHeart } from "react-icons/fa";
@@ -32,11 +32,10 @@ const TopBar = styled.div`
   font-weight: 500;
 `;
 
-
 /* 2 cột trái-phải */
 const DetailContent = styled.div`
   display: grid;
-  grid-template-columns: 2fr 1fr; 
+  grid-template-columns: 2fr 1fr;
   gap: 16px;
   margin-top: 16px;
 
@@ -61,7 +60,7 @@ const MainImageWrapper = styled.div`
   display: flex;
   align-items: center;
   justify-content: center;
-  
+
   svg {
     color: #9ca3af;
     font-size: 80px;
@@ -96,7 +95,7 @@ const InfoCard = styled.div`
   background: white;
   border-radius: 8px;
   padding: 16px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 `;
 
 const Title = styled.h2`
@@ -116,7 +115,7 @@ const Address = styled.p`
 const InfoTable = styled.div`
   margin-top: 12px;
   display: grid;
-  grid-template-columns: repeat(3, 1fr) 40px 40px 40px; 
+  grid-template-columns: repeat(3, 1fr) 40px 40px 40px;
   gap: 8px;
   align-items: center;
   font-size: 14px;
@@ -153,7 +152,7 @@ const RightColumn = styled.div`
   background: white;
   border-radius: 8px;
   padding: 16px;
-  box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   gap: 16px;
@@ -227,7 +226,7 @@ function ApartmentDetail() {
 
             {/* Hàng thumbnails */}
             <ThumbnailsRow>
-              {[1,2,3,4,5].map((item) => (
+              {[1, 2, 3, 4, 5].map((item) => (
                 <ThumbItem key={item}>
                   <BsFillImageFill />
                 </ThumbItem>
@@ -244,9 +243,15 @@ function ApartmentDetail() {
                 <InfoLabel>Mức giá</InfoLabel>
                 <InfoLabel>Diện tích</InfoLabel>
                 <InfoLabel>Phòng ngủ</InfoLabel>
-                <IconButton><FaShare /></IconButton>
-                <IconButton><FaExclamationTriangle /></IconButton>
-                <IconButton><FaHeart /></IconButton>
+                <IconButton>
+                  <FaShare />
+                </IconButton>
+                <IconButton>
+                  <FaExclamationTriangle />
+                </IconButton>
+                <IconButton>
+                  <FaHeart />
+                </IconButton>
 
                 {/* Hàng hai: value + cột rỗng (nếu không cần hiển thị gì) */}
                 <InfoValue>8,5 triệu / tháng</InfoValue>

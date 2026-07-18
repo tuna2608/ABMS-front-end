@@ -1,10 +1,6 @@
 import React, { useState, useRef, useEffect } from "react";
-import { Await, useNavigate } from "react-router-dom";
-import {
-  WrapperContainer,
-  WrapperContainerLeft,
-  WrapperContainerRight,
-} from "./style";
+import { useNavigate } from "react-router-dom";
+import { WrapperContainer, WrapperContainerLeft, WrapperContainerRight } from "./style";
 import { Form, Image, message } from "antd";
 import imgLogin from "./../../../assets/common/images/logo-login.png";
 import styled from "styled-components";
@@ -39,7 +35,7 @@ const OtpInput = styled.input`
   text-align: center;
   font-size: 20px;
   margin: 0 5px;
-  
+
   &:focus {
     border-color: var(--cbutton);
     outline: none;
@@ -57,11 +53,11 @@ const ResendButton = styled.span`
   color: var(--cbutton);
   cursor: pointer;
   font-weight: 600;
-  
+
   &:hover {
     text-decoration: underline;
   }
-  
+
   &.disabled {
     color: #d9d9d9;
     cursor: not-allowed;
@@ -76,14 +72,14 @@ const OTPPage = () => {
   const [canResend, setCanResend] = useState(false);
   const inputRefs = useRef([]);
 
-  const [userRegister,setUserRegister] = useState({});
+  const [userRegister, setUserRegister] = useState({});
   const userRegister1 = useSelector((state) => state.user.userRegister);
 
   const dispatch = useDispatch();
 
-  useEffect(()=>{
+  useEffect(() => {
     setUserRegister(userRegister1);
-  },[userRegister])
+  }, [userRegister]);
 
   // Add focus management for OTP inputs
   const handleOtpChange = (e, index) => {
@@ -92,12 +88,12 @@ const OTPPage = () => {
     if (value && !/^\d+$/.test(value)) {
       return;
     }
-    
+
     // Update the OTP array with the new input
     const newOtp = [...otp];
     newOtp[index] = value.substring(0, 1);
     setOtp(newOtp);
-    
+
     // Auto-focus to next input after filling current one
     if (value && index < 5) {
       inputRefs.current[index + 1].focus();
@@ -114,20 +110,20 @@ const OTPPage = () => {
   const handlePaste = (e) => {
     e.preventDefault();
     const pastedData = e.clipboardData.getData("text/plain").trim();
-    
+
     // Check if pasted content is a number and has expected length
     if (/^\d+$/.test(pastedData)) {
       const digits = pastedData.split("").slice(0, 6);
       const newOtp = [...otp];
-      
+
       digits.forEach((digit, index) => {
         if (index < 6) {
           newOtp[index] = digit;
         }
       });
-      
+
       setOtp(newOtp);
-      
+
       // Focus on the next empty input or the last one
       const lastFilledIndex = Math.min(digits.length - 1, 5);
       if (lastFilledIndex < 5) {
@@ -148,7 +144,7 @@ const OTPPage = () => {
     } else {
       setCanResend(true);
     }
-    
+
     return () => clearInterval(interval);
   }, [timer]);
 
@@ -161,23 +157,22 @@ const OTPPage = () => {
       setCanResend(false);
       // Focus on first input
       inputRefs.current[0].focus();
-      
+
       // Here you would call your API to resend the OTP
-      console.log("Resending OTP...");
     }
   };
 
   const handleVerifyOTP = async () => {
     const otpString = otp.join("");
-    const userAddOtp = {...userRegister,otp: otpString}
-    const res = await verifyOTP(dispatch,{user: userAddOtp})
-    const messageAPI = res?.message
-    if(res?.status === 400 || res?.status === 403 || res?.status === 401){
-      message.error(messageAPI)
+    const userAddOtp = { ...userRegister, otp: otpString };
+    const res = await verifyOTP(dispatch, { user: userAddOtp });
+    const messageAPI = res?.message;
+    if (res?.status === 400 || res?.status === 403 || res?.status === 401) {
+      message.error(messageAPI);
       return;
-    }else{
-      message.success(messageAPI)
-      navigate('/login')
+    } else {
+      message.success(messageAPI);
+      navigate("/login");
     }
   };
 
@@ -193,11 +188,7 @@ const OTPPage = () => {
           zIndex: "-99",
         }}
       >
-        <img
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          src={bgLogin}
-          alt=""
-        />
+        <img style={{ width: "100%", height: "100%", objectFit: "cover" }} src={bgLogin} alt="" />
         <div
           style={{
             position: "absolute",
@@ -222,9 +213,10 @@ const OTPPage = () => {
         <WrapperContainerLeft>
           <TitlePage>Xác thực OTP</TitlePage>
           <TextContent>
-            Chúng tôi đã gửi mã xác thực đến email của bạn. Vui lòng nhập mã OTP để hoàn tất đăng ký.
+            Chúng tôi đã gửi mã xác thực đến email của bạn. Vui lòng nhập mã OTP để hoàn tất đăng
+            ký.
           </TextContent>
-          
+
           <OtpInputContainer>
             {otp.map((digit, index) => (
               <OtpInput
@@ -240,17 +232,14 @@ const OTPPage = () => {
               />
             ))}
           </OtpInputContainer>
-          
+
           <ResendText>
-            Không nhận được mã? {" "}
-            <ResendButton 
-              className={!canResend ? "disabled" : ""}
-              onClick={handleResendOTP}
-            >
+            Không nhận được mã?{" "}
+            <ResendButton className={!canResend ? "disabled" : ""} onClick={handleResendOTP}>
               {canResend ? "Gửi lại" : `Gửi lại sau (${timer}s)`}
             </ResendButton>
           </ResendText>
-          
+
           <Form>
             <Form.Item>
               <ButtonComponent
@@ -273,13 +262,11 @@ const OTPPage = () => {
               />
             </Form.Item>
           </Form>
-          
+
           <LinkNav>
             <p>
-              Quay lại trang {" "}
-              <WrapperTextLight onClick={() => navigate("/register")}>
-                Đăng ký
-              </WrapperTextLight>
+              Quay lại trang{" "}
+              <WrapperTextLight onClick={() => navigate("/register")}>Đăng ký</WrapperTextLight>
             </p>
           </LinkNav>
         </WrapperContainerLeft>

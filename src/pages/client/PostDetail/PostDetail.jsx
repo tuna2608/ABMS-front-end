@@ -4,7 +4,6 @@ import {
   Row,
   Col,
   Typography,
-  Tag,
   Button,
   Space,
   Divider,
@@ -21,7 +20,6 @@ import {
   Drawer,
 } from "antd";
 import {
-  HomeOutlined,
   EnvironmentOutlined,
   UserOutlined,
   PhoneOutlined,
@@ -31,19 +29,16 @@ import {
   CalendarOutlined,
   HeartOutlined,
   ShareAltOutlined,
-  EyeOutlined,
   BankOutlined,
   SafetyCertificateOutlined,
-  CheckCircleOutlined,
   LeftOutlined,
   RightOutlined,
-  MessageOutlined,
   SendOutlined,
   TeamOutlined,
   ExpandAltOutlined,
   MoneyCollectOutlined,
 } from "@ant-design/icons";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { getPostById, getUserByUserName } from "../../../redux/apiCalls";
 import { useDispatch } from "react-redux";
 import ChatBox from "../../../components/common/Chatbot/Chatbot";
@@ -132,34 +127,27 @@ const PostDetail = () => {
   const postData = useSelector((state) => state.post.post?.data);
   const userIdFromPost = postData?.userId;
   const userNameFromPost = postData?.apartment?.householder;
-  //  console.log("User ID của người đăng bài:", userNameFromPost);
 
   const postId = useParams().postId;
-  // console.log(postId);
 
   // Giả lập việc lấy dữ liệu từ API
   useEffect(() => {
     async function getPostDetail() {
       setLoading(true);
       const res = await getPostById(dispatch, postId);
-      // res.data.postImages.map((image)=>console.log(image))
       const resUser = await getUserByUserName(dispatch, res.data.userName);
       setPost(res.data);
-      // console.log(resUser.data[0]);
       setOwner(resUser.data[0]);
       setLoading(false);
     }
     getPostDetail();
   }, [postId]);
 
-  // console.log(owner);
-
   const formatPrice = (price) => {
     return new Intl.NumberFormat("vi-VN").format(price) + " VNĐ/tháng";
   };
 
   const handleContactSubmit = (values) => {
-    console.log("Form values:", values);
     message.success("Yêu cầu liên hệ đã được gửi thành công!");
     setContactModalVisible(false);
     form.resetFields();
@@ -196,8 +184,7 @@ const PostDetail = () => {
         const ownerReply = {
           id: messages.length + 2,
           sender: "owner",
-          content:
-            "Cảm ơn bạn đã quan tâm. Tôi sẽ liên hệ lại với bạn sớm nhất có thể.",
+          content: "Cảm ơn bạn đã quan tâm. Tôi sẽ liên hệ lại với bạn sớm nhất có thể.",
           time: new Date().toLocaleTimeString([], {
             hour: "2-digit",
             minute: "2-digit",
@@ -248,24 +235,18 @@ const PostDetail = () => {
                   statusColors[post?.status] === "green"
                     ? "success"
                     : statusColors[post?.status] === "red"
-                    ? "error"
-                    : "warning"
+                      ? "error"
+                      : "warning"
                 }
                 text={post?.apartment.note}
               />
             </Descriptions.Item>
-            <Descriptions.Item label="Hướng nhà">
-              {post?.apartment.direction}
-            </Descriptions.Item>
+            <Descriptions.Item label="Hướng nhà">{post?.apartment.direction}</Descriptions.Item>
             <Descriptions.Item label="Nội thất">
               {post?.apartment.furnishing || `Không có`}
             </Descriptions.Item>
-            <Descriptions.Item label="Tầng số">
-              {post?.apartment?.floor}
-            </Descriptions.Item>
-            <Descriptions.Item label="Tiền cọc">
-              {`${post?.depositPrice} VND`}
-            </Descriptions.Item>
+            <Descriptions.Item label="Tầng số">{post?.apartment?.floor}</Descriptions.Item>
+            <Descriptions.Item label="Tiền cọc">{`${post?.depositPrice} VND`}</Descriptions.Item>
             {/* <Descriptions.Item label="Thời hạn hợp đồng">
               {apartment?.contractTerm}
             </Descriptions.Item> */}
@@ -323,9 +304,7 @@ const PostDetail = () => {
             <Avatar src={post.avatar} style={{ marginRight: 12 }} />
             <div>
               <div style={{ fontWeight: "bold" }}>{post.contactName}</div>
-              <div style={{ fontSize: 12, color: "#8c8c8c" }}>
-                {post.userName}
-              </div>
+              <div style={{ fontSize: 12, color: "#8c8c8c" }}>{post.userName}</div>
             </div>
           </div>
         }
@@ -356,10 +335,8 @@ const PostDetail = () => {
             <div
               key={message.id}
               style={{
-                alignSelf:
-                  message.sender === "user" ? "flex-end" : "flex-start",
-                backgroundColor:
-                  message.sender === "user" ? "#1890ff" : "#f0f0f0",
+                alignSelf: message.sender === "user" ? "flex-end" : "flex-start",
+                backgroundColor: message.sender === "user" ? "#1890ff" : "#f0f0f0",
                 color: message.sender === "user" ? "white" : "black",
                 padding: "8px 12px",
                 borderRadius: 16,
@@ -406,10 +383,7 @@ const PostDetail = () => {
     return (
       <div style={{ padding: "20px" }}>
         <Card loading={true}>
-          <Card.Meta
-            title="Đang tải thông tin..."
-            description="Vui lòng đợi trong giây lát"
-          />
+          <Card.Meta title="Đang tải thông tin..." description="Vui lòng đợi trong giây lát" />
         </Card>
       </div>
     );
@@ -425,12 +399,7 @@ const PostDetail = () => {
 
   return (
     <div style={{ padding: "20px" }}>
-      <Button
-        type="default"
-        icon={<LeftOutlined />}
-        onClick={goBack}
-        style={{ marginBottom: 16 }}
-      >
+      <Button type="default" icon={<LeftOutlined />} onClick={goBack} style={{ marginBottom: 16 }}>
         Quay lại danh sách
       </Button>
 
@@ -533,9 +502,7 @@ const PostDetail = () => {
                     {post.contactName}
                   </Text>
                   <div>
-                    <SafetyCertificateOutlined
-                      style={{ color: "green", marginRight: 8 }}
-                    />
+                    <SafetyCertificateOutlined style={{ color: "green", marginRight: 8 }} />
                     <Text type="secondary">Đã xác thực</Text>
                   </div>
                   <div>
@@ -554,9 +521,7 @@ const PostDetail = () => {
                     <Button
                       type="primary"
                       block
-                      onClick={() =>
-                        userCurrent ? setIsChatOpen(true) : navigate("/login")
-                      }
+                      onClick={() => (userCurrent ? setIsChatOpen(true) : navigate("/login"))}
                       style={{
                         background: "#4b7bec",
                       }}
@@ -619,9 +584,7 @@ const PostDetail = () => {
                   type="text"
                   icon={<HeartOutlined />}
                   block
-                  onClick={() =>
-                    message.success("Đã lưu vào danh sách yêu thích")
-                  }
+                  onClick={() => message.success("Đã lưu vào danh sách yêu thích")}
                 >
                   Lưu tin
                 </Button>
@@ -629,9 +592,7 @@ const PostDetail = () => {
                   type="text"
                   icon={<ShareAltOutlined />}
                   block
-                  onClick={() =>
-                    message.info("Chức năng chia sẻ đang được phát triển")
-                  }
+                  onClick={() => message.info("Chức năng chia sẻ đang được phát triển")}
                 >
                   Chia sẻ
                 </Button>
@@ -701,10 +662,7 @@ const PostDetail = () => {
             label="Số điện thoại"
             rules={[{ required: true, message: "Vui lòng nhập số điện thoại" }]}
           >
-            <Input
-              prefix={<PhoneOutlined />}
-              placeholder="Nhập số điện thoại"
-            />
+            <Input prefix={<PhoneOutlined />} placeholder="Nhập số điện thoại" />
           </Form.Item>
           <Form.Item
             name="email"
@@ -756,13 +714,10 @@ const PostDetail = () => {
         ]}
       >
         <div style={{ padding: "10px 0" }}>
-          <p>
-            Bạn muốn chuyển đến giao diện Admin/Owner để quản lý tin nhắn từ
-            nhiều người dùng?
-          </p>
+          <p>Bạn muốn chuyển đến giao diện Admin/Owner để quản lý tin nhắn từ nhiều người dùng?</p>
           <p style={{ fontStyle: "italic", color: "#888" }}>
-            Giao diện Admin/Owner cho phép bạn theo dõi và phản hồi tất cả các
-            cuộc trò chuyện từ một nơi duy nhất.
+            Giao diện Admin/Owner cho phép bạn theo dõi và phản hồi tất cả các cuộc trò chuyện từ
+            một nơi duy nhất.
           </p>
         </div>
       </Modal>

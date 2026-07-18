@@ -1,11 +1,7 @@
 import React from "react";
 import { Image } from "antd";
 import styled from "styled-components";
-import {
-  FacebookOutlined,
-  InstagramOutlined,
-  TwitterOutlined,
-} from "@ant-design/icons";
+import { FacebookOutlined, InstagramOutlined, TwitterOutlined } from "@ant-design/icons";
 import logoMenu from "../../../assets/common/images/logo-menu.png";
 
 const WrapperFooter = styled.div`
@@ -23,15 +19,15 @@ const FooterContent = styled.div`
 const FooterCol = styled.div`
   flex: 1;
   padding: 0 15px;
-  
+
   &:first-child {
     padding-left: 0;
   }
-  
+
   &:last-child {
     padding-right: 0;
   }
-  
+
   h3 {
     color: white;
     font-size: 18px;
@@ -39,7 +35,7 @@ const FooterCol = styled.div`
     margin-bottom: 20px;
     height: 27px; /* Consistent height for all headings */
   }
-  
+
   p {
     margin-bottom: 10px;
     font-size: 14px;
@@ -51,7 +47,7 @@ const LogoColumn = styled(FooterCol)`
   img {
     margin-bottom: 20px;
   }
-  
+
   p {
     margin-bottom: 8px;
   }
@@ -84,12 +80,12 @@ const SocialIcons = styled.div`
   display: flex;
   gap: 20px;
   font-size: 20px;
-  
+
   & > * {
     cursor: pointer;
     transition: color 0.3s;
   }
-  
+
   & > *:hover {
     color: #1890ff;
   }
@@ -97,21 +93,21 @@ const SocialIcons = styled.div`
 
 const PolicyLinks = styled.div`
   font-size: 14px;
-  
+
   a {
     color: white;
     text-decoration: none;
     transition: color 0.3s;
     padding: 0 5px;
-    
+
     &:hover {
       color: #1890ff;
     }
-    
+
     &:first-child {
       padding-left: 0;
     }
-    
+
     &:last-child {
       padding-right: 0;
     }
@@ -127,19 +123,19 @@ function FooterComponent() {
           <p>Bản quyền © 2025 ABMS</p>
           <p>Thiết kế bởi ABMS Team</p>
         </LogoColumn>
-        
+
         <ContentColumn>
           <h3>Về chúng tôi</h3>
           <p>Chúng tôi cung cấp giải pháp quản lý tòa nhà thông minh.</p>
           <p>Hệ thống giúp tối ưu hóa vận hành, tiết kiệm chi phí.</p>
           <p>Nâng cao chất lượng dịch vụ và trải nghiệm khách hàng.</p>
         </ContentColumn>
-        
+
         <ContentColumn>
           <h3>Vị trí</h3>
           <p>Hòa Hải, Ngũ Hành Sơn, Đà Nẵng, Việt Nam</p>
         </ContentColumn>
-        
+
         <ContentColumn>
           <h3>Thông tin liên hệ</h3>
           <p>123 Đường Chính, Thành phố ABC, Việt Nam</p>
@@ -147,7 +143,7 @@ function FooterComponent() {
           <p>info@abms.com</p>
         </ContentColumn>
       </FooterContent>
-      
+
       <BottomSection>
         <SocialSection>
           <h3>Theo dõi chúng tôi</h3>
@@ -157,7 +153,7 @@ function FooterComponent() {
             <TwitterOutlined />
           </SocialIcons>
         </SocialSection>
-        
+
         <PolicyLinks>
           <a href="#">Chính sách bảo mật</a> | <a href="#">Điều khoản sử dụng</a>
         </PolicyLinks>

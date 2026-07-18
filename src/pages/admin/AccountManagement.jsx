@@ -1,16 +1,5 @@
 import React, { useState, useEffect, useMemo } from "react";
-import {
-  Card,
-  Button,
-  Table,
-  Space,
-  Modal,
-  Row,
-  Col,
-  message,
-  Image,
-  Typography,
-} from "antd";
+import { Card, Button, Table, Space, Modal, Row, Col, message, Image, Typography } from "antd";
 import {
   CheckOutlined,
   CloseCircleOutlined,
@@ -18,11 +7,7 @@ import {
   EyeOutlined,
 } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-import {
-  getResidentList,
-  verifyAndAddUser,
-  rejectVerificationRequest,
-} from "../../redux/apiCalls";
+import { getResidentList, verifyAndAddUser, rejectVerificationRequest } from "../../redux/apiCalls";
 import moment from "moment";
 
 const { Title, Text } = Typography;
@@ -45,13 +30,11 @@ const AccountManagement = () => {
 
   // Load dữ liệu khi component được mount
   useEffect(() => {
-    console.log("Component mounted, fetching resident list");
     getResidentList(dispatch);
   }, [dispatch]);
 
   // Xử lý dữ liệu người dùng
   const processUserData = useMemo(() => {
-    console.log("Processing user data:", users);
     if (!users || !Array.isArray(users) || users.length === 0) return [];
 
     const processedKeys = new Set();
@@ -62,21 +45,13 @@ const AccountManagement = () => {
       .reduce((acc, user, index) => {
         // Tạo key duy nhất cho mỗi người dùng
         const baseKey =
-          user.verificationFormId ||
-          user.userId ||
-          `${user.email}_${user.phoneNumber}`;
+          user.verificationFormId || user.userId || `${user.email}_${user.phoneNumber}`;
 
         const uniqueKey = `${baseKey}_${index}`;
 
         // Tránh trùng lặp
         if (processedKeys.has(uniqueKey)) return acc;
         processedKeys.add(uniqueKey);
-
-        // Log thông tin về các ảnh
-        console.log(
-          `User ${user.username || user.userName} images:`,
-          user.imageFiles
-        );
 
         // Định dạng dữ liệu người dùng
         const processedUser = {
@@ -87,12 +62,8 @@ const AccountManagement = () => {
           fullName: user.verificationFormName || user.fullName,
           phone: user.phoneNumber || user.phone,
           apartmentName: user.apartmentName,
-          contractStartDate: user.contractStartDate
-            ? moment(user.contractStartDate)
-            : null,
-          contractEndDate: user.contractEndDate
-            ? moment(user.contractEndDate)
-            : null,
+          contractStartDate: user.contractStartDate ? moment(user.contractStartDate) : null,
+          contractEndDate: user.contractEndDate ? moment(user.contractEndDate) : null,
           verificationType: user.verificationFormType || 2,
           role: user.userRole || "Rentor",
           // Đảm bảo imageFiles luôn là một mảng
@@ -106,10 +77,6 @@ const AccountManagement = () => {
 
   // Cập nhật state khi dữ liệu thay đổi
   useEffect(() => {
-    console.log(
-      "User data changed, updating pending accounts:",
-      processUserData
-    );
     if (processUserData.length > 0) {
       setPendingAccounts(processUserData);
     } else {
@@ -119,8 +86,6 @@ const AccountManagement = () => {
 
   // Hàm xử lý hiển thị modal xem ảnh
   const handleViewImages = (record) => {
-    console.log("Image files for viewing:", record.imageFiles);
-
     if (record.imageFiles && record.imageFiles.length > 0) {
       setCurrentImages(record.imageFiles);
       setCurrentAccountName(record.fullName || record.username);
@@ -213,9 +178,7 @@ const AccountManagement = () => {
       setLoadingAccountId(key);
 
       // Tìm thông tin tài khoản cần duyệt
-      const accountToApprove = pendingAccounts.find(
-        (account) => account.key === key
-      );
+      const accountToApprove = pendingAccounts.find((account) => account.key === key);
 
       if (!accountToApprove) {
         message.error("Không tìm thấy thông tin tài khoản");
@@ -233,30 +196,22 @@ const AccountManagement = () => {
         verificationFormType: accountToApprove.verificationType || 2,
         email: accountToApprove.email,
         phoneNumber: accountToApprove.phone,
-        userRole: accountToApprove.role || "Rentor", 
-        contractStartDate:
-          accountToApprove.contractStartDate?.toISOString() || null,
-        contractEndDate:
-          accountToApprove.contractEndDate?.toISOString() || null,
+        userRole: accountToApprove.role || "Rentor",
+        contractStartDate: accountToApprove.contractStartDate?.toISOString() || null,
+        contractEndDate: accountToApprove.contractEndDate?.toISOString() || null,
       };
 
       // Gọi API để duyệt tài khoản
       const response = await verifyAndAddUser(dispatch, verifyUserData);
 
-      console.log("API Response:", response);
-
       // Xử lý kết quả từ API
       if (
         response.success ||
         (response.status >= 200 && response.status < 300) ||
-        (response.data &&
-          response.data.status >= 200 &&
-          response.data.status < 300)
+        (response.data && response.data.status >= 200 && response.data.status < 300)
       ) {
         // Cập nhật UI ngay lập tức
-        setPendingAccounts((prevData) =>
-          prevData.filter((account) => account.key !== key)
-        );
+        setPendingAccounts((prevData) => prevData.filter((account) => account.key !== key));
 
         message.success("Tài khoản đã được duyệt thành công");
 
@@ -272,7 +227,6 @@ const AccountManagement = () => {
         message.error(errorMsg);
       }
     } catch (error) {
-      console.error("Error in handleApproveAccount:", error);
       message.error("Có lỗi xảy ra khi duyệt tài khoản");
     } finally {
       setLoading(false);
@@ -291,29 +245,19 @@ const AccountManagement = () => {
       cancelText: "Hủy",
       async onOk() {
         try {
-          const accountToDecline = pendingAccounts.find(
-            (account) => account.key === key
-          );
+          const accountToDecline = pendingAccounts.find((account) => account.key === key);
           if (!accountToDecline) {
             message.error("Không tìm thấy thông tin tài khoản");
             return;
           }
-          const response = await rejectVerificationRequest(
-            dispatch,
-            accountToDecline.accountId
-          );
+          const response = await rejectVerificationRequest(dispatch, accountToDecline.accountId);
           if (response.success) {
-            setPendingAccounts((prevData) =>
-              prevData.filter((account) => account.key !== key)
-            );
+            setPendingAccounts((prevData) => prevData.filter((account) => account.key !== key));
             message.success("Đã từ chối tài khoản thành công");
           } else {
-            message.error(
-              response.message || "Có lỗi xảy ra khi từ chối tài khoản"
-            );
+            message.error(response.message || "Có lỗi xảy ra khi từ chối tài khoản");
           }
         } catch (error) {
-          console.error("Error declining account:", error);
           message.error("Có lỗi xảy ra khi từ chối tài khoản");
         }
       },

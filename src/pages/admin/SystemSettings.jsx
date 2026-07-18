@@ -1,37 +1,17 @@
-import React from 'react';
-import { 
-  Card, 
-  Form, 
-  Input, 
-  Select, 
-  Switch, 
-  Button, 
-  Row, 
-  Col, 
-  Space 
-} from 'antd';
-import { 
-  SettingOutlined, 
-  GlobalOutlined, 
-  LockOutlined,
-  SaveOutlined 
-} from '@ant-design/icons';
-
+import React from "react";
+import { Card, Form, Input, Select, Switch, Button, Row, Col, Space } from "antd";
+import { SettingOutlined, GlobalOutlined, LockOutlined, SaveOutlined } from "@ant-design/icons";
 
 const SystemSettings = () => {
   const [generalForm] = Form.useForm();
   const [securityForm] = Form.useForm();
 
-  const handleGeneralSettingsSave = (values) => {
-    console.log('General Settings:', values);
-  };
+  const handleGeneralSettingsSave = (values) => {};
 
-  const handleSecuritySettingsSave = (values) => {
-    console.log('Security Settings:', values);
-  };
+  const handleSecuritySettingsSave = (values) => {};
 
   return (
-    <Card 
+    <Card
       title={
         <Space>
           <SettingOutlined />
@@ -41,8 +21,8 @@ const SystemSettings = () => {
     >
       <Row gutter={16}>
         <Col span={12}>
-          <Card 
-            type="inner" 
+          <Card
+            type="inner"
             title={
               <Space>
                 <GlobalOutlined />
@@ -50,28 +30,20 @@ const SystemSettings = () => {
               </Space>
             }
           >
-            <Form 
-              form={generalForm} 
+            <Form
+              form={generalForm}
               layout="vertical"
               onFinish={handleGeneralSettingsSave}
               initialValues={{
                 systemName: "",
-                language: "vi"
+                language: "vi",
               }}
             >
-              <Form.Item 
-                name="systemName" 
-                label="Tên Hệ Thống"
-                rules={[{ required: true }]}
-              >
+              <Form.Item name="systemName" label="Tên Hệ Thống" rules={[{ required: true }]}>
                 <Input placeholder="Nhập tên hệ thống" />
               </Form.Item>
-              
-              <Form.Item 
-                name="language" 
-                label="Ngôn Ngữ Mặc Định"
-                rules={[{ required: true }]}
-              >
+
+              <Form.Item name="language" label="Ngôn Ngữ Mặc Định" rules={[{ required: true }]}>
                 <Select>
                   <Select.Option value="vi">Tiếng Việt</Select.Option>
                   <Select.Option value="en">Tiếng Anh</Select.Option>
@@ -79,11 +51,7 @@ const SystemSettings = () => {
               </Form.Item>
 
               <Form.Item>
-                <Button 
-                  type="primary" 
-                  htmlType="submit" 
-                  icon={<SaveOutlined />} 
-                >
+                <Button type="primary" htmlType="submit" icon={<SaveOutlined />}>
                   Lưu Cài Đặt Chung
                 </Button>
               </Form.Item>
@@ -92,8 +60,8 @@ const SystemSettings = () => {
         </Col>
 
         <Col span={12}>
-          <Card 
-            type="inner" 
+          <Card
+            type="inner"
             title={
               <Space>
                 <LockOutlined />
@@ -101,31 +69,22 @@ const SystemSettings = () => {
               </Space>
             }
           >
-            <Form 
-              form={securityForm} 
+            <Form
+              form={securityForm}
               layout="vertical"
               onFinish={handleSecuritySettingsSave}
               initialValues={{
                 passwordPolicy: false,
-                maxLoginAttempts: 5
+                maxLoginAttempts: 5,
               }}
             >
-              <Form.Item 
-                name="passwordPolicy" 
-                label="Chính Sách Mật Khẩu"
-              >
-                <Switch 
-                  checkedChildren="Bật" 
-                  unCheckedChildren="Tắt" 
-                />
+              <Form.Item name="passwordPolicy" label="Chính Sách Mật Khẩu">
+                <Switch checkedChildren="Bật" unCheckedChildren="Tắt" />
               </Form.Item>
 
-              <Form.Item 
-                name="maxLoginAttempts" 
-                label="Số Lần Đăng Nhập Sai Tối Đa"
-              >
+              <Form.Item name="maxLoginAttempts" label="Số Lần Đăng Nhập Sai Tối Đa">
                 <Select>
-                  {[3, 5, 7, 10].map(num => (
+                  {[3, 5, 7, 10].map((num) => (
                     <Select.Option key={num} value={num}>
                       {num} Lần
                     </Select.Option>
@@ -134,11 +93,7 @@ const SystemSettings = () => {
               </Form.Item>
 
               <Form.Item>
-                <Button 
-                  type="primary" 
-                  htmlType="submit" 
-                  icon={<SaveOutlined />}
-                >
+                <Button type="primary" htmlType="submit" icon={<SaveOutlined />}>
                   Lưu Cài Đặt Bảo Mật
                 </Button>
               </Form.Item>

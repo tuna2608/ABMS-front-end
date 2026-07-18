@@ -31,9 +31,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 
 const UtilityManagement = ({ setActiveMenuItem }) => {
-  const [currentUser] = useState(
-    useSelector((state) => state.user.currentUser)
-  );
+  const [currentUser] = useState(useSelector((state) => state.user.currentUser));
   const [loading, setLoading] = useState(false);
   const [loadingImport, setLoadingImport] = useState(false);
   const dispatch = useDispatch();
@@ -79,13 +77,10 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
       window.open(templateUrl, "_blank");
 
       // Hiển thị thông báo thành công
-      message.success(
-        "Đang tải mẫu đơn. Vui lòng kiểm tra trình duyệt của bạn."
-      );
+      message.success("Đang tải mẫu đơn. Vui lòng kiểm tra trình duyệt của bạn.");
     } catch (error) {
       // Xử lý lỗi nếu có
       message.error("Có lỗi xảy ra khi tải mẫu đơn. Vui lòng thử lại.");
-      console.error("Download error:", error);
     }
   };
 
@@ -166,7 +161,6 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
 
   // Function to handle bill creation
   const handleEditConsumption = (values) => {
-    console.log("Bill created:", values);
     setIsModalVisible(false);
   };
 
@@ -196,32 +190,27 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
       }
     } catch (error) {
       message.error("Có lỗi xảy ra khi tạo hóa đơn");
-      console.error("Error creating bill:", error);
     }
   };
 
   const handleFilter = async () => {
-    if(selectedDate){
+    if (selectedDate) {
       const month = selectedDate.month() + 1; // dayjs: 0-indexed month
       const year = selectedDate.year();
-      // console.log(month+"-"+year);
       try {
-        const res = await getConsumptionByMonthYear(month,year);
-        if(res.success){
-          // console.log(res.data);
-          setConsumptions(res.data)
-          message.success(res.message)
-        }else{
-          message.error(res.message)
+        const res = await getConsumptionByMonthYear(month, year);
+        if (res.success) {
+          setConsumptions(res.data);
+          message.success(res.message);
+        } else {
+          message.error(res.message);
         }
       } catch (error) {
         message.error("Không thể lọc số liệu tiêu thụ theo tháng năm");
       }
-
-    }else{
-      message.error("Hãy chọn tháng và năm")
+    } else {
+      message.error("Hãy chọn tháng và năm");
     }
-    
   };
 
   const handleUpload = async () => {
@@ -236,7 +225,6 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
     try {
       const response = await importFile(formData);
       if (response.success) {
-        console.log(response.data);
         message.success(response.message);
       } else {
         message.error(response.message);
@@ -335,16 +323,11 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
           <Form.Item
             name={["consumption", "userName"]}
             label="Chủ căn hộ"
-            rules={[
-              { required: true, message: "Vui lòng nhập tên người dùng" },
-            ]}
+            rules={[{ required: true, message: "Vui lòng nhập tên người dùng" }]}
           >
             <Input disabled />
           </Form.Item>
-          <Form.Item
-            name={["consumption", "consumptionDate"]}
-            label="Tháng Ghi Nhận"
-          >
+          <Form.Item name={["consumption", "consumptionDate"]} label="Tháng Ghi Nhận">
             <Input disabled />
           </Form.Item>
           <Form.Item

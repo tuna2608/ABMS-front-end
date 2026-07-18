@@ -45,7 +45,9 @@ const MainContent = styled.div`
   max-width: 800px;
   background-color: white;
   border-radius: 20px;
-  box-shadow: 0 15px 35px rgba(50, 50, 93, 0.1), 0 5px 15px rgba(0, 0, 0, 0.07);
+  box-shadow:
+    0 15px 35px rgba(50, 50, 93, 0.1),
+    0 5px 15px rgba(0, 0, 0, 0.07);
   padding: 40px;
 `;
 
@@ -90,7 +92,9 @@ const AvatarWrapper = styled.div`
   align-items: center;
   justify-content: center;
   background: linear-gradient(145deg, #f0f5fc, #d6e1f3);
-  box-shadow: 8px 8px 16px #d1dce6, -8px -8px 16px #ffffff;
+  box-shadow:
+    8px 8px 16px #d1dce6,
+    -8px -8px 16px #ffffff;
   margin-bottom: 20px;
 `;
 
@@ -154,7 +158,9 @@ const SaveButton = styled(Button)`
     background-color: #3a5ec7;
     border-color: #3a5ec7;
     transform: translateY(-3px);
-    box-shadow: 0 7px 14px rgba(50, 50, 93, 0.1), 0 3px 6px rgba(0, 0, 0, 0.08);
+    box-shadow:
+      0 7px 14px rgba(50, 50, 93, 0.1),
+      0 3px 6px rgba(0, 0, 0, 0.08);
   }
 `;
 
@@ -190,28 +196,21 @@ const ProfileEditPage = () => {
   const defaultValue = moment();
   const [user, setUser] = useState({
     ...userCurrent,
-    birthday: userCurrent.birthday
-      ? dayjs(userCurrent.birthday)
-      : dayjs(defaultValue),
+    birthday: userCurrent.birthday ? dayjs(userCurrent.birthday) : dayjs(defaultValue),
   });
   const [listBank, setListBank] = useState([]);
   const [bankSelect, setBankSelect] = useState({});
 
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
-  const [selectedImage, setSelectedImage] = useState(
-    user.userImgUrl || avtBase
-  );
+  const [selectedImage, setSelectedImage] = useState(user.userImgUrl || avtBase);
   const [selectedFile, setSelectedFile] = useState(null);
   const [isInitialUpload, setIsInitialUpload] = useState(!user.userImgUrl);
 
   // New states for coin transfer
   const [isBankInfoModalVisible, setIsBankInfoModalVisible] = useState(false);
-  const [isCoinRequestModalVisible, setIsCoinRequestModalVisible] =
-    useState(false);
-  const [coinRequestAmount, setCoinRequestAmount] = useState(
-    user.accountBallance
-  );
+  const [isCoinRequestModalVisible, setIsCoinRequestModalVisible] = useState(false);
+  const [coinRequestAmount, setCoinRequestAmount] = useState(user.accountBallance);
   const [bankInfo, setBankInfo] = useState({
     bankName: "",
     bankNumber: "",
@@ -298,16 +297,15 @@ const ProfileEditPage = () => {
       };
     }
     try {
-      const resEdit = await editProfile(dispatch,formData);
-      if(resEdit.success){
-        message.success(resEdit.message)
-      }
-      else {
-        message.error(resEdit.message)
+      const resEdit = await editProfile(dispatch, formData);
+      if (resEdit.success) {
+        message.success(resEdit.message);
+      } else {
+        message.error(resEdit.message);
       }
     } catch (error) {
-      message.error("Không thể thay đổi thông tin cá nhân")
-    }finally{
+      message.error("Không thể thay đổi thông tin cá nhân");
+    } finally {
       setIsInitialUpload(false);
       setLoading(false);
     }
@@ -315,9 +313,7 @@ const ProfileEditPage = () => {
 
   // New handler for bank info submission
   const handleBankInfoSubmit = async (values) => {
-    // console.log(values);
     const filteredBank = listBank.filter((bank) => bank.bin === values.bankPin);
-    // console.log("bank"+ JSON.stringify(filteredBank[0]));
     const bankSelect = {
       ...values,
       bankName: filteredBank[0].name,
@@ -351,7 +347,6 @@ const ProfileEditPage = () => {
 
     try {
       const res = await requestCreateReCoin(formData);
-      // console.log(res);
       if (res.success) {
         message.success(res.message);
         navigate("/coin-request");
@@ -397,15 +392,11 @@ const ProfileEditPage = () => {
                 }}
               >
                 <div className="ant-upload">
-                  <p className="ant-upload-text">
-                    Bấm hoặc thả tệp vào khung này
-                  </p>
+                  <p className="ant-upload-text">Bấm hoặc thả tệp vào khung này</p>
                 </div>
               </FileUploadContainer>
             ) : (
-              <ChangeButton onClick={triggerFileInput}>
-                Thay đổi hình ảnh
-              </ChangeButton>
+              <ChangeButton onClick={triggerFileInput}>Thay đổi hình ảnh</ChangeButton>
             )}
           </AvatarContainer>
 
@@ -426,12 +417,7 @@ const ProfileEditPage = () => {
             </CoinActionButton>
           </CoinBadge>
 
-          <Form
-            form={form}
-            layout="vertical"
-            initialValues={user}
-            onFinish={handleSubmit}
-          >
+          <Form form={form} layout="vertical" initialValues={user} onFinish={handleSubmit}>
             <FormSection>
               <Form.Item label="Tên tài khoản:" name="userName">
                 <Input disabled />
@@ -470,12 +456,7 @@ const ProfileEditPage = () => {
             </FormSection>
 
             <Form.Item>
-              <SaveButton
-                type="primary"
-                htmlType="submit"
-                disabled={loading}
-                loading={loading}
-              >
+              <SaveButton type="primary" htmlType="submit" disabled={loading} loading={loading}>
                 Lưu thay đổi
               </SaveButton>
             </Form.Item>
@@ -490,11 +471,7 @@ const ProfileEditPage = () => {
         onCancel={() => setIsBankInfoModalVisible(false)}
         footer={null}
       >
-        <Form
-          layout="vertical"
-          onFinish={handleBankInfoSubmit}
-          initialValues={bankInfo}
-        >
+        <Form layout="vertical" onFinish={handleBankInfoSubmit} initialValues={bankInfo}>
           <Form.Item
             name="bankPin"
             label="Tên Ngân Hàng"
@@ -539,17 +516,10 @@ const ProfileEditPage = () => {
         open={isCoinRequestModalVisible}
         onCancel={() => setIsCoinRequestModalVisible(false)}
         footer={[
-          <Button
-            key="cancel"
-            onClick={() => setIsCoinRequestModalVisible(false)}
-          >
+          <Button key="cancel" onClick={() => setIsCoinRequestModalVisible(false)}>
             Hủy
           </Button>,
-          <Button
-            key="submit"
-            type="primary"
-            onClick={handleCoinTransferRequest}
-          >
+          <Button key="submit" type="primary" onClick={handleCoinTransferRequest}>
             Gửi Yêu Cầu
           </Button>,
         ]}

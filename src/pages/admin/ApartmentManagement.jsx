@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect } from "react";
 import {
   Card,
   Button,
@@ -10,19 +10,19 @@ import {
   InputNumber,
   Select,
   Form,
-  Popconfirm
-} from 'antd';
+  Popconfirm,
+} from "antd";
 import {
   PlusOutlined,
   EditOutlined,
   DeleteOutlined,
   HomeOutlined,
   SaveOutlined,
-  CloseOutlined
-} from '@ant-design/icons';
-import { getApartments, updateApartment, deleteApartment } from '../../redux/apiCalls';
-import CreateApartmentModal from './CreateApartmentModal';
-import { useDispatch } from 'react-redux';
+  CloseOutlined,
+} from "@ant-design/icons";
+import { getApartments, updateApartment, deleteApartment } from "../../redux/apiCalls";
+import CreateApartmentModal from "./CreateApartmentModal";
+import { useDispatch } from "react-redux";
 
 const ApartmentManagement = () => {
   const dispatch = useDispatch();
@@ -30,63 +30,62 @@ const ApartmentManagement = () => {
   const [apartments, setApartments] = useState([]);
   const [loading, setLoading] = useState(false);
   const [form] = Form.useForm();
-  const [editingKey, setEditingKey] = useState('');
+  const [editingKey, setEditingKey] = useState("");
 
   const isEditing = (record) => record.key === editingKey;
 
   const edit = (record) => {
     form.setFieldsValue({
-      ...record
+      ...record,
     });
     setEditingKey(record.key);
   };
 
   const cancel = () => {
-    setEditingKey('');
+    setEditingKey("");
   };
 
   const save = async (key) => {
     try {
-        const row = await form.validateFields();
-        const item = apartments.find(item => item.apartmentId === key);
-        
-        if (!item) {
-            message.error('Không tìm thấy căn hộ để cập nhật');
-            return;
-        }
+      const row = await form.validateFields();
+      const item = apartments.find((item) => item.apartmentId === key);
 
-        // Remove values that shouldn't be sent to API
-        const { key: _, ...updateData } = row;
+      if (!item) {
+        message.error("Không tìm thấy căn hộ để cập nhật");
+        return;
+      }
 
-        const response = await updateApartment(dispatch, key, {
-            ...updateData,
-            apartmentId: key
-        });
+      // Remove values that shouldn't be sent to API
+      const { key: _, ...updateData } = row;
 
-        if (response.success) {
-            message.success('Cập nhật căn hộ thành công');
-            setEditingKey('');
-            fetchApartments();
-        } else {
-            message.error(response.message);
-        }
+      const response = await updateApartment(dispatch, key, {
+        ...updateData,
+        apartmentId: key,
+      });
+
+      if (response.success) {
+        message.success("Cập nhật căn hộ thành công");
+        setEditingKey("");
+        fetchApartments();
+      } else {
+        message.error(response.message);
+      }
     } catch (errInfo) {
-        console.error('Validate Failed:', errInfo);
-        message.error('Vui lòng kiểm tra lại thông tin nhập');
+      message.error("Vui lòng kiểm tra lại thông tin nhập");
     }
-};
+  };
 
   const handleDelete = async (apartmentId) => {
     try {
       const response = await deleteApartment(dispatch, apartmentId);
       if (response.success) {
-        message.success('Xóa căn hộ thành công');
+        message.success("Xóa căn hộ thành công");
         fetchApartments(); // Refresh list after deletion
       } else {
         message.error(response.message);
       }
     } catch (error) {
-      message.error('Không thể xóa căn hộ: ' + error.message);
+      message.error("Không thể xóa căn hộ: " + error.message);
     }
   };
 
@@ -101,14 +100,14 @@ const ApartmentManagement = () => {
     ...restProps
   }) => {
     let inputNode;
-    
+
     switch (inputType) {
-      case 'number':
-        inputNode = <InputNumber min={0} style={{ width: '100%' }} />;
+      case "number":
+        inputNode = <InputNumber min={0} style={{ width: "100%" }} />;
         break;
-      case 'select-direction':
+      case "select-direction":
         inputNode = (
-          <Select style={{ width: '100%' }}>
+          <Select style={{ width: "100%" }}>
             <Select.Option value="Đông">Đông</Select.Option>
             <Select.Option value="Tây">Tây</Select.Option>
             <Select.Option value="Nam">Nam</Select.Option>
@@ -120,9 +119,9 @@ const ApartmentManagement = () => {
           </Select>
         );
         break;
-      case 'select-status':
+      case "select-status":
         inputNode = (
-          <Select style={{ width: '100%' }}>
+          <Select style={{ width: "100%" }}>
             <Select.Option value="unrented">Còn Trống</Select.Option>
             <Select.Option value="rented">Đã Cho Thuê</Select.Option>
             <Select.Option value="MAINTENANCE">Đang Bảo Trì</Select.Option>
@@ -160,15 +159,16 @@ const ApartmentManagement = () => {
     try {
       const response = await getApartments();
       if (response.success) {
-        setApartments(response.data.map(apt => ({
-          ...apt,
-          key: apt.apartmentId
-        })));
+        setApartments(
+          response.data.map((apt) => ({
+            ...apt,
+            key: apt.apartmentId,
+          }))
+        );
       } else {
         message.error(response.message);
       }
     } catch (error) {
-      console.error("Error fetching apartments:", error);
       message.error("Không thể tải danh sách căn hộ");
     } finally {
       setLoading(false);
@@ -178,104 +178,96 @@ const ApartmentManagement = () => {
   useEffect(() => {
     fetchApartments();
   }, []);
-  
+
   const handleSuccess = () => {
     fetchApartments(); // Refresh the apartment list
   };
 
   const apartmentColumns = [
     {
-      title: 'Số Nhà',
-      dataIndex: 'apartmentName',
-      key: 'apartmentName',
+      title: "Số Nhà",
+      dataIndex: "apartmentName",
+      key: "apartmentName",
       editable: true,
     },
     {
-      title: 'Chủ Nhà',
-      dataIndex: 'householder',
-      key: 'householder',
+      title: "Chủ Nhà",
+      dataIndex: "householder",
+      key: "householder",
       editable: true,
-      render: (text) => text || 'Chưa có'
+      render: (text) => text || "Chưa có",
     },
     {
-      title: 'Số Phòng Ngủ',
-      dataIndex: 'numberOfBedrooms',
-      key: 'numberOfBedrooms',
+      title: "Số Phòng Ngủ",
+      dataIndex: "numberOfBedrooms",
+      key: "numberOfBedrooms",
       width: 120,
       editable: true,
     },
     {
-      title: 'Số Phòng Tắm',
-      dataIndex: 'numberOfBathrooms',
-      key: 'numberOfBathrooms',
+      title: "Số Phòng Tắm",
+      dataIndex: "numberOfBathrooms",
+      key: "numberOfBathrooms",
       width: 120,
       editable: true,
     },
     {
-      title: 'Tình Trạng',
-      dataIndex: 'status',
-      key: 'status',
+      title: "Tình Trạng",
+      dataIndex: "status",
+      key: "status",
       editable: true,
       render: (status) => {
         const statusMap = {
-          'unrented': 'Còn Trống',
-          'rented': 'Đã Cho Thuê',
-          'MAINTENANCE': 'Đang Bảo Trì'
+          unrented: "Còn Trống",
+          rented: "Đã Cho Thuê",
+          MAINTENANCE: "Đang Bảo Trì",
         };
         const colorMap = {
-          'unrented': 'green',
-          'rented': 'blue',
-          'MAINTENANCE': 'orange'
+          unrented: "green",
+          rented: "blue",
+          MAINTENANCE: "orange",
         };
-        return (
-          <Tag color={colorMap[status] || 'default'}>
-            {statusMap[status] || status}
-          </Tag>
-        );
-      }
+        return <Tag color={colorMap[status] || "default"}>{statusMap[status] || status}</Tag>;
+      },
     },
     {
-      title: 'Số Người Ở',
-      dataIndex: 'totalNumber',
-      key: 'totalNumber',
+      title: "Số Người Ở",
+      dataIndex: "totalNumber",
+      key: "totalNumber",
       width: 100,
-      render: (text) => text || '0'
+      render: (text) => text || "0",
     },
     {
-      title: 'Diện Tích',
-      dataIndex: 'area',
-      key: 'area',
+      title: "Diện Tích",
+      dataIndex: "area",
+      key: "area",
       width: 120,
       editable: false,
-      render: (text) => `${text} m²`
+      render: (text) => `${text} m²`,
     },
     {
-      title: 'Hướng',
-      dataIndex: 'direction',
-      key: 'direction',
+      title: "Hướng",
+      dataIndex: "direction",
+      key: "direction",
       editable: true,
     },
     {
-      title: 'Tầng',
-      dataIndex: 'floor',
-      key: 'floor',
+      title: "Tầng",
+      dataIndex: "floor",
+      key: "floor",
       width: 80,
       editable: true,
     },
     {
-      title: 'Thao Tác',
-      key: 'actions',
+      title: "Thao Tác",
+      key: "actions",
       width: 150,
-      fixed: 'right',
+      fixed: "right",
       render: (_, record) => {
         const editable = isEditing(record);
         return editable ? (
           <Space>
-            <Button
-              icon={<SaveOutlined />}
-              type="primary"
-              onClick={() => save(record.key)}
-            >
+            <Button icon={<SaveOutlined />} type="primary" onClick={() => save(record.key)}>
               Lưu
             </Button>
             <Popconfirm title="Hủy chỉnh sửa?" onConfirm={cancel}>
@@ -288,7 +280,7 @@ const ApartmentManagement = () => {
               icon={<EditOutlined />}
               type="primary"
               ghost
-              disabled={editingKey !== ''}
+              disabled={editingKey !== ""}
               onClick={() => edit(record)}
             >
               Sửa
@@ -299,32 +291,34 @@ const ApartmentManagement = () => {
               okText="Xóa"
               cancelText="Hủy"
             >
-              <Button
-                icon={<DeleteOutlined />}
-                danger
-              >
+              <Button icon={<DeleteOutlined />} danger>
                 Xóa
               </Button>
             </Popconfirm>
           </Space>
         );
-      }
-    }
+      },
+    },
   ];
 
-  const mergedColumns = apartmentColumns.map(col => {
+  const mergedColumns = apartmentColumns.map((col) => {
     if (!col.editable) {
       return col;
     }
     return {
       ...col,
-      onCell: record => ({
+      onCell: (record) => ({
         record,
-        inputType: col.dataIndex === 'numberOfBedrooms' || 
-                  col.dataIndex === 'numberOfBathrooms' || 
-                  col.dataIndex === 'area' ? 'number' : 
-                  col.dataIndex === 'direction' ? 'select-direction' :
-                  col.dataIndex === 'status' ? 'select-status' : 'text',
+        inputType:
+          col.dataIndex === "numberOfBedrooms" ||
+          col.dataIndex === "numberOfBathrooms" ||
+          col.dataIndex === "area"
+            ? "number"
+            : col.dataIndex === "direction"
+              ? "select-direction"
+              : col.dataIndex === "status"
+                ? "select-status"
+                : "text",
         dataIndex: col.dataIndex,
         title: col.title,
         editing: isEditing(record),
@@ -341,11 +335,7 @@ const ApartmentManagement = () => {
         </Space>
       }
       extra={
-        <Button
-          type="primary"
-          icon={<PlusOutlined />}
-          onClick={() => setIsModalVisible(true)}
-        >
+        <Button type="primary" icon={<PlusOutlined />} onClick={() => setIsModalVisible(true)}>
           Thêm Căn Hộ Mới
         </Button>
       }
@@ -365,7 +355,7 @@ const ApartmentManagement = () => {
             total: apartments.length,
             pageSize: 10,
             showSizeChanger: true,
-            showTotal: (total) => `Tổng số ${total} căn hộ`
+            showTotal: (total) => `Tổng số ${total} căn hộ`,
           }}
         />
       </Form>

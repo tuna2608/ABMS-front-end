@@ -13,7 +13,6 @@ import {
   Rate,
   Avatar,
   Tabs,
-  Comment,
   Form,
   Input,
   List,
@@ -22,7 +21,7 @@ import {
   Flex,
   Badge,
   Modal,
-  Radio
+  Radio,
 } from "antd";
 import {
   HomeOutlined,
@@ -39,8 +38,6 @@ import {
   UserOutlined,
   CalendarOutlined,
   InfoCircleOutlined,
-  LikeOutlined,
-  HistoryOutlined,
   SendOutlined,
   CoffeeOutlined,
   ShoppingOutlined,
@@ -52,7 +49,7 @@ import {
   ClearOutlined,
   SafetyOutlined,
   HeartFilled,
-  CommentOutlined
+  CommentOutlined,
 } from "@ant-design/icons";
 import { useParams, useNavigate, Link } from "react-router-dom";
 
@@ -74,22 +71,23 @@ const ServiceDetailPage = () => {
   // Simulate fetching data
   useEffect(() => {
     setLoading(true);
-    
+
     // Mock data based on serviceId
     const isPartnerService = serviceId < 100;
-    
+
     if (isPartnerService) {
       // Partner service detail
       setServiceDetail({
         id: serviceId,
         title: "Highland Coffee - Tầng 1",
-        content: "Thưởng thức cà phê, trà và bánh ngọt cao cấp trong không gian hiện đại. Đặc biệt giảm 10% cho cư dân.",
+        content:
+          "Thưởng thức cà phê, trà và bánh ngọt cao cấp trong không gian hiện đại. Đặc biệt giảm 10% cho cư dân.",
         provider: "Highland Coffee",
         category: "Ăn uống",
         images: [
           "https://via.placeholder.com/800x400",
           "https://via.placeholder.com/800x400",
-          "https://via.placeholder.com/800x400"
+          "https://via.placeholder.com/800x400",
         ],
         floor: "Tầng 1, Block A",
         hours: "07:00 - 22:00",
@@ -98,7 +96,8 @@ const ServiceDetailPage = () => {
         rating: 4.5,
         views: 156,
         isPartner: true,
-        description: "Highland Coffee là thương hiệu cà phê Việt Nam với lịch sử phát triển từ năm 1999. Tại Highland Coffee - Tầng 1, chúng tôi mang đến cho bạn những trải nghiệm cà phê thơm ngon nhất cùng không gian hiện đại, thoải mái.\n\nCùng với đội ngũ nhân viên chuyên nghiệp, chúng tôi cam kết mang đến cho quý cư dân và khách hàng những sản phẩm chất lượng cao với giá cả hợp lý. Đặc biệt, chúng tôi có chương trình ưu đãi giảm 10% cho tất cả cư dân của tòa nhà khi xuất trình thẻ cư dân.\n\nHãy đến và thưởng thức những ly cà phê thơm ngon, những loại trà đặc biệt và các loại bánh ngọt hấp dẫn tại Highland Coffee - Tầng 1.",
+        description:
+          "Highland Coffee là thương hiệu cà phê Việt Nam với lịch sử phát triển từ năm 1999. Tại Highland Coffee - Tầng 1, chúng tôi mang đến cho bạn những trải nghiệm cà phê thơm ngon nhất cùng không gian hiện đại, thoải mái.\n\nCùng với đội ngũ nhân viên chuyên nghiệp, chúng tôi cam kết mang đến cho quý cư dân và khách hàng những sản phẩm chất lượng cao với giá cả hợp lý. Đặc biệt, chúng tôi có chương trình ưu đãi giảm 10% cho tất cả cư dân của tòa nhà khi xuất trình thẻ cư dân.\n\nHãy đến và thưởng thức những ly cà phê thơm ngon, những loại trà đặc biệt và các loại bánh ngọt hấp dẫn tại Highland Coffee - Tầng 1.",
         menu: [
           { name: "Cà phê đen đá", price: 29000 },
           { name: "Cà phê sữa đá", price: 35000 },
@@ -106,49 +105,52 @@ const ServiceDetailPage = () => {
           { name: "Trà sen vàng", price: 45000 },
           { name: "Trà thạch đào", price: 49000 },
           { name: "Bánh chuối", price: 35000 },
-          { name: "Bánh chocolate", price: 39000 }
+          { name: "Bánh chocolate", price: 39000 },
         ],
         promotions: [
           "Giảm 10% cho cư dân khi xuất trình thẻ",
           "Tặng 1 bánh ngọt cho hóa đơn trên 200.000đ",
-          "Happy Hour: Giảm 15% từ 14:00 - 17:00 các ngày trong tuần"
+          "Happy Hour: Giảm 15% từ 14:00 - 17:00 các ngày trong tuần",
         ],
         comments: [
           {
             author: "Nguyễn Văn A",
             avatar: "https://via.placeholder.com/60",
-            content: "Cà phê rất ngon, không gian thoải mái và yên tĩnh. Nhân viên phục vụ rất lịch sự.",
+            content:
+              "Cà phê rất ngon, không gian thoải mái và yên tĩnh. Nhân viên phục vụ rất lịch sự.",
             datetime: "2023-09-15 09:30",
-            rating: 5
+            rating: 5,
           },
           {
             author: "Trần Thị B",
             avatar: "https://via.placeholder.com/60",
             content: "Thức uống đa dạng, giá cả hợp lý. Tuy nhiên vào giờ cao điểm hơi đông và ồn.",
             datetime: "2023-09-12 14:20",
-            rating: 4
+            rating: 4,
           },
           {
             author: "Lê Văn C",
             avatar: "https://via.placeholder.com/60",
-            content: "Bánh ngọt ở đây rất ngon, đặc biệt là bánh chocolate. Sẽ ghé lại thường xuyên.",
+            content:
+              "Bánh ngọt ở đây rất ngon, đặc biệt là bánh chocolate. Sẽ ghé lại thường xuyên.",
             datetime: "2023-09-08 17:45",
-            rating: 5
-          }
-        ]
+            rating: 5,
+          },
+        ],
       });
     } else {
       // Building service detail
       setServiceDetail({
         id: serviceId,
         title: "Dịch vụ vệ sinh căn hộ chuyên nghiệp",
-        content: "Cung cấp dịch vụ vệ sinh căn hộ với đội ngũ nhân viên chuyên nghiệp, sử dụng thiết bị và hóa chất thân thiện với môi trường.",
+        content:
+          "Cung cấp dịch vụ vệ sinh căn hộ với đội ngũ nhân viên chuyên nghiệp, sử dụng thiết bị và hóa chất thân thiện với môi trường.",
         provider: "Ban quản lý tòa nhà",
         category: "Vệ sinh",
         images: [
           "https://via.placeholder.com/800x400",
           "https://via.placeholder.com/800x400",
-          "https://via.placeholder.com/800x400"
+          "https://via.placeholder.com/800x400",
         ],
         price: 350000,
         contact: "0912345678",
@@ -156,50 +158,55 @@ const ServiceDetailPage = () => {
         rating: 4.5,
         views: 156,
         isPartner: false,
-        description: "Dịch vụ vệ sinh căn hộ chuyên nghiệp của Ban quản lý tòa nhà sẽ giúp bạn có một không gian sống sạch sẽ, thoáng mát mà không cần tốn nhiều thời gian và công sức.\n\nĐội ngũ nhân viên được đào tạo bài bản, chuyên nghiệp, có kinh nghiệm trong lĩnh vực vệ sinh cao cấp. Chúng tôi sử dụng các thiết bị hiện đại và hóa chất làm sạch thân thiện với môi trường, an toàn cho sức khỏe của bạn và gia đình.\n\nDịch vụ của chúng tôi bao gồm làm sạch toàn diện: sàn nhà, cửa kính, nội thất, nhà bếp, phòng tắm... mang lại vẻ sáng bóng như mới cho căn hộ của bạn.",
+        description:
+          "Dịch vụ vệ sinh căn hộ chuyên nghiệp của Ban quản lý tòa nhà sẽ giúp bạn có một không gian sống sạch sẽ, thoáng mát mà không cần tốn nhiều thời gian và công sức.\n\nĐội ngũ nhân viên được đào tạo bài bản, chuyên nghiệp, có kinh nghiệm trong lĩnh vực vệ sinh cao cấp. Chúng tôi sử dụng các thiết bị hiện đại và hóa chất làm sạch thân thiện với môi trường, an toàn cho sức khỏe của bạn và gia đình.\n\nDịch vụ của chúng tôi bao gồm làm sạch toàn diện: sàn nhà, cửa kính, nội thất, nhà bếp, phòng tắm... mang lại vẻ sáng bóng như mới cho căn hộ của bạn.",
         packages: [
-          { 
-            name: "Gói cơ bản", 
+          {
+            name: "Gói cơ bản",
             price: 350000,
-            details: "Vệ sinh sàn nhà, lau kính cửa sổ, vệ sinh phòng tắm, vệ sinh nhà bếp, vệ sinh bụi các bề mặt nội thất"
+            details:
+              "Vệ sinh sàn nhà, lau kính cửa sổ, vệ sinh phòng tắm, vệ sinh nhà bếp, vệ sinh bụi các bề mặt nội thất",
           },
-          { 
-            name: "Gói nâng cao", 
+          {
+            name: "Gói nâng cao",
             price: 550000,
-            details: "Tất cả dịch vụ của gói cơ bản + Giặt sofa, giặt nệm, vệ sinh máy lạnh, vệ sinh tủ lạnh, vệ sinh sâu khe hở nội thất"
+            details:
+              "Tất cả dịch vụ của gói cơ bản + Giặt sofa, giặt nệm, vệ sinh máy lạnh, vệ sinh tủ lạnh, vệ sinh sâu khe hở nội thất",
           },
-          { 
-            name: "Gói cao cấp", 
+          {
+            name: "Gói cao cấp",
             price: 850000,
-            details: "Tất cả dịch vụ của gói nâng cao + Đánh bóng sàn, khử trùng toàn bộ căn hộ, xử lý mùi, vệ sinh chuyên sâu toàn bộ đồ điện tử"
-          }
+            details:
+              "Tất cả dịch vụ của gói nâng cao + Đánh bóng sàn, khử trùng toàn bộ căn hộ, xử lý mùi, vệ sinh chuyên sâu toàn bộ đồ điện tử",
+          },
         ],
         process: [
           "Đặt lịch dịch vụ qua ứng dụng hoặc gọi điện",
           "Nhân viên khảo sát và tư vấn gói dịch vụ phù hợp",
           "Thực hiện dịch vụ theo lịch hẹn",
           "Kiểm tra chất lượng và xác nhận hoàn thành",
-          "Thanh toán và đánh giá dịch vụ"
+          "Thanh toán và đánh giá dịch vụ",
         ],
         comments: [
           {
             author: "Nguyễn Văn A",
             avatar: "https://via.placeholder.com/60",
-            content: "Dịch vụ rất chuyên nghiệp, nhân viên làm việc cẩn thận và tỉ mỉ. Căn hộ sạch sẽ và thơm tho sau khi hoàn thành.",
+            content:
+              "Dịch vụ rất chuyên nghiệp, nhân viên làm việc cẩn thận và tỉ mỉ. Căn hộ sạch sẽ và thơm tho sau khi hoàn thành.",
             datetime: "2023-09-15 09:30",
-            rating: 5
+            rating: 5,
           },
           {
             author: "Trần Thị B",
             avatar: "https://via.placeholder.com/60",
             content: "Giá cả hợp lý, chất lượng tốt. Sẽ tiếp tục sử dụng dịch vụ trong tương lai.",
             datetime: "2023-09-12 14:20",
-            rating: 4
-          }
-        ]
+            rating: 4,
+          },
+        ],
       });
     }
-    
+
     setTimeout(() => {
       setLoading(false);
     }, 1000);
@@ -211,7 +218,11 @@ const ServiceDetailPage = () => {
 
   const handleFavoriteToggle = () => {
     setIsFavorite(!isFavorite);
-    message.success(isFavorite ? "Đã bỏ dịch vụ khỏi danh sách yêu thích" : "Đã thêm dịch vụ vào danh sách yêu thích");
+    message.success(
+      isFavorite
+        ? "Đã bỏ dịch vụ khỏi danh sách yêu thích"
+        : "Đã thêm dịch vụ vào danh sách yêu thích"
+    );
   };
 
   const showBookingModal = () => {
@@ -343,10 +354,17 @@ const ServiceDetailPage = () => {
 
           {/* Service info */}
           <Card style={{ marginBottom: 24, borderRadius: 8 }}>
-            <div style={{ marginBottom: 16, display: "flex", justifyContent: "space-between", alignItems: "flex-start" }}>
+            <div
+              style={{
+                marginBottom: 16,
+                display: "flex",
+                justifyContent: "space-between",
+                alignItems: "flex-start",
+              }}
+            >
               <div>
-                <Tag 
-                  color={serviceDetail.isPartner ? "blue" : "green"} 
+                <Tag
+                  color={serviceDetail.isPartner ? "blue" : "green"}
                   style={{ marginBottom: 12 }}
                 >
                   {getCategoryIcon(serviceDetail.category, serviceDetail.isPartner)}
@@ -362,7 +380,9 @@ const ServiceDetailPage = () => {
               </div>
               <Space>
                 <Button
-                  icon={isFavorite ? <HeartFilled style={{ color: "#ff4d4f" }} /> : <HeartOutlined />}
+                  icon={
+                    isFavorite ? <HeartFilled style={{ color: "#ff4d4f" }} /> : <HeartOutlined />
+                  }
                   onClick={handleFavoriteToggle}
                 >
                   {isFavorite ? "Đã yêu thích" : "Yêu thích"}
@@ -372,7 +392,7 @@ const ServiceDetailPage = () => {
             </div>
 
             <Divider style={{ margin: "16px 0" }} />
-            
+
             <Row gutter={16}>
               <Col span={12}>
                 <Flex align="center" gap={8}>
@@ -409,7 +429,9 @@ const ServiceDetailPage = () => {
                 <Col span={24}>
                   <Flex align="center" gap={8}>
                     <DollarOutlined style={{ color: "#ff4d4f" }} />
-                    <Text strong style={{ color: "#ff4d4f", fontSize: 18 }}>{formatPrice(serviceDetail.price)}</Text>
+                    <Text strong style={{ color: "#ff4d4f", fontSize: 18 }}>
+                      {formatPrice(serviceDetail.price)}
+                    </Text>
                   </Flex>
                 </Col>
               </Row>
@@ -434,14 +456,12 @@ const ServiceDetailPage = () => {
                 </Col>
               </Row>
             )}
-            
+
             <Divider style={{ margin: "24px 0" }} />
 
             <div style={{ marginBottom: 24 }}>
               <Title level={4}>Giới thiệu</Title>
-              <Paragraph style={{ whiteSpace: "pre-line" }}>
-                {serviceDetail.description}
-              </Paragraph>
+              <Paragraph style={{ whiteSpace: "pre-line" }}>{serviceDetail.description}</Paragraph>
             </div>
 
             {/* Dynamic content based on service type */}
@@ -474,7 +494,9 @@ const ServiceDetailPage = () => {
                       dataSource={serviceDetail.promotions}
                       renderItem={(item) => (
                         <List.Item>
-                          <Tag color="volcano" style={{ marginRight: 12 }}>Ưu đãi</Tag>
+                          <Tag color="volcano" style={{ marginRight: 12 }}>
+                            Ưu đãi
+                          </Tag>
                           <Text>{item}</Text>
                         </List.Item>
                       )}
@@ -493,8 +515,12 @@ const ServiceDetailPage = () => {
                       renderItem={(item) => (
                         <Card style={{ marginBottom: 12 }}>
                           <Flex justify="space-between" align="center" style={{ marginBottom: 8 }}>
-                            <Title level={5} style={{ margin: 0 }}>{item.name}</Title>
-                            <Text strong style={{ color: "#ff4d4f", fontSize: 16 }}>{formatPrice(item.price)}</Text>
+                            <Title level={5} style={{ margin: 0 }}>
+                              {item.name}
+                            </Title>
+                            <Text strong style={{ color: "#ff4d4f", fontSize: 16 }}>
+                              {formatPrice(item.price)}
+                            </Text>
                           </Flex>
                           <Text type="secondary">{item.details}</Text>
                         </Card>
@@ -511,11 +537,14 @@ const ServiceDetailPage = () => {
                       dataSource={serviceDetail.process}
                       renderItem={(item, index) => (
                         <List.Item>
-                          <Badge status="processing" text={
-                            <span style={{ fontSize: 15 }}>
-                              <Text strong>Bước {index + 1}:</Text> {item}
-                            </span>
-                          } />
+                          <Badge
+                            status="processing"
+                            text={
+                              <span style={{ fontSize: 15 }}>
+                                <Text strong>Bước {index + 1}:</Text> {item}
+                              </span>
+                            }
+                          />
                         </List.Item>
                       )}
                     />
@@ -532,7 +561,9 @@ const ServiceDetailPage = () => {
               <Row gutter={24} align="middle">
                 <Col span={8}>
                   <div style={{ textAlign: "center" }}>
-                    <Title level={2} style={{ margin: 0, color: "#faad14" }}>{serviceDetail.rating}</Title>
+                    <Title level={2} style={{ margin: 0, color: "#faad14" }}>
+                      {serviceDetail.rating}
+                    </Title>
                     <Rate disabled defaultValue={serviceDetail.rating} allowHalf />
                     <div style={{ marginTop: 8 }}>
                       <Text>{serviceDetail.comments?.length || 0} đánh giá</Text>
@@ -546,17 +577,22 @@ const ServiceDetailPage = () => {
                         <Text>5 sao</Text>
                       </Col>
                       <Col span={16}>
-                        <div className="rating-bar" style={{ 
-                          height: 8, 
-                          backgroundColor: "#f0f0f0", 
-                          borderRadius: 4, 
-                          overflow: "hidden"
-                        }}>
-                          <div style={{ 
-                            width: "80%", 
-                            height: "100%", 
-                            backgroundColor: "#faad14" 
-                          }}></div>
+                        <div
+                          className="rating-bar"
+                          style={{
+                            height: 8,
+                            backgroundColor: "#f0f0f0",
+                            borderRadius: 4,
+                            overflow: "hidden",
+                          }}
+                        >
+                          <div
+                            style={{
+                              width: "80%",
+                              height: "100%",
+                              backgroundColor: "#faad14",
+                            }}
+                          ></div>
                         </div>
                       </Col>
                       <Col span={5} style={{ textAlign: "right" }}>
@@ -568,17 +604,22 @@ const ServiceDetailPage = () => {
                         <Text>4 sao</Text>
                       </Col>
                       <Col span={16}>
-                        <div className="rating-bar" style={{ 
-                          height: 8, 
-                          backgroundColor: "#f0f0f0", 
-                          borderRadius: 4, 
-                          overflow: "hidden"
-                        }}>
-                          <div style={{ 
-                            width: "15%", 
-                            height: "100%", 
-                            backgroundColor: "#faad14" 
-                          }}></div>
+                        <div
+                          className="rating-bar"
+                          style={{
+                            height: 8,
+                            backgroundColor: "#f0f0f0",
+                            borderRadius: 4,
+                            overflow: "hidden",
+                          }}
+                        >
+                          <div
+                            style={{
+                              width: "15%",
+                              height: "100%",
+                              backgroundColor: "#faad14",
+                            }}
+                          ></div>
                         </div>
                       </Col>
                       <Col span={5} style={{ textAlign: "right" }}>
@@ -590,17 +631,22 @@ const ServiceDetailPage = () => {
                         <Text>3 sao</Text>
                       </Col>
                       <Col span={16}>
-                        <div className="rating-bar" style={{ 
-                          height: 8, 
-                          backgroundColor: "#f0f0f0", 
-                          borderRadius: 4, 
-                          overflow: "hidden"
-                        }}>
-                          <div style={{ 
-                            width: "5%", 
-                            height: "100%", 
-                            backgroundColor: "#faad14" 
-                          }}></div>
+                        <div
+                          className="rating-bar"
+                          style={{
+                            height: 8,
+                            backgroundColor: "#f0f0f0",
+                            borderRadius: 4,
+                            overflow: "hidden",
+                          }}
+                        >
+                          <div
+                            style={{
+                              width: "5%",
+                              height: "100%",
+                              backgroundColor: "#faad14",
+                            }}
+                          ></div>
                         </div>
                       </Col>
                       <Col span={5} style={{ textAlign: "right" }}>
@@ -612,17 +658,22 @@ const ServiceDetailPage = () => {
                         <Text>2 sao</Text>
                       </Col>
                       <Col span={16}>
-                        <div className="rating-bar" style={{ 
-                          height: 8, 
-                          backgroundColor: "#f0f0f0", 
-                          borderRadius: 4, 
-                          overflow: "hidden"
-                        }}>
-                          <div style={{ 
-                            width: "0%", 
-                            height: "100%", 
-                            backgroundColor: "#faad14" 
-                          }}></div>
+                        <div
+                          className="rating-bar"
+                          style={{
+                            height: 8,
+                            backgroundColor: "#f0f0f0",
+                            borderRadius: 4,
+                            overflow: "hidden",
+                          }}
+                        >
+                          <div
+                            style={{
+                              width: "0%",
+                              height: "100%",
+                              backgroundColor: "#faad14",
+                            }}
+                          ></div>
                         </div>
                       </Col>
                       <Col span={5} style={{ textAlign: "right" }}>
@@ -634,17 +685,22 @@ const ServiceDetailPage = () => {
                         <Text>1 sao</Text>
                       </Col>
                       <Col span={16}>
-                        <div className="rating-bar" style={{ 
-                          height: 8, 
-                          backgroundColor: "#f0f0f0", 
-                          borderRadius: 4, 
-                          overflow: "hidden"
-                        }}>
-                          <div style={{ 
-                            width: "0%", 
-                            height: "100%", 
-                            backgroundColor: "#faad14" 
-                          }}></div>
+                        <div
+                          className="rating-bar"
+                          style={{
+                            height: 8,
+                            backgroundColor: "#f0f0f0",
+                            borderRadius: 4,
+                            overflow: "hidden",
+                          }}
+                        >
+                          <div
+                            style={{
+                              width: "0%",
+                              height: "100%",
+                              backgroundColor: "#faad14",
+                            }}
+                          ></div>
                         </div>
                       </Col>
                       <Col span={5} style={{ textAlign: "right" }}>
@@ -674,11 +730,7 @@ const ServiceDetailPage = () => {
                   />
                 </Form.Item>
                 <Form.Item>
-                  <Button
-                    type="primary"
-                    icon={<SendOutlined />}
-                    onClick={handleCommentSubmit}
-                  >
+                  <Button type="primary" icon={<SendOutlined />} onClick={handleCommentSubmit}>
                     Gửi đánh giá
                   </Button>
                 </Form.Item>
@@ -712,7 +764,7 @@ const ServiceDetailPage = () => {
         <Col xs={24} md={8}>
           {/* Action Card */}
           <Card style={{ marginBottom: 24, borderRadius: 8 }}>
-          {serviceDetail.isPartner ? (
+            {serviceDetail.isPartner ? (
               <div style={{ textAlign: "center" }}>
                 <Button
                   type="primary"
@@ -744,12 +796,7 @@ const ServiceDetailPage = () => {
                 >
                   Đặt dịch vụ ngay
                 </Button>
-                <Button
-                  block
-                  size="large"
-                  icon={<PhoneOutlined />}
-                  style={{ height: 50 }}
-                >
+                <Button block size="large" icon={<PhoneOutlined />} style={{ height: 50 }}>
                   Liên hệ tư vấn
                 </Button>
               </div>
@@ -771,22 +818,26 @@ const ServiceDetailPage = () => {
               dataSource={[
                 {
                   id: serviceDetail.isPartner ? 2 : 101,
-                  title: serviceDetail.isPartner ? "Starbucks Coffee - Tầng 2" : "Dịch vụ sửa chữa điện nước",
+                  title: serviceDetail.isPartner
+                    ? "Starbucks Coffee - Tầng 2"
+                    : "Dịch vụ sửa chữa điện nước",
                   image: "https://via.placeholder.com/120x80",
-                  rating: 4.3
+                  rating: 4.3,
                 },
                 {
                   id: serviceDetail.isPartner ? 3 : 102,
-                  title: serviceDetail.isPartner ? "Phúc Long Coffee & Tea - Tầng 1" : "Dịch vụ bảo trì điều hòa",
+                  title: serviceDetail.isPartner
+                    ? "Phúc Long Coffee & Tea - Tầng 1"
+                    : "Dịch vụ bảo trì điều hòa",
                   image: "https://via.placeholder.com/120x80",
-                  rating: 4.7
+                  rating: 4.7,
                 },
                 {
                   id: serviceDetail.isPartner ? 4 : 103,
                   title: serviceDetail.isPartner ? "KFC - Tầng G" : "Dịch vụ chuyển nhà nội khu",
                   image: "https://via.placeholder.com/120x80",
-                  rating: 4.2
-                }
+                  rating: 4.2,
+                },
               ]}
               renderItem={(item) => (
                 <List.Item>
@@ -800,7 +851,12 @@ const ServiceDetailPage = () => {
                     }
                     title={<Link to={`/services/${item.id}`}>{item.title}</Link>}
                     description={
-                      <Rate disabled defaultValue={item.rating} allowHalf style={{ fontSize: 12 }} />
+                      <Rate
+                        disabled
+                        defaultValue={item.rating}
+                        allowHalf
+                        style={{ fontSize: 12 }}
+                      />
                     }
                   />
                 </List.Item>
@@ -870,7 +926,7 @@ const ServiceDetailPage = () => {
           </Button>,
           <Button key="submit" type="primary" onClick={handleBookingSubmit}>
             Xác nhận đặt dịch vụ
-          </Button>
+          </Button>,
         ]}
         width={600}
       >

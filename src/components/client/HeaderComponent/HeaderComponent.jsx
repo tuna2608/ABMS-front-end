@@ -30,8 +30,7 @@ const WrapperHeader = styled.div`
   right: 0;
   z-index: 1000;
   transition: box-shadow 0.3s ease;
-  box-shadow: ${(props) =>
-    props.scrolled ? "0 2px 10px rgba(0, 0, 0, 0.15)" : "none"};
+  box-shadow: ${(props) => (props.scrolled ? "0 2px 10px rgba(0, 0, 0, 0.15)" : "none")};
 `;
 
 const Logo = styled.div`
@@ -107,7 +106,6 @@ function HeaderComponent() {
 
   const [scrolled, setScrolled] = useState(false);
 
-  
   useEffect(() => {
     const handleScroll = () => {
       const scrollPosition = window.scrollY;
@@ -135,9 +133,7 @@ function HeaderComponent() {
       {
         key: "1",
         icon: <UserOutlined />,
-        label: (
-          <div onClick={() => navigate("/edit-profile")}>Thông tin cá nhân</div>
-        ),
+        label: <div onClick={() => navigate("/edit-profile")}>Thông tin cá nhân</div>,
       },
     ];
     // Add role-specific channel options
@@ -145,44 +141,32 @@ function HeaderComponent() {
       baseItems.push({
         key: "2",
         icon: <HomeOutlined />,
-        label: (
-          <div onClick={() => navigate("/ownerHome")}>Kênh chủ căn hộ</div>
-        ),
+        label: <div onClick={() => navigate("/ownerHome")}>Kênh chủ căn hộ</div>,
       });
     } else if (user?.isRentor === true) {
       baseItems.push({
         key: "2",
         icon: <HomeOutlined />,
-        label: (
-          <div onClick={() => navigate("/rentorHome")}>Kênh người thuê</div>
-        ),
+        label: <div onClick={() => navigate("/rentorHome")}>Kênh người thuê</div>,
       });
     }
     if (user?.role === "User") {
       baseItems.push({
         key: "3",
         icon: <HomeOutlined />,
-        label: (
-          <div onClick={() => navigate("/deposit-apartment")}>
-            Căn hộ đã đặt cọc
-          </div>
-        ),
+        label: <div onClick={() => navigate("/deposit-apartment")}>Căn hộ đã đặt cọc</div>,
       });
     }
     if (user?.role !== "Admin" && user?.role !== "Staff")
       baseItems.push({
         key: "4",
         icon: <DollarOutlined />,
-        label: (
-          <div onClick={() => navigate("/coin-request")}>Yêu cầu hoàn tiền</div>
-        ),
+        label: <div onClick={() => navigate("/coin-request")}>Yêu cầu hoàn tiền</div>,
       });
     baseItems.push({
       key: "5",
       icon: <EditOutlined />,
-      label: (
-        <div onClick={() => navigate("/change-password")}>Đổi mật khẩu</div>
-      ),
+      label: <div onClick={() => navigate("/change-password")}>Đổi mật khẩu</div>,
     });
 
     // Add logout option
@@ -249,8 +233,13 @@ function HeaderComponent() {
             {user ? (
               <Dropdown menu={{ items: items }} placement="bottomRight">
                 <AvatarWrapper>
-                  <Flex align="center" justify="center" gap={20}  style={{backgroundColor: "white", padding: '5px 20px', borderRadius: '10px'}}>
-                    <h3 style={{color: "var(--cstroke)"}}>{`${user.role}`}</h3>
+                  <Flex
+                    align="center"
+                    justify="center"
+                    gap={20}
+                    style={{ backgroundColor: "white", padding: "5px 20px", borderRadius: "10px" }}
+                  >
+                    <h3 style={{ color: "var(--cstroke)" }}>{`${user.role}`}</h3>
                     <Image
                       preview={false}
                       style={{ borderRadius: "100%" }}
@@ -263,19 +252,10 @@ function HeaderComponent() {
               </Dropdown>
             ) : (
               <>
-                <Button
-                  type="primary"
-                  ghost
-                  size="middle"
-                  onClick={() => navigate("/login")}
-                >
+                <Button type="primary" ghost size="middle" onClick={() => navigate("/login")}>
                   Đăng nhập
                 </Button>
-                <Button
-                  type="primary"
-                  size="middle"
-                  onClick={() => navigate("/register")}
-                >
+                <Button type="primary" size="middle" onClick={() => navigate("/register")}>
                   Đăng ký
                 </Button>
               </>

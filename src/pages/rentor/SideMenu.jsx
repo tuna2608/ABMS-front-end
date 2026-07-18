@@ -1,10 +1,6 @@
 import React from "react";
 import { Menu } from "antd";
-import {
-  HomeOutlined,
-  FileTextOutlined,
-  DollarOutlined,
-} from "@ant-design/icons";
+import { HomeOutlined, FileTextOutlined, DollarOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 
 const SideMenu = ({ setCurrentView }) => {
@@ -49,14 +45,7 @@ const SideMenu = ({ setCurrentView }) => {
     // },
   ];
 
-  return (
-    <Menu
-      theme="light"
-      mode="inline"
-      defaultSelectedKeys={["list"]}
-      items={menuItems}
-    />
-  );
+  return <Menu theme="light" mode="inline" defaultSelectedKeys={["list"]} items={menuItems} />;
 };
 
 export default SideMenu;

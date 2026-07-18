@@ -12,11 +12,7 @@ import {
   Col,
   message,
 } from "antd";
-import {
-  UploadOutlined,
-  SendOutlined,
-  DownloadOutlined,
-} from "@ant-design/icons";
+import { UploadOutlined, SendOutlined, DownloadOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import { useDispatch, useSelector } from "react-redux";
 import { createForm, getApartments } from "../../../redux/apiCalls"; // cập nhật lại đường dẫn phù hợp
@@ -144,7 +140,6 @@ const FormManagement = () => {
         message.error(response.message);
       }
     } catch (error) {
-      console.error("Error fetching apartments:", error);
       message.error("Không thể tải danh sách căn hộ");
     } finally {
       setLoading(false);
@@ -189,8 +184,8 @@ const FormManagement = () => {
       }
     } catch (error) {
       message.error("Không thể tạo đơn");
-    }finally{
-      setLoadingSend(false)
+    } finally {
+      setLoadingSend(false);
     } // lấy user id đăng nhập
   };
 
@@ -217,17 +212,17 @@ const FormManagement = () => {
               <Text strong>Lưu ý:</Text> Khi gửi đơn/email đến các phòng ban
             </Paragraph>
             <Paragraph>
-              Bộ phận xử lý đơn sẽ trả lời đơn/email của cư dân trong vòng 48h
-              (trừ đơn rút tiền, đơn phúc tra, chuyển căn hộ...).
+              Bộ phận xử lý đơn sẽ trả lời đơn/email của cư dân trong vòng 48h (trừ đơn rút tiền,
+              đơn phúc tra, chuyển căn hộ...).
             </Paragraph>
             <Paragraph>
-              Để hạn chế SPAM, sẽ giảm thời gian trả lời đơn/email có tính chất
-              SPAM theo nguyên tắc: Khi cư dân gửi N đơn/email (N&gt;1) cho cùng
-              một yêu cầu thì thời gian trả lời trong vòng N*48h.
+              Để hạn chế SPAM, sẽ giảm thời gian trả lời đơn/email có tính chất SPAM theo nguyên
+              tắc: Khi cư dân gửi N đơn/email (N&gt;1) cho cùng một yêu cầu thì thời gian trả lời
+              trong vòng N*48h.
             </Paragraph>
             <Paragraph>
-              Vì vậy cư dân cần nhắc trước khi gửi đơn/email với cùng một nội
-              dung để nhận được trả lời/giải quyết nhanh nhất theo quy định.
+              Vì vậy cư dân cần nhắc trước khi gửi đơn/email với cùng một nội dung để nhận được trả
+              lời/giải quyết nhanh nhất theo quy định.
             </Paragraph>
           </NoteSection>
 
@@ -268,20 +263,14 @@ const FormManagement = () => {
                       currentUser.isRentor === true &&
                       apartments &&
                       apartments.map((apartment) => (
-                        <Option
-                          key={apartment.apartmentId}
-                          value={apartment.apartmentName}
-                        >
+                        <Option key={apartment.apartmentId} value={apartment.apartmentName}>
                           {apartment.apartmentName}
                         </Option>
                       ))}
                     {currentUser.role === "Owner" &&
                       ownerApartments &&
                       ownerApartments.map((apartment) => (
-                        <Option
-                          key={apartment.apartmentId}
-                          value={apartment.apartmentName}
-                        >
+                        <Option key={apartment.apartmentId} value={apartment.apartmentName}>
                           {apartment.apartmentName}
                         </Option>
                       ))}
@@ -325,14 +314,11 @@ const FormManagement = () => {
                     <p className="ant-upload-drag-icon">
                       <UploadOutlined />
                     </p>
-                    <p className="ant-upload-text">
-                      Kéo thả file vào đây hoặc click để chọn file
-                    </p>
+                    <p className="ant-upload-text">Kéo thả file vào đây hoặc click để chọn file</p>
                   </UploadArea>
                 </Form.Item>
                 <SupportedFormats>
-                  Hỗ trợ định dạng: .xlsx, .pdf, .docx, .doc, .xls, .jpg, .png,
-                  .zip
+                  Hỗ trợ định dạng: .xlsx, .pdf, .docx, .doc, .xls, .jpg, .png, .zip
                 </SupportedFormats>
                 <DownloadButton
                   icon={<DownloadOutlined />}

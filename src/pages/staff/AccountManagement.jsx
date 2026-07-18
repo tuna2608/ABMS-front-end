@@ -1,19 +1,37 @@
 import React, { useState, useEffect } from "react";
 import {
-  Card, Space, Input, Form, Select, Button, message, Typography, Row, Col, Upload, DatePicker, AutoComplete
+  Card,
+  Space,
+  Input,
+  Form,
+  Select,
+  Button,
+  message,
+  Typography,
+  Row,
+  Col,
+  Upload,
+  DatePicker,
+  AutoComplete,
 } from "antd";
 import {
-  UserOutlined, MailOutlined, PhoneOutlined, TagOutlined, HomeOutlined, 
-  UploadOutlined, SearchOutlined, LockOutlined
+  UserOutlined,
+  MailOutlined,
+  PhoneOutlined,
+  TagOutlined,
+  HomeOutlined,
+  UploadOutlined,
+  SearchOutlined,
+  LockOutlined,
 } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
-import { 
-  searchUserByUsernameOrEmail, 
-  verifyUserInfo, 
+import {
+  searchUserByUsernameOrEmail,
+  verifyUserInfo,
   getUnrentedApartments,
-  getApartmentsWithoutHouseholder 
+  getApartmentsWithoutHouseholder,
 } from "../../redux/apiCalls";
-import moment from 'moment';
+import moment from "moment";
 
 const { Option } = Select;
 const { Text } = Typography;
@@ -41,9 +59,7 @@ const AccountManagement = () => {
         } else {
           message.error(unrentedResponse.message);
         }
-      } catch (error) {
-        console.error("Không thể lấy căn hộ chưa cho thuê");
-      }
+      } catch (error) {}
     };
 
     const fetchNoHouseholderApartments = async () => {
@@ -54,9 +70,7 @@ const AccountManagement = () => {
         } else {
           message.error(noHouseholderResponse.message);
         }
-      } catch (error) {
-        console.error("Không thể lấy căn hộ chưa có chủ", error);
-      }
+      } catch (error) {}
     };
 
     fetchUnrentedApartments();
@@ -65,7 +79,7 @@ const AccountManagement = () => {
 
   useEffect(() => {
     if (verificationType === 2) {
-      verificationForm.setFieldValue('contractEndDate', null);
+      verificationForm.setFieldValue("contractEndDate", null);
     }
   }, [verificationType, verificationForm]);
 
@@ -80,7 +94,8 @@ const AccountManagement = () => {
 
         if (result.data) {
           const userData = result.data;
-          const phoneNumber = userData.phoneNumber || userData.phone || userData.telephone || userData.mobileNumber;
+          const phoneNumber =
+            userData.phoneNumber || userData.phone || userData.telephone || userData.mobileNumber;
 
           verificationForm.setFieldsValue({
             fullName: userData.fullName,
@@ -88,8 +103,10 @@ const AccountManagement = () => {
             phone: phoneNumber,
             apartment: userData.apartmentName || userData.apartment,
             verificationType: userData.verificationType,
-            contractStartDate: userData.contractStartDate ? moment(userData.contractStartDate) : null,
-            contractEndDate: userData.contractEndDate ? moment(userData.contractEndDate) : null
+            contractStartDate: userData.contractStartDate
+              ? moment(userData.contractStartDate)
+              : null,
+            contractEndDate: userData.contractEndDate ? moment(userData.contractEndDate) : null,
           });
 
           setVerificationType(userData.verificationType);
@@ -98,8 +115,8 @@ const AccountManagement = () => {
             const existingFiles = userData.documents.map((doc, index) => ({
               uid: `-${index}`,
               name: doc.name || `Document ${index + 1}`,
-              status: 'done',
-              url: doc.url
+              status: "done",
+              url: doc.url,
             }));
             setFileList(existingFiles);
           }
@@ -108,7 +125,6 @@ const AccountManagement = () => {
         message.warning(result.message || "Không tìm thấy người dùng");
       }
     } catch (error) {
-      console.error('Search error:', error);
       message.error("Có lỗi xảy ra khi tìm kiếm!");
     } finally {
       setSearching(false);
@@ -167,9 +183,9 @@ const AccountManagement = () => {
 
   const handleVerificationTypeChange = (value) => {
     setVerificationType(value);
-    
+
     if (value === 2) {
-      verificationForm.setFieldValue('contractEndDate', null);
+      verificationForm.setFieldValue("contractEndDate", null);
     }
   };
 
@@ -177,80 +193,93 @@ const AccountManagement = () => {
     // Nếu là mua căn hộ, trả về các căn hộ không có chủ hộ
     if (verificationType === 2) {
       const filteredApartments = noHouseholderApartments
-        .filter(apt => 
-          apt.apartmentName.toLowerCase().includes(value.toLowerCase())
-        )
-        .map(apt => ({
+        .filter((apt) => apt.apartmentName.toLowerCase().includes(value.toLowerCase()))
+        .map((apt) => ({
           value: apt.apartmentName,
-          label: `${apt.apartmentName} - ${apt.area}m² - ${apt.floor}`
+          label: `${apt.apartmentName} - ${apt.area}m² - ${apt.floor}`,
         }));
-      
+
       return filteredApartments;
     }
-    
+
     // Nếu là thuê, chỉ trả về căn hộ chưa cho thuê
     const filteredRentApartments = unrentedApartments
-      .filter(apt => 
-        apt.apartmentName.toLowerCase().includes(value.toLowerCase())
-      )
-      .map(apt => ({
+      .filter((apt) => apt.apartmentName.toLowerCase().includes(value.toLowerCase()))
+      .map((apt) => ({
         value: apt.apartmentName,
-        label: `${apt.apartmentName} - ${apt.area}m²`
+        label: `${apt.apartmentName} - ${apt.area}m²`,
       }));
-    
+
     return filteredRentApartments;
   };
 
   const uploadProps = {
-    onRemove: file => {
-      setFileList(prev => prev.filter(item => item !== file));
+    onRemove: (file) => {
+      setFileList((prev) => prev.filter((item) => item !== file));
     },
-    beforeUpload: file => {
-      setFileList(prev => [...prev, file]);
+    beforeUpload: (file) => {
+      setFileList((prev) => [...prev, file]);
       return false;
     },
     fileList,
-    multiple: true
+    multiple: true,
   };
 
   const renderUserDetails = () => {
     if (!userData) return null;
 
-    const phoneNumber = userData.phoneNumber || userData.phone || userData.telephone || userData.mobileNumber || 'Không có';
+    const phoneNumber =
+      userData.phoneNumber ||
+      userData.phone ||
+      userData.telephone ||
+      userData.mobileNumber ||
+      "Không có";
 
     return (
       <Card
         title="Thông tin người dùng đã tìm thấy"
         style={{ marginBottom: 16 }}
-        headStyle={{ backgroundColor: '#f0f2f5' }}
+        headStyle={{ backgroundColor: "#f0f2f5" }}
       >
-        <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+        <Space direction="vertical" size="middle" style={{ width: "100%" }}>
           <div>
-            <Text strong><UserOutlined /> Họ và tên: </Text>
-            <Text>{userData.fullName || 'Không có'}</Text>
+            <Text strong>
+              <UserOutlined /> Họ và tên:{" "}
+            </Text>
+            <Text>{userData.fullName || "Không có"}</Text>
           </div>
           <div>
-            <Text strong><MailOutlined /> Email: </Text>
-            <Text>{userData.email || 'Không có'}</Text>
+            <Text strong>
+              <MailOutlined /> Email:{" "}
+            </Text>
+            <Text>{userData.email || "Không có"}</Text>
           </div>
           <div>
-            <Text strong><PhoneOutlined /> Số điện thoại: </Text>
+            <Text strong>
+              <PhoneOutlined /> Số điện thoại:{" "}
+            </Text>
             <Text>{phoneNumber}</Text>
           </div>
           <div>
-            <Text strong><TagOutlined /> Vai trò: </Text>
-            <Text>{userData.role || 'Không có'}</Text>
+            <Text strong>
+              <TagOutlined /> Vai trò:{" "}
+            </Text>
+            <Text>{userData.role || "Không có"}</Text>
           </div>
           {userData.apartmentName && (
             <div>
-              <Text strong><HomeOutlined /> Căn hộ: </Text>
+              <Text strong>
+                <HomeOutlined /> Căn hộ:{" "}
+              </Text>
               <Text>{userData.apartmentName}</Text>
             </div>
           )}
           {userData.verificationType && (
             <div>
-              <Text strong><TagOutlined /> Loại xác thực: </Text>
-              <Text>{userData.verificationType === 2 ? 'Chủ hộ' : 'Người thuê'}</Text>
+              <Text strong>
+                <TagOutlined /> Loại xác thực:{" "}
+              </Text>
+              <Text>{userData.verificationType === 2 ? "Chủ hộ" : "Người thuê"}</Text>
             </div>
           )}
         </Space>
@@ -263,21 +292,14 @@ const AccountManagement = () => {
       <Row gutter={[16, 16]}>
         <Col span={24}>
           <Card title="Tìm kiếm người dùng">
-            <Form
-              form={searchForm}
-              layout="inline"
-              onFinish={handleSearch}
-            >
+            <Form form={searchForm} layout="inline" onFinish={handleSearch}>
               <Form.Item
                 name="searchQuery"
                 label="Tên người dùng/Email"
                 rules={[{ required: true, message: "Vui lòng nhập tên người dùng hoặc email" }]}
                 style={{ flex: 1 }}
               >
-                <Input
-                  prefix={<UserOutlined />}
-                  placeholder="Nhập tên người dùng hoặc email"
-                />
+                <Input prefix={<UserOutlined />} placeholder="Nhập tên người dùng hoặc email" />
               </Form.Item>
 
               <Form.Item>
@@ -294,25 +316,17 @@ const AccountManagement = () => {
           </Card>
         </Col>
 
-        {searchPerformed && (
-          <Col span={24}>
-            {renderUserDetails()}
-          </Col>
-        )}
+        {searchPerformed && <Col span={24}>{renderUserDetails()}</Col>}
 
         <Col span={24}>
           <Card title="Nhập thông tin xác thực cư dân">
-            <Form
-              form={verificationForm}
-              layout="vertical"
-              onFinish={handleVerificationSubmit}
-            >
+            <Form form={verificationForm} layout="vertical" onFinish={handleVerificationSubmit}>
               <Row gutter={16}>
                 <Col span={12}>
                   <Form.Item
                     name="fullName"
                     label="Họ và tên"
-                    rules={[{ required: true, message: 'Vui lòng nhập tên hợp đồng!' }]}
+                    rules={[{ required: true, message: "Vui lòng nhập tên hợp đồng!" }]}
                   >
                     <Input
                       prefix={<UserOutlined />}
@@ -327,8 +341,8 @@ const AccountManagement = () => {
                     name="email"
                     label="Email"
                     rules={[
-                      { required: true, message: 'Vui lòng nhập email!' },
-                      { type: 'email', message: 'Email không hợp lệ!' }
+                      { required: true, message: "Vui lòng nhập email!" },
+                      { type: "email", message: "Email không hợp lệ!" },
                     ]}
                   >
                     <Input
@@ -346,7 +360,7 @@ const AccountManagement = () => {
                   <Form.Item
                     name="phone"
                     label="Số điện thoại"
-                    rules={[{ required: true, message: 'Vui lòng nhập số điện thoại!' }]}
+                    rules={[{ required: true, message: "Vui lòng nhập số điện thoại!" }]}
                   >
                     <Input
                       prefix={<PhoneOutlined />}
@@ -360,10 +374,10 @@ const AccountManagement = () => {
                   <Form.Item
                     name="apartment"
                     label="Tên căn hộ"
-                    rules={[{ required: true, message: 'Vui lòng nhập tên căn hộ!' }]}
+                    rules={[{ required: true, message: "Vui lòng nhập tên căn hộ!" }]}
                   >
                     <AutoComplete
-                      style={{ width: '100%' }}
+                      style={{ width: "100%" }}
                       onSearch={handleApartmentSearch}
                       placeholder="Nhập tên căn hộ"
                       filterOption={(inputValue, option) =>
@@ -371,25 +385,17 @@ const AccountManagement = () => {
                       }
                       disabled={verificationType === null}
                     >
-                      {verificationType === 2 ? (
-                        noHouseholderApartments.map(apt => (
-                          <AutoComplete.Option 
-                            key={apt.apartmentId} 
-                            value={apt.apartmentName}
-                          >
-                            {apt.apartmentName}
-                          </AutoComplete.Option>
-                        ))
-                      ) : (
-                        unrentedApartments.map(apt => (
-                          <AutoComplete.Option 
-                            key={apt.apartmentId} 
-                            value={apt.apartmentName}
-                          >
-                            {apt.apartmentName}
-                          </AutoComplete.Option>
-                        ))
-                      )}
+                      {verificationType === 2
+                        ? noHouseholderApartments.map((apt) => (
+                            <AutoComplete.Option key={apt.apartmentId} value={apt.apartmentName}>
+                              {apt.apartmentName}
+                            </AutoComplete.Option>
+                          ))
+                        : unrentedApartments.map((apt) => (
+                            <AutoComplete.Option key={apt.apartmentId} value={apt.apartmentName}>
+                              {apt.apartmentName}
+                            </AutoComplete.Option>
+                          ))}
                     </AutoComplete>
                   </Form.Item>
                 </Col>
@@ -400,9 +406,9 @@ const AccountManagement = () => {
                   <Form.Item
                     name="verificationType"
                     label="Loại xác thực"
-                    rules={[{ required: true, message: 'Vui lòng chọn loại xác thực!' }]}
+                    rules={[{ required: true, message: "Vui lòng chọn loại xác thực!" }]}
                   >
-                    <Select 
+                    <Select
                       placeholder="Chọn loại hợp đồng"
                       onChange={handleVerificationTypeChange}
                     >
@@ -417,10 +423,10 @@ const AccountManagement = () => {
                       <Form.Item
                         name="contractStartDate"
                         label="Ngày bắt đầu hợp đồng"
-                        rules={[{ required: true, message: 'Vui lòng chọn ngày bắt đầu!' }]}
+                        rules={[{ required: true, message: "Vui lòng chọn ngày bắt đầu!" }]}
                       >
                         <DatePicker
-                          style={{ width: '100%' }}
+                          style={{ width: "100%" }}
                           format="YYYY-MM-DD"
                           placeholder="Chọn ngày bắt đầu"
                         />
@@ -432,14 +438,14 @@ const AccountManagement = () => {
                           name="contractEndDate"
                           label="Ngày kết thúc hợp đồng"
                           rules={[
-                            { 
-                              required: verificationType === 1, 
-                              message: 'Vui lòng chọn ngày kết thúc!' 
-                            }
+                            {
+                              required: verificationType === 1,
+                              message: "Vui lòng chọn ngày kết thúc!",
+                            },
                           ]}
                         >
                           <DatePicker
-                            style={{ width: '100%' }}
+                            style={{ width: "100%" }}
                             format="YYYY-MM-DD"
                             placeholder="Chọn ngày kết thúc"
                           />
@@ -453,7 +459,7 @@ const AccountManagement = () => {
               <Form.Item
                 name="documents"
                 label="Tài liệu xác thực (CMND/CCCD, Hợp đồng thuê, ...)"
-                rules={[{ required: true, message: 'Vui lòng tải lên tài liệu xác thực!' }]}
+                rules={[{ required: true, message: "Vui lòng tải lên tài liệu xác thực!" }]}
               >
                 <Upload {...uploadProps}>
                   <Button icon={<UploadOutlined />}>Tải lên tài liệu</Button>
@@ -461,12 +467,7 @@ const AccountManagement = () => {
               </Form.Item>
 
               <Form.Item>
-                <Button
-                  type="primary"
-                  htmlType="submit"
-                  loading={submitting}
-                  block
-                >
+                <Button type="primary" htmlType="submit" loading={submitting} block>
                   Gửi thông tin xác thực
                 </Button>
               </Form.Item>

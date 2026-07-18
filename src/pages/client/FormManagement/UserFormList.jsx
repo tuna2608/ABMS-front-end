@@ -1,20 +1,6 @@
 import React, { useState, useEffect } from "react";
-import {
-  Table,
-  Typography,
-  Card,
-  Badge,
-  Button,
-  Modal,
-  Descriptions,
-  Empty,
-  message,
-} from "antd";
-import {
-  EyeOutlined,
-  DownloadOutlined,
-  ArrowLeftOutlined,
-} from "@ant-design/icons";
+import { Table, Typography, Card, Badge, Button, Modal, Descriptions, Empty, message } from "antd";
+import { EyeOutlined, DownloadOutlined, ArrowLeftOutlined } from "@ant-design/icons";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
@@ -173,11 +159,7 @@ const UserFormList = () => {
       title: "Thao tác",
       key: "action",
       render: (_, record) => (
-        <Button
-          type="primary"
-          icon={<EyeOutlined />}
-          onClick={() => handleViewDetails(record)}
-        >
+        <Button type="primary" icon={<EyeOutlined />} onClick={() => handleViewDetails(record)}>
           Chi tiết
         </Button>
       ),
@@ -206,8 +188,8 @@ const UserFormList = () => {
       <StatusSection>
         <Paragraph>
           <Text>
-            Từ trang này, bạn có thể theo dõi trạng thái của các đơn đã gửi cho
-            Ban Quản lý. Các đơn sẽ được xử lý trong vòng 48 giờ làm việc.
+            Từ trang này, bạn có thể theo dõi trạng thái của các đơn đã gửi cho Ban Quản lý. Các đơn
+            sẽ được xử lý trong vòng 48 giờ làm việc.
           </Text>
         </Paragraph>
       </StatusSection>
@@ -226,10 +208,7 @@ const UserFormList = () => {
           />
         ) : (
           <EmptyStateContainer>
-            <Empty
-              description="Bạn chưa gửi đơn nào"
-              image={Empty.PRESENTED_IMAGE_SIMPLE}
-            />
+            <Empty description="Bạn chưa gửi đơn nào" image={Empty.PRESENTED_IMAGE_SIMPLE} />
             <Button
               type="primary"
               style={{ marginTop: 16 }}
@@ -267,9 +246,7 @@ const UserFormList = () => {
               <Descriptions.Item label="Trạng thái">
                 {getStatusTag(selectedForm.status)}
               </Descriptions.Item>
-              <Descriptions.Item label="Lý do">
-                {selectedForm.reason}
-              </Descriptions.Item>
+              <Descriptions.Item label="Lý do">{selectedForm.reason}</Descriptions.Item>
               <Descriptions.Item label="Tệp đính kèm">
                 <Button
                   type="link"
@@ -282,13 +259,8 @@ const UserFormList = () => {
               </Descriptions.Item>
 
               {selectedForm.responseNote && (
-                <Descriptions.Item
-                  label="Phản hồi từ Ban quản lý"
-                  className="response-note"
-                >
-                  <div style={{ whiteSpace: "pre-wrap" }}>
-                    {selectedForm.responseNote}
-                  </div>
+                <Descriptions.Item label="Phản hồi từ Ban quản lý" className="response-note">
+                  <div style={{ whiteSpace: "pre-wrap" }}>{selectedForm.responseNote}</div>
                   {selectedForm.responseDate && (
                     <div
                       style={{
@@ -297,10 +269,7 @@ const UserFormList = () => {
                         color: "#888",
                       }}
                     >
-                      Phản hồi lúc:{" "}
-                      {new Date(selectedForm.responseDate).toLocaleString(
-                        "vi-VN"
-                      )}
+                      Phản hồi lúc: {new Date(selectedForm.responseDate).toLocaleString("vi-VN")}
                     </div>
                   )}
                 </Descriptions.Item>

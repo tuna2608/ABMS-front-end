@@ -63,7 +63,12 @@ export const postSlice = createSlice({
 
 // Action creators are generated for each case reducer function
 export const {
-  getPostStart,getPostSuccess,getPostFailure,getAllPostsStart,getAllPostsSuccess,getAllPostsFailure
+  getPostStart,
+  getPostSuccess,
+  getPostFailure,
+  getAllPostsStart,
+  getAllPostsSuccess,
+  getAllPostsFailure,
 } = postSlice.actions;
 
 export default postSlice.reducer;

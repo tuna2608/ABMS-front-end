@@ -36,15 +36,7 @@ const { Option } = Select;
 const { Title, Text, Paragraph } = Typography;
 
 // Khu vực
-const areas = [
-  "Tất cả",
-  "Ngũ Hành Sơn",
-  "Cẩm Lệ",
-  "Sơn Trà",
-  "Liên Chiểu",
-  "Hòa Vang",
-  "Hải Châu",
-];
+const areas = ["Tất cả", "Ngũ Hành Sơn", "Cẩm Lệ", "Sơn Trà", "Liên Chiểu", "Hòa Vang", "Hải Châu"];
 
 // Data mẫu chưa có api lấy căn hộ đặt cọc Tú call api rồi thế vào đây nhé
 const sampleBookedApartments = [
@@ -84,9 +76,7 @@ const DepositApartments = ({
     try {
       const res = await getAllPostsNoDispatch();
       if (res.success) {
-        const listPost = res.data.filter(
-          (post) => post.depositUserId === userCurrent.userId
-        );
+        const listPost = res.data.filter((post) => post.depositUserId === userCurrent.userId);
         setDepositPosts(listPost);
       } else {
         message.error(res.message);
@@ -191,9 +181,7 @@ const DepositApartments = ({
             />
 
             <Flex align="center" gap={8}>
-              <EnvironmentOutlined
-                style={{ color: "rgba(30, 58, 138, 0.92)" }}
-              />
+              <EnvironmentOutlined style={{ color: "rgba(30, 58, 138, 0.92)" }} />
               <Select
                 defaultValue="Tất cả"
                 style={{ width: 180 }}
@@ -210,10 +198,7 @@ const DepositApartments = ({
           </Flex>
 
           {depositPosts && depositPosts.length === 0 ? (
-            <Empty
-              description="Bạn chưa có căn hộ nào được đặt cọc"
-              style={{ marginTop: 40 }}
-            />
+            <Empty description="Bạn chưa có căn hộ nào được đặt cọc" style={{ marginTop: 40 }} />
           ) : (
             <>
               <Row gutter={[24, 24]}>
@@ -268,9 +253,7 @@ const DepositApartments = ({
                                 color: "white",
                               }}
                             >
-                              <Text
-                                style={{ color: "white", fontWeight: "bold" }}
-                              >
+                              <Text style={{ color: "white", fontWeight: "bold" }}>
                                 {post.userName}
                               </Text>
                             </div>
@@ -325,10 +308,7 @@ const DepositApartments = ({
                               >
                                 {post.content}
                               </Paragraph>
-                              <Space
-                                direction="vertical"
-                                style={{ width: "100%" }}
-                              >
+                              <Space direction="vertical" style={{ width: "100%" }}>
                                 <div>
                                   <Flex justify="space-between" align="center">
                                     <Flex align="center">
@@ -338,9 +318,7 @@ const DepositApartments = ({
                                           marginRight: 5,
                                         }}
                                       />
-                                      <Text type="secondary">
-                                        {post.apartment.apartmentName}
-                                      </Text>
+                                      <Text type="secondary">{post.apartment.apartmentName}</Text>
                                     </Flex>
                                     <Tag
                                       icon={<CheckCircleOutlined />}
@@ -355,9 +333,7 @@ const DepositApartments = ({
                                   </Flex>
                                 </div>
                                 <div>
-                                  <DollarOutlined
-                                    style={{ color: "#ff4d4f", marginRight: 5 }}
-                                  />
+                                  <DollarOutlined style={{ color: "#ff4d4f", marginRight: 5 }} />
                                   <Text
                                     strong
                                     style={{
@@ -377,10 +353,7 @@ const DepositApartments = ({
                                       background: "rgba(30, 58, 138, 0.92)",
                                       width: "100%",
                                     }}
-                                    onClick={() =>
-                                      onViewDetails &&
-                                      onViewDetails(post.postId)
-                                    }
+                                    onClick={() => onViewDetails && onViewDetails(post.postId)}
                                   >
                                     Xem chi tiết
                                   </Button>

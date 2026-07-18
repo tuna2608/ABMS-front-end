@@ -14,8 +14,6 @@ import {
   Button,
   Tabs,
   Modal,
-  Form,
-  Upload,
   message,
   Image,
   Avatar,
@@ -96,7 +94,6 @@ const ServicePage = () => {
         setFacilities(transformedData);
       }
     } catch (error) {
-      console.error("Error fetching facilities:", error);
       message.error("Không thể tải danh sách dịch vụ");
     } finally {
       setLoading(false);
@@ -129,14 +126,8 @@ const ServicePage = () => {
   const handleCreateService = async (values) => {
     try {
       // Validate required fields
-      if (
-        !values.title ||
-        !values.content ||
-        !values.images?.fileList?.length
-      ) {
-        message.error(
-          "Vui lòng điền đầy đủ thông tin và tải lên ít nhất 1 ảnh"
-        );
+      if (!values.title || !values.content || !values.images?.fileList?.length) {
+        message.error("Vui lòng điền đầy đủ thông tin và tải lên ít nhất 1 ảnh");
         return;
       }
 
@@ -169,7 +160,6 @@ const ServicePage = () => {
         throw new Error(response.message || "Không thể tạo bài đăng");
       }
     } catch (error) {
-      console.error("Error creating facility:", error);
       message.error(error.message || "Có lỗi xảy ra khi tạo bài đăng");
     } finally {
       setLoading(false);
@@ -211,12 +201,9 @@ const ServicePage = () => {
         setSelectedService(null);
         await fetchFacilities();
       } else {
-        throw new Error(
-          response.message || "Có lỗi xảy ra khi cập nhật bài viết"
-        );
+        throw new Error(response.message || "Có lỗi xảy ra khi cập nhật bài viết");
       }
     } catch (error) {
-      console.error("Error updating facility:", error);
       message.error(error.message || "Có lỗi xảy ra khi cập nhật bài viết");
     } finally {
       setLoading(false);
@@ -281,10 +268,7 @@ const ServicePage = () => {
                       height: "100%",
                     }}
                   >
-                    <Skeleton.Image
-                      style={{ width: "100%", height: 200 }}
-                      active
-                    />
+                    <Skeleton.Image style={{ width: "100%", height: 200 }} active />
                     <Skeleton active paragraph={{ rows: 3 }} />
                   </Card>
                 </Col>
@@ -329,8 +313,7 @@ const ServicePage = () => {
                             bottom: 0,
                             left: 0,
                             right: 0,
-                            background:
-                              "linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0))",
+                            background: "linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0))",
                             padding: "16px 12px 8px",
                             color: "white",
                           }}
@@ -345,10 +328,7 @@ const ServicePage = () => {
                     actions={[
                       <Tooltip title="Địa điểm">
                         <Space>
-                          <EnvironmentOutlined
-                            key="location"
-                            style={{ color: "#4b7bec" }}
-                          />
+                          <EnvironmentOutlined key="location" style={{ color: "#4b7bec" }} />
                           {facility.floor}
                         </Space>
                       </Tooltip>,
@@ -360,10 +340,7 @@ const ServicePage = () => {
                       </Tooltip>,
                       <Tooltip title="Liên hệ">
                         <Space>
-                          <PhoneOutlined
-                            key="contact"
-                            style={{ color: "#4b7bec" }}
-                          />
+                          <PhoneOutlined key="contact" style={{ color: "#4b7bec" }} />
                         </Space>
                       </Tooltip>,
                     ]}
@@ -400,9 +377,7 @@ const ServicePage = () => {
                             <div>
                               <Flex align="center" justify="space-between">
                                 <Flex align="center">
-                                  <StarOutlined
-                                    style={{ color: "#faad14", marginRight: 5 }}
-                                  />
+                                  <StarOutlined style={{ color: "#faad14", marginRight: 5 }} />
                                   <Text strong>{facility.rating}/5.0</Text>
                                 </Flex>
                                 <Flex align="center">
@@ -500,9 +475,7 @@ const ServicePage = () => {
                 <Text strong style={{ margin: 0 }}>
                   {facilityDetail.facilityPostContent}
                 </Text>
-                <Text type="secondary">
-                  Đăng bởi: {facilityDetail.userName}
-                </Text>
+                <Text type="secondary">Đăng bởi: {facilityDetail.userName}</Text>
               </div>
             </Flex>
 
@@ -539,12 +512,10 @@ const ServicePage = () => {
                   <PhoneOutlined /> {facilityDetail.phone || "Chưa cập nhật"}
                 </Space>
                 <Space>
-                  <EnvironmentOutlined />{" "}
-                  {facilityDetail.floor || "Chưa cập nhật"}
+                  <EnvironmentOutlined /> {facilityDetail.floor || "Chưa cập nhật"}
                 </Space>
                 <Space>
-                  <ClockCircleOutlined />{" "}
-                  {facilityDetail.hours || "Chưa cập nhật"}
+                  <ClockCircleOutlined /> {facilityDetail.hours || "Chưa cập nhật"}
                 </Space>
               </Space>
 
@@ -604,18 +575,10 @@ const ServicePage = () => {
       width: 200,
       render: (_, record) => (
         <Space>
-          <Button
-            type="link"
-            icon={<EyeOutlined />}
-            onClick={() => goToServiceDetails(record.id)}
-          >
+          <Button type="link" icon={<EyeOutlined />} onClick={() => goToServiceDetails(record.id)}>
             Chi tiết
           </Button>
-          <Button
-            type="link"
-            icon={<EditOutlined />}
-            onClick={() => handleEditClick(record)}
-          >
+          <Button type="link" icon={<EditOutlined />} onClick={() => handleEditClick(record)}>
             Sửa
           </Button>
         </Space>

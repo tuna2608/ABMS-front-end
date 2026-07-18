@@ -1,16 +1,10 @@
 import React, { useState, useEffect } from "react";
-import {
-  Form,
-  Input,
-  Typography,
-  message,
-  Spin
-} from "antd";
+import { Form, Input, Typography, message, Spin } from "antd";
 import styled from "styled-components";
 import { useSelector, useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
-import { changePassword } from "../../../redux/apiCalls"; 
-import { resetChangePasswordStatus } from "../../../redux/authSlice"; 
+import { changePassword } from "../../../redux/apiCalls";
+import { resetChangePasswordStatus } from "../../../redux/authSlice";
 
 const { Title } = Typography;
 
@@ -28,7 +22,9 @@ const MainContent = styled.div`
   max-width: 600px;
   background-color: white;
   border-radius: 20px;
-  box-shadow: 0 15px 35px rgba(50,50,93,.1), 0 5px 15px rgba(0,0,0,.07);
+  box-shadow:
+    0 15px 35px rgba(50, 50, 93, 0.1),
+    0 5px 15px rgba(0, 0, 0, 0.07);
   padding: 40px;
 `;
 
@@ -56,7 +52,9 @@ const SaveButton = styled.button`
   &:hover {
     background-color: #3a5ec7;
     transform: translateY(-3px);
-    box-shadow: 0 7px 14px rgba(50,50,93,.1), 0 3px 6px rgba(0,0,0,.08);
+    box-shadow:
+      0 7px 14px rgba(50, 50, 93, 0.1),
+      0 3px 6px rgba(0, 0, 0, 0.08);
   }
 
   &:disabled {
@@ -71,17 +69,17 @@ const PasswordRules = styled.div`
   border-radius: 12px;
   padding: 15px;
   margin-bottom: 25px;
-  
+
   h4 {
     color: #4b7bec;
     font-weight: 600;
     margin-bottom: 10px;
   }
-  
+
   ul {
     margin: 0;
     padding-left: 20px;
-    
+
     li {
       margin-bottom: 5px;
       color: #555;
@@ -94,22 +92,22 @@ const ChangePasswordPage = () => {
   const userCurrent = useSelector((state) => state.user.currentUser);
   const changePasswordStatus = useSelector((state) => state.user.changePasswordStatus);
   const [isLoading, setIsLoading] = useState(false);
-  
+
   const [form] = Form.useForm();
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
   // Track change password status
   useEffect(() => {
-    if (changePasswordStatus === 'success') {
+    if (changePasswordStatus === "success") {
       message.success("Đổi mật khẩu thành công");
       form.resetFields();
       dispatch(resetChangePasswordStatus());
       // Navigate to home page
       setTimeout(() => {
-        navigate('/');
+        navigate("/");
       }, 1500); // Wait 1.5 seconds to show success message
-    } else if (changePasswordStatus === 'error') {
+    } else if (changePasswordStatus === "error") {
       message.error("Đổi mật khẩu thất bại");
       dispatch(resetChangePasswordStatus());
     }
@@ -128,25 +126,29 @@ const ChangePasswordPage = () => {
     const changePasswordDTO = {
       email: userCurrent.email, // Or userCurrent.userName depending on backend API
       currentPassword: values.oldPassword,
-      newPassword: values.newPassword
+      newPassword: values.newPassword,
     };
 
     try {
       const response = await changePassword(dispatch, changePasswordDTO);
-      
+
       // Handle specific error cases
       if (!response.success) {
         // Check for specific error messages and set form errors accordingly
         if (response.message.includes("mật khẩu hiện tại không đúng")) {
-          form.setFields([{
-            name: 'oldPassword',
-            errors: [response.message]
-          }]);
+          form.setFields([
+            {
+              name: "oldPassword",
+              errors: [response.message],
+            },
+          ]);
         } else if (response.message.includes("không được trùng với mật khẩu hiện tại")) {
-          form.setFields([{
-            name: 'newPassword',
-            errors: [response.message]
-          }]);
+          form.setFields([
+            {
+              name: "newPassword",
+              errors: [response.message],
+            },
+          ]);
         } else {
           // Generic error message
           message.error(response.message);
@@ -163,15 +165,18 @@ const ChangePasswordPage = () => {
     <PageContainer>
       <MainContent>
         <FormContainer>
-          <Title level={2} style={{ 
-            color: "#4b7bec", 
-            marginBottom: 30, 
-            textAlign: 'center', 
-            fontWeight: 700 
-          }}>
+          <Title
+            level={2}
+            style={{
+              color: "#4b7bec",
+              marginBottom: 30,
+              textAlign: "center",
+              fontWeight: 700,
+            }}
+          >
             Đổi Mật Khẩu
           </Title>
-          
+
           <PasswordRules>
             <h4>Yêu cầu mật khẩu:</h4>
             <ul>
@@ -180,19 +185,15 @@ const ChangePasswordPage = () => {
             </ul>
           </PasswordRules>
 
-          <Form
-            form={form}
-            layout="vertical"
-            onFinish={handleSubmit}
-          >
+          <Form form={form} layout="vertical" onFinish={handleSubmit}>
             <FormSection>
-              <Form.Item 
-                label="Mật khẩu hiện tại:" 
+              <Form.Item
+                label="Mật khẩu hiện tại:"
                 name="oldPassword"
                 rules={[
-                  { 
-                    required: true, 
-                    message: 'Vui lòng nhập mật khẩu hiện tại' 
+                  {
+                    required: true,
+                    message: "Vui lòng nhập mật khẩu hiện tại",
                   },
                 ]}
               >
@@ -201,40 +202,40 @@ const ChangePasswordPage = () => {
             </FormSection>
 
             <FormSection>
-              <Form.Item 
-                label="Mật khẩu mới:" 
+              <Form.Item
+                label="Mật khẩu mới:"
                 name="newPassword"
                 rules={[
-                  { 
-                    required: true, 
-                    message: 'Vui lòng nhập mật khẩu mới' 
+                  {
+                    required: true,
+                    message: "Vui lòng nhập mật khẩu mới",
                   },
-                  { 
-                    min: 6, 
-                    message: 'Mật khẩu phải có ít nhất 6 ký tự' 
-                  }
+                  {
+                    min: 6,
+                    message: "Mật khẩu phải có ít nhất 6 ký tự",
+                  },
                 ]}
               >
                 <Input.Password disabled={isLoading} />
               </Form.Item>
             </FormSection>
-            
+
             <FormSection>
-              <Form.Item 
-                label="Xác nhận mật khẩu mới:" 
+              <Form.Item
+                label="Xác nhận mật khẩu mới:"
                 name="confirmPassword"
-                dependencies={['newPassword']}
+                dependencies={["newPassword"]}
                 rules={[
-                  { 
-                    required: true, 
-                    message: 'Vui lòng xác nhận mật khẩu mới' 
+                  {
+                    required: true,
+                    message: "Vui lòng xác nhận mật khẩu mới",
                   },
                   ({ getFieldValue }) => ({
                     validator(_, value) {
-                      if (!value || getFieldValue('newPassword') === value) {
+                      if (!value || getFieldValue("newPassword") === value) {
                         return Promise.resolve();
                       }
-                      return Promise.reject(new Error('Hai mật khẩu không khớp nhau'));
+                      return Promise.reject(new Error("Hai mật khẩu không khớp nhau"));
                     },
                   }),
                 ]}
@@ -245,10 +246,7 @@ const ChangePasswordPage = () => {
 
             <Form.Item>
               <Spin spinning={isLoading}>
-                <SaveButton
-                  type="submit"
-                  disabled={isLoading}
-                >
+                <SaveButton type="submit" disabled={isLoading}>
                   XÁC NHẬN
                 </SaveButton>
               </Spin>

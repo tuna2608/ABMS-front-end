@@ -1,6 +1,6 @@
-import React from 'react';
-import { Modal, Form, Input, Upload, Button, message } from 'antd';
-import { PlusOutlined } from '@ant-design/icons';
+import React from "react";
+import { Modal, Form, Input, Upload, Button, message } from "antd";
+import { PlusOutlined } from "@ant-design/icons";
 
 const { TextArea } = Input;
 
@@ -10,22 +10,21 @@ export const UpdateServiceModal = ({ visible, onCancel, onSubmit, loading, initi
   const handleSubmit = async (values) => {
     try {
       const formData = new FormData();
-      formData.append('userId', initialValues.userId);
-      formData.append('facilityHeader', values.title);
-      formData.append('facilityPostContent', values.content);
+      formData.append("userId", initialValues.userId);
+      formData.append("facilityHeader", values.title);
+      formData.append("facilityPostContent", values.content);
 
       // Chỉ gửi file mới
       const fileList = values.images?.fileList || [];
-      fileList.forEach(file => {
+      fileList.forEach((file) => {
         if (file.originFileObj) {
-          formData.append('file', file.originFileObj);
+          formData.append("file", file.originFileObj);
         }
       });
 
       await onSubmit(initialValues.id, formData);
     } catch (error) {
-      console.error("Error updating facility:", error);
-      message.error(error.message || 'Có lỗi xảy ra khi cập nhật bài viết');
+      message.error(error.message || "Có lỗi xảy ra khi cập nhật bài viết");
     }
   };
 
@@ -35,7 +34,7 @@ export const UpdateServiceModal = ({ visible, onCancel, onSubmit, loading, initi
       form.setFieldsValue({
         title: initialValues.title,
         content: initialValues.content,
-        images: { fileList: initialValues.images || [] }
+        images: { fileList: initialValues.images || [] },
       });
     }
   }, [visible, initialValues, form]);
@@ -51,20 +50,13 @@ export const UpdateServiceModal = ({ visible, onCancel, onSubmit, loading, initi
       footer={null}
       width={600}
     >
-      <Form 
-        form={form}
-        layout="vertical" 
-        onFinish={handleSubmit}
-      >
+      <Form form={form} layout="vertical" onFinish={handleSubmit}>
         <Form.Item
           name="title"
           label="Tiêu đề bài viết"
           rules={[{ required: true, message: "Vui lòng nhập tiêu đề bài viết!" }]}
         >
-          <Input 
-            placeholder="Nhập tiêu đề bài viết..." 
-            maxLength={200}
-          />
+          <Input placeholder="Nhập tiêu đề bài viết..." maxLength={200} />
         </Form.Item>
 
         <Form.Item
@@ -72,9 +64,9 @@ export const UpdateServiceModal = ({ visible, onCancel, onSubmit, loading, initi
           label="Nội dung bài viết"
           rules={[{ required: true, message: "Vui lòng nhập nội dung bài viết!" }]}
         >
-          <TextArea 
-            rows={6} 
-            placeholder="Mô tả chi tiết về dịch vụ của bạn..." 
+          <TextArea
+            rows={6}
+            placeholder="Mô tả chi tiết về dịch vụ của bạn..."
             showCount
             maxLength={1000}
           />
@@ -89,14 +81,14 @@ export const UpdateServiceModal = ({ visible, onCancel, onSubmit, loading, initi
           <Upload
             listType="picture-card"
             beforeUpload={(file) => {
-              const isImage = file.type.startsWith('image/');
+              const isImage = file.type.startsWith("image/");
               if (!isImage) {
-                message.error('Chỉ hỗ trợ file ảnh!');
+                message.error("Chỉ hỗ trợ file ảnh!");
                 return false;
               }
               const isLt2M = file.size / 1024 / 1024 < 2;
               if (!isLt2M) {
-                message.error('Kích thước ảnh phải nhỏ hơn 2MB!');
+                message.error("Kích thước ảnh phải nhỏ hơn 2MB!");
                 return false;
               }
               return false; // Return false to prevent auto upload
@@ -112,9 +104,9 @@ export const UpdateServiceModal = ({ visible, onCancel, onSubmit, loading, initi
           </Upload>
         </Form.Item>
 
-        <Form.Item style={{ marginBottom: 0, textAlign: 'right' }}>
-          <Button 
-            style={{ marginRight: 8 }} 
+        <Form.Item style={{ marginBottom: 0, textAlign: "right" }}>
+          <Button
+            style={{ marginRight: 8 }}
             onClick={() => {
               form.resetFields();
               onCancel();

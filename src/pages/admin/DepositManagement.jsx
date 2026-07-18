@@ -1,17 +1,7 @@
 import React, { useEffect, useState } from "react";
-import {
-  Card,
-  Row,
-  Col,
-  Statistic,
-  Table,
-  Space,
-  Tag,
-  message,
-} from "antd";
-import { SafetyOutlined} from "@ant-design/icons";
+import { Card, Row, Col, Statistic, Table, Space, Tag, message } from "antd";
+import { SafetyOutlined } from "@ant-design/icons";
 import { getAllDeposits } from "../../redux/apiCalls";
-
 
 const DepositManagement = () => {
   const [loading, setLoading] = useState(false);
@@ -28,17 +18,16 @@ const DepositManagement = () => {
     },
   ]);
 
-
-  useEffect(()=>{
+  useEffect(() => {
     callGetAllDeposits();
-  },[])
+  }, []);
 
-  async function callGetAllDeposits(){
-    setLoading(true)
+  async function callGetAllDeposits() {
+    setLoading(true);
     try {
       const res = await getAllDeposits();
       if (res.success) {
-        setDeposits(res.data)
+        setDeposits(res.data);
         // message.success(res.message)
       } else {
         message.error(res.message);
@@ -46,7 +35,7 @@ const DepositManagement = () => {
     } catch (error) {
       message("Không thể thực hiện lấy danh sách đặt cọc!");
     } finally {
-      setLoading(false)
+      setLoading(false);
     }
   }
 
@@ -72,10 +61,10 @@ const DepositManagement = () => {
   // Calculate deposit statistics
   const depositStats = {
     total: deposits.length,
-    ongoing: deposits.filter(d => d.status === 'ongoing').length,
-    done: deposits.filter(d => d.status === 'done').length,
-    none: deposits.filter(d => d.status === 'none').length,
-    totalAmount: deposits.reduce((sum, deposit) => sum + deposit.depositPrice, 0)
+    ongoing: deposits.filter((d) => d.status === "ongoing").length,
+    done: deposits.filter((d) => d.status === "done").length,
+    none: deposits.filter((d) => d.status === "none").length,
+    totalAmount: deposits.reduce((sum, deposit) => sum + deposit.depositPrice, 0),
   };
 
   const depositColumns = [
@@ -103,17 +92,16 @@ const DepositManagement = () => {
         const colorMap = {
           ongoing: "blue",
           done: "green",
-          cancel: "orange" 
+          cancel: "orange",
         };
         const textMap = {
           ongoing: "Đang thực hiện",
           done: "Đã chuyển tiền",
-          cancel: "Hủy chuyển tiền"
+          cancel: "Hủy chuyển tiền",
         };
         return <Tag color={colorMap[status] || "default"}>{textMap[status]}</Tag>;
       },
     },
-
   ];
 
   return (
@@ -187,15 +175,13 @@ const DepositManagement = () => {
         </Col>
       </Row>
 
-
       <Table
         columns={depositColumns}
         dataSource={deposits}
         rowKey="id"
         pagination={{
           pageSize: 5,
-          showTotal: (total, range) =>
-            `${range[0]}-${range[1]} của ${total} giao dịch`,
+          showTotal: (total, range) => `${range[0]}-${range[1]} của ${total} giao dịch`,
         }}
         loading={loading}
         scroll={{ x: 1100 }}

@@ -1,14 +1,5 @@
 import React, { useState, useEffect, useCallback } from "react";
-import {
-  Dropdown,
-  Badge,
-  List,
-  Empty,
-  Card,
-  Button,
-  message,
-  Spin,
-} from "antd";
+import { Dropdown, Badge, List, Empty, Card, Button, message, Spin } from "antd";
 import {
   BellOutlined,
   MessageOutlined,
@@ -168,7 +159,6 @@ const NotificationWrapper = () => {
       }
     } catch (err) {
       setError("Có lỗi xảy ra khi tải thông báo");
-      console.error("Error loading notifications:", err);
     } finally {
       setLoading(false);
     }
@@ -205,10 +195,7 @@ const NotificationWrapper = () => {
       // Cleanup listener khi component unmount
       return () => {
         document.removeEventListener("new-notification", handleNewNotification);
-        document.removeEventListener(
-          "global-notification",
-          handleNewNotification
-        );
+        document.removeEventListener("global-notification", handleNewNotification);
       };
     }
   }, [currentUser?.userId]);
@@ -236,7 +223,6 @@ const NotificationWrapper = () => {
 
       message.success("Đã đánh dấu tất cả là đã đọc");
     } catch (error) {
-      console.error("Error marking notifications as read:", error);
       message.error("Không thể đánh dấu thông báo là đã đọc");
     } finally {
       setLoading(false);
@@ -250,15 +236,12 @@ const NotificationWrapper = () => {
 
       // Cập nhật state local
       setNotifications(
-        notifications.map((n) =>
-          n.id === notification.id ? { ...n, status: true } : n
-        )
+        notifications.map((n) => (n.id === notification.id ? { ...n, status: true } : n))
       );
       setUnreadCount((prev) => Math.max(0, prev - 1));
     }
 
     // Xử lý điều hướng hoặc hành động khác dựa vào loại thông báo
-    console.log("Notification clicked:", notification);
   };
 
   const itemNotificate = [
@@ -280,9 +263,7 @@ const NotificationWrapper = () => {
 
             {loading ? (
               <LoadingContainer>
-                <Spin
-                  indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />}
-                />
+                <Spin indicator={<LoadingOutlined style={{ fontSize: 24 }} spin />} />
               </LoadingContainer>
             ) : error ? (
               <Empty description={error} style={{ padding: "24px" }} />
@@ -290,16 +271,12 @@ const NotificationWrapper = () => {
               <List
                 dataSource={notifications}
                 renderItem={(item) => {
-                  const { icon, color } = getNotificationIcon(
-                    item.notificationType
-                  );
+                  const { icon, color } = getNotificationIcon(item.notificationType);
                   return (
                     <NotificationListItem
                       onClick={() => handleNotificationClick(item)}
                       style={{
-                        backgroundColor: !item.status
-                          ? "rgba(24, 144, 255, 0.05)"
-                          : "transparent",
+                        backgroundColor: !item.status ? "rgba(24, 144, 255, 0.05)" : "transparent",
                         position: "relative",
                       }}
                     >
@@ -318,20 +295,14 @@ const NotificationWrapper = () => {
                         />
                       )}
                       <div style={{ display: "flex", alignItems: "center" }}>
-                        <NotificationIcon
-                          style={{ backgroundColor: `${color}1A` }}
-                        >
+                        <NotificationIcon style={{ backgroundColor: `${color}1A` }}>
                           {React.cloneElement(icon, {
                             style: { color: color, fontSize: "16px" },
                           })}
                         </NotificationIcon>
                         <NotificationContent>
-                          <div style={{ marginBottom: 4 }}>
-                            {item.notificationContent}
-                          </div>
-                          <NotificationTime>
-                            {formatTime(item.date)}
-                          </NotificationTime>
+                          <div style={{ marginBottom: 4 }}>{item.notificationContent}</div>
+                          <NotificationTime>{formatTime(item.date)}</NotificationTime>
                         </NotificationContent>
                       </div>
                     </NotificationListItem>
@@ -339,10 +310,7 @@ const NotificationWrapper = () => {
                 }}
               />
             ) : (
-              <Empty
-                description="Không có thông báo mới"
-                style={{ padding: "24px" }}
-              />
+              <Empty description="Không có thông báo mới" style={{ padding: "24px" }} />
             )}
           </NotificationCard>
         </>
@@ -380,9 +348,7 @@ const NotificationWrapper = () => {
               <NotificationListItem
                 onClick={() => handleNotificationClick(item)}
                 style={{
-                  backgroundColor: !item.status
-                    ? "rgba(24, 144, 255, 0.05)"
-                    : "transparent",
+                  backgroundColor: !item.status ? "rgba(24, 144, 255, 0.05)" : "transparent",
                   position: "relative",
                 }}
               >
@@ -407,9 +373,7 @@ const NotificationWrapper = () => {
                     })}
                   </NotificationIcon>
                   <NotificationContent>
-                    <div style={{ marginBottom: 4 }}>
-                      {item.notificationContent}
-                    </div>
+                    <div style={{ marginBottom: 4 }}>{item.notificationContent}</div>
                     <NotificationTime>{formatTime(item.date)}</NotificationTime>
                   </NotificationContent>
                 </div>
@@ -418,10 +382,7 @@ const NotificationWrapper = () => {
           }}
         />
       ) : (
-        <Empty
-          description="Không có thông báo mới"
-          style={{ padding: "24px" }}
-        />
+        <Empty description="Không có thông báo mới" style={{ padding: "24px" }} />
       )}
     </NotificationCard>
   );
@@ -432,7 +393,7 @@ const NotificationWrapper = () => {
 
   return (
     <Dropdown
-      menu={{items: itemNotificate }}
+      menu={{ items: itemNotificate }}
       trigger={["click"]}
       placement="bottomRight"
       onOpenChange={handleVisibleChange}

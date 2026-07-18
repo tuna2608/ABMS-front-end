@@ -1,43 +1,41 @@
-@import url('https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Montserrat:ital,wght@0,100..900;1,100..900&display=swap");
 
 :root {
-    --forange: #f26f23;
-    --fgreen: #0daf4b;
-    --fblue: #0d66b1;
-    --grey: #ececec;
-    --brown: #5F5B5B;
-    --light-grey: #DCDBDB;
-    
-    --yellow: #f3cd04;
-    --fred: #FF4343;
+  --forange: #f26f23;
+  --fgreen: #0daf4b;
+  --fblue: #0d66b1;
+  --grey: #ececec;
+  --brown: #5f5b5b;
+  --light-grey: #dcdbdb;
 
+  --yellow: #f3cd04;
+  --fred: #ff4343;
 
-    --blue: #3da9fc21;
-    --cbg: #B8B8B8;
-    --cheadline: #052659;
-    --cparagraph: #5f6c7b;
-    --cbutton: #3da9fc;
-    --cbuttontext: #fffffe;
-    --cstroke: #094067;
-    --cmain: #fffffe;
-    --chightlight: #3da9fc;
-    --csecondary: #90b4ce
+  --blue: #3da9fc21;
+  --cbg: #b8b8b8;
+  --cheadline: #052659;
+  --cparagraph: #5f6c7b;
+  --cbutton: #3da9fc;
+  --cbuttontext: #fffffe;
+  --cstroke: #094067;
+  --cmain: #fffffe;
+  --chightlight: #3da9fc;
+  --csecondary: #90b4ce;
 }
 
-
-*{
-    font-family: 'Montserrat', sans-serif;
+* {
+  font-family: "Montserrat", sans-serif;
 }
 
-
-html,body{
-    width: 100%;
-    box-sizing: border-box;
-    padding: 0;
-    margin: 0;
-    font-size: 20px;
+html,
+body {
+  width: 100%;
+  box-sizing: border-box;
+  padding: 0;
+  margin: 0;
+  font-size: 20px;
 }
 
-a{
-    text-decoration: none;
+a {
+  text-decoration: none;
 }

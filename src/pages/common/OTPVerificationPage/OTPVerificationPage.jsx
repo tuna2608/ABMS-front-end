@@ -1,11 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import {
-  WrapperContainer,
-  WrapperContainerLeft,
-  WrapperContainerRight,
-} from "./style";
+import { WrapperContainer, WrapperContainerLeft, WrapperContainerRight } from "./style";
 import { Form, Image, message, Spin } from "antd";
 import imgLogin from "./../../../assets/common/images/logo-login.png";
 import styled from "styled-components";
@@ -39,7 +35,7 @@ const OtpInput = styled.input`
   text-align: center;
   font-size: 20px;
   margin: 0 5px;
-  
+
   &:focus {
     border-color: var(--cbutton);
     outline: none;
@@ -57,11 +53,11 @@ const ResendButton = styled.span`
   color: var(--cbutton);
   cursor: pointer;
   font-weight: 600;
-  
+
   &:hover {
     text-decoration: underline;
   }
-  
+
   &.disabled {
     color: #d9d9d9;
     cursor: not-allowed;
@@ -81,12 +77,12 @@ const OTPVerificationPage = () => {
 
   useEffect(() => {
     // Retrieve email from localStorage
-    const storedEmail = localStorage.getItem('forgotPasswordEmail');
+    const storedEmail = localStorage.getItem("forgotPasswordEmail");
     if (storedEmail) {
       setEmail(storedEmail);
     } else {
       // If no email is stored, redirect back to forgot password page
-      navigate('/forgot-password');
+      navigate("/forgot-password");
     }
   }, [navigate]);
 
@@ -97,12 +93,12 @@ const OTPVerificationPage = () => {
     if (value && !/^\d+$/.test(value)) {
       return;
     }
-    
+
     // Update the OTP array with the new input
     const newOtp = [...otp];
     newOtp[index] = value.substring(0, 1);
     setOtp(newOtp);
-    
+
     // Auto-focus to next input after filling current one
     if (value && index < 5) {
       inputRefs.current[index + 1].focus();
@@ -119,20 +115,20 @@ const OTPVerificationPage = () => {
   const handlePaste = (e) => {
     e.preventDefault();
     const pastedData = e.clipboardData.getData("text/plain").trim();
-    
+
     // Check if pasted content is a number and has expected length
     if (/^\d+$/.test(pastedData)) {
       const digits = pastedData.split("").slice(0, 6);
       const newOtp = [...otp];
-      
+
       digits.forEach((digit, index) => {
         if (index < 6) {
           newOtp[index] = digit;
         }
       });
-      
+
       setOtp(newOtp);
-      
+
       // Focus on the next empty input or the last one
       const lastFilledIndex = Math.min(digits.length - 1, 5);
       if (lastFilledIndex < 5) {
@@ -153,7 +149,7 @@ const OTPVerificationPage = () => {
     } else {
       setCanResend(true);
     }
-    
+
     return () => clearInterval(interval);
   }, [timer]);
 
@@ -162,7 +158,7 @@ const OTPVerificationPage = () => {
       setIsLoading(true);
       try {
         const result = await forgotPassword(dispatch, email);
-        
+
         const messageAPI = result?.message;
         if (result.success) {
           message.success(messageAPI || "Mã OTP đã được gửi lại");
@@ -186,24 +182,20 @@ const OTPVerificationPage = () => {
 
   const handleVerifyOTP = async () => {
     // Combine OTP digits
-    const otpCode = otp.join('');
-    
+    const otpCode = otp.join("");
+
     if (otpCode.length !== 6) {
       message.error("Vui lòng nhập đầy đủ mã OTP");
       return;
     }
-  
+
     setIsLoading(true);
     try {
-      console.log('Verifying OTP:', { email, otp: otpCode });
-  
-      const result = await verifyForgotPasswordOTP(dispatch, { 
-        email, 
-        otp: otpCode 
+      const result = await verifyForgotPasswordOTP(dispatch, {
+        email,
+        otp: otpCode,
       });
-      
-      console.log('Verify OTP Result:', result);
-      
+
       // Get message from result
       const messageAPI = result?.message;
 
@@ -211,18 +203,17 @@ const OTPVerificationPage = () => {
       if (result.success || result.status === 200) {
         message.success(messageAPI || "Xác thực OTP thành công");
         // Store email for new password page
-        localStorage.setItem('resetPasswordEmail', email);
+        localStorage.setItem("resetPasswordEmail", email);
         // Remove old email storage
-        localStorage.removeItem('forgotPasswordEmail');
-        
+        localStorage.removeItem("forgotPasswordEmail");
+
         // Use multiple navigation methods for redundancy
-        window.location.href = '/new-password';  // Force full page reload
-        navigate('/new-password');  // React Router navigation
+        window.location.href = "/new-password"; // Force full page reload
+        navigate("/new-password"); // React Router navigation
       } else {
         message.error(messageAPI || "Xác thực OTP không thành công");
       }
     } catch (error) {
-      console.error('Full Verification Error:', error);
       message.error("Có lỗi xảy ra. Vui lòng thử lại.");
     } finally {
       setIsLoading(false);
@@ -241,11 +232,7 @@ const OTPVerificationPage = () => {
           zIndex: "-99",
         }}
       >
-        <img
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          src={bgLogin}
-          alt=""
-        />
+        <img style={{ width: "100%", height: "100%", objectFit: "cover" }} src={bgLogin} alt="" />
         <div
           style={{
             position: "absolute",
@@ -270,9 +257,10 @@ const OTPVerificationPage = () => {
         <WrapperContainerLeft>
           <TitlePage>Xác Thực OTP</TitlePage>
           <TextContent>
-            Chúng tôi đã gửi mã xác thực đến email của bạn. Vui lòng nhập mã OTP để đặt lại mật khẩu.
+            Chúng tôi đã gửi mã xác thực đến email của bạn. Vui lòng nhập mã OTP để đặt lại mật
+            khẩu.
           </TextContent>
-          
+
           <OtpInputContainer>
             {otp.map((digit, index) => (
               <OtpInput
@@ -289,10 +277,10 @@ const OTPVerificationPage = () => {
               />
             ))}
           </OtpInputContainer>
-          
+
           <ResendText>
-            Không nhận được mã? {" "}
-            <ResendButton 
+            Không nhận được mã?{" "}
+            <ResendButton
               className={!canResend ? "disabled" : ""}
               onClick={handleResendOTP}
               disabled={!canResend || isLoading}
@@ -300,7 +288,7 @@ const OTPVerificationPage = () => {
               {canResend ? "Gửi lại" : `Gửi lại sau (${timer}s)`}
             </ResendButton>
           </ResendText>
-          
+
           <Form>
             <Form.Item>
               <Spin spinning={isLoading}>
@@ -325,10 +313,10 @@ const OTPVerificationPage = () => {
               </Spin>
             </Form.Item>
           </Form>
-          
+
           <LinkNav>
             <p>
-              Quay lại trang {" "}
+              Quay lại trang{" "}
               <WrapperTextLight onClick={() => navigate("/forgot-password")}>
                 Quên mật khẩu
               </WrapperTextLight>

@@ -1,10 +1,7 @@
-import React from 'react';
-import styled from 'styled-components';
+import React from "react";
+import styled from "styled-components";
 import { Carousel } from "antd";
-import { 
-  LeftOutlined, 
-  RightOutlined, 
-} from "@ant-design/icons";
+import { LeftOutlined, RightOutlined } from "@ant-design/icons";
 
 const HeroSectionWrapper = styled.div`
   position: relative;
@@ -161,22 +158,25 @@ function HeroSection({ carouselRef, handlePrev, handleNext }) {
   const heroData = [
     {
       title: "Chào mừng bạn đến với trang web",
-      description: "Website quản lý chung cư A là nền tảng trực tuyến giúp bạn quản lý và cư dân chung cư dễ dàng kết nối, trao đổi thông tin và thực hiện các thủ tục quan trọng. Hệ thống hỗ trợ đăng ký cư trú, thanh toán phí dịch vụ.",
+      description:
+        "Website quản lý chung cư A là nền tảng trực tuyến giúp bạn quản lý và cư dân chung cư dễ dàng kết nối, trao đổi thông tin và thực hiện các thủ tục quan trọng. Hệ thống hỗ trợ đăng ký cư trú, thanh toán phí dịch vụ.",
       image: "https://images.cenhomes.vn/2020/03/1585033148-can-ho-mau-an-land-complex.jpg",
-      altText: "Apartment management system"
+      altText: "Apartment management system",
     },
     {
       title: "Hệ thống quản lý thông minh",
-      description: "Với giao diện thân thiện, tích hợp các tính năng hiện đại, website giúp tối ưu hóa quy trình quản lý, nâng cao trải nghiệm sống cho cư dân và đảm bảo sự minh bạch trong vận hành chung cư.",
+      description:
+        "Với giao diện thân thiện, tích hợp các tính năng hiện đại, website giúp tối ưu hóa quy trình quản lý, nâng cao trải nghiệm sống cho cư dân và đảm bảo sự minh bạch trong vận hành chung cư.",
       image: "https://images.cenhomes.vn/2020/03/1585033149-can-ho-mau-cosmo-tay-ho.jpg",
-      altText: "Smart management system"
+      altText: "Smart management system",
     },
     {
       title: "Trải nghiệm sống hiện đại",
-      description: "Hệ thống quản lý căn hộ thông minh, giúp bạn theo dõi, quản lý và vận hành căn hộ một cách dễ dàng và hiệu quả. Trải nghiệm sự tiện lợi ngay hôm nay!",
+      description:
+        "Hệ thống quản lý căn hộ thông minh, giúp bạn theo dõi, quản lý và vận hành căn hộ một cách dễ dàng và hiệu quả. Trải nghiệm sự tiện lợi ngay hôm nay!",
       image: "https://images.cenhomes.vn/2020/03/1585033155-can-ho-mau-imperia-sky-garden.jpg",
-      altText: "Modern apartment interior"
-    }
+      altText: "Modern apartment interior",
+    },
   ];
 
   return (
@@ -221,19 +221,11 @@ function HeroSection({ carouselRef, handlePrev, handleNext }) {
 
         {/* Custom Navigation Buttons */}
         <ImageControlsContainer>
-          <CarouselNavButton
-            className="prev"
-            onClick={handlePrev}
-            type="button"
-          >
+          <CarouselNavButton className="prev" onClick={handlePrev} type="button">
             <LeftOutlined />
           </CarouselNavButton>
 
-          <CarouselNavButton
-            className="next"
-            onClick={handleNext}
-            type="button"
-          >
+          <CarouselNavButton className="next" onClick={handleNext} type="button">
             <RightOutlined />
           </CarouselNavButton>
         </ImageControlsContainer>
