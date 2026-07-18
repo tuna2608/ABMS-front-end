@@ -3,8 +3,8 @@
   "version": "0.1.0",
   "private": true,
   "engines": {
-    "node": ">=20.20.1",
-    "npm": ">=10.9.8"
+    "node": "20.x",
+    "npm": "10.9.x"
   },
   "dependencies": {
     "@ant-design/icons": "^5.6.1",
