@@ -78,7 +78,7 @@
     ]
   },
   "devDependencies": {
-    "@babel/preset-react": "^7.26.3",
+    "@babel/preset-react": "^8.0.1",
     "eslint-plugin-unused-imports": "^3.2.0",
     "prettier": "^3.9.5"
   }
