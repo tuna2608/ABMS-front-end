@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   products: [],
@@ -7,7 +7,7 @@ const initialState = {
 };
 
 export const productSlice = createSlice({
-  name: 'product',
+  name: "product",
   initialState,
   reducers: {
     // Get All
@@ -18,29 +18,26 @@ export const productSlice = createSlice({
     getProductSuccess: (state, action) => {
       state.isFetching = false;
       state.products = action.payload;
-
     },
     getProductFailure: (state) => {
       state.isFetching = false;
       state.error = true;
-
     },
-    // Delete 
+    // Delete
     deleteProductStart: (state) => {
       state.isFetching = true;
       state.error = false;
     },
     deleteProductSuccess: (state, action) => {
       state.isFetching = false;
-      state.products = state.products.filter((p) => p._id !== action.payload)
+      state.products = state.products.filter((p) => p._id !== action.payload);
       return state;
     },
     deleteProductFailure: (state) => {
       state.isFetching = false;
       state.error = true;
-
     },
-    // Update 
+    // Update
     updateProductStart: (state) => {
       state.isFetching = true;
       state.error = false;
@@ -48,17 +45,15 @@ export const productSlice = createSlice({
     updateProductSuccess: (state, action) => {
       state.isFetching = false;
       // [1,2,3][2] = 4 --> [1,2,4] up date
-      state.products[
-        state.products.findIndex((item) => item._id === action.payload.id)
-      ] = action.payload.product
+      state.products[state.products.findIndex((item) => item._id === action.payload.id)] =
+        action.payload.product;
       return state;
-
     },
     updateProductFailure: (state) => {
       state.isFetching = false;
       state.error = true;
     },
-    // Add 
+    // Add
     addProductStart: (state) => {
       state.isFetching = true;
       state.error = false;
@@ -66,25 +61,30 @@ export const productSlice = createSlice({
     addProductSuccess: (state, action) => {
       state.isFetching = false;
       // [1,2,3][2] = 4 --> [1,2,4] up date
-      state.products.push(action.payload)
+      state.products.push(action.payload);
       return state;
     },
     addProductFailure: (state) => {
       state.isFetching = false;
       state.error = true;
-
-    }
+    },
   },
 });
 
 // Action creators are generated for each case reducer function
 export const {
-  getProductStart, getProductSuccess, getProductFailure,
-  deleteProductStart, deleteProductSuccess, deleteProductFailure,
-  updateProductStart, updateProductSuccess, updateProductFailure,
-  addProductStart, addProductSuccess, addProductFailure
-
-
+  getProductStart,
+  getProductSuccess,
+  getProductFailure,
+  deleteProductStart,
+  deleteProductSuccess,
+  deleteProductFailure,
+  updateProductStart,
+  updateProductSuccess,
+  updateProductFailure,
+  addProductStart,
+  addProductSuccess,
+  addProductFailure,
 } = productSlice.actions;
 
 export default productSlice.reducer;

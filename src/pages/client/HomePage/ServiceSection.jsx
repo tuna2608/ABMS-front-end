@@ -92,7 +92,9 @@ const ServiceCard = styled.div`
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
 
   &:hover {
     transform: translateY(-4px);
@@ -248,13 +250,17 @@ const ServiceNavButton = styled.button`
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: auto;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12), 0 3px 6px rgba(0, 0, 0, 0.08);
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.12),
+    0 3px 6px rgba(0, 0, 0, 0.08);
   position: relative;
 
   &:hover {
     background-color: #1e3a8a;
     transform: translateY(-2px) scale(1.05);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15), 0 6px 10px rgba(0, 0, 0, 0.1);
+    box-shadow:
+      0 10px 20px rgba(0, 0, 0, 0.15),
+      0 6px 10px rgba(0, 0, 0, 0.1);
   }
 
   &:active {
@@ -303,9 +309,7 @@ function ServiceSection() {
         if (res.data !== null) {
           setTotalPages(Math.ceil(res.data.length / servicesPerPage));
           // Get current services for pagination
-          setCurrentServices(
-            res.data.slice(indexOfFirstService, indexOfLastService)
-          );
+          setCurrentServices(res.data.slice(indexOfFirstService, indexOfLastService));
         }
       } else {
         message.error(res.message);
@@ -316,14 +320,14 @@ function ServiceSection() {
   }
   function formatDate(dateString) {
     const date = new Date(dateString);
-    
-    const day = String(date.getDate()).padStart(2, '0');
-    const month = String(date.getMonth() + 1).padStart(2, '0'); // months are 0-based
+
+    const day = String(date.getDate()).padStart(2, "0");
+    const month = String(date.getMonth() + 1).padStart(2, "0"); // months are 0-based
     const year = date.getFullYear();
-  
-    const hours = String(date.getHours()).padStart(2, '0');
-    const minutes = String(date.getMinutes()).padStart(2, '0');
-  
+
+    const hours = String(date.getHours()).padStart(2, "0");
+    const minutes = String(date.getMinutes()).padStart(2, "0");
+
     return `${day}-${month}-${year} ${hours}:${minutes}`;
   }
 
@@ -350,33 +354,35 @@ function ServiceSection() {
       </SectionTitleContainer>
 
       <ServiceGrid>
-        {currentServices && currentServices.map((service) => (
-          <ServiceCard key={service.facilityId}>
-            <ServiceImage>
-              <img src={service.images[0]} alt={service.facilityHeader} />
-              {/* <ServiceTag>{service.category}</ServiceTag> */}
-            </ServiceImage>
-            <ServiceInfo>
-              <ServicePrice>
-                <PriceTag>{service.facilityHeader}</PriceTag>
-                <RatingTag>
-                  <StarOutlined />{service.rating}
-                </RatingTag>
-              </ServicePrice>
-              <ServiceTitle>{service.facilityPostContent}</ServiceTitle>
-              <ProviderInfo>
-                <TeamOutlined style={{ marginRight: 6 }} /> {service.userName}
-              </ProviderInfo>
-            </ServiceInfo>
-            <CardFooter>
-              <span>
-                <ClockCircleOutlined style={{ marginRight: 4 }} />
-                {formatDate(service.createdAt)}
-              </span>
-              <BookButton>Đặt lịch</BookButton>
-            </CardFooter>
-          </ServiceCard>
-        ))}
+        {currentServices &&
+          currentServices.map((service) => (
+            <ServiceCard key={service.facilityId}>
+              <ServiceImage>
+                <img src={service.images[0]} alt={service.facilityHeader} />
+                {/* <ServiceTag>{service.category}</ServiceTag> */}
+              </ServiceImage>
+              <ServiceInfo>
+                <ServicePrice>
+                  <PriceTag>{service.facilityHeader}</PriceTag>
+                  <RatingTag>
+                    <StarOutlined />
+                    {service.rating}
+                  </RatingTag>
+                </ServicePrice>
+                <ServiceTitle>{service.facilityPostContent}</ServiceTitle>
+                <ProviderInfo>
+                  <TeamOutlined style={{ marginRight: 6 }} /> {service.userName}
+                </ProviderInfo>
+              </ServiceInfo>
+              <CardFooter>
+                <span>
+                  <ClockCircleOutlined style={{ marginRight: 4 }} />
+                  {formatDate(service.createdAt)}
+                </span>
+                <BookButton>Đặt lịch</BookButton>
+              </CardFooter>
+            </ServiceCard>
+          ))}
       </ServiceGrid>
 
       {/* Pagination Indicator */}

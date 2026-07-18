@@ -148,7 +148,6 @@ const UserCoinRequests = () => {
     setLoading(true);
     try {
       const res = await getReCoinByUserId(userId);
-      // console.log(res);
       if (res.success) {
         if (res.data) {
           setReCoins(res.data);
@@ -203,25 +202,23 @@ const UserCoinRequests = () => {
   const confirmReceived = async () => {
     if (!selectedRequest) return;
 
-    const formData ={
+    const formData = {
       reCoinId: selectedRequest.reCoinId,
       imgBill: "",
-      reason: ""
-    }
+      reason: "",
+    };
 
     try {
       const res = await acceptReceivedReCoin(formData);
-      // console.log(res);
-      if(res.success){
-        message.success(res.message)
+      if (res.success) {
+        message.success(res.message);
         window.location.href = "/coin-request";
-      }else{
-        message.error(res.message)
+      } else {
+        message.error(res.message);
       }
     } catch (error) {
-      message.error("Không thể xác nhận rút tiền thành công")
-    }finally{
-
+      message.error("Không thể xác nhận rút tiền thành công");
+    } finally {
     }
 
     // Update the request status
@@ -319,21 +316,14 @@ const UserCoinRequests = () => {
             Yêu Cầu Chuyển Coin Của Tôi{" "}
             <span style={{ color: "blue" }}>
               Số coins khả dụng:{" "}
-              <span style={{ color: "orange" }}>
-                {userCurrent.accountBallance} VND
-              </span>
+              <span style={{ color: "orange" }}>{userCurrent.accountBallance} VND</span>
             </span>{" "}
           </span>
         </Space>
       }
     >
       {/* Table of user transfer requests */}
-      <Table
-        dataSource={reCoins}
-        columns={columns}
-        rowKey="id"
-        pagination={{ pageSize: 10 }}
-      />
+      <Table dataSource={reCoins} columns={columns} rowKey="id" pagination={{ pageSize: 10 }} />
 
       {/* Request Details Drawer */}
       <Drawer
@@ -403,24 +393,23 @@ const UserCoinRequests = () => {
               </Descriptions.Item>
             </Descriptions>
 
-            {selectedRequest.status === "processing" &&
-              selectedRequest.imgBill && (
-                <>
-                  <Divider />
-                  <div style={{ textAlign: "center" }}>
-                    <Button
-                      type="primary"
-                      icon={<FileImageOutlined />}
-                      onClick={() => {
-                        setDrawerVisible(false);
-                        viewTransferProof(selectedRequest);
-                      }}
-                    >
-                      Xem Ảnh Chuyển Khoản
-                    </Button>
-                  </div>
-                </>
-              )}
+            {selectedRequest.status === "processing" && selectedRequest.imgBill && (
+              <>
+                <Divider />
+                <div style={{ textAlign: "center" }}>
+                  <Button
+                    type="primary"
+                    icon={<FileImageOutlined />}
+                    onClick={() => {
+                      setDrawerVisible(false);
+                      viewTransferProof(selectedRequest);
+                    }}
+                  >
+                    Xem Ảnh Chuyển Khoản
+                  </Button>
+                </div>
+              </>
+            )}
 
             {selectedRequest.status === "pending" && (
               <>
@@ -509,9 +498,8 @@ const UserCoinRequests = () => {
         {selectedRequest && (
           <>
             <p>
-              Bạn xác nhận đã nhận được số tiền{" "}
-              {formatCurrency(selectedRequest.amount)} VND vào tài khoản{" "}
-              {selectedRequest.bankName} của mình?
+              Bạn xác nhận đã nhận được số tiền {formatCurrency(selectedRequest.amount)} VND vào tài
+              khoản {selectedRequest.bankName} của mình?
             </p>
             <Alert
               message="Lưu ý"

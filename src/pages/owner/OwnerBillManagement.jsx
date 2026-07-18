@@ -30,7 +30,6 @@ import {
   SendOutlined,
   ExclamationCircleOutlined,
   ClockCircleOutlined,
-  EditOutlined,
 } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
 import moment from "moment";
@@ -46,9 +45,7 @@ const { Content } = Layout;
 const { Option } = Select;
 
 const BillPage = () => {
-  const [currentUser, setCurrentUser] = useState(
-    useSelector((state) => state.user.currentUser)
-  );
+  const [currentUser, setCurrentUser] = useState(useSelector((state) => state.user.currentUser));
   const defaultValue = moment().subtract(1, "months");
   const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [createBillVisible, setCreateBillVisible] = useState(false);
@@ -131,11 +128,7 @@ const BillPage = () => {
             color: "red",
           },
         };
-        return (
-          <Tag color={colorMap[billType].color || "default"}>
-            {colorMap[billType].name}
-          </Tag>
-        );
+        return <Tag color={colorMap[billType].color || "default"}>{colorMap[billType].name}</Tag>;
       },
     },
     {
@@ -198,8 +191,7 @@ const BillPage = () => {
             />
           </Tooltip>
           {record.status === "unpaid" &&
-            ((record.billType === "water" &&
-              record.apartmentStatus === "unrented") ||
+            ((record.billType === "water" && record.apartmentStatus === "unrented") ||
               record.billType === "managementFee") && (
               <Button
                 type="primary"
@@ -240,10 +232,7 @@ const BillPage = () => {
     const formData = {
       billId: record.billId,
       productName: record.billContent,
-      description:
-        record.billType === "managementFee"
-          ? "Bill quan ly"
-          : record.billContent,
+      description: record.billType === "managementFee" ? "Bill quan ly" : record.billContent,
       returnUrl: "https://abms-front-end.vercel.app/payment/success",
       cancelUrl: "https://abms-front-end.vercel.app/payment/cancel",
       price: record.amount,
@@ -380,9 +369,7 @@ const BillPage = () => {
               <Form.Item
                 name="billType"
                 label="Loại hóa đơn"
-                rules={[
-                  { required: true, message: "Vui lòng chọn loại hóa đơn" },
-                ]}
+                rules={[{ required: true, message: "Vui lòng chọn loại hóa đơn" }]}
               >
                 <Select placeholder="Chọn loại hóa đơn">
                   <Option value="Hóa đơn thuê nhà">Tiền thuê theo tháng</Option>
@@ -399,10 +386,7 @@ const BillPage = () => {
                 <Select placeholder="Chọn căn hộ">
                   {myApartment &&
                     myApartment.map((apartment) => (
-                      <Option
-                        key={apartment.apartmentId}
-                        value={apartment.apartmentName}
-                      >
+                      <Option key={apartment.apartmentId} value={apartment.apartmentName}>
                         {apartment.apartmentName}
                       </Option>
                     ))}
@@ -424,9 +408,7 @@ const BillPage = () => {
               <Form.Item
                 name="period"
                 label="Hóa đơn theo kỳ hạn:"
-                rules={[
-                  { required: true, message: "Vui lòng chọn kỳ hóa đơn" },
-                ]}
+                rules={[{ required: true, message: "Vui lòng chọn kỳ hóa đơn" }]}
               >
                 <Select placeholder="Chọn kỳ hóa đơn">
                   <Option value="Tháng">Tháng</Option>
@@ -466,8 +448,7 @@ const BillPage = () => {
                     <strong>Mã hóa đơn:</strong> {currentBill.billCode}
                   </p>
                   <p>
-                    <strong>Loại hóa đơn:</strong>{" "}
-                    <Tag color="blue">Phí quản lý</Tag>
+                    <strong>Loại hóa đơn:</strong> <Tag color="blue">Phí quản lý</Tag>
                   </p>
                   <p>
                     <strong>Kỳ hóa đơn:</strong> Tháng 03/2025
@@ -479,8 +460,7 @@ const BillPage = () => {
                     <strong>Hạn thanh toán:</strong> 25/03/2025
                   </p>
                   <p>
-                    <strong>Trạng thái:</strong>{" "}
-                    <Badge status="default" text="Chưa thanh toán" />
+                    <strong>Trạng thái:</strong> <Badge status="default" text="Chưa thanh toán" />
                   </p>
                 </Card>
               </Col>

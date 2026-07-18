@@ -2,12 +2,7 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Form, Image, message, Spin } from "antd";
 import styled from "styled-components";
-import {
-  LinkNav,
-  WrapperContainer,
-  WrapperContainerLeft,
-  WrapperContainerRight,
-} from "./style";
+import { LinkNav, WrapperContainer, WrapperContainerLeft, WrapperContainerRight } from "./style";
 import InputForm from "../../../components/common/InputForm/InputForm";
 import ButtonComponent from "../../../components/common/ButtonComponent/ButtonComponent";
 import imgLogin from "../../../assets/common/images/logo-login.png";
@@ -34,20 +29,19 @@ const ForgotPasswordPage = () => {
     setIsLoading(true);
     try {
       const result = await forgotPassword(dispatch, values.email);
-      
+
       const messageAPI = result?.message;
       if (result?.status === 200) {
         message.success(messageAPI || "Mã OTP đã được gửi đến email của bạn");
         // Store email in localStorage for OTP verification
-        localStorage.setItem('forgotPasswordEmail', values.email);
+        localStorage.setItem("forgotPasswordEmail", values.email);
         // Navigate to OTP verification page
-        navigate('/verify-forgot-otp');
+        navigate("/verify-forgot-otp");
       } else {
         message.error(messageAPI || "Có lỗi xảy ra khi gửi mã OTP");
       }
     } catch (error) {
       message.error("Có lỗi xảy ra. Vui lòng thử lại.");
-      console.error(error);
     } finally {
       setIsLoading(false);
     }
@@ -97,9 +91,7 @@ const ForgotPasswordPage = () => {
       >
         <WrapperContainerLeft>
           <TitlePage>Quên mật khẩu</TitlePage>
-          <TextContent>
-            Nhập email để nhận OTP đặt lại mật khẩu
-          </TextContent>
+          <TextContent>Nhập email để nhận OTP đặt lại mật khẩu</TextContent>
           <Form
             name="forgotPassword"
             onFinish={handleResetPassword}
@@ -110,10 +102,10 @@ const ForgotPasswordPage = () => {
               name="email"
               rules={[
                 { required: true, message: "Vui lòng nhập email!" },
-                { 
-                  type: 'email', 
-                  message: 'Vui lòng nhập đúng định dạng email!' 
-                }
+                {
+                  type: "email",
+                  message: "Vui lòng nhập đúng định dạng email!",
+                },
               ]}
             >
               <InputForm
@@ -148,7 +140,9 @@ const ForgotPasswordPage = () => {
             </Form.Item>
           </Form>
           <LinkNav>
-            <WrapperTextLight onClick={() => navigate("/login")}>Quay lại trang đăng nhập</WrapperTextLight>
+            <WrapperTextLight onClick={() => navigate("/login")}>
+              Quay lại trang đăng nhập
+            </WrapperTextLight>
           </LinkNav>
         </WrapperContainerLeft>
         <WrapperContainerRight>

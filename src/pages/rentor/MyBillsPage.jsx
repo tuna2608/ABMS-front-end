@@ -12,21 +12,14 @@ import {
   Descriptions,
   message,
 } from "antd";
-import {
-  DollarOutlined,
-  FileOutlined,
-  EyeOutlined,
-  CheckOutlined,
-} from "@ant-design/icons";
+import { DollarOutlined, FileOutlined, EyeOutlined, CheckOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import { getAllBillRentor, paymentBill } from "../../redux/apiCalls";
 
 const MyBillsPage = () => {
-  const [currentUser] = useState(
-    useSelector((state) => state.user.currentUser)
-  );
+  const [currentUser] = useState(useSelector((state) => state.user.currentUser));
   const navigate = useNavigate();
 
   const defaultValue = moment().subtract(1, "months");
@@ -65,7 +58,6 @@ const MyBillsPage = () => {
     setLoading(true);
     try {
       const res = await getAllBillRentor(dispatch, userId);
-      // console.log(res.data.length === 0);
       if (res.success) {
         setBills(res.data);
       } else {
@@ -86,7 +78,6 @@ const MyBillsPage = () => {
     // In a real app, this would filter based on the selected date
     const month = selectedDate.format("MM");
     const year = selectedDate.format("YYYY");
-    console.log(`Filtering bills for ${month}/${year}`);
     message.info(`Lọc hóa đơn tháng ${month}/${year}`);
   };
 
@@ -99,8 +90,7 @@ const MyBillsPage = () => {
     const formData = {
       billId: record.billId,
       productName: record.billContent,
-      description:
-        record.billType === "monthPaid" ? "Bill thue nha" : record.billContent,
+      description: record.billType === "monthPaid" ? "Bill thue nha" : record.billContent,
       returnUrl: "https://abms-front-end.vercel.app/payment/success",
       cancelUrl: "https://abms-front-end.vercel.app/payment/cancel",
       price: record.amount,
@@ -164,11 +154,7 @@ const MyBillsPage = () => {
             color: "red",
           },
         };
-        return (
-          <Tag color={colorMap[billType].color || "default"}>
-            {colorMap[billType].name}
-          </Tag>
-        );
+        return <Tag color={colorMap[billType].color || "default"}>{colorMap[billType].name}</Tag>;
       },
     },
     {
@@ -184,11 +170,9 @@ const MyBillsPage = () => {
           unpaid: {
             name: "Chưa thanh toán",
             color: "volcano",
-          }
+          },
         };
-        return (
-          <Tag color={colorMap[status].color}>{colorMap[status].name}</Tag>
-        );
+        return <Tag color={colorMap[status].color}>{colorMap[status].name}</Tag>;
       },
     },
     {
@@ -196,25 +180,20 @@ const MyBillsPage = () => {
       key: "actions",
       render: (_, record) => (
         <Flex gap={12}>
-          <Button
-            type="primary"
-            icon={<EyeOutlined />}
-            onClick={() => handleViewBill(record)}
-          >
+          <Button type="primary" icon={<EyeOutlined />} onClick={() => handleViewBill(record)}>
             Xem chi tiết
           </Button>
-          {record.status === "unpaid" &&
-            record.billType !== "managementFee" && (
-              <Button
-                type="primary"
-                style={{ backgroundColor: "green" }}
-                icon={<CheckOutlined />}
-                onClick={() => handlePayment(record)}
-                loading={loadingPayment}
-              >
-                Thanh toán
-              </Button>
-            )}
+          {record.status === "unpaid" && record.billType !== "managementFee" && (
+            <Button
+              type="primary"
+              style={{ backgroundColor: "green" }}
+              icon={<CheckOutlined />}
+              onClick={() => handlePayment(record)}
+              loading={loadingPayment}
+            >
+              Thanh toán
+            </Button>
+          )}
         </Flex>
       ),
     },
@@ -285,12 +264,8 @@ const MyBillsPage = () => {
               <Descriptions.Item label="Căn hộ" span={2}>
                 {selectedBill.apartmentName}
               </Descriptions.Item>
-              <Descriptions.Item label="Nội dung">
-                {selectedBill.billContent}
-              </Descriptions.Item>
-              <Descriptions.Item label="Tháng">
-                {selectedBill.billDate}
-              </Descriptions.Item>
+              <Descriptions.Item label="Nội dung">{selectedBill.billContent}</Descriptions.Item>
+              <Descriptions.Item label="Tháng">{selectedBill.billDate}</Descriptions.Item>
               <Descriptions.Item label="Tiêu thụ nước tháng trước">
                 {selectedBill.lastMonthWaterConsumption} m³
               </Descriptions.Item>
@@ -300,18 +275,10 @@ const MyBillsPage = () => {
               <Descriptions.Item label="Phí quản lý">
                 {selectedBill.managementFee} VND
               </Descriptions.Item>
-              <Descriptions.Item label="Chi phí khác">
-                {selectedBill.others} VND
-              </Descriptions.Item>
-              <Descriptions.Item label="Ngày đến hạn">
-                {selectedBill.dueDate}
-              </Descriptions.Item>
+              <Descriptions.Item label="Chi phí khác">{selectedBill.others} VND</Descriptions.Item>
+              <Descriptions.Item label="Ngày đến hạn">{selectedBill.dueDate}</Descriptions.Item>
               <Descriptions.Item label="Trạng thái">
-                <Tag
-                  color={
-                    selectedBill.status === "Đã thanh toán" ? "red" : "green"
-                  }
-                >
+                <Tag color={selectedBill.status === "Đã thanh toán" ? "red" : "green"}>
                   {selectedBill.status}
                 </Tag>
               </Descriptions.Item>

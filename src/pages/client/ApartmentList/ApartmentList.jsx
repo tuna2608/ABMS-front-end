@@ -44,13 +44,13 @@ const Logo = styled.h1`
 const NavLinks = styled.div`
   display: flex;
   align-items: center;
-  margin-left: 24px; 
+  margin-left: 24px;
   gap: 16px;
-  flex: 1; 
+  flex: 1;
 `;
 
 const Spacer = styled.div`
-  flex: 1; 
+  flex: 1;
 `;
 
 const NavItem = styled(Link)`
@@ -139,7 +139,7 @@ const ListingColumn = styled.div`
 
 /* Link bọc quanh ListingCard, để click vào sẽ sang /apartment-detail */
 const ListingCardLink = styled(Link)`
-  text-decoration: none; 
+  text-decoration: none;
   color: inherit;
 `;
 
@@ -220,11 +220,21 @@ export default function ApartmentList() {
             <SearchButton>Tìm kiếm</SearchButton>
           </SearchRow>
           <FiltersRow>
-            <Select><option>Diện tích</option></Select>
-            <Select><option>Giá tiền</option></Select>
-            <Select><option>Hình thức</option></Select>
-            <Select><option>Số phòng</option></Select>
-            <Select><option>Lọc</option></Select>
+            <Select>
+              <option>Diện tích</option>
+            </Select>
+            <Select>
+              <option>Giá tiền</option>
+            </Select>
+            <Select>
+              <option>Hình thức</option>
+            </Select>
+            <Select>
+              <option>Số phòng</option>
+            </Select>
+            <Select>
+              <option>Lọc</option>
+            </Select>
           </FiltersRow>
         </SearchContainer>
 
@@ -246,9 +256,15 @@ export default function ApartmentList() {
                         </ListingText>
                         <ListingText>86m2</ListingText>
                         <MetaRow>
-                          <div><FaBed /> 2</div>
-                          <div><FaBath /> 2</div>
-                          <div><FaCar /> 1</div>
+                          <div>
+                            <FaBed /> 2
+                          </div>
+                          <div>
+                            <FaBath /> 2
+                          </div>
+                          <div>
+                            <FaCar /> 1
+                          </div>
                         </MetaRow>
                         <ListingText>Hòa Hải Ngũ Hành Sơn</ListingText>
                       </div>

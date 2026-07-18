@@ -33,7 +33,7 @@ const SignInPage = () => {
   const [password, setPassword] = useState("");
   const dispatch = useDispatch();
 
-  const [loading,setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   // Validation
   const isValidEmail = (value) => {
@@ -46,7 +46,7 @@ const SignInPage = () => {
   };
 
   const handleLogin = async () => {
-    setLoading(true)
+    setLoading(true);
     try {
       if (!isValidPassword(password)) {
         message.error("Password must be at least 6 characters long.");
@@ -63,13 +63,13 @@ const SignInPage = () => {
         } else {
           navigate("/");
         }
-      }else {
-        message.error(res.message)
+      } else {
+        message.error(res.message);
       }
     } catch (error) {
       message.error("Không thể thực hiện đăng nhập");
-    }finally{
-      setLoading(false)
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -143,7 +143,7 @@ const SignInPage = () => {
               name="password"
               rules={[
                 { required: true, message: "Please input your password!" },
-                { min: 6, message: "Mật khẩu phải có ít nhất 6 ký tự!" }
+                { min: 6, message: "Mật khẩu phải có ít nhất 6 ký tự!" },
               ]}
             >
               <div style={{ position: "relative" }}>

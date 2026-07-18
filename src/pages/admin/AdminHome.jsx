@@ -1,13 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Layout, Button } from "antd";
 import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
-import {
-  Routes,
-  Route,
-  Navigate,
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
+import { Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
 
 import AdminSidebar from "./AdminSidebar";
 import AdminDashboard from "./AdminDashboard";
@@ -30,10 +24,7 @@ const AdminHome = () => {
 
   // Handle default route redirection
   useEffect(() => {
-    if (
-      location.pathname === "/adminHome" ||
-      location.pathname === "/adminHome/"
-    ) {
+    if (location.pathname === "/adminHome" || location.pathname === "/adminHome/") {
       navigate("/adminHome/dashboard");
     }
   }, [location.pathname, navigate]);
@@ -110,10 +101,7 @@ const AdminHome = () => {
           }}
         >
           <Routes>
-            <Route
-              path="/"
-              element={<Navigate to="/adminHome/dashboard" replace />}
-            />
+            <Route path="/" element={<Navigate to="/adminHome/dashboard" replace />} />
             <Route path="/dashboard" element={renderActiveContent()} />
             <Route path="/deposits" element={renderActiveContent()} />
             <Route path="/accounts/list" element={renderActiveContent()} />
@@ -123,10 +111,7 @@ const AdminHome = () => {
             <Route path="/service" element={renderActiveContent()} />
             <Route path="/reports" element={renderActiveContent()} />
             <Route path="/form-management" element={renderActiveContent()} />
-            <Route
-              path="*"
-              element={<Navigate to="/adminHome/dashboard" replace />}
-            />
+            <Route path="*" element={<Navigate to="/adminHome/dashboard" replace />} />
           </Routes>
         </Content>
       </Layout>

@@ -1,12 +1,8 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  WrapperContainer,
-  WrapperContainerLeft,
-  WrapperContainerRight,
-} from "./style";
+import { WrapperContainer, WrapperContainerLeft, WrapperContainerRight } from "./style";
 import { EyeTwoTone, EyeInvisibleOutlined } from "@ant-design/icons";
-import { Checkbox, Form, Image, message, Spin } from "antd";
+import { Form, Image, message, Spin } from "antd";
 import imgLogin from "./../../../assets/common/images/logo-login.png";
 import styled from "styled-components";
 import InputForm from "../../../components/common/InputForm/InputForm";
@@ -72,11 +68,7 @@ const RegisterPage = () => {
           zIndex: "-99",
         }}
       >
-        <img
-          style={{ width: "100%", height: "100%", objectFit: "cover" }}
-          src={bgLogin}
-          alt=""
-        />
+        <img style={{ width: "100%", height: "100%", objectFit: "cover" }} src={bgLogin} alt="" />
         <div
           style={{
             position: "absolute",
@@ -108,10 +100,7 @@ const RegisterPage = () => {
             onFinish={handleRegister}
             autoComplete="off"
           >
-            <Form.Item
-              name="email"
-              rules={[{ required: true, message: "Vui lòng nhập email!" }]}
-            >
+            <Form.Item name="email" rules={[{ required: true, message: "Vui lòng nhập email!" }]}>
               <InputForm
                 placeholder="Email"
                 value={email}
@@ -134,9 +123,7 @@ const RegisterPage = () => {
 
             <Form.Item
               name="soDienThoai"
-              rules={[
-                { required: true, message: "Vui lòng nhập số điện thoại" },
-              ]}
+              rules={[{ required: true, message: "Vui lòng nhập số điện thoại" }]}
             >
               <InputForm
                 placeholder="09xxxxx"
@@ -150,7 +137,7 @@ const RegisterPage = () => {
               name="password"
               rules={[
                 { required: true, message: "Vui lòng nhập mật khẩu!" },
-                { min: 6, message: "Mật khẩu phải có ít nhất 6 ký tự!" }
+                { min: 6, message: "Mật khẩu phải có ít nhất 6 ký tự!" },
               ]}
             >
               <div style={{ position: "relative" }}>
@@ -183,18 +170,14 @@ const RegisterPage = () => {
                     if (!value || getFieldValue("password") === value) {
                       return Promise.resolve();
                     }
-                    return Promise.reject(
-                      new Error("Mật khẩu xác nhận không khớp!")
-                    );
+                    return Promise.reject(new Error("Mật khẩu xác nhận không khớp!"));
                   },
                 }),
               ]}
             >
               <div style={{ position: "relative" }}>
                 <span
-                  onClick={() =>
-                    setIsShowConfirmPassword(!isShowConfirmPassword)
-                  }
+                  onClick={() => setIsShowConfirmPassword(!isShowConfirmPassword)}
                   style={{
                     zIndex: 10,
                     position: "absolute",
@@ -202,11 +185,7 @@ const RegisterPage = () => {
                     right: "8px",
                   }}
                 >
-                  {isShowConfirmPassword ? (
-                    <EyeTwoTone />
-                  ) : (
-                    <EyeInvisibleOutlined />
-                  )}
+                  {isShowConfirmPassword ? <EyeTwoTone /> : <EyeInvisibleOutlined />}
                 </span>
                 <InputForm
                   placeholder="Nhập lại mật khẩu"
@@ -253,9 +232,7 @@ const RegisterPage = () => {
           <LinkNav>
             <p>
               Đã có tài khoản?
-              <WrapperTextLight onClick={() => navigate("/login")}>
-                Đăng nhập
-              </WrapperTextLight>
+              <WrapperTextLight onClick={() => navigate("/login")}>Đăng nhập</WrapperTextLight>
             </p>
           </LinkNav>
         </WrapperContainerLeft>

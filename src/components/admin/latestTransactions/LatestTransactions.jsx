@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "./latestTransactions.scss";
 // import { userRequest } from "../../../utilities/requestMethod";
@@ -8,7 +8,7 @@ import { formatCurrency } from "../../../utilities/formatCurrency";
 function LatestTransactions() {
   const dispatch = useDispatch();
   getAllOrders(dispatch);
-  const ordersState = useSelector(state => state.order.order)
+  const ordersState = useSelector((state) => state.order.order);
   const [orders, setOrders] = useState(ordersState);
   const handleUpdateOrderStatus = (orderId, type) => {
     switch (type) {
@@ -22,13 +22,11 @@ function LatestTransactions() {
         type = "Delivered";
         break;
       default:
-        return "Pending"
+        return "Pending";
     }
     updateOrderStatus(dispatch, orderId, type);
     setOrders((prevOrders) =>
-      prevOrders?.map((order) =>
-        order._id === orderId ? { ...order, status: type } : order
-      )
+      prevOrders?.map((order) => (order._id === orderId ? { ...order, status: type } : order))
     );
   };
   const Button = ({ orderId, type }) => {
@@ -42,7 +40,6 @@ function LatestTransactions() {
       </button>
     );
   };
-
 
   return (
     <div className="latest-transactions-container">

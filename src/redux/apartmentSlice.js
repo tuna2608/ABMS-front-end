@@ -8,7 +8,7 @@ const initialState = {
 };
 
 export const apartmentSlice = createSlice({
-  name: 'apartment',
+  name: "apartment",
   initialState,
   reducers: {
     // Fetch Apartments
@@ -45,7 +45,7 @@ export const apartmentSlice = createSlice({
     updateApartmentSuccess: (state, action) => {
       state.isFetching = false;
       const index = state.apartments.findIndex(
-        apt => apt.apartmentId === action.payload.apartmentId
+        (apt) => apt.apartmentId === action.payload.apartmentId
       );
       if (index !== -1) {
         state.apartments[index] = action.payload;
@@ -62,9 +62,7 @@ export const apartmentSlice = createSlice({
     },
     deleteApartmentSuccess: (state, action) => {
       state.isFetching = false;
-      state.apartments = state.apartments.filter(
-        apt => apt.apartmentId !== action.payload
-      );
+      state.apartments = state.apartments.filter((apt) => apt.apartmentId !== action.payload);
     },
     deleteApartmentFailure: (state) => {
       state.isFetching = false;

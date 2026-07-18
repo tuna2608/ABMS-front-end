@@ -1,16 +1,15 @@
-import React, { useEffect, useMemo } from 'react';
-import { Layout, Menu } from 'antd';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React, { useEffect, useMemo } from "react";
+import { Layout, Menu } from "antd";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   UserOutlined,
   HomeOutlined,
   FormOutlined,
   BellOutlined,
   SafetyOutlined,
-  DollarOutlined,
   DashboardOutlined,
   CreditCardOutlined,
-  CustomerServiceOutlined
+  CustomerServiceOutlined,
 } from "@ant-design/icons";
 
 const { Sider } = Layout;
@@ -18,34 +17,37 @@ const { Sider } = Layout;
 const AdminSidebar = ({ collapsed, activeTab, setActiveTab, toggleCollapsed }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   // Use useMemo to create the pathToTab mapping - this ensures it's only created once
-  const pathToTab = useMemo(() => ({
-    'dashboard': 'dashboard',
-    'deposits': 'deposits',
-    'accounts': 'accountsList',
-    'accounts/list': 'accountsList',
-    'accounts/pending': 'pendingAccounts',
-    'apartments': 'apartments',
-    'posts': 'postsList',
-    'posts/list': 'postsList',
-    'posts/create': 'createPost',
-    'reports': 'reports',
-    'settings': 'settings',
-    'payments': 'payments', // Added payment route mapping
-    'coin': 'coin'
-  }), []);
-  
+  const pathToTab = useMemo(
+    () => ({
+      dashboard: "dashboard",
+      deposits: "deposits",
+      accounts: "accountsList",
+      "accounts/list": "accountsList",
+      "accounts/pending": "pendingAccounts",
+      apartments: "apartments",
+      posts: "postsList",
+      "posts/list": "postsList",
+      "posts/create": "createPost",
+      reports: "reports",
+      settings: "settings",
+      payments: "payments", // Added payment route mapping
+      coin: "coin",
+    }),
+    []
+  );
+
   // Effect to sync URL with active tab
   useEffect(() => {
-    const path = location.pathname.replace('/adminHome/', '');
+    const path = location.pathname.replace("/adminHome/", "");
     const tab = pathToTab[path];
-    
+
     if (tab) {
       setActiveTab(tab);
     }
   }, [location.pathname, setActiveTab, pathToTab]);
-  
+
   // Handle menu item click with navigation
   const handleMenuClick = (tabKey, urlPath) => {
     setActiveTab(tabKey);
@@ -58,13 +60,13 @@ const AdminSidebar = ({ collapsed, activeTab, setActiveTab, toggleCollapsed }) =
       key: "dashboard",
       icon: <DashboardOutlined />,
       label: "Bảng điều khiển",
-      onClick: () => handleMenuClick("dashboard", "dashboard")
+      onClick: () => handleMenuClick("dashboard", "dashboard"),
     },
     {
       key: "deposits",
       icon: <SafetyOutlined />,
       label: "Quản lý đặt cọc",
-      onClick: () => handleMenuClick("deposits", "deposits")
+      onClick: () => handleMenuClick("deposits", "deposits"),
     },
     {
       key: "accounts",
@@ -74,15 +76,15 @@ const AdminSidebar = ({ collapsed, activeTab, setActiveTab, toggleCollapsed }) =
         {
           key: "accountsList",
           label: "Danh sách tài khoản",
-          onClick: () => handleMenuClick("accountsList", "accounts/list")
+          onClick: () => handleMenuClick("accountsList", "accounts/list"),
         },
-      ]
+      ],
     },
     {
       key: "apartments",
       icon: <HomeOutlined />,
       label: "Quản lý căn hộ",
-      onClick: () => handleMenuClick("apartments", "apartments")
+      onClick: () => handleMenuClick("apartments", "apartments"),
     },
     {
       key: "posts",
@@ -92,27 +94,27 @@ const AdminSidebar = ({ collapsed, activeTab, setActiveTab, toggleCollapsed }) =
         {
           key: "postsList",
           label: "Danh sách bài viết",
-          onClick: () => handleMenuClick("postsList", "posts/list")
+          onClick: () => handleMenuClick("postsList", "posts/list"),
         },
-      ]
+      ],
     },
     {
       key: "coin", // New payment management menu item
       icon: <CreditCardOutlined />,
       label: "Quản lý coin",
-      onClick: () => handleMenuClick("coin", "coin")
+      onClick: () => handleMenuClick("coin", "coin"),
     },
     {
       key: "service", // New payment management menu item
-      icon: <CustomerServiceOutlined/>,
+      icon: <CustomerServiceOutlined />,
       label: "Quản lý bài viết dịch vụ",
-      onClick: () => handleMenuClick("service", "service")
+      onClick: () => handleMenuClick("service", "service"),
     },
     {
       key: "form-management", // New payment management menu item
-      icon: <FormOutlined/>,
+      icon: <FormOutlined />,
       label: "Quản lý đơn từ",
-      onClick: () => handleMenuClick("form-management", "form-management")
+      onClick: () => handleMenuClick("form-management", "form-management"),
     },
     // {
     //   key: "reports",
@@ -123,21 +125,14 @@ const AdminSidebar = ({ collapsed, activeTab, setActiveTab, toggleCollapsed }) =
   ];
 
   return (
-    <Sider
-      trigger={null}
-      collapsible
-      collapsed={collapsed}
-      theme="light"
-      width={250}
-    >
-      <div style={{ height: 64, padding: 16, textAlign: "center" }}>
-      </div>
+    <Sider trigger={null} collapsible collapsed={collapsed} theme="light" width={250}>
+      <div style={{ height: 64, padding: 16, textAlign: "center" }}></div>
       <Menu
         mode="inline"
         selectedKeys={[activeTab]}
-        defaultOpenKeys={['accounts', 'posts']}
+        defaultOpenKeys={["accounts", "posts"]}
         items={items}
-      />  
+      />
     </Sider>
   );
 };

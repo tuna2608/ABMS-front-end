@@ -1,4 +1,4 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef } from "react";
 import styled from "styled-components";
 import { useNavigate } from "react-router-dom";
 
@@ -7,8 +7,6 @@ import HeroSection from "./HeroSection";
 import SearchSection from "./SearchSection";
 import ApartmentSection from ".//ApartmentSection";
 import ServiceSection from "./ServiceSection"; // Import the new ServiceSection component
-import { getVerifiedFacilities } from "../../../redux/apiCalls";
-import { message } from "antd";
 
 // Styled Components
 const Container = styled.div`
@@ -24,11 +22,7 @@ const Container = styled.div`
     left: 0;
     right: 0;
     height: 40%;
-    background: radial-gradient(
-      ellipse at bottom right,
-      #ffffff 0%,
-      transparent 70%
-    );
+    background: radial-gradient(ellipse at bottom right, #ffffff 0%, transparent 70%);
     z-index: 0;
     pointer-events: none;
   }
@@ -49,7 +43,7 @@ const SectionDivider = styled.div`
   height: 1px;
   background: linear-gradient(90deg, transparent, rgba(30, 58, 138, 0.5), transparent);
   position: relative;
-  
+
   &::after {
     content: "";
     position: absolute;
@@ -75,9 +69,6 @@ function HomePage() {
   const [price, setPrice] = useState("");
   const [type, setType] = useState("");
   const [rooms, setRooms] = useState("");
-
-  
-
 
   // Carousel functionality
   const carouselRef = useRef(null);
@@ -109,21 +100,17 @@ function HomePage() {
   };
 
   const handleViewMore = () => {
-    navigate('/post');
+    navigate("/post");
   };
 
   return (
     <Container>
       <Wrapper>
         {/* Hero Banner Section with Carousel */}
-        <HeroSection 
-          carouselRef={carouselRef} 
-          handlePrev={handlePrev} 
-          handleNext={handleNext} 
-        />
+        <HeroSection carouselRef={carouselRef} handlePrev={handlePrev} handleNext={handleNext} />
 
         {/* Search Section */}
-        <SearchSection 
+        <SearchSection
           searchText={searchText}
           setSearchText={setSearchText}
           area={area}
@@ -138,15 +125,13 @@ function HomePage() {
         />
 
         {/* Apartment Listings Section */}
-        <ApartmentSection 
-          handleViewMore={handleViewMore}
-        />
-        
+        <ApartmentSection handleViewMore={handleViewMore} />
+
         {/* Section Divider */}
         <SectionDivider />
-        
+
         {/* Service Section */}
-        <ServiceSection/>
+        <ServiceSection />
       </Wrapper>
     </Container>
   );

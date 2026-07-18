@@ -77,16 +77,12 @@ const PostList = () => {
       if (res.success) {
         let postList = res.data;
         if (area) {
-          postList = postList.filter(
-            (post) => Number(post.apartment.area) <= Number(area)
-          );
+          postList = postList.filter((post) => Number(post.apartment.area) <= Number(area));
         }
 
         if (price) {
           const targetPrice = Number(price) * 1_000_000;
-          postList = postList.filter(
-            (post) => Number(post.price) <= targetPrice
-          );
+          postList = postList.filter((post) => Number(post.price) <= targetPrice);
         }
         if (type) {
           postList = postList.filter((post) => post.postType === type);
@@ -128,7 +124,6 @@ const PostList = () => {
 
   const goToDetails = (postId) => {
     navigate(`/post-detail/${postId}`);
-    console.log(`Đang chuyển đến trang chi tiết của căn hộ ID: ${postId}`);
   };
 
   // Lọc dữ liệu dựa trên tìm kiếm và bộ lọc
@@ -138,23 +133,15 @@ const PostList = () => {
       searchText === "" ||
       apartment.title.toLowerCase().includes(searchText.toLowerCase()) ||
       apartment.content.toLowerCase().includes(searchText.toLowerCase()) ||
-      apartment.apartment?.apartmentName
-        ?.toLowerCase()
-        .includes(searchText.toLowerCase());
+      apartment.apartment?.apartmentName?.toLowerCase().includes(searchText.toLowerCase());
     // Lọc theo danh mục
     let categoryMatch = true;
     if (selectedCategory !== "Tất cả") {
       // Thực hiện logic phù hợp với danh mục của bạn
       // Đây là logic giả định, bạn cần điều chỉnh theo dữ liệu thực tế
-      if (
-        selectedCategory === "Đã cho thuê" &&
-        apartment.depositCheck !== "done"
-      )
+      if (selectedCategory === "Đã cho thuê" && apartment.depositCheck !== "done")
         categoryMatch = false;
-      if (
-        selectedCategory === "Đang đặt cọc" &&
-        apartment.depositCheck !== "depositing"
-      )
+      if (selectedCategory === "Đang đặt cọc" && apartment.depositCheck !== "depositing")
         categoryMatch = false;
       // Thêm các điều kiện khác nếu cần
     }
@@ -273,10 +260,7 @@ const PostList = () => {
                         height: "100%",
                       }}
                     >
-                      <Skeleton.Image
-                        style={{ width: "100%", height: 200 }}
-                        active
-                      />
+                      <Skeleton.Image style={{ width: "100%", height: 200 }} active />
                       <Skeleton active paragraph={{ rows: 3 }} />
                     </Card>
                   </Col>
@@ -326,8 +310,7 @@ const PostList = () => {
                             bottom: 0,
                             left: 0,
                             right: 0,
-                            background:
-                              "linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0))",
+                            background: "linear-gradient(to top, rgba(0,0,0,0.8), rgba(0,0,0,0))",
                             padding: "16px 12px 8px",
                             color: "white",
                           }}
@@ -399,9 +382,7 @@ const PostList = () => {
                                   <EnvironmentOutlined
                                     style={{ color: "#4b7bec", marginRight: 5 }}
                                   />
-                                  <Text type="secondary">
-                                    {post.apartment.apartmentName}
-                                  </Text>
+                                  <Text type="secondary">{post.apartment.apartmentName}</Text>
                                 </Flex>
                                 {post.depositCheck === "done" && (
                                   <Tag
@@ -418,13 +399,8 @@ const PostList = () => {
                               </Flex>
                             </div>
                             <div>
-                              <DollarOutlined
-                                style={{ color: "#ff4d4f", marginRight: 5 }}
-                              />
-                              <Text
-                                strong
-                                style={{ color: "#ff4d4f", fontSize: "16px" }}
-                              >
+                              <DollarOutlined style={{ color: "#ff4d4f", marginRight: 5 }} />
+                              <Text strong style={{ color: "#ff4d4f", fontSize: "16px" }}>
                                 {formatPrice(post.price)}
                               </Text>
                             </div>
@@ -434,10 +410,7 @@ const PostList = () => {
                                 size="small"
                                 style={{
                                   borderRadius: "4px",
-                                  background:
-                                    post.depositCheck !== "done"
-                                      ? "#4b7bec"
-                                      : "#d9d9d9",
+                                  background: post.depositCheck !== "done" ? "#4b7bec" : "#d9d9d9",
                                   width: "100%",
                                 }}
                                 onClick={(e) => {

@@ -1,6 +1,6 @@
-import React from 'react';
-import { Menu } from 'antd';
-import { useNavigate, useLocation } from 'react-router-dom';
+import React from "react";
+import { Menu } from "antd";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   HomeOutlined,
   FormOutlined,
@@ -12,23 +12,23 @@ import {
 const SideMenu = ({ setCurrentView }) => {
   const navigate = useNavigate();
   const location = useLocation();
-  
+
   // Get the current view from the URL
   const getCurrentViewFromPath = () => {
-    const path = location.pathname.split('/').pop();
+    const path = location.pathname.split("/").pop();
     // Map URL paths to view keys
     const pathToView = {
-      'list': 'list',
-      'post-management': 'post',
-      'contract-management': 'contract',
-      'bill-management': 'bill-management',
-      'document-upload': 'upload',
-      'messages': 'chatpage'
+      list: "list",
+      "post-management": "post",
+      "contract-management": "contract",
+      "bill-management": "bill-management",
+      "document-upload": "upload",
+      messages: "chatpage",
     };
-    
-    return pathToView[path] || 'list';
+
+    return pathToView[path] || "list";
   };
-  
+
   // Handle menu item click
   const handleMenuClick = (viewKey, urlPath) => {
     setCurrentView(viewKey);
@@ -67,20 +67,20 @@ const SideMenu = ({ setCurrentView }) => {
       onClick: () => handleMenuClick("chatpage", "messages"),
     },
   ];
-  
+
   // Get current menu key based on current view
   const getCurrentKey = () => {
     const viewToKey = {
-      'list': '1',
-      'post': '2',
-      'contract': '3',
-      'payment': '4',
-      'bill-management': '5',
-      'upload': '6',
-      'chatpage': '7'
+      list: "1",
+      post: "2",
+      contract: "3",
+      payment: "4",
+      "bill-management": "5",
+      upload: "6",
+      chatpage: "7",
     };
-    
-    return viewToKey[getCurrentViewFromPath()] || '1';
+
+    return viewToKey[getCurrentViewFromPath()] || "1";
   };
 
   return (

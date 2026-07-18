@@ -6,7 +6,6 @@ import {
   Modal,
   Form,
   Input,
-  DatePicker,
   Select,
   Space,
   Tag,
@@ -29,9 +28,7 @@ import { Option } from "antd/es/mentions";
 import { useSelector } from "react-redux";
 
 const BillManagement = () => {
-  const [currentUser, setCurrentUser] = useState(
-    useSelector((state) => state.user.currentUser)
-  );
+  const [currentUser, setCurrentUser] = useState(useSelector((state) => state.user.currentUser));
   const defaultValue = moment().subtract(1, "months");
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
@@ -66,11 +63,8 @@ const BillManagement = () => {
     setLoading(true);
     try {
       const res = await getApartments();
-      // console.log(res.data.length === 0);
       if (res.success) {
-        const apartmentsChoice = res.data.filter(
-          (apartment) => apartment.householder !== null
-        );
+        const apartmentsChoice = res.data.filter((apartment) => apartment.householder !== null);
         setApartmentHouseholder(apartmentsChoice);
       } else {
         message.error(res.message);
@@ -86,7 +80,6 @@ const BillManagement = () => {
     setLoading(true);
     try {
       const res = await getAllBill();
-      // console.log(res.data.length === 0);
       if (res.success) {
         setBills(res.data);
       } else {
@@ -254,12 +247,7 @@ const BillManagement = () => {
       }
     >
       {/* Bill Table */}
-      <Table
-        columns={columns}
-        dataSource={bills}
-        rowKey="id"
-        pagination={{ pageSize: 5 }}
-      />
+      <Table columns={columns} dataSource={bills} rowKey="id" pagination={{ pageSize: 5 }} />
       <Modal
         title="Tạo hóa đơn mới"
         open={createBillVisible}
@@ -281,9 +269,7 @@ const BillManagement = () => {
               <Form.Item
                 name="billType"
                 label="Loại hóa đơn"
-                rules={[
-                  { required: true, message: "Vui lòng chọn loại hóa đơn" },
-                ]}
+                rules={[{ required: true, message: "Vui lòng chọn loại hóa đơn" }]}
               >
                 <Select placeholder="Chọn loại hóa đơn">
                   <Option value="Hóa đơn quản lý căn hộ">Phí quản lý căn hộ</Option>
@@ -300,10 +286,7 @@ const BillManagement = () => {
                 <Select placeholder="Chọn căn hộ">
                   {apartmentHouseholder &&
                     apartmentHouseholder.map((apartment) => (
-                      <Option
-                        key={apartment.apartmentId}
-                        value={apartment.apartmentName}
-                      >
+                      <Option key={apartment.apartmentId} value={apartment.apartmentName}>
                         {apartment.apartmentName}
                       </Option>
                     ))}
@@ -325,9 +308,7 @@ const BillManagement = () => {
               <Form.Item
                 name="period"
                 label="Hóa đơn theo kỳ hạn:"
-                rules={[
-                  { required: true, message: "Vui lòng chọn kỳ hóa đơn" },
-                ]}
+                rules={[{ required: true, message: "Vui lòng chọn kỳ hóa đơn" }]}
               >
                 <Select placeholder="Chọn kỳ hóa đơn">
                   <Option value="Tháng">Tháng</Option>

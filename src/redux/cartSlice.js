@@ -71,8 +71,7 @@ export const {
   resetCartSuccess,
   decreaseCartQuantitySuccess,
   deleteCartItemSuccess,
-  deleteCartSuccess
-
+  deleteCartSuccess,
 } = cartSlice.actions;
 
 export default cartSlice.reducer;

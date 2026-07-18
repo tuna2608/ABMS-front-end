@@ -1,14 +1,14 @@
 import "./adminLeftBar.scss";
-import HomeOutlinedIcon from '@mui/icons-material/HomeOutlined';
-import AutoGraphOutlinedIcon from '@mui/icons-material/AutoGraphOutlined';
-import MonetizationOnOutlinedIcon from '@mui/icons-material/MonetizationOnOutlined';
-import PeopleAltOutlinedIcon from '@mui/icons-material/PeopleAltOutlined';
-import Inventory2OutlinedIcon from '@mui/icons-material/Inventory2Outlined';
-import ReceiptLongOutlinedIcon from '@mui/icons-material/ReceiptLongOutlined';
-import FlagCircleOutlinedIcon from '@mui/icons-material/FlagCircleOutlined';
-import MailOutlineOutlinedIcon from '@mui/icons-material/MailOutlineOutlined';
-import AddCommentOutlinedIcon from '@mui/icons-material/AddCommentOutlined';
-import MessageOutlinedIcon from '@mui/icons-material/MessageOutlined';
+import HomeOutlinedIcon from "@mui/icons-material/HomeOutlined";
+import AutoGraphOutlinedIcon from "@mui/icons-material/AutoGraphOutlined";
+import MonetizationOnOutlinedIcon from "@mui/icons-material/MonetizationOnOutlined";
+import PeopleAltOutlinedIcon from "@mui/icons-material/PeopleAltOutlined";
+import Inventory2OutlinedIcon from "@mui/icons-material/Inventory2Outlined";
+import ReceiptLongOutlinedIcon from "@mui/icons-material/ReceiptLongOutlined";
+import FlagCircleOutlinedIcon from "@mui/icons-material/FlagCircleOutlined";
+import MailOutlineOutlinedIcon from "@mui/icons-material/MailOutlineOutlined";
+import AddCommentOutlinedIcon from "@mui/icons-material/AddCommentOutlined";
+import MessageOutlinedIcon from "@mui/icons-material/MessageOutlined";
 import { NavLink } from "react-router-dom";
 const AdminLeftBar = () => {
   return (
@@ -68,8 +68,11 @@ const AdminLeftBar = () => {
         <hr />
         <div className="menu">
           <div className="user">
-            <span style={{ fontWeight: "700", color: "#ccc", fontSize: "18px" }}>Notifications</span>
-          </div>        <div className="item">
+            <span style={{ fontWeight: "700", color: "#ccc", fontSize: "18px" }}>
+              Notifications
+            </span>
+          </div>{" "}
+          <div className="item">
             <MailOutlineOutlinedIcon />
             <span>Mail</span>
           </div>
@@ -84,8 +87,8 @@ const AdminLeftBar = () => {
         </div>
         <hr />
       </div>
-    </div >
-  )
-}
+    </div>
+  );
+};
 
-export default AdminLeftBar
+export default AdminLeftBar;

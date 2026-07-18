@@ -1,15 +1,5 @@
 import React, { useEffect, useState } from "react";
-import {
-  Card,
-  Space,
-  Select,
-  Input,
-  List,
-  Pagination,
-  message,
-  Tag,
-  Table,
-} from "antd";
+import { Card, Space, Select, Input, Pagination, message, Tag, Table } from "antd";
 import {
   HomeOutlined,
   SearchOutlined,
@@ -23,9 +13,7 @@ const { Option } = Select;
 const { Search } = Input;
 
 const ApartmentListView = () => {
-  const [currentUser] = useState(
-    useSelector((state) => state.user.currentUser)
-  );
+  const [currentUser] = useState(useSelector((state) => state.user.currentUser));
 
   const [currentPage, setCurrentPage] = useState(1);
   const [pageSize] = useState(4);
@@ -55,7 +43,6 @@ const ApartmentListView = () => {
         message.error(response.message);
       }
     } catch (error) {
-      console.error("Error fetching apartments:", error);
       message.error("Không thể tải danh sách căn hộ");
     } finally {
       setLoading(false);
@@ -106,11 +93,7 @@ const ApartmentListView = () => {
           rented: "blue",
           MAINTENANCE: "orange",
         };
-        return (
-          <Tag color={colorMap[status] || "default"}>
-            {statusMap[status] || status}
-          </Tag>
-        );
+        return <Tag color={colorMap[status] || "default"}>{statusMap[status] || status}</Tag>;
       },
     },
     {

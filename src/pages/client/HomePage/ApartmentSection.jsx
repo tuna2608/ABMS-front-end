@@ -1,12 +1,12 @@
-import React, { useState, useEffect } from 'react';
-import styled from 'styled-components';
+import React, { useState, useEffect } from "react";
+import styled from "styled-components";
 import {
   CameraOutlined,
   LeftOutlined,
   RightOutlined,
   EnvironmentOutlined,
   ArrowRightOutlined,
-  HeartOutlined
+  HeartOutlined,
 } from "@ant-design/icons";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom"; // Import useNavigate hook
@@ -92,7 +92,9 @@ const ApartmentCard = styled.div`
   border-radius: 12px;
   overflow: hidden;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
-  transition: transform 0.2s, box-shadow 0.2s;
+  transition:
+    transform 0.2s,
+    box-shadow 0.2s;
   cursor: pointer; /* Add cursor pointer to indicate clickable */
 
   &:hover {
@@ -245,13 +247,17 @@ const ApartmentNavButton = styled.button`
   cursor: pointer;
   transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
   pointer-events: auto;
-  box-shadow: 0 6px 16px rgba(0, 0, 0, 0.12), 0 3px 6px rgba(0, 0, 0, 0.08);
+  box-shadow:
+    0 6px 16px rgba(0, 0, 0, 0.12),
+    0 3px 6px rgba(0, 0, 0, 0.08);
   position: relative;
 
   &:hover {
     background-color: rgba(30, 58, 138, 1);
     transform: translateY(-2px) scale(1.05);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.15), 0 6px 10px rgba(0, 0, 0, 0.1);
+    box-shadow:
+      0 10px 20px rgba(0, 0, 0, 0.15),
+      0 6px 10px rgba(0, 0, 0, 0.1);
   }
 
   &:active {
@@ -282,7 +288,7 @@ function ApartmentSection({ handleViewMore }) {
   const [loading, setLoading] = useState(false);
   const [currentPage, setCurrentPage] = useState(0);
   const propertiesPerPage = 4;
-  
+
   const dispatch = useDispatch();
   const navigate = useNavigate(); // Initialize the navigate hook
 
@@ -295,17 +301,16 @@ function ApartmentSection({ handleViewMore }) {
           setProperties(response.data);
         }
       } catch (error) {
-        console.error("Error fetching properties:", error);
       } finally {
         setLoading(false);
       }
     }
-    
+
     fetchProperties();
   }, [dispatch]);
 
   const totalPages = Math.ceil(properties.length / propertiesPerPage);
-  
+
   const currentProperties = properties.slice(
     currentPage * propertiesPerPage,
     (currentPage + 1) * propertiesPerPage
@@ -322,7 +327,6 @@ function ApartmentSection({ handleViewMore }) {
   // Function to navigate to the detail page
   const goToDetails = (postId, event) => {
     navigate(`/post-detail/${postId}`);
-    console.log(`Đang chuyển đến trang chi tiết của căn hộ ID: ${postId}`);
   };
 
   // Handle heart button click separately (stop propagation)
@@ -335,7 +339,7 @@ function ApartmentSection({ handleViewMore }) {
   const formatPrice = (price) => {
     return new Intl.NumberFormat("vi-VN").format(price) + " VNĐ/tháng";
   };
-  
+
   // If data is loading or not available yet, we could return a loading state
   if (loading) {
     return (
@@ -343,23 +347,24 @@ function ApartmentSection({ handleViewMore }) {
         <SectionTitleContainer>
           <SectionTitle>Căn hộ dành cho bạn</SectionTitle>
         </SectionTitleContainer>
-        <div style={{ padding: "20px", textAlign: "center" }}>
-          Đang tải dữ liệu...
-        </div>
+        <div style={{ padding: "20px", textAlign: "center" }}>Đang tải dữ liệu...</div>
       </ApartmentSectionWrapper>
     );
   }
 
   // Mapping the fetched data to match the expected format for the component
-  const mappedProperties = currentProperties.map(property => ({
+  const mappedProperties = currentProperties.map((property) => ({
     id: property.postId,
-    image: property.postImages && property.postImages.length > 0 ? property.postImages[0] : '/placeholder-image.jpg',
+    image:
+      property.postImages && property.postImages.length > 0
+        ? property.postImages[0]
+        : "/placeholder-image.jpg",
     imageCount: property.postImages ? property.postImages.length : 0,
     price: formatPrice(property.price),
     area: `${property.apartment?.area || 200} m²`,
     title: property.title,
-    location: property.apartment?.apartmentName || 'Unknown',
-    createdAt: new Date(property.createdAt || new Date()).toLocaleDateString('vi-VN')
+    location: property.apartment?.apartmentName || "Unknown",
+    createdAt: new Date(property.createdAt || new Date()).toLocaleDateString("vi-VN"),
   }));
 
   return (
@@ -373,15 +378,11 @@ function ApartmentSection({ handleViewMore }) {
 
       <ApartmentGrid>
         {mappedProperties.map((property) => (
-          <ApartmentCard 
-            key={property.id} 
-            onClick={(e) => goToDetails(property.id, e)}
-          >
+          <ApartmentCard key={property.id} onClick={(e) => goToDetails(property.id, e)}>
             <ApartmentImage>
               <img src={property.image} alt={property.title} />
               <ImageCount>
-                <CameraOutlined style={{ marginRight: 4 }} />{" "}
-                {property.imageCount}
+                <CameraOutlined style={{ marginRight: 4 }} /> {property.imageCount}
               </ImageCount>
             </ApartmentImage>
 
@@ -394,8 +395,7 @@ function ApartmentSection({ handleViewMore }) {
               <ApartmentTitle>{property.title}</ApartmentTitle>
 
               <LocationInfo>
-                <EnvironmentOutlined style={{ marginRight: 6 }} />{" "}
-                {property.location}
+                <EnvironmentOutlined style={{ marginRight: 6 }} /> {property.location}
               </LocationInfo>
             </ApartmentInfo>
 

@@ -4,32 +4,23 @@ import { message } from "antd";
 import { CheckCircleOutlined } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { depositSuccess, paymentBillSuccess } from "../../../redux/apiCalls";
-import { current } from "@reduxjs/toolkit";
 import { useSelector } from "react-redux";
 import { LoadingComponent } from "../../../components/common/LoadingComponent/LoadingComponent";
 
 const PaymentSuccess = () => {
-  const [currentUser] = useState(
-    useSelector((state) => state.user.currentUser)
-  );
+  const [currentUser] = useState(useSelector((state) => state.user.currentUser));
   const navigate = useNavigate();
   const depositRequest = JSON.parse(localStorage.getItem("depositRequest"));
-  // console.log(depositRequest);
 
-  const paymentBillRequest = JSON.parse(
-    localStorage.getItem("paymentBillRequest")
-  );
-  // console.log(paymentBillRequest);
+  const paymentBillRequest = JSON.parse(localStorage.getItem("paymentBillRequest"));
 
   const [loading, setLoading] = useState(false);
   useEffect(() => {
     if (depositRequest) {
-      // console.log(depositRequest);
       callDepositeSuccess();
       localStorage.removeItem("depositRequest");
     }
     if (paymentBillRequest) {
-      // console.log(paymentBillRequest);
       callPaymentBillSuccess(currentUser);
       localStorage.removeItem("paymentBillRequest");
     }
@@ -64,7 +55,6 @@ const PaymentSuccess = () => {
       const res = await paymentBillSuccess(formData);
       if (res.success) {
         message.success(res.message);
-
       } else {
         message.error(res.message);
       }
@@ -73,7 +63,7 @@ const PaymentSuccess = () => {
     } finally {
       setLoading(false);
       setTimeout(() => {
-        navigate('/')
+        navigate("/");
       }, 1500);
     }
   }
@@ -82,14 +72,8 @@ const PaymentSuccess = () => {
     <LoadingComponent isPending={loading}>
       <div className="payment-success bg-white min-h-screen flex items-center justify-center">
         <Result
-          icon={
-            <CheckCircleOutlined style={{ color: "#52c41a", fontSize: 72 }} />
-          }
-          title={
-            <h1 className="text-4xl font-bold mb-4 text-center">
-              Payment Successful!
-            </h1>
-          }
+          icon={<CheckCircleOutlined style={{ color: "#52c41a", fontSize: 72 }} />}
+          title={<h1 className="text-4xl font-bold mb-4 text-center">Payment Successful!</h1>}
           extra={
             <>
               <div className="text-lg mb-8 text-center text-gray-600">
@@ -97,11 +81,7 @@ const PaymentSuccess = () => {
                 <p>Your transaction has been completed successfully.</p>
               </div>
               <div className="text-center">
-                <Button
-                  onClick={() => navigate("/")}
-                  type="primary"
-                  size="large"
-                >
+                <Button onClick={() => navigate("/")} type="primary" size="large">
                   Back to Home
                 </Button>
               </div>

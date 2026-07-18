@@ -1,8 +1,6 @@
-import React from 'react';
-import styled from 'styled-components';
-import {
-  SearchOutlined
-} from "@ant-design/icons";
+import React from "react";
+import styled from "styled-components";
+import { SearchOutlined } from "@ant-design/icons";
 
 const SearchSectionWrapper = styled.div`
   background-color: #1e3a8a;
@@ -54,7 +52,7 @@ const SearchButton = styled.button`
   cursor: pointer;
 
   &:hover {
-   background-color: #b45309;
+    background-color: #b45309;
   }
 `;
 
@@ -90,18 +88,18 @@ const SelectArrow = styled.div`
   color: #6b7280;
 `;
 
-function SearchSection({ 
-  searchText, 
-  setSearchText, 
-  area, 
-  setArea, 
-  price, 
-  setPrice, 
-  type, 
-  setType, 
-  rooms, 
-  setRooms, 
-  handleSearch 
+function SearchSection({
+  searchText,
+  setSearchText,
+  area,
+  setArea,
+  price,
+  setPrice,
+  type,
+  setType,
+  rooms,
+  setRooms,
+  handleSearch,
 }) {
   return (
     <SearchSectionWrapper>
@@ -130,10 +128,7 @@ function SearchSection({
           </FilterSelect>
 
           <FilterSelect>
-            <Select
-              value={rooms}
-              onChange={(e) => setRooms(e.target.value)}
-            >
+            <Select value={rooms} onChange={(e) => setRooms(e.target.value)}>
               <option value="">Số phòng ngủ</option>
               <option value="1">1 phòng</option>
               <option value="2">2 phòng</option>
@@ -152,10 +147,7 @@ function SearchSection({
           </FilterSelect>
 
           <FilterSelect>
-            <Select
-              value={price}
-              onChange={(e) => setPrice(e.target.value)}
-            >
+            <Select value={price} onChange={(e) => setPrice(e.target.value)}>
               <option value="">Giá tiền</option>
               <option value="2">Dưới 2 triệu</option>
               <option value="3">Dưới 3 triệu</option>

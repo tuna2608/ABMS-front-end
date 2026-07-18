@@ -65,8 +65,7 @@ const Button = styled.button`
   border: 0.2px solid #ccc;
   font-weight: 600;
   font-size: 16px;
-  background-color: ${(props) =>
-    props.tone === "dark" ? "#000" : "transparent"};
+  background-color: ${(props) => (props.tone === "dark" ? "#000" : "transparent")};
   color: ${(props) => (props.tone === "dark" ? "#fff" : "#000")};
   &:hover {
     cursor: pointer;
@@ -171,18 +170,9 @@ const Register = () => {
           </Button>
           <Text>or</Text>
           <Label>Username</Label>
-          <Input
-            required
-            value={username}
-            onChange={(e) => setUserName(e.target.value)}
-          />
+          <Input required value={username} onChange={(e) => setUserName(e.target.value)} />
           <Label> Email</Label>
-          <Input
-            required
-            value={email}
-            type="email"
-            onChange={(e) => setEmail(e.target.value)}
-          />
+          <Input required value={email} type="email" onChange={(e) => setEmail(e.target.value)} />
           <Label>Password</Label>
           <Input
             required

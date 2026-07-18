@@ -1,13 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Layout, Card, Button } from "antd";
 import { MenuUnfoldOutlined, MenuFoldOutlined } from "@ant-design/icons";
-import {
-  Routes,
-  Route,
-  Navigate,
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
+import { Routes, Route, Navigate, useLocation, useNavigate } from "react-router-dom";
 
 // Import custom components
 import SidebarMenu from "./SidebarMenu";
@@ -46,10 +40,7 @@ const StaffHome = () => {
 
     if (validMenuItems.includes(pathSegment)) {
       setActiveMenuItem(pathSegment);
-    } else if (
-      location.pathname === "/staffHome" ||
-      location.pathname === "/staffHome/"
-    ) {
+    } else if (location.pathname === "/staffHome" || location.pathname === "/staffHome/") {
       // If we're at the root of staffHome, redirect to the default view
       navigate("/staffHome/apartment-list");
     }
@@ -105,22 +96,14 @@ const StaffHome = () => {
           />
         </Header>
 
-        <Content
-          style={{ margin: "24px 16px", padding: 24, background: "#fff" }}
-        >
+        <Content style={{ margin: "24px 16px", padding: 24, background: "#fff" }}>
           <Routes>
-            <Route
-              path="/"
-              element={<Navigate to="/staffHome/apartment-list" replace />}
-            />
+            <Route path="/" element={<Navigate to="/staffHome/apartment-list" replace />} />
             <Route path="/apartment-list" element={renderContent()} />
             <Route path="/bill-management" element={renderContent()} />
             <Route path="/utility-management" element={renderContent()} />
             <Route path="/account-management" element={renderContent()} />
-            <Route
-              path="*"
-              element={<Navigate to="/staffHome/apartment-list" replace />}
-            />
+            <Route path="*" element={<Navigate to="/staffHome/apartment-list" replace />} />
           </Routes>
         </Content>
       </Layout>

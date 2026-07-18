@@ -112,18 +112,16 @@ const AdminFormManagement = () => {
     try {
       const res = await approveForm(dispatch, formId, newStatus);
       if (res.success) {
-        const updated = forms.map((f) =>
-          f.id === formId ? { ...f, status: newStatus } : f
-        );
+        const updated = forms.map((f) => (f.id === formId ? { ...f, status: newStatus } : f));
         setForms(updated);
         setModalVisible(false);
-      }else{
-        message.error(res.message)
+      } else {
+        message.error(res.message);
       }
     } catch (error) {
-      message.error("Không thể cập nhật trạng thái đơn")
-    }finally{
-      setLoadingChange(false)
+      message.error("Không thể cập nhật trạng thái đơn");
+    } finally {
+      setLoadingChange(false);
     }
   };
 
@@ -137,9 +135,7 @@ const AdminFormManagement = () => {
   };
 
   const filteredData =
-    statusFilter === "all"
-      ? forms
-      : forms.filter((f) => f.status === statusFilter);
+    statusFilter === "all" ? forms : forms.filter((f) => f.status === statusFilter);
 
   const columns = [
     { title: "ID", dataIndex: "id", key: "id", width: 60 },
@@ -225,23 +221,15 @@ const AdminFormManagement = () => {
                 <Descriptions.Item label="Loại đơn">
                   {formTypeMap[selectedForm.formType]}
                 </Descriptions.Item>
-                <Descriptions.Item label="Căn hộ">
-                  {selectedForm.apartmentNumber}
-                </Descriptions.Item>
-                <Descriptions.Item label="Người gửi">
-                  {selectedForm.residentName}
-                </Descriptions.Item>
+                <Descriptions.Item label="Căn hộ">{selectedForm.apartmentNumber}</Descriptions.Item>
+                <Descriptions.Item label="Người gửi">{selectedForm.residentName}</Descriptions.Item>
                 <Descriptions.Item label="Ngày gửi">
-                  {new Date(selectedForm.submissionDate).toLocaleString(
-                    "vi-VN"
-                  )}
+                  {new Date(selectedForm.submissionDate).toLocaleString("vi-VN")}
                 </Descriptions.Item>
                 <Descriptions.Item label="Trạng thái">
                   {getStatusTag(selectedForm.status)}
                 </Descriptions.Item>
-                <Descriptions.Item label="Lý do">
-                  {selectedForm.reason}
-                </Descriptions.Item>
+                <Descriptions.Item label="Lý do">{selectedForm.reason}</Descriptions.Item>
                 <Descriptions.Item label="Tệp đính kèm">
                   <Button
                     type="link"
@@ -261,9 +249,7 @@ const AdminFormManagement = () => {
                   danger
                   icon={<CloseCircleOutlined />}
                   disabled={selectedForm.status !== "pending"}
-                  onClick={() =>
-                    handleStatusChange(selectedForm.id, "rejected")
-                  }
+                  onClick={() => handleStatusChange(selectedForm.id, "rejected")}
                   loading={loadingChange}
                 >
                   Từ chối
@@ -274,9 +260,7 @@ const AdminFormManagement = () => {
                   type="primary"
                   icon={<CheckCircleOutlined />}
                   disabled={selectedForm.status !== "pending"}
-                  onClick={() =>
-                    handleStatusChange(selectedForm.id, "approved")
-                  }
+                  onClick={() => handleStatusChange(selectedForm.id, "approved")}
                   loading={loadingChange}
                 >
                   Duyệt đơn

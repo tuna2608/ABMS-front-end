@@ -12,7 +12,6 @@ import ContractView from "./ContractView";
 import PaymentView from "./PaymentView";
 import ChatPage from "../client/ChatPage/ChatPage";
 
-
 const { Sider, Content, Header } = Layout;
 const OwnerHome = () => {
   const [collapsed, setCollapsed] = useState(false);
@@ -35,7 +34,6 @@ const OwnerHome = () => {
 
   const postTypes = ["Cho thuê", "Bán"];
 
-
   const depositTerms = `ĐIỀU KHOẢN HOÀN TRẢ TIỀN ĐẶT CỌC
 
 1. Quy Định Hoàn Trả Tiền Đặt Cọc
@@ -57,21 +55,21 @@ Khách hàng có thể mất một phần hoặc toàn bộ tiền đặt cọc 
 4. Cam Kết
 - Chúng tôi cam kết minh bạch và rõ ràng trong việc hoàn trả tiền đặt cọc
 - Mọi thắc mắc vui lòng liên hệ trực tiếp với chủ nhà để được giải đáp`;
-  
+
   // Sync URL with the current view
   useEffect(() => {
-    const path = location.pathname.split('/').pop();
+    const path = location.pathname.split("/").pop();
     // Map URL paths to view keys
     const pathToView = {
-      'list': 'list',
-      'post-management': 'post',
-      'contract-management': 'contract',
-      'payment-management': 'payment',
-      'bill-management': 'bill-management',
-      'document-upload': 'upload',
-      'messages': 'chatpage'
+      list: "list",
+      "post-management": "post",
+      "contract-management": "contract",
+      "payment-management": "payment",
+      "bill-management": "bill-management",
+      "document-upload": "upload",
+      messages: "chatpage",
     };
-    
+
     const newView = pathToView[path];
     if (newView) {
       setCurrentView(newView);
@@ -126,29 +124,27 @@ Khách hàng có thể mất một phần hoặc toàn bộ tiền đặt cọc 
       </Sider>
       <Layout>
         <Header
-                  style={{
-                    background: "#fff",
-                    padding: 0,
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "flex-end", // Position elements at the end
-                  }}
-                >
-                  <Button
-                    type="text"
-                    icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
-                    onClick={toggleCollapsed}
-                    style={{
-                      fontSize: "16px",
-                      width: 64,
-                      height: 64,
-                      marginRight: 16, // Add margin from the right edge
-                    }}
-                  />
-                </Header>
-        <Content
-          style={{ margin: "24px 16px", padding: 24, background: "#fff" }}
+          style={{
+            background: "#fff",
+            padding: 0,
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "flex-end", // Position elements at the end
+          }}
         >
+          <Button
+            type="text"
+            icon={collapsed ? <MenuUnfoldOutlined /> : <MenuFoldOutlined />}
+            onClick={toggleCollapsed}
+            style={{
+              fontSize: "16px",
+              width: 64,
+              height: 64,
+              marginRight: 16, // Add margin from the right edge
+            }}
+          />
+        </Header>
+        <Content style={{ margin: "24px 16px", padding: 24, background: "#fff" }}>
           <Routes>
             <Route path="/" element={<Navigate to="/ownerHome/list" replace />} />
             <Route path="/list" element={renderContent()} />

@@ -4,7 +4,6 @@ import {
   Space,
   Input,
   Select,
-  List,
   Pagination,
   Tag,
   Table,
@@ -23,14 +22,7 @@ import { getApartments } from "../../redux/apiCalls";
 const { Option } = Select;
 const { Search } = Input;
 
-const areas = [
-  "Tất cả",
-  "Quận 1",
-  "Quận 2",
-  "Quận Bình Thạnh",
-  "Quận 7",
-  "Quận 4",
-];
+const areas = ["Tất cả", "Quận 1", "Quận 2", "Quận Bình Thạnh", "Quận 7", "Quận 4"];
 
 const ApartmentList = () => {
   const [currentPage, setCurrentPage] = useState(1);
@@ -38,28 +30,29 @@ const ApartmentList = () => {
   const [setSelectedStatus] = useState("Tất cả");
   const [setSelectedArea] = useState("Tất cả");
   const [apartments, setApartments] = useState([]);
-  const [loading,setLoading] = useState(false);
+  const [loading, setLoading] = useState(false);
 
   const pageSize = 4;
 
-  useEffect(()=>{
+  useEffect(() => {
     fetchApartments();
-  },[])
+  }, []);
 
   const fetchApartments = async () => {
     setLoading(true);
     try {
       const response = await getApartments();
       if (response.success) {
-        setApartments(response.data.map(apt => ({
-          ...apt,
-          key: apt.apartmentId
-        })));
+        setApartments(
+          response.data.map((apt) => ({
+            ...apt,
+            key: apt.apartmentId,
+          }))
+        );
       } else {
         message.error(response.message);
       }
     } catch (error) {
-      console.error("Error fetching apartments:", error);
       message.error("Không thể tải danh sách căn hộ");
     } finally {
       setLoading(false);
@@ -125,11 +118,7 @@ const ApartmentList = () => {
           rented: "blue",
           MAINTENANCE: "orange",
         };
-        return (
-          <Tag color={colorMap[status] || "default"}>
-            {statusMap[status] || status}
-          </Tag>
-        );
+        return <Tag color={colorMap[status] || "default"}>{statusMap[status] || status}</Tag>;
       },
     },
     {
@@ -182,11 +171,7 @@ const ApartmentList = () => {
 
         <Space>
           <FilterOutlined />
-          <Select
-            defaultValue="Tất cả"
-            style={{ width: 150 }}
-            onChange={onStatusChange}
-          >
+          <Select defaultValue="Tất cả" style={{ width: 150 }} onChange={onStatusChange}>
             <Option value="Tất cả">Tất cả trạng thái</Option>
             <Option value="Chưa bán">Chưa bán</Option>
             <Option value="Đã bán">Đã bán</Option>
@@ -198,11 +183,7 @@ const ApartmentList = () => {
 
         <Space>
           <EnvironmentOutlined />
-          <Select
-            defaultValue="Tất cả"
-            style={{ width: 150 }}
-            onChange={onAreaChange}
-          >
+          <Select defaultValue="Tất cả" style={{ width: 150 }} onChange={onAreaChange}>
             {areas.map((area) => (
               <Option key={area} value={area}>
                 {area}
@@ -220,7 +201,7 @@ const ApartmentList = () => {
           total: apartments.length,
           pageSize: 10,
           showSizeChanger: true,
-          showTotal: (total) => `Tổng số ${total} căn hộ`
+          showTotal: (total) => `Tổng số ${total} căn hộ`,
         }}
       />
 

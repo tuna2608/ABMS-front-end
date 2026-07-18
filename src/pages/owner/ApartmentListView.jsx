@@ -1,21 +1,6 @@
 import React, { useEffect, useState } from "react";
-import {
-  Card,
-  Space,
-  Select,
-  Input,
-  List,
-  Pagination,
-  message,
-  Tag,
-  Table,
-} from "antd";
-import {
-  HomeOutlined,
-  SearchOutlined,
-  MailOutlined,
-  PhoneOutlined,
-} from "@ant-design/icons";
+import { Card, Space, Select, Input, Pagination, message, Tag, Table } from "antd";
+import { HomeOutlined, SearchOutlined, MailOutlined, PhoneOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { getApartments, getRentorByApartment } from "../../redux/apiCalls";
 
@@ -31,7 +16,6 @@ const ApartmentListView = () => {
   const [loading, setLoading] = useState(false);
   const [renters, setRenters] = useState({});
 
-
   useEffect(() => {
     if (currentUser) {
       fetchApartments(currentUser);
@@ -41,7 +25,7 @@ const ApartmentListView = () => {
   useEffect(() => {
     const fetchRentersForApartments = async () => {
       if (apartments.length > 0) {
-        const promises = apartments.map(apt => fetchRenters(apt.apartmentName));
+        const promises = apartments.map((apt) => fetchRenters(apt.apartmentName));
         await Promise.all(promises);
       }
     };
@@ -53,7 +37,7 @@ const ApartmentListView = () => {
     if (!currentUser) {
       return;
     }
-    
+
     setLoading(true);
     try {
       const response = await getApartments();
@@ -72,7 +56,6 @@ const ApartmentListView = () => {
         message.error(response.message);
       }
     } catch (error) {
-      console.error("Error fetching apartments:", error);
       message.error("Không thể tải danh sách căn hộ");
     } finally {
       setLoading(false);
@@ -88,10 +71,8 @@ const ApartmentListView = () => {
           [apartmentName]: response.data,
         }));
       } else {
-        console.warn(`No renters found for apartment ${apartmentName}`);
       }
     } catch (error) {
-      console.error(`Error fetching renters for ${apartmentName}:`, error);
       message.error(`Không thể tải thông tin người thuê cho căn hộ ${apartmentName}`);
     }
   };
@@ -140,11 +121,7 @@ const ApartmentListView = () => {
           rented: "blue",
           MAINTENANCE: "orange",
         };
-        return (
-          <Tag color={colorMap[status] || "default"}>
-            {statusMap[status] || status}
-          </Tag>
-        );
+        return <Tag color={colorMap[status] || "default"}>{statusMap[status] || status}</Tag>;
       },
     },
     {
@@ -181,51 +158,53 @@ const ApartmentListView = () => {
       render: (_, record) => {
         const apartmentRenters = renters[record.apartmentName] || [];
         return apartmentRenters.length > 0 ? (
-          <Space direction="vertical" style={{ width: '100%' }}>
+          <Space direction="vertical" style={{ width: "100%" }}>
             {apartmentRenters.map((renter) => (
-              <Card 
-                key={renter.userId} 
-                size="small" 
+              <Card
+                key={renter.userId}
+                size="small"
                 style={{
                   marginBottom: 8,
                   borderRadius: 8,
-                  boxShadow: '0 2px 4px rgba(0,0,0,0.1)',
-                  border: '1px solid #e8e8e8'
+                  boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
+                  border: "1px solid #e8e8e8",
                 }}
-                bodyStyle={{ padding: '12px' }}
+                bodyStyle={{ padding: "12px" }}
               >
                 <Space align="start">
-                  <div 
+                  <div
                     style={{
                       width: 32,
                       height: 32,
-                      borderRadius: '50%',
-                      background: '#1890ff',
-                      display: 'flex',
-                      alignItems: 'center',
-                      justifyContent: 'center',
-                      color: 'white',
-                      fontSize: '16px',
-                      marginRight: 8
+                      borderRadius: "50%",
+                      background: "#1890ff",
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "center",
+                      color: "white",
+                      fontSize: "16px",
+                      marginRight: 8,
                     }}
                   >
-                    {renter.userName?.[0]?.toUpperCase() || 'U'}
+                    {renter.userName?.[0]?.toUpperCase() || "U"}
                   </div>
                   <Space direction="vertical" size={4}>
                     <Space>
-                      <span style={{ 
-                        fontWeight: 500,
-                        fontSize: '14px',
-                        color: '#262626'
-                      }}>
+                      <span
+                        style={{
+                          fontWeight: 500,
+                          fontSize: "14px",
+                          color: "#262626",
+                        }}
+                      >
                         {renter.userName}
                       </span>
-                      <Tag 
-                        color="purple" 
-                        style={{ 
-                          borderRadius: '4px',
-                          fontSize: '12px',
-                          padding: '0 6px'
+                      <Tag
+                        color="purple"
+                        style={{
+                          borderRadius: "4px",
+                          fontSize: "12px",
+                          padding: "0 6px",
                         }}
                       >
                         {renter.role}
@@ -233,23 +212,27 @@ const ApartmentListView = () => {
                     </Space>
                     <Space size={12}>
                       {renter.email && (
-                        <span style={{ 
-                          fontSize: '12px',
-                          color: '#595959',
-                          display: 'flex',
-                          alignItems: 'center'
-                        }}>
+                        <span
+                          style={{
+                            fontSize: "12px",
+                            color: "#595959",
+                            display: "flex",
+                            alignItems: "center",
+                          }}
+                        >
                           <MailOutlined style={{ marginRight: 4 }} />
                           {renter.email}
                         </span>
                       )}
                       {renter.phone && (
-                        <span style={{ 
-                          fontSize: '12px',
-                          color: '#595959',
-                          display: 'flex',
-                          alignItems: 'center'
-                        }}>
+                        <span
+                          style={{
+                            fontSize: "12px",
+                            color: "#595959",
+                            display: "flex",
+                            alignItems: "center",
+                          }}
+                        >
                           <PhoneOutlined style={{ marginRight: 4 }} />
                           {renter.phone}
                         </span>
@@ -261,19 +244,19 @@ const ApartmentListView = () => {
             ))}
           </Space>
         ) : (
-          <Tag 
+          <Tag
             color="default"
             style={{
-              padding: '4px 8px',
-              borderRadius: '4px',
-              fontSize: '13px'
+              padding: "4px 8px",
+              borderRadius: "4px",
+              fontSize: "13px",
             }}
           >
             Chưa có người thuê
           </Tag>
         );
       },
-      width: 300
+      width: 300,
     },
   ];
 
@@ -283,7 +266,6 @@ const ApartmentListView = () => {
     { value: "rented", label: "Đã cho thuê" },
     { value: "maintenance", label: "Đang bảo trì" },
   ];
-
 
   // Pagination change handler
   const handlePaginationChange = (page) => {
@@ -307,9 +289,6 @@ const ApartmentListView = () => {
             prefix={<SearchOutlined />}
             allowClear
           />
-
-
-
         </Space>
 
         <Table

@@ -1,7 +1,7 @@
-import React from 'react';
-import HeaderComponent from '../../client/HeaderComponent/HeaderComponent';
-import FooterComponent from '../../client/FooterComponent/FooterComponent';
-import styled from 'styled-components';
+import React from "react";
+import HeaderComponent from "../../client/HeaderComponent/HeaderComponent";
+import FooterComponent from "../../client/FooterComponent/FooterComponent";
+import styled from "styled-components";
 
 const LayoutWrapper = styled.div`
   display: flex;

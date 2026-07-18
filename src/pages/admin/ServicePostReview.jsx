@@ -1,14 +1,30 @@
-import React, { useState, useEffect } from 'react';
-import { 
-  Card, Button, message, Typography, Tag, Modal, Space, 
-  Table, Drawer, Input, Tabs, Image, Avatar, Alert, Form 
-} from 'antd';
-import { 
-  CheckCircleOutlined, CloseCircleOutlined, 
-  EyeOutlined, ExclamationCircleOutlined,
-  SearchOutlined
-} from '@ant-design/icons';
-import { getUnverifiedFacilities, verifyFacilityPost, rejectFacilityPost } from "../../redux/apiCalls";
+import React, { useState, useEffect } from "react";
+import {
+  Card,
+  Button,
+  message,
+  Typography,
+  Tag,
+  Modal,
+  Space,
+  Table,
+  Input,
+  Tabs,
+  Avatar,
+  Form,
+} from "antd";
+import {
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  EyeOutlined,
+  ExclamationCircleOutlined,
+  SearchOutlined,
+} from "@ant-design/icons";
+import {
+  getUnverifiedFacilities,
+  verifyFacilityPost,
+  rejectFacilityPost,
+} from "../../redux/apiCalls";
 import { useSelector } from "react-redux";
 
 const { Text } = Typography;
@@ -16,14 +32,7 @@ const { TextArea } = Input;
 const { TabPane } = Tabs;
 
 // Update RejectModal implementation and move it outside ServicePostReview
-const RejectModal = ({ 
-  visible, 
-  onCancel, 
-  onOk, 
-  loading, 
-  rejectionReason, 
-  setRejectionReason 
-}) => (
+const RejectModal = ({ visible, onCancel, onOk, loading, rejectionReason, setRejectionReason }) => (
   <Modal
     title="Từ chối bài đăng"
     open={visible}
@@ -37,13 +46,13 @@ const RejectModal = ({
       <Form.Item
         label="Lý do từ chối"
         required
-        validateStatus={!rejectionReason.trim() && 'error'}
-        help={!rejectionReason.trim() && 'Vui lòng nhập lý do từ chối'}
+        validateStatus={!rejectionReason.trim() && "error"}
+        help={!rejectionReason.trim() && "Vui lòng nhập lý do từ chối"}
       >
         <TextArea
           rows={4}
           value={rejectionReason}
-          onChange={e => setRejectionReason(e.target.value)}
+          onChange={(e) => setRejectionReason(e.target.value)}
           placeholder="Nhập lý do từ chối bài đăng..."
           maxLength={500}
           showCount
@@ -59,10 +68,10 @@ const ServicePostReview = () => {
   const [selectedPost, setSelectedPost] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [rejectModalVisible, setRejectModalVisible] = useState(false);
-  const [rejectionReason, setRejectionReason] = useState('');
-  const [activeTab, setActiveTab] = useState('unverified');
+  const [rejectionReason, setRejectionReason] = useState("");
+  const [activeTab, setActiveTab] = useState("unverified");
   const [loading, setLoading] = useState(false);
-  const [searchText, setSearchText] = useState('');
+  const [searchText, setSearchText] = useState("");
 
   // Add currentUser from Redux
   const currentUser = useSelector((state) => state.user.currentUser);
@@ -73,22 +82,22 @@ const ServicePostReview = () => {
     try {
       const response = await getUnverifiedFacilities();
       if (response.success && response.data) {
-        const transformedData = response.data.map(facility => ({
+        const transformedData = response.data.map((facility) => ({
           id: facility.facilityId,
-          title: facility.facilityPostContent || 'Không có tiêu đề',
+          title: facility.facilityPostContent || "Không có tiêu đề",
           provider: {
-            name: facility.userName || 'Người dùng',
-            avatar: facility.userImgUrl
+            name: facility.userName || "Người dùng",
+            avatar: facility.userImgUrl,
           },
-          content: facility.facilityPostContent || 'Không có nội dung',
+          content: facility.facilityPostContent || "Không có nội dung",
           images: facility.imageFiles || [],
-          status: facility.status || 'unverified',
-          rejectionReason: facility.rejectedReason
+          status: facility.status || "unverified",
+          rejectionReason: facility.rejectedReason,
         }));
         setServicePosts(transformedData);
       }
     } catch (error) {
-      message.error('Không thể tải danh sách bài đăng');
+      message.error("Không thể tải danh sách bài đăng");
     } finally {
       setLoading(false);
     }
@@ -102,12 +111,16 @@ const ServicePostReview = () => {
   // Status renderer
   const renderStatus = (status) => {
     const statusConfig = {
-      unverified: { color: 'gold', text: 'Chờ duyệt', icon: <ExclamationCircleOutlined /> },
-      verified: { color: 'green', text: 'Đã duyệt', icon: <CheckCircleOutlined /> },
-      rejected: { color: 'red', text: 'Từ chối', icon: <CloseCircleOutlined /> }
+      unverified: { color: "gold", text: "Chờ duyệt", icon: <ExclamationCircleOutlined /> },
+      verified: { color: "green", text: "Đã duyệt", icon: <CheckCircleOutlined /> },
+      rejected: { color: "red", text: "Từ chối", icon: <CloseCircleOutlined /> },
     };
     const config = statusConfig[status] || statusConfig.unverified;
-    return <Tag color={config.color} icon={config.icon}>{config.text}</Tag>;
+    return (
+      <Tag color={config.color} icon={config.icon}>
+        {config.text}
+      </Tag>
+    );
   };
 
   // Add handlers for verify and reject
@@ -115,15 +128,15 @@ const ServicePostReview = () => {
     try {
       setLoading(true);
       const response = await verifyFacilityPost(record.id, currentUser.userId);
-      
+
       if (response.success) {
-        message.success('Duyệt bài đăng thành công');
+        message.success("Duyệt bài đăng thành công");
         fetchUnverifiedPosts(); // Can access the function now
       } else {
-        message.error(response.message || 'Không thể duyệt bài đăng');
+        message.error(response.message || "Không thể duyệt bài đăng");
       }
     } catch (error) {
-      message.error('Có lỗi xảy ra khi duyệt bài đăng');
+      message.error("Có lỗi xảy ra khi duyệt bài đăng");
     } finally {
       setLoading(false);
     }
@@ -132,30 +145,25 @@ const ServicePostReview = () => {
   // Update handleReject function
   const handleReject = async (record) => {
     if (!rejectionReason.trim()) {
-      message.error('Vui lòng nhập lý do từ chối');
+      message.error("Vui lòng nhập lý do từ chối");
       return;
     }
 
     try {
       setLoading(true);
-      const response = await rejectFacilityPost(
-        record.id,
-        currentUser.userId,
-        rejectionReason
-      );
-      
+      const response = await rejectFacilityPost(record.id, currentUser.userId, rejectionReason);
+
       if (response.success) {
-        message.success('Từ chối bài đăng thành công');
+        message.success("Từ chối bài đăng thành công");
         setRejectModalVisible(false);
-        setRejectionReason('');
+        setRejectionReason("");
         setSelectedPost(null);
         await fetchUnverifiedPosts();
       } else {
-        throw new Error(response.message || 'Không thể từ chối bài đăng');
+        throw new Error(response.message || "Không thể từ chối bài đăng");
       }
     } catch (error) {
-      console.error('Error rejecting post:', error);
-      message.error(error.message || 'Có lỗi xảy ra khi từ chối bài đăng');
+      message.error(error.message || "Có lỗi xảy ra khi từ chối bài đăng");
     } finally {
       setLoading(false);
     }
@@ -164,8 +172,8 @@ const ServicePostReview = () => {
   // Table columns
   const columns = [
     {
-      title: 'Bài viết',
-      dataIndex: 'title',
+      title: "Bài viết",
+      dataIndex: "title",
       render: (text, record) => (
         <Space>
           <Avatar src={record.provider.avatar} />
@@ -175,28 +183,25 @@ const ServicePostReview = () => {
             <Text type="secondary">{record.provider.name}</Text>
           </div>
         </Space>
-      )
+      ),
     },
     {
-      title: 'Trạng thái',
-      dataIndex: 'status',
+      title: "Trạng thái",
+      dataIndex: "status",
       width: 150,
-      render: renderStatus
+      render: renderStatus,
     },
     {
-      title: 'Thao tác',
+      title: "Thao tác",
       width: 200,
       render: (_, record) => (
         <Space>
-          <Button 
-            icon={<EyeOutlined />} 
-            onClick={() => setSelectedPost(record)}
-          >
+          <Button icon={<EyeOutlined />} onClick={() => setSelectedPost(record)}>
             Chi tiết
           </Button>
-          {record.status === 'unverified' && (
+          {record.status === "unverified" && (
             <>
-              <Button 
+              <Button
                 type="primary"
                 icon={<CheckCircleOutlined />}
                 onClick={() => handleVerify(record)}
@@ -204,7 +209,7 @@ const ServicePostReview = () => {
               >
                 Duyệt
               </Button>
-              <Button 
+              <Button
                 danger
                 icon={<CloseCircleOutlined />}
                 onClick={() => {
@@ -218,15 +223,16 @@ const ServicePostReview = () => {
             </>
           )}
         </Space>
-      )
-    }
+      ),
+    },
   ];
 
   // Filtered posts
   const getFilteredPosts = () => {
-    return servicePosts.filter(post => {
-      const matchesTab = activeTab === 'all' || post.status === activeTab;
-      const matchesSearch = !searchText || 
+    return servicePosts.filter((post) => {
+      const matchesTab = activeTab === "all" || post.status === activeTab;
+      const matchesSearch =
+        !searchText ||
         post.title.toLowerCase().includes(searchText.toLowerCase()) ||
         post.content.toLowerCase().includes(searchText.toLowerCase());
       return matchesTab && matchesSearch;
@@ -241,40 +247,47 @@ const ServicePostReview = () => {
           placeholder="Tìm kiếm bài đăng"
           prefix={<SearchOutlined />}
           allowClear
-          onChange={e => setSearchText(e.target.value)}
+          onChange={(e) => setSearchText(e.target.value)}
           style={{ width: 300 }}
         />
       </Space>
 
       {/* Tabs */}
       <Tabs activeKey={activeTab} onChange={setActiveTab}>
-        <TabPane 
-          tab={<span><ExclamationCircleOutlined /> Chờ duyệt</span>}
+        <TabPane
+          tab={
+            <span>
+              <ExclamationCircleOutlined /> Chờ duyệt
+            </span>
+          }
           key="unverified"
         />
-        <TabPane 
-          tab={<span><CheckCircleOutlined /> Đã duyệt</span>}
+        <TabPane
+          tab={
+            <span>
+              <CheckCircleOutlined /> Đã duyệt
+            </span>
+          }
           key="verified"
         />
-        <TabPane 
-          tab={<span><CloseCircleOutlined /> Đã từ chối</span>}
+        <TabPane
+          tab={
+            <span>
+              <CloseCircleOutlined /> Đã từ chối
+            </span>
+          }
           key="rejected"
         />
       </Tabs>
 
       {/* Posts Table */}
-      <Table
-        dataSource={getFilteredPosts()}
-        columns={columns}
-        rowKey="id"
-        loading={loading}
-      />
+      <Table dataSource={getFilteredPosts()} columns={columns} rowKey="id" loading={loading} />
 
-      <RejectModal 
+      <RejectModal
         visible={rejectModalVisible}
         onCancel={() => {
           setRejectModalVisible(false);
-          setRejectionReason('');
+          setRejectionReason("");
           setSelectedPost(null);
         }}
         onOk={() => handleReject(selectedPost)}

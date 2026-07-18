@@ -1,18 +1,7 @@
 import React, { useState } from "react";
-import {
-  Modal,
-  Input,
-  InputNumber,
-  Checkbox,
-  Button,
-  Divider,
-  Row,
-  Col,
-  message,
-} from "antd";
+import { Modal, Input, InputNumber, Checkbox, Button, Divider, Row, Col, message } from "antd";
 import { useSelector } from "react-redux";
 import { depositCreate } from "../../../redux/apiCalls";
-import { useNavigate } from "react-router-dom";
 
 // Sample Post Detail Data
 const samplePostDetail = {
@@ -29,12 +18,7 @@ const samplePostDetail = {
   bathrooms: 2,
 };
 
-const DepositPage = ({
-  postDetail = samplePostDetail,
-  isOpen,
-  onCancel,
-  onSubmit,
-}) => {
+const DepositPage = ({ postDetail = samplePostDetail, isOpen, onCancel, onSubmit }) => {
   const [termsAgreed, setTermsAgreed] = useState(true);
   const [modalVisible, setModalVisible] = useState(isOpen);
 
@@ -44,8 +28,7 @@ const DepositPage = ({
     if (!termsAgreed) {
       Modal.error({
         title: "Điều khoản chưa được đồng ý",
-        content:
-          "Vui lòng đọc và đồng ý với các điều khoản trước khi gửi yêu cầu.",
+        content: "Vui lòng đọc và đồng ý với các điều khoản trước khi gửi yêu cầu.",
       });
       return;
     }
@@ -58,24 +41,22 @@ const DepositPage = ({
 
     try {
       const res = await depositCreate(depositRequest);
-      if(res.success){
+      if (res.success) {
         message.success(res.message);
         const data = res.data;
-        const formData ={
+        const formData = {
           ...depositRequest,
-          depositId: data.depositId
-        }
+          depositId: data.depositId,
+        };
         localStorage.setItem("depositRequest", JSON.stringify(formData));
         const url = res?.data?.checkoutUrl;
         window.location.href = url;
-      }else{
-        
+      } else {
       }
       const messageAPI = res.data.message;
       if (res.status === 401 || res.status === 400 || res.status === 403) {
         message.error(messageAPI);
       } else {
-        
       }
     } catch (error) {}
   };
@@ -149,9 +130,7 @@ c) Thanh toán đầy đủ các khoản phí trước khi kết thúc hợp đ�
           <InputNumber
             style={{ width: "100%" }}
             value={postDetail.price}
-            formatter={(value) =>
-              `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-            }
+            formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
             readOnly
             addonAfter="VNĐ/tháng"
             disabled
@@ -163,9 +142,7 @@ c) Thanh toán đầy đủ các khoản phí trước khi kết thúc hợp đ�
           <InputNumber
             style={{ width: "100%" }}
             value={postDetail.depositPrice}
-            formatter={(value) =>
-              `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-            }
+            formatter={(value) => `${value}`.replace(/\B(?=(\d{3})+(?!\d))/g, ",")}
             readOnly
             addonAfter="VNĐ"
             disabled
@@ -183,17 +160,12 @@ c) Thanh toán đầy đủ các khoản phí trước khi kết thúc hợp đ�
               borderRadius: 4,
             }}
           >
-            <pre style={{ whiteSpace: "pre-wrap", fontFamily: "inherit" }}>
-              {depositTerms}
-            </pre>
+            <pre style={{ whiteSpace: "pre-wrap", fontFamily: "inherit" }}>{depositTerms}</pre>
           </div>
         </Col>
 
         <Col span={24}>
-          <Checkbox
-            checked={termsAgreed}
-            onChange={(e) => setTermsAgreed(e.target.checked)}
-          >
+          <Checkbox checked={termsAgreed} onChange={(e) => setTermsAgreed(e.target.checked)}>
             Tôi đã đọc và đồng ý với các điều khoản đặt cọc
           </Checkbox>
         </Col>

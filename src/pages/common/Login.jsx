@@ -16,8 +16,8 @@ const Container = styled.div`
 const AnimationContainer = styled.div`
   flex: 3;
   ${mobile({
-  display: "none",
-})}
+    display: "none",
+  })}
 `;
 
 const LoginContainer = styled.div`
@@ -25,12 +25,12 @@ const LoginContainer = styled.div`
   display: flex;
   align-items: center;
   ${mobile({
-  width: "100%",
-  display: "flex",
-  flexFlow: "column",
-  alignItems: "center",
-  padding: "30px",
-})}
+    width: "100%",
+    display: "flex",
+    flexFlow: "column",
+    alignItems: "center",
+    padding: "30px",
+  })}
 `;
 
 const LoginForm = styled.form`
@@ -42,12 +42,12 @@ const LoginForm = styled.form`
   flex-flow: column;
   gap: 10px;
   ${mobile({
-  margin: "0",
-  padding: "30px",
-  // alignItems: "center",
-  justifyContent: "center",
-  height: "100%",
-})}
+    margin: "0",
+    padding: "30px",
+    // alignItems: "center",
+    justifyContent: "center",
+    height: "100%",
+  })}
 `;
 
 const Title = styled.h2`
@@ -65,8 +65,7 @@ const Button = styled.button`
   border: 0.2px solid #ccc;
   font-weight: 600;
   font-size: 16px;
-  background-color: ${(props) =>
-    props.tone === "dark" ? "#000" : "transparent"};
+  background-color: ${(props) => (props.tone === "dark" ? "#000" : "transparent")};
   color: ${(props) => (props.tone === "dark" ? "#fff" : "#000")};
   &:hover {
     cursor: pointer;
@@ -226,12 +225,7 @@ const Login = () => {
               setPassword(e.target.value);
             }}
           />
-          <Button
-            tone="dark"
-            type="submit"
-            onClick={handleLogin}
-            disabled={isFetching}
-          >
+          <Button tone="dark" type="submit" onClick={handleLogin} disabled={isFetching}>
             Sign in
           </Button>
           <Text>

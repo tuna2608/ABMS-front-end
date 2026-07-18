@@ -1,13 +1,38 @@
 import React, { useState, useEffect } from "react";
 import {
-  Card, Table, Button, Space, Modal, Form, Input, Select, DatePicker, Tag, Typography, Row, Col, message, Popconfirm, Badge, Tooltip, Image
+  Card,
+  Table,
+  Button,
+  Space,
+  Modal,
+  Form,
+  Input,
+  Select,
+  DatePicker,
+  Tag,
+  Typography,
+  Row,
+  Col,
+  message,
+  Badge,
+  Tooltip,
+  Image,
 } from "antd";
 import {
-  CheckCircleOutlined, CloseCircleOutlined, ExclamationCircleOutlined, 
-  EyeOutlined, EditOutlined, UserOutlined, MailOutlined, PhoneOutlined, 
-  HomeOutlined, CalendarOutlined, FileOutlined, SearchOutlined
+  CheckCircleOutlined,
+  CloseCircleOutlined,
+  ExclamationCircleOutlined,
+  EyeOutlined,
+  EditOutlined,
+  UserOutlined,
+  MailOutlined,
+  PhoneOutlined,
+  HomeOutlined,
+  CalendarOutlined,
+  FileOutlined,
+  SearchOutlined,
 } from "@ant-design/icons";
-import moment from 'moment';
+import moment from "moment";
 
 const { Option } = Select;
 const { Text, Title } = Typography;
@@ -49,15 +74,15 @@ const UpdateContract = () => {
                 {
                   id: 1,
                   name: "CMND.jpg",
-                  url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+                  url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
                 },
                 {
                   id: 2,
                   name: "HopDongThue.pdf",
-                  url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
-                }
+                  url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
+                },
               ],
-              created_at: "2023-01-01T10:30:00"
+              created_at: "2023-01-01T10:30:00",
             },
             {
               id: 2,
@@ -76,15 +101,15 @@ const UpdateContract = () => {
                 {
                   id: 3,
                   name: "CCCD.jpg",
-                  url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+                  url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
                 },
                 {
                   id: 4,
                   name: "HopDongMua.pdf",
-                  url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
-                }
+                  url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
+                },
               ],
-              created_at: "2023-02-01T09:15:00"
+              created_at: "2023-02-01T09:15:00",
             },
             {
               id: 3,
@@ -103,17 +128,17 @@ const UpdateContract = () => {
                 {
                   id: 5,
                   name: "CMND.jpg",
-                  url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+                  url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
                 },
                 {
                   id: 6,
                   name: "HopDongThue.pdf",
-                  url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
-                }
+                  url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
+                },
               ],
               created_at: "2023-03-01T14:20:00",
               approved_at: "2023-03-02T10:15:00",
-              approved_by: "admin"
+              approved_by: "admin",
             },
             {
               id: 4,
@@ -133,25 +158,24 @@ const UpdateContract = () => {
                 {
                   id: 7,
                   name: "CCCD.jpg",
-                  url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
+                  url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
                 },
                 {
                   id: 8,
                   name: "HopDongMua.pdf",
-                  url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png"
-                }
+                  url: "https://zos.alipayobjects.com/rmsportal/jkjgkEfvpUPVyRjUImniVslZfWPnJuuZ.png",
+                },
               ],
               created_at: "2023-04-01T16:45:00",
               rejected_at: "2023-04-02T11:30:00",
-              rejected_by: "admin"
-            }
+              rejected_by: "admin",
+            },
           ];
-          
+
           setContracts(sampleContracts);
           setLoading(false);
         }, 1000);
       } catch (error) {
-        console.error("Error fetching contracts:", error);
         message.error("Lỗi khi tải danh sách hợp đồng");
         setLoading(false);
       }
@@ -167,10 +191,10 @@ const UpdateContract = () => {
 
   const handleApproveClick = (record) => {
     setSelectedContract(record);
-    
+
     const startDate = record.contract_start_date ? moment(record.contract_start_date) : null;
     const endDate = record.contract_end_date ? moment(record.contract_end_date) : null;
-    
+
     approveForm.setFieldsValue({
       full_name: record.full_name,
       email: record.email,
@@ -178,9 +202,9 @@ const UpdateContract = () => {
       apartment_name: record.apartment_name,
       verification_type: record.verification_type,
       contract_start_date: startDate,
-      contract_end_date: endDate
+      contract_end_date: endDate,
     });
-    
+
     setApproveModalVisible(true);
   };
 
@@ -191,13 +215,12 @@ const UpdateContract = () => {
   };
 
   const handleApproveSubmit = () => {
-    approveForm.validateFields().then(values => {
+    approveForm.validateFields().then((values) => {
       // In una vera applicazione, qui si effettuerebbe una chiamata API
-      console.log("Approve form values:", values);
-      
+
       setTimeout(() => {
         // Aggiorna lo stato dei contratti
-        const updatedContracts = contracts.map(item => {
+        const updatedContracts = contracts.map((item) => {
           if (item.id === selectedContract.id) {
             return {
               ...item,
@@ -206,18 +229,21 @@ const UpdateContract = () => {
               phone_number: values.phone_number,
               apartment_name: values.apartment_name,
               verification_type: values.verification_type,
-              verification_type_name: values.verification_type === 1 ? "Hợp đồng thuê căn hộ" : "Hợp đồng mua căn hộ",
+              verification_type_name:
+                values.verification_type === 1 ? "Hợp đồng thuê căn hộ" : "Hợp đồng mua căn hộ",
               contract_start_date: values.contract_start_date.format("YYYY-MM-DD"),
-              contract_end_date: values.contract_end_date ? values.contract_end_date.format("YYYY-MM-DD") : null,
+              contract_end_date: values.contract_end_date
+                ? values.contract_end_date.format("YYYY-MM-DD")
+                : null,
               verified: 1,
               status: "Đã duyệt",
               approved_at: new Date().toISOString(),
-              approved_by: "admin"
+              approved_by: "admin",
             };
           }
           return item;
         });
-        
+
         setContracts(updatedContracts);
         setApproveModalVisible(false);
         setSelectedContract(null);
@@ -231,13 +257,12 @@ const UpdateContract = () => {
       message.error("Vui lòng nhập lý do từ chối!");
       return;
     }
-    
+
     // In una vera applicazione, qui si effettuerebbe una chiamata API
-    console.log("Reject reason:", rejectReason);
-    
+
     setTimeout(() => {
       // Aggiorna lo stato dei contratti
-      const updatedContracts = contracts.map(item => {
+      const updatedContracts = contracts.map((item) => {
         if (item.id === selectedContract.id) {
           return {
             ...item,
@@ -245,12 +270,12 @@ const UpdateContract = () => {
             status: "Đã từ chối",
             reject_reason: rejectReason,
             rejected_at: new Date().toISOString(),
-            rejected_by: "admin"
+            rejected_by: "admin",
           };
         }
         return item;
       });
-      
+
       setContracts(updatedContracts);
       setRejectModalVisible(false);
       setSelectedContract(null);
@@ -268,7 +293,7 @@ const UpdateContract = () => {
     setSearchText(value);
   };
 
-  const filteredContracts = contracts.filter(contract => {
+  const filteredContracts = contracts.filter((contract) => {
     const searchValue = searchText.toLowerCase();
     return (
       contract.user_name.toLowerCase().includes(searchValue) ||
@@ -281,11 +306,23 @@ const UpdateContract = () => {
   const getStatusTag = (verified) => {
     switch (verified) {
       case 0:
-        return <Tag color="blue" icon={<ExclamationCircleOutlined />}>Đang chờ duyệt</Tag>;
+        return (
+          <Tag color="blue" icon={<ExclamationCircleOutlined />}>
+            Đang chờ duyệt
+          </Tag>
+        );
       case 1:
-        return <Tag color="green" icon={<CheckCircleOutlined />}>Đã duyệt</Tag>;
+        return (
+          <Tag color="green" icon={<CheckCircleOutlined />}>
+            Đã duyệt
+          </Tag>
+        );
       case 2:
-        return <Tag color="red" icon={<CloseCircleOutlined />}>Đã từ chối</Tag>;
+        return (
+          <Tag color="red" icon={<CloseCircleOutlined />}>
+            Đã từ chối
+          </Tag>
+        );
       default:
         return <Tag color="default">Không xác định</Tag>;
     }
@@ -294,11 +331,11 @@ const UpdateContract = () => {
   const renderDocumentList = (documents) => {
     return (
       <Space direction="vertical">
-        {documents.map(doc => (
-          <div key={doc.id} style={{ display: 'flex', alignItems: 'center' }}>
+        {documents.map((doc) => (
+          <div key={doc.id} style={{ display: "flex", alignItems: "center" }}>
             <FileOutlined style={{ marginRight: 8 }} />
-            <Text 
-              style={{ cursor: 'pointer', color: '#1890ff' }}
+            <Text
+              style={{ cursor: "pointer", color: "#1890ff" }}
               onClick={() => handlePreview(doc.url)}
               ellipsis={{ tooltip: doc.name }}
             >
@@ -312,15 +349,15 @@ const UpdateContract = () => {
 
   const columns = [
     {
-      title: 'ID',
-      dataIndex: 'id',
-      key: 'id',
+      title: "ID",
+      dataIndex: "id",
+      key: "id",
       width: 50,
     },
     {
-      title: 'Tên người dùng',
-      dataIndex: 'user_name',
-      key: 'user_name',
+      title: "Tên người dùng",
+      dataIndex: "user_name",
+      key: "user_name",
       render: (text, record) => (
         <Space>
           <UserOutlined />
@@ -329,14 +366,14 @@ const UpdateContract = () => {
       ),
     },
     {
-      title: 'Họ tên',
-      dataIndex: 'full_name',
-      key: 'full_name',
+      title: "Họ tên",
+      dataIndex: "full_name",
+      key: "full_name",
     },
     {
-      title: 'Email',
-      dataIndex: 'email',
-      key: 'email',
+      title: "Email",
+      dataIndex: "email",
+      key: "email",
       render: (text) => (
         <Space>
           <MailOutlined />
@@ -345,9 +382,9 @@ const UpdateContract = () => {
       ),
     },
     {
-      title: 'Căn hộ',
-      dataIndex: 'apartment_name',
-      key: 'apartment_name',
+      title: "Căn hộ",
+      dataIndex: "apartment_name",
+      key: "apartment_name",
       render: (text) => (
         <Space>
           <HomeOutlined />
@@ -356,19 +393,17 @@ const UpdateContract = () => {
       ),
     },
     {
-      title: 'Loại hợp đồng',
-      dataIndex: 'verification_type_name',
-      key: 'verification_type_name',
+      title: "Loại hợp đồng",
+      dataIndex: "verification_type_name",
+      key: "verification_type_name",
       render: (text, record) => (
-        <Tag color={record.verification_type === 1 ? 'blue' : 'purple'}>
-          {text}
-        </Tag>
+        <Tag color={record.verification_type === 1 ? "blue" : "purple"}>{text}</Tag>
       ),
     },
     {
-      title: 'Ngày bắt đầu',
-      dataIndex: 'contract_start_date',
-      key: 'contract_start_date',
+      title: "Ngày bắt đầu",
+      dataIndex: "contract_start_date",
+      key: "contract_start_date",
       render: (text) => (
         <Space>
           <CalendarOutlined />
@@ -377,39 +412,39 @@ const UpdateContract = () => {
       ),
     },
     {
-      title: 'Trạng thái',
-      dataIndex: 'verified',
-      key: 'verified',
+      title: "Trạng thái",
+      dataIndex: "verified",
+      key: "verified",
       render: (verified) => getStatusTag(verified),
     },
     {
-      title: 'Thao tác',
-      key: 'action',
+      title: "Thao tác",
+      key: "action",
       render: (_, record) => (
         <Space size="small">
           <Tooltip title="Xem chi tiết">
-            <Button 
-              icon={<EyeOutlined />} 
+            <Button
+              icon={<EyeOutlined />}
               onClick={() => handleViewContract(record)}
               type="default"
               size="small"
             />
           </Tooltip>
-          
+
           {record.verified === 0 && (
             <>
               <Tooltip title="Phê duyệt">
-                <Button 
-                  icon={<CheckCircleOutlined />} 
+                <Button
+                  icon={<CheckCircleOutlined />}
                   onClick={() => handleApproveClick(record)}
                   type="primary"
                   size="small"
                 />
               </Tooltip>
-              
+
               <Tooltip title="Từ chối">
-                <Button 
-                  icon={<CloseCircleOutlined />} 
+                <Button
+                  icon={<CloseCircleOutlined />}
                   onClick={() => handleRejectClick(record)}
                   danger
                   size="small"
@@ -417,11 +452,11 @@ const UpdateContract = () => {
               </Tooltip>
             </>
           )}
-          
+
           {record.verified !== 0 && (
             <Tooltip title="Chỉnh sửa">
-              <Button 
-                icon={<EditOutlined />} 
+              <Button
+                icon={<EditOutlined />}
                 onClick={() => handleApproveClick(record)}
                 size="small"
               />
@@ -434,13 +469,13 @@ const UpdateContract = () => {
 
   return (
     <div className="update-contract-container">
-      <Card 
+      <Card
         title={
           <Space>
             <Title level={4}>Quản lý và duyệt hợp đồng</Title>
-            <Badge 
-              count={contracts.filter(c => c.verified === 0).length} 
-              style={{ backgroundColor: '#1890ff' }}
+            <Badge
+              count={contracts.filter((c) => c.verified === 0).length}
+              style={{ backgroundColor: "#1890ff" }}
             />
           </Space>
         }
@@ -480,44 +515,58 @@ const UpdateContract = () => {
           <Card>
             <Row gutter={[16, 16]}>
               <Col span={12}>
-                <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                <Space direction="vertical" size="middle" style={{ width: "100%" }}>
                   <div>
-                    <Text strong><UserOutlined /> Tên người dùng: </Text>
+                    <Text strong>
+                      <UserOutlined /> Tên người dùng:{" "}
+                    </Text>
                     <Text>{selectedContract.user_name}</Text>
                   </div>
                   <div>
-                    <Text strong><UserOutlined /> Họ và tên: </Text>
+                    <Text strong>
+                      <UserOutlined /> Họ và tên:{" "}
+                    </Text>
                     <Text>{selectedContract.full_name}</Text>
                   </div>
                   <div>
-                    <Text strong><MailOutlined /> Email: </Text>
+                    <Text strong>
+                      <MailOutlined /> Email:{" "}
+                    </Text>
                     <Text>{selectedContract.email}</Text>
                   </div>
                   <div>
-                    <Text strong><PhoneOutlined /> Số điện thoại: </Text>
+                    <Text strong>
+                      <PhoneOutlined /> Số điện thoại:{" "}
+                    </Text>
                     <Text>{selectedContract.phone_number}</Text>
                   </div>
                 </Space>
               </Col>
               <Col span={12}>
-                <Space direction="vertical" size="middle" style={{ width: '100%' }}>
+                <Space direction="vertical" size="middle" style={{ width: "100%" }}>
                   <div>
-                    <Text strong><HomeOutlined /> Căn hộ: </Text>
+                    <Text strong>
+                      <HomeOutlined /> Căn hộ:{" "}
+                    </Text>
                     <Text>{selectedContract.apartment_name}</Text>
                   </div>
                   <div>
                     <Text strong>Loại hợp đồng: </Text>
-                    <Tag color={selectedContract.verification_type === 1 ? 'blue' : 'purple'}>
+                    <Tag color={selectedContract.verification_type === 1 ? "blue" : "purple"}>
                       {selectedContract.verification_type_name}
                     </Tag>
                   </div>
                   <div>
-                    <Text strong><CalendarOutlined /> Ngày bắt đầu: </Text>
+                    <Text strong>
+                      <CalendarOutlined /> Ngày bắt đầu:{" "}
+                    </Text>
                     <Text>{selectedContract.contract_start_date}</Text>
                   </div>
                   {selectedContract.contract_end_date && (
                     <div>
-                      <Text strong><CalendarOutlined /> Ngày kết thúc: </Text>
+                      <Text strong>
+                        <CalendarOutlined /> Ngày kết thúc:{" "}
+                      </Text>
                       <Text>{selectedContract.contract_end_date}</Text>
                     </div>
                   )}
@@ -539,18 +588,18 @@ const UpdateContract = () => {
               </Col>
               <Col span={24}>
                 <Text strong>Ngày tạo: </Text>
-                <Text>{moment(selectedContract.created_at).format('DD/MM/YYYY HH:mm:ss')}</Text>
+                <Text>{moment(selectedContract.created_at).format("DD/MM/YYYY HH:mm:ss")}</Text>
               </Col>
               {selectedContract.approved_at && (
                 <Col span={24}>
                   <Text strong>Ngày duyệt: </Text>
-                  <Text>{moment(selectedContract.approved_at).format('DD/MM/YYYY HH:mm:ss')}</Text>
+                  <Text>{moment(selectedContract.approved_at).format("DD/MM/YYYY HH:mm:ss")}</Text>
                 </Col>
               )}
               {selectedContract.rejected_at && (
                 <Col span={24}>
                   <Text strong>Ngày từ chối: </Text>
-                  <Text>{moment(selectedContract.rejected_at).format('DD/MM/YYYY HH:mm:ss')}</Text>
+                  <Text>{moment(selectedContract.rejected_at).format("DD/MM/YYYY HH:mm:ss")}</Text>
                 </Col>
               )}
             </Row>
@@ -579,7 +628,7 @@ const UpdateContract = () => {
               <Form.Item
                 name="full_name"
                 label="Họ và tên"
-                rules={[{ required: true, message: 'Vui lòng nhập họ và tên!' }]}
+                rules={[{ required: true, message: "Vui lòng nhập họ và tên!" }]}
               >
                 <Input prefix={<UserOutlined />} placeholder="Nhập họ và tên" />
               </Form.Item>
@@ -589,8 +638,8 @@ const UpdateContract = () => {
                 name="email"
                 label="Email"
                 rules={[
-                  { required: true, message: 'Vui lòng nhập email!' },
-                  { type: 'email', message: 'Email không hợp lệ!' }
+                  { required: true, message: "Vui lòng nhập email!" },
+                  { type: "email", message: "Email không hợp lệ!" },
                 ]}
               >
                 <Input prefix={<MailOutlined />} placeholder="Nhập email" />
@@ -602,7 +651,7 @@ const UpdateContract = () => {
               <Form.Item
                 name="phone_number"
                 label="Số điện thoại"
-                rules={[{ required: true, message: 'Vui lòng nhập số điện thoại!' }]}
+                rules={[{ required: true, message: "Vui lòng nhập số điện thoại!" }]}
               >
                 <Input prefix={<PhoneOutlined />} placeholder="Nhập số điện thoại" />
               </Form.Item>
@@ -611,7 +660,7 @@ const UpdateContract = () => {
               <Form.Item
                 name="apartment_name"
                 label="Tên căn hộ"
-                rules={[{ required: true, message: 'Vui lòng nhập tên căn hộ!' }]}
+                rules={[{ required: true, message: "Vui lòng nhập tên căn hộ!" }]}
               >
                 <Input prefix={<HomeOutlined />} placeholder="Nhập tên căn hộ" />
               </Form.Item>
@@ -622,7 +671,7 @@ const UpdateContract = () => {
               <Form.Item
                 name="verification_type"
                 label="Loại hợp đồng"
-                rules={[{ required: true, message: 'Vui lòng chọn loại hợp đồng!' }]}
+                rules={[{ required: true, message: "Vui lòng chọn loại hợp đồng!" }]}
               >
                 <Select placeholder="Chọn loại hợp đồng">
                   <Option value={1}>Hợp đồng thuê căn hộ</Option>
@@ -636,9 +685,9 @@ const UpdateContract = () => {
                   <Form.Item
                     name="contract_start_date"
                     label="Ngày bắt đầu"
-                    rules={[{ required: true, message: 'Vui lòng chọn ngày bắt đầu!' }]}
+                    rules={[{ required: true, message: "Vui lòng chọn ngày bắt đầu!" }]}
                   >
-                    <DatePicker style={{ width: '100%' }} format="YYYY-MM-DD" />
+                    <DatePicker style={{ width: "100%" }} format="YYYY-MM-DD" />
                   </Form.Item>
                 </Col>
                 {selectedContract?.verification_type !== 2 && (
@@ -646,9 +695,14 @@ const UpdateContract = () => {
                     <Form.Item
                       name="contract_end_date"
                       label="Ngày kết thúc"
-                      rules={[{ required: selectedContract?.verification_type === 1, message: 'Vui lòng chọn ngày kết thúc!' }]}
+                      rules={[
+                        {
+                          required: selectedContract?.verification_type === 1,
+                          message: "Vui lòng chọn ngày kết thúc!",
+                        },
+                      ]}
                     >
-                      <DatePicker style={{ width: '100%' }} format="YYYY-MM-DD" />
+                      <DatePicker style={{ width: "100%" }} format="YYYY-MM-DD" />
                     </Form.Item>
                   </Col>
                 )}
@@ -685,7 +739,7 @@ const UpdateContract = () => {
           <Form.Item
             label="Lý do từ chối"
             required
-            rules={[{ required: true, message: 'Vui lòng nhập lý do từ chối!' }]}
+            rules={[{ required: true, message: "Vui lòng nhập lý do từ chối!" }]}
           >
             <Input.TextArea
               rows={4}
@@ -704,11 +758,7 @@ const UpdateContract = () => {
         footer={null}
         onCancel={() => setPreviewVisible(false)}
       >
-        <Image
-          alt="document"
-          style={{ width: '100%' }}
-          src={previewImage}
-        />
+        <Image alt="document" style={{ width: "100%" }} src={previewImage} />
       </Modal>
     </div>
   );

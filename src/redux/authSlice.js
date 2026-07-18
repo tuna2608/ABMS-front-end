@@ -1,4 +1,4 @@
-import { createSlice } from '@reduxjs/toolkit';
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
   currentUser: null,
@@ -7,11 +7,11 @@ const initialState = {
   userRegister: null,
   forgotPasswordEmail: null,
   forgotPasswordStep: null, // 'initial', 'otp_sent', 'otp_verified'
-  changePasswordStatus: null // 'idle', 'loading', 'success', 'error'
+  changePasswordStatus: null, // 'idle', 'loading', 'success', 'error'
 };
 
 export const userSlice = createSlice({
-  name: 'user',
+  name: "user",
   initialState,
   reducers: {
     loginStart: (state) => {
@@ -73,17 +73,17 @@ export const userSlice = createSlice({
       state.isFetching = true;
       state.error = false;
       state.forgotPasswordEmail = action.payload;
-      state.forgotPasswordStep = 'initial';
+      state.forgotPasswordStep = "initial";
     },
     forgotPasswordOtpSent: (state) => {
       state.isFetching = false;
       state.error = false;
-      state.forgotPasswordStep = 'otp_sent';
+      state.forgotPasswordStep = "otp_sent";
     },
     forgotPasswordOtpVerified: (state) => {
       state.isFetching = false;
       state.error = false;
-      state.forgotPasswordStep = 'otp_verified';
+      state.forgotPasswordStep = "otp_verified";
     },
     forgotPasswordReset: (state) => {
       state.isFetching = false;
@@ -98,35 +98,35 @@ export const userSlice = createSlice({
     changePasswordStart: (state) => {
       state.isFetching = true;
       state.error = false;
-      state.changePasswordStatus = 'loading';
+      state.changePasswordStatus = "loading";
     },
     changePasswordSuccess: (state) => {
       state.isFetching = false;
       state.error = false;
-      state.changePasswordStatus = 'success';
+      state.changePasswordStatus = "success";
     },
     changePasswordFailure: (state) => {
       state.isFetching = false;
       state.error = true;
-      state.changePasswordStatus = 'error';
+      state.changePasswordStatus = "error";
     },
     resetChangePasswordStatus: (state) => {
-      state.changePasswordStatus = 'idle';
+      state.changePasswordStatus = "idle";
     },
   },
 });
 
 // Action creators are generated for each case reducer function
-export const { 
-  loginStart, 
-  loginSuccess, 
-  loginFailure, 
-  logout, 
-  registerStart, 
-  registerSuccess, 
-  registerFail, 
-  verifyStart, 
-  verifyFail, 
+export const {
+  loginStart,
+  loginSuccess,
+  loginFailure,
+  logout,
+  registerStart,
+  registerSuccess,
+  registerFail,
+  verifyStart,
+  verifyFail,
   verifySuccess,
   editProfileFail,
   editProfileSuccess,
@@ -140,7 +140,7 @@ export const {
   changePasswordStart,
   changePasswordSuccess,
   changePasswordFailure,
-  resetChangePasswordStatus
+  resetChangePasswordStatus,
 } = userSlice.actions;
 
 export default userSlice.reducer;

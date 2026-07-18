@@ -16,7 +16,6 @@ import {
 } from "antd";
 import {
   MoneyCollectOutlined,
-  BankOutlined,
   CheckOutlined,
   CloseOutlined,
   EyeOutlined,
@@ -25,7 +24,7 @@ import {
 } from "@ant-design/icons";
 import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
-import { acceptReCoin, getAllReCoin, login, rejectReCoin } from "../../redux/apiCalls";
+import { acceptReCoin, getAllReCoin, rejectReCoin } from "../../redux/apiCalls";
 
 const { Text } = Typography;
 
@@ -53,7 +52,6 @@ const CoinManagement = () => {
   const [loading, setLoading] = useState(false);
   const [reCoins, setReCoins] = useState([]);
 
-  
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [qrModalVisible, setQrModalVisible] = useState(false);
@@ -69,7 +67,7 @@ const CoinManagement = () => {
       const res = await getAllReCoin();
       if (res.success) {
         if (res.data) {
-          if (typeof res.data === 'object' && res.data !== null && !Array.isArray(res.data)) {
+          if (typeof res.data === "object" && res.data !== null && !Array.isArray(res.data)) {
             message.success(res.message);
             return;
           }
@@ -132,7 +130,6 @@ const CoinManagement = () => {
 
     try {
       const res = await acceptReCoin(formData);
-      // console.log(res);
       if (res.success) {
         message.success(res.message);
         window.location.href = "/adminHome/coin";
@@ -159,7 +156,6 @@ const CoinManagement = () => {
 
     try {
       const res = await rejectReCoin(formData);
-      // console.log(res);
       if (res.success) {
         message.success(res.message);
         window.location.href = "/adminHome/coin";
@@ -275,7 +271,7 @@ const CoinManagement = () => {
       <Table
         dataSource={reCoins}
         columns={columns}
-        rowKey={record => record.reCoinId}
+        rowKey={(record) => record.reCoinId}
         pagination={{ pageSize: 10 }}
         loading={loading}
       />
@@ -317,9 +313,7 @@ const CoinManagement = () => {
         {selectedRequest && (
           <>
             <Descriptions title="Thông Tin Người Dùng" column={1}>
-              <Descriptions.Item label="Họ Tên">
-                {selectedRequest.fullName}
-              </Descriptions.Item>
+              <Descriptions.Item label="Họ Tên">{selectedRequest.fullName}</Descriptions.Item>
               {/* <Descriptions.Item label="Tên Đăng Nhập">
                 {selectedRequest.username}
               </Descriptions.Item> */}
@@ -386,9 +380,7 @@ const CoinManagement = () => {
               <Descriptions.Item label="Số Tài Khoản">
                 {selectedRequest.bankNumber}
               </Descriptions.Item>
-              <Descriptions.Item label="Ngân Hàng">
-                {selectedRequest.bankName}
-              </Descriptions.Item>
+              <Descriptions.Item label="Ngân Hàng">{selectedRequest.bankName}</Descriptions.Item>
               <Descriptions.Item label="Số Tiền">
                 <Text strong style={{ color: "#1890ff" }}>
                   {formatCurrency(selectedRequest.amount)} VND
@@ -429,9 +421,8 @@ const CoinManagement = () => {
         {selectedRequest && (
           <>
             <p>
-              Bạn có chắc muốn từ chối yêu cầu chuyển{" "}
-              {formatCurrency(selectedRequest.amount)} VND của{" "}
-              {selectedRequest.fullName} không?
+              Bạn có chắc muốn từ chối yêu cầu chuyển {formatCurrency(selectedRequest.amount)} VND
+              của {selectedRequest.fullName} không?
             </p>
             <Alert
               message="Lưu ý"

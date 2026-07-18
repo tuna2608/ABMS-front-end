@@ -1,17 +1,13 @@
 import React from "react";
 import { Layout, Menu } from "antd";
 import { useNavigate } from "react-router-dom";
-import {
-  HomeOutlined,
-  DollarOutlined,
-  UserOutlined,
-} from "@ant-design/icons";
+import { HomeOutlined, DollarOutlined, UserOutlined } from "@ant-design/icons";
 
 const { Sider } = Layout;
 
 const SidebarMenu = ({ collapsed, setCollapsed, activeMenuItem, setActiveMenuItem }) => {
   const navigate = useNavigate();
-  
+
   const handleMenuClick = (key) => {
     setActiveMenuItem(key);
     navigate(`/staffHome/${key}`);
@@ -42,7 +38,6 @@ const SidebarMenu = ({ collapsed, setCollapsed, activeMenuItem, setActiveMenuIte
       label: "Thống kê tiêu thụ ",
       onClick: () => handleMenuClick("utility-management"),
     },
-    
   ];
 
   return (
@@ -54,11 +49,10 @@ const SidebarMenu = ({ collapsed, setCollapsed, activeMenuItem, setActiveMenuIte
       trigger={null}
       theme="light"
     >
-      <div style={{ height: 64, padding: 16, textAlign: "center" }}>
-       </div>
+      <div style={{ height: 64, padding: 16, textAlign: "center" }}></div>
       <Menu
         mode="inline"
-        defaultSelectedKeys={['apartment-list']}
+        defaultSelectedKeys={["apartment-list"]}
         items={menuItems}
         selectedKeys={[activeMenuItem]}
       />

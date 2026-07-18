@@ -13,7 +13,6 @@
 //     reducers: {
 //         updateUser: (state,action) => {
 //             const {name, email, role, access_token} = action.payload
-//             console.log('action',action);
 //         }
 //     }
 // })

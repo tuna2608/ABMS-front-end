@@ -8,12 +8,7 @@ import {
   FileDoneOutlined,
   DashboardOutlined,
 } from "@ant-design/icons";
-import {
-  getAllDeposits,
-  getAllPayment,
-  getAllReCoin,
-  getApartments,
-} from "../../redux/apiCalls";
+import { getAllDeposits, getAllPayment, getAllReCoin, getApartments } from "../../redux/apiCalls";
 import { LoadingComponent } from "../../components/common/LoadingComponent/LoadingComponent";
 
 const AdminDashboard = () => {
@@ -24,7 +19,7 @@ const AdminDashboard = () => {
   const [numDeposite, setNumDeposite] = useState(0);
   const [reCoins, setReCoins] = useState([]);
   const [numRecoinPending, setRecoinPending] = useState(0);
-  const [numApartment,setNumApartment] = useState(0);
+  const [numApartment, setNumApartment] = useState(0);
 
   // Dashboard Statistics
   const dashboardStats = {
@@ -38,7 +33,7 @@ const AdminDashboard = () => {
 
   useEffect(() => {
     setLoading(true);
-    callGetAllApartment()
+    callGetAllApartment();
     callGetAllReCoin();
     callGetAllDeposits();
     callGetAllPayments();
@@ -48,11 +43,8 @@ const AdminDashboard = () => {
     try {
       const res = await getApartments();
       if (res.success) {
-        const total = await res.data.filter(
-          (item) => item.householder !== null
-        ).length;
-        setNumApartment(total)
-        // console.log(total);
+        const total = await res.data.filter((item) => item.householder !== null).length;
+        setNumApartment(total);
         // message.success(res.message);
       } else {
         message.error(res.message);
@@ -67,10 +59,7 @@ const AdminDashboard = () => {
     try {
       const res = await getAllReCoin();
       if (res.success) {
-        const total = await res.data.filter(
-          (item) => item.status === "pending"
-        ).length;
-        // console.log(total);
+        const total = await res.data.filter((item) => item.status === "pending").length;
         setRecoinPending(total);
         // message.success(res.message);
       } else {
@@ -86,8 +75,7 @@ const AdminDashboard = () => {
     try {
       const res = await getAllDeposits();
       if (res.success) {
-        const num = await res.data ? res.data.length : 0;
-        // console.log(num);
+        const num = (await res.data) ? res.data.length : 0;
         setNumDeposite(num);
         // setDeposits(res.data);
         // message.success(res.message)
@@ -106,12 +94,8 @@ const AdminDashboard = () => {
       if (res.success) {
         setPayments(res.data);
         const totalK = await res.data
-          .filter(
-            (item) =>
-              item.billType === "managementFee" && item.status === "paid"
-          )
+          .filter((item) => item.billType === "managementFee" && item.status === "paid")
           .reduce((sum, item) => sum + item.amount, 0);
-        // console.log(totalK);
         setDoanhThu(totalK);
       } else {
         message.error(res.message);
@@ -192,7 +176,7 @@ const AdminDashboard = () => {
             <Card hoverable>
               <Statistic
                 title="Giao dịch hoàn thành"
-                value={dashboardStats.completedTransactions+numDeposite}
+                value={dashboardStats.completedTransactions + numDeposite}
                 valueStyle={{ color: "#1890ff" }}
                 suffix="giao dịch"
                 prefix={<FileDoneOutlined />}
