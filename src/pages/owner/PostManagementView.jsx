@@ -60,7 +60,7 @@ const PostManagementView = () => {
             message.error(response.message);
             setPosts([]);
           }
-        } catch (error) {
+        } catch {
           message.error("Có lỗi xảy ra khi xóa bài đăng");
           setPosts([]);
         }
@@ -91,10 +91,10 @@ const PostManagementView = () => {
           } else {
             message.error(postsResponse.message);
           }
-        } catch (error) {
+        } catch {
           message.error("Có lỗi xảy ra khi tải bài viết");
         }
-      } catch (error) {
+      } catch {
         message.error("Có lỗi xảy ra khi tải dữ liệu");
       }
       setLoading(false);

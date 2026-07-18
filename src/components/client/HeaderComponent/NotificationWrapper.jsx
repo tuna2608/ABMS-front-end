@@ -10,7 +10,7 @@ import {
 } from "@ant-design/icons";
 import styled from "styled-components";
 import { fetchNotifications } from "../../../redux/apiCalls";
-import { useDispatch, useSelector } from "react-redux";
+import { useSelector } from "react-redux";
 import webSocketService from "../../../services/WebSocketService";
 
 // Styled components
@@ -134,7 +134,6 @@ const NotificationWrapper = () => {
   const [unreadCount, setUnreadCount] = useState(0);
 
   const currentUser = useSelector((state) => state.user.currentUser);
-  const dispatch = useDispatch();
 
   // Hàm tải thông báo ban đầu
   const loadNotifications = useCallback(async () => {
@@ -157,7 +156,7 @@ const NotificationWrapper = () => {
         setError(response.message || "Không thể tải thông báo");
         message.error(response.message);
       }
-    } catch (err) {
+    } catch {
       setError("Có lỗi xảy ra khi tải thông báo");
     } finally {
       setLoading(false);
@@ -222,7 +221,7 @@ const NotificationWrapper = () => {
       setUnreadCount(0);
 
       message.success("Đã đánh dấu tất cả là đã đọc");
-    } catch (error) {
+    } catch {
       message.error("Không thể đánh dấu thông báo là đã đọc");
     } finally {
       setLoading(false);
@@ -319,6 +318,7 @@ const NotificationWrapper = () => {
     },
   ];
 
+  // eslint-disable-next-line unused-imports/no-unused-vars -- JSX dropdown đang chờ nối vào UI
   const notificationDropdownContent = (
     <NotificationCard>
       <NotificationHeader>

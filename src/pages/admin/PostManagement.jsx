@@ -20,7 +20,6 @@ const PostManagement = () => {
   const [loading, setLoading] = useState(false);
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [searchText, setSearchText] = useState("");
-  const [filteredPosts, setFilteredPosts] = useState([]);
   const [postForm] = Form.useForm();
   const [roleFilter, setRoleFilter] = useState("all");
   const [isEditModalVisible, setIsEditModalVisible] = useState(false);
@@ -31,7 +30,7 @@ const PostManagement = () => {
   useEffect(() => {
     fetchPosts();
     fetchApartments();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   const fetchApartments = async () => {
     try {
@@ -41,7 +40,7 @@ const PostManagement = () => {
       } else {
         message.error(response.message);
       }
-    } catch (error) {
+    } catch {
       message.error("Không thể tải danh sách căn hộ");
     }
   };
@@ -76,7 +75,7 @@ const PostManagement = () => {
       if (response.data) {
         setPosts(response.data);
       }
-    } catch (error) {
+    } catch {
       message.error("Không thể tải danh sách bài viết");
     } finally {
       setLoading(false);
@@ -97,7 +96,7 @@ const PostManagement = () => {
           } else {
             message.error(response.message);
           }
-        } catch (error) {
+        } catch {
           message.error("Có lỗi xảy ra khi xóa bài đăng");
         }
       },

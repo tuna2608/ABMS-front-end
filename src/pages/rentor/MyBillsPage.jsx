@@ -15,12 +15,10 @@ import {
 import { DollarOutlined, FileOutlined, EyeOutlined, CheckOutlined } from "@ant-design/icons";
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
-import { useNavigate } from "react-router-dom";
 import { getAllBillRentor, paymentBill } from "../../redux/apiCalls";
 
 const MyBillsPage = () => {
   const [currentUser] = useState(useSelector((state) => state.user.currentUser));
-  const navigate = useNavigate();
 
   const defaultValue = moment().subtract(1, "months");
   const [selectedDate, setSelectedDate] = useState(defaultValue);
@@ -52,7 +50,7 @@ const MyBillsPage = () => {
   // Function to fetch bills data
   useEffect(() => {
     callGetAllBillRentor(currentUser.userId);
-  }, [currentUser]);
+  }, [currentUser]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function callGetAllBillRentor(userId) {
     setLoading(true);
@@ -63,7 +61,7 @@ const MyBillsPage = () => {
       } else {
         message.error(res.message);
       }
-    } catch (error) {
+    } catch {
       message("Không thể lấy danh sách hóa đơn!");
     } finally {
       setLoading(false);
@@ -105,7 +103,7 @@ const MyBillsPage = () => {
       } else {
         message.error(res.message);
       }
-    } catch (error) {
+    } catch {
       message.error("Không thể thực hiện thanh toán hóa đơn!");
     } finally {
       setLoadingPayment(false);

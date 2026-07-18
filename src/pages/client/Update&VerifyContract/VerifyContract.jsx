@@ -40,14 +40,14 @@ const VerifyContract = () => {
   const [userData, setUserData] = useState(null);
 
   // Simulated data for apartments without real API calls
-  const [unrentedApartments, setUnrentedApartments] = useState([
+  const [unrentedApartments] = useState([
     { apartmentId: 1, apartmentName: "A101", area: 75, floor: 1 },
     { apartmentId: 2, apartmentName: "A102", area: 85, floor: 1 },
     { apartmentId: 3, apartmentName: "B201", area: 90, floor: 2 },
     { apartmentId: 4, apartmentName: "B202", area: 100, floor: 2 },
   ]);
 
-  const [noHouseholderApartments, setNoHouseholderApartments] = useState([
+  const [noHouseholderApartments] = useState([
     { apartmentId: 5, apartmentName: "C301", area: 110, floor: 3 },
     { apartmentId: 6, apartmentName: "C302", area: 120, floor: 3 },
     { apartmentId: 7, apartmentName: "D401", area: 130, floor: 4 },
@@ -118,7 +118,7 @@ const VerifyContract = () => {
 
         setSearching(false);
       }, 1000);
-    } catch (error) {
+    } catch {
       message.error("Có lỗi xảy ra khi tìm kiếm!");
       setSearching(false);
     }

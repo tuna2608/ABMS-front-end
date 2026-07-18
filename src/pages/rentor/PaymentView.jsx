@@ -32,9 +32,9 @@ const formatCurrency = (value) => {
 const PaymentView = () => {
   const [paymentModalVisible, setPaymentModalVisible] = useState(false);
   const [paymentMethod, setPaymentMethod] = useState("bank");
-  const [selectedBill, setSelectedBill] = useState(null);
+  const [selectedBill] = useState(null);
   const [isPaymentProcessing, setIsPaymentProcessing] = useState(false);
-  const [setIsPaymentComplete] = useState(false);
+  const [isPaymentComplete, setIsPaymentComplete] = useState(false);
   const [paymentStep, setPaymentStep] = useState(0);
   const [form] = Form.useForm();
 
@@ -131,16 +131,6 @@ const PaymentView = () => {
     //   ),
     // },
   ];
-
-  // Handle initiating bill payment
-  const handlePayBill = (bill) => {
-    setSelectedBill(bill);
-    setPaymentModalVisible(true);
-    setPaymentStep(0);
-    setIsPaymentComplete(false);
-    setIsPaymentProcessing(false);
-    form.resetFields();
-  };
 
   // Handle payment method change
   const handlePaymentMethodChange = (value) => {

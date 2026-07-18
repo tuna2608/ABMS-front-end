@@ -14,7 +14,7 @@ const ChatBox = ({ receiverId, receiverName, onClose, hideFloatingButton = false
   const userId = currentUser?.id || currentUser?.userId;
 
   const [inputValue, setInputValue] = useState("");
-  const [isChatOpen, setIsChatOpen] = useState(true);
+  const [, setIsChatOpen] = useState(true);
   const messagesEndRef = useRef(null);
 
   // Kết nối WebSocket khi component mount
@@ -54,7 +54,7 @@ const ChatBox = ({ receiverId, receiverName, onClose, hideFloatingButton = false
     try {
       const date = new Date(timestamp);
       return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-    } catch (e) {
+    } catch {
       return "";
     }
   };

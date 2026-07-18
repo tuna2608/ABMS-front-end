@@ -706,7 +706,7 @@ export const getUserInfo = (userId) => async (dispatch) => {
       return res.data.data;
     }
     return null;
-  } catch (error) {
+  } catch {
     return null;
   }
 };
@@ -730,8 +730,6 @@ export const verifyUserInfo = async (dispatch, formData) => {
   try {
     if (formData.get("verificationFormType") === "2") {
       formData.set("contractEndDate", null);
-    }
-    for (let [key, value] of formData.entries()) {
     }
     const res = await userRequest.post("/user/verify_user", formData);
 
@@ -794,8 +792,6 @@ export const verifyAndAddUser = async (dispatch, verifyUserResponseDTO) => {
       data: res.data,
     };
   } catch (error) {
-    if (error.response) {
-    }
     dispatch(addUserFailure());
     return {
       success: false,

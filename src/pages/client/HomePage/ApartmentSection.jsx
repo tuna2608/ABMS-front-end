@@ -300,7 +300,7 @@ function ApartmentSection({ handleViewMore }) {
         if (response && response.data) {
           setProperties(response.data);
         }
-      } catch (error) {
+      } catch {
       } finally {
         setLoading(false);
       }

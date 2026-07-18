@@ -26,7 +26,6 @@ const CreatePostModal = ({ isModalVisible, onCancel, apartments, onSuccess, curr
   const [aiLoading, setAiLoading] = useState(false);
   const [postExists, setPostExists] = useState(false);
 
-  const postTypes = [{ value: "Bán", label: "Bán Căn Hộ" }];
 
   const getBase64 = (file) =>
     new Promise((resolve, reject) => {
@@ -78,7 +77,7 @@ const CreatePostModal = ({ isModalVisible, onCancel, apartments, onSuccess, curr
         setFileList([]);
         onSuccess();
       }
-    } catch (error) {
+    } catch {
       message.error("Có lỗi xảy ra khi tạo bài viết");
     }
   };
@@ -104,7 +103,7 @@ const CreatePostModal = ({ isModalVisible, onCancel, apartments, onSuccess, curr
 
       form.setFieldValue("content", aiContent);
       message.success("Đã tạo nội dung thành công!");
-    } catch (error) {
+    } catch {
       message.error("Không thể tạo nội dung AI");
     } finally {
       setAiLoading(false);
@@ -132,7 +131,7 @@ const CreatePostModal = ({ isModalVisible, onCancel, apartments, onSuccess, curr
         } else {
           setPostExists(false);
         }
-      } catch (error) {}
+      } catch {}
     }
   };
 

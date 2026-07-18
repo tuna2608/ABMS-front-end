@@ -154,7 +154,7 @@ const ChangePasswordPage = () => {
           message.error(response.message);
         }
       }
-    } catch (error) {
+    } catch {
       message.error("Có lỗi xảy ra. Vui lòng thử lại.");
     } finally {
       setIsLoading(false);

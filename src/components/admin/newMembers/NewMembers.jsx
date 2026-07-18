@@ -11,7 +11,7 @@ function NewMembers() {
       try {
         const res = await userRequest.get("users/?new=true");
         setUsers(res.data);
-      } catch (error) {}
+      } catch {}
     };
     getUser();
   }, []);

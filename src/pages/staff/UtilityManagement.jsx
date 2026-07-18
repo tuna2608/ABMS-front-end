@@ -32,7 +32,7 @@ import { useNavigate } from "react-router-dom";
 
 const UtilityManagement = ({ setActiveMenuItem }) => {
   const [currentUser] = useState(useSelector((state) => state.user.currentUser));
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
   const [loadingImport, setLoadingImport] = useState(false);
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -55,7 +55,7 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
       } else {
         message.error(res.message);
       }
-    } catch (error) {
+    } catch {
       message("Không thể lấy danh sách lượng tiêu thụ!");
     } finally {
       setLoading(false);
@@ -78,7 +78,7 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
 
       // Hiển thị thông báo thành công
       message.success("Đang tải mẫu đơn. Vui lòng kiểm tra trình duyệt của bạn.");
-    } catch (error) {
+    } catch {
       // Xử lý lỗi nếu có
       message.error("Có lỗi xảy ra khi tải mẫu đơn. Vui lòng thử lại.");
     }
@@ -188,7 +188,7 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
         message.success(messageAPI);
         navigate("/staffHome/bill-management");
       }
-    } catch (error) {
+    } catch {
       message.error("Có lỗi xảy ra khi tạo hóa đơn");
     }
   };
@@ -205,7 +205,7 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
         } else {
           message.error(res.message);
         }
-      } catch (error) {
+      } catch {
         message.error("Không thể lọc số liệu tiêu thụ theo tháng năm");
       }
     } else {
@@ -229,7 +229,7 @@ const UtilityManagement = ({ setActiveMenuItem }) => {
       } else {
         message.error(response.message);
       }
-    } catch (error) {
+    } catch {
       message.error("Không thể upload file");
     } finally {
       setLoadingImport(false);

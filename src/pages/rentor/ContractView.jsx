@@ -16,7 +16,7 @@ const ContractView = () => {
   const [currentUser] = useState(useSelector((state) => state.user.currentUser));
 
   const [contracts, setContracts] = useState([]);
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
   const [selectedContract, setSelectedContract] = useState(null);
   const [isContractModalVisible, setIsContractModalVisible] = useState(false);
 
@@ -35,7 +35,7 @@ const ContractView = () => {
       } else {
         message.error(res.message);
       }
-    } catch (error) {
+    } catch {
       message.error("Không thể lấy danh sách hợp đồng của người thuê");
     } finally {
       setLoading(false);
@@ -54,7 +54,7 @@ const ContractView = () => {
 
       // Hiển thị thông báo thành công
       message.success("Đang tải hợp đồng. Vui lòng kiểm tra trình duyệt của bạn.");
-    } catch (error) {
+    } catch {
       // Xử lý lỗi nếu có
       message.error("Có lỗi xảy ra khi tải hợp đồng. Vui lòng thử lại.");
     }

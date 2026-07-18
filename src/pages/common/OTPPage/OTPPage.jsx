@@ -79,7 +79,7 @@ const OTPPage = () => {
 
   useEffect(() => {
     setUserRegister(userRegister1);
-  }, [userRegister]);
+  }, [userRegister]); // eslint-disable-line react-hooks/exhaustive-deps
 
   // Add focus management for OTP inputs
   const handleOtpChange = (e, index) => {

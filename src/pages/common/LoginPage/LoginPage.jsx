@@ -36,11 +36,6 @@ const SignInPage = () => {
   const [loading, setLoading] = useState(false);
 
   // Validation
-  const isValidEmail = (value) => {
-    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    return emailRegex.test(value);
-  };
-
   const isValidPassword = (value) => {
     return value.length >= 6;
   };
@@ -66,7 +61,7 @@ const SignInPage = () => {
       } else {
         message.error(res.message);
       }
-    } catch (error) {
+    } catch {
       message.error("Không thể thực hiện đăng nhập");
     } finally {
       setLoading(false);

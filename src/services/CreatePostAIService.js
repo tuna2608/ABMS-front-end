@@ -1,5 +1,5 @@
 export async function generateAIPostContent(apartmentDetails) {
-  const GEMINI_API_KEY = process.env.REACT_APP_GEMINI_API_KEY;
+  const GEMINI_API_KEY = import.meta.env.VITE_GEMINI_API_KEY;
   const GEMINI_API_URL =
     "https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent";
 

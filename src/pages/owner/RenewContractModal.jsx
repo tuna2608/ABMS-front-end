@@ -36,7 +36,7 @@ export const RenewalModal = ({ isVisible, onCancel, contract, onSuccess, selecte
       } else {
         message.error(response.message);
       }
-    } catch (error) {
+    } catch {
       message.error("Có lỗi xảy ra khi gia hạn hợp đồng");
     } finally {
       setRenewLoading(false);

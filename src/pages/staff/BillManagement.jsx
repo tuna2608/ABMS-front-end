@@ -28,13 +28,13 @@ import { Option } from "antd/es/mentions";
 import { useSelector } from "react-redux";
 
 const BillManagement = () => {
-  const [currentUser, setCurrentUser] = useState(useSelector((state) => state.user.currentUser));
+  const [currentUser] = useState(useSelector((state) => state.user.currentUser));
   const defaultValue = moment().subtract(1, "months");
-  const [loading, setLoading] = useState(false);
-  const [isModalVisible, setIsModalVisible] = useState(false);
+  const [, setLoading] = useState(false);
+  const [, setIsModalVisible] = useState(false);
   const [createBillVisible, setCreateBillVisible] = useState(false);
   const [apartmentHouseholder, setApartmentHouseholder] = useState(null);
-  const [currentBill, setCurrentBill] = useState(null);
+  const [, setCurrentBill] = useState(null);
   const [form] = Form.useForm();
   const [bills, setBills] = useState([
     // {
@@ -69,7 +69,7 @@ const BillManagement = () => {
       } else {
         message.error(res.message);
       }
-    } catch (error) {
+    } catch {
       message("Không thể lấy danh sách căn hộ!");
     } finally {
       setLoading(false);
@@ -85,7 +85,7 @@ const BillManagement = () => {
       } else {
         message.error(res.message);
       }
-    } catch (error) {
+    } catch {
       message("Không thể lấy danh sách hóa đơn!");
     } finally {
       setLoading(false);
@@ -220,7 +220,7 @@ const BillManagement = () => {
       } else {
         message.error(res.message);
       }
-    } catch (error) {
+    } catch {
       message.error("Không thể tạo hóa đơn");
     }
   };

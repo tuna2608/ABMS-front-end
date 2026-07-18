@@ -20,18 +20,6 @@ const Wrapper = styled.div`
   // padding: 0 16px;
 `;
 
-/* Top bar */
-const TopBar = styled.div`
-  display: flex;
-  gap: 24px;
-  align-items: center;
-  background: white;
-  color: #dc2626;
-  padding: 8px 16px;
-  font-size: 14px;
-  font-weight: 500;
-`;
-
 /* 2 cột trái-phải */
 const DetailContent = styled.div`
   display: grid;

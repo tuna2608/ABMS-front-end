@@ -52,7 +52,7 @@ const ApartmentList = () => {
       } else {
         message.error(response.message);
       }
-    } catch (error) {
+    } catch {
       message.error("Không thể tải danh sách căn hộ");
     } finally {
       setLoading(false);

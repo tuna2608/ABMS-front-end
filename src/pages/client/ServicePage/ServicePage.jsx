@@ -36,7 +36,6 @@ import {
   StarOutlined,
   EditOutlined,
 } from "@ant-design/icons";
-import { useLocation, useNavigate } from "react-router-dom";
 import {
   getVerifiedFacilities,
   createFacility,
@@ -50,8 +49,6 @@ import { UpdateServiceModal } from "./UpdateServiceModal";
 const { Text, Paragraph } = Typography;
 
 const ServicePage = () => {
-  const location = useLocation();
-  const navigate = useNavigate();
 
   const currentUser = useSelector((state) => state.user.currentUser);
 
@@ -93,7 +90,7 @@ const ServicePage = () => {
         }));
         setFacilities(transformedData);
       }
-    } catch (error) {
+    } catch {
       message.error("Không thể tải danh sách dịch vụ");
     } finally {
       setLoading(false);
@@ -104,7 +101,7 @@ const ServicePage = () => {
     fetchFacilities();
     // Reset về trang đầu tiên khi chuyển tab
     setCurrentPage(1);
-  }, [activeTab, currentUser?.userId]);
+  }, [activeTab, currentUser?.userId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const onSearch = (value) => {
     setSearchText(value);
@@ -117,10 +114,6 @@ const ServicePage = () => {
 
   const handleTabChange = (key) => {
     setActiveTab(key);
-  };
-
-  const showCreateServiceModal = () => {
-    setIsCreateModalVisible(true);
   };
 
   const handleCreateService = async (values) => {

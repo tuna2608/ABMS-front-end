@@ -175,7 +175,7 @@ const UpdateContract = () => {
           setContracts(sampleContracts);
           setLoading(false);
         }, 1000);
-      } catch (error) {
+      } catch {
         message.error("Lỗi khi tải danh sách hợp đồng");
         setLoading(false);
       }

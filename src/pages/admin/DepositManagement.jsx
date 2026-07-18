@@ -32,7 +32,7 @@ const DepositManagement = () => {
       } else {
         message.error(res.message);
       }
-    } catch (error) {
+    } catch {
       message("Không thể thực hiện lấy danh sách đặt cọc!");
     } finally {
       setLoading(false);

@@ -49,7 +49,7 @@ const RegisterPage = () => {
       } else {
         message.error(res.message);
       }
-    } catch (error) {
+    } catch {
       message.error("Không thể thực hiện đăng ký");
     } finally {
       setLoading(false);

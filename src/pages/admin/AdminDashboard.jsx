@@ -13,11 +13,9 @@ import { LoadingComponent } from "../../components/common/LoadingComponent/Loadi
 
 const AdminDashboard = () => {
   const [loading, setLoading] = useState(false);
-  const [deposits, setDeposits] = useState(null);
-  const [payments, setPayments] = useState(null);
+  const [, setPayments] = useState(null);
   const [doanhThu, setDoanhThu] = useState(0);
   const [numDeposite, setNumDeposite] = useState(0);
-  const [reCoins, setReCoins] = useState([]);
   const [numRecoinPending, setRecoinPending] = useState(0);
   const [numApartment, setNumApartment] = useState(0);
 
@@ -49,7 +47,7 @@ const AdminDashboard = () => {
       } else {
         message.error(res.message);
       }
-    } catch (error) {
+    } catch {
       message.error("Không thể lấy danh sách căn hộ");
     }
   }
@@ -65,7 +63,7 @@ const AdminDashboard = () => {
       } else {
         message.error(res.message);
       }
-    } catch (error) {
+    } catch {
       message.error("Không thể lấy danh sách tất cả yêu cầu rút tiền");
     }
   }
@@ -82,7 +80,7 @@ const AdminDashboard = () => {
       } else {
         message.error(res.message);
       }
-    } catch (error) {
+    } catch {
       message("Không thể thực hiện lấy danh sách đặt cọc!");
     }
   }
@@ -100,7 +98,7 @@ const AdminDashboard = () => {
       } else {
         message.error(res.message);
       }
-    } catch (error) {
+    } catch {
       message("Không thể thực hiện lấy danh sách thanh toan!");
     } finally {
       setLoading(false);

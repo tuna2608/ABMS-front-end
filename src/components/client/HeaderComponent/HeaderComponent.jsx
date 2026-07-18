@@ -104,7 +104,7 @@ function HeaderComponent() {
   const dispatch = useDispatch();
   const navigate = useNavigate();
 
-  const [scrolled, setScrolled] = useState(false);
+  const [, setScrolled] = useState(false);
 
   useEffect(() => {
     const handleScroll = () => {

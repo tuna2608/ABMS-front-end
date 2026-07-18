@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
 import {
-  Layout,
   Typography,
   Button,
   Space,
@@ -39,31 +38,26 @@ import {
   getOwnApartmentRented,
   paymentBill,
 } from "../../redux/apiCalls";
-import { useNavigate } from "react-router-dom";
 
-const { Content } = Layout;
 const { Option } = Select;
 
 const BillPage = () => {
-  const [currentUser, setCurrentUser] = useState(useSelector((state) => state.user.currentUser));
+  const [currentUser] = useState(useSelector((state) => state.user.currentUser));
   const defaultValue = moment().subtract(1, "months");
-  const [selectedRowKeys, setSelectedRowKeys] = useState([]);
   const [createBillVisible, setCreateBillVisible] = useState(false);
   const [form] = Form.useForm();
   const [billDetailsVisible, setbillDetailsVisible] = useState(false);
   const [currentBill, setCurrentBill] = useState(null);
-  const [selectedDate, setSelectedDate] = useState(defaultValue);
   const [loading, setLoading] = useState(false);
   const [loadingPayment, setLoadingPayment] = useState(false);
   const [myApartment, setMyApartment] = useState();
   const dispatch = useDispatch();
-  const navigate = useNavigate();
   const [bills, setBills] = useState([]);
 
   useEffect(() => {
     callGetAllBillOwner(currentUser.userId);
     callGetMyApartment(currentUser.userId);
-  }, [currentUser]);
+  }, [currentUser]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function callGetAllBillOwner(userId) {
     setLoading(true);
@@ -74,7 +68,7 @@ const BillPage = () => {
       } else {
         message.error(res.message);
       }
-    } catch (error) {
+    } catch {
       message.error("Không thể lấy danh sách hóa đơn!");
     } finally {
       setLoading(false);
@@ -87,7 +81,7 @@ const BillPage = () => {
       if (res.success) {
         setMyApartment(res.data);
       }
-    } catch (error) {
+    } catch {
       message.error("Không thể lấy danh sách căn hộ đã cho thuê");
     }
   }
@@ -247,7 +241,7 @@ const BillPage = () => {
       } else {
         message.error(res.message);
       }
-    } catch (error) {
+    } catch {
       message.error("Không thể thực hiện thanh toán hóa đơn!");
     } finally {
       setLoadingPayment(false);
@@ -290,7 +284,7 @@ const BillPage = () => {
       } else {
         message.error(res.message);
       }
-    } catch (error) {
+    } catch {
       message.error("Không thể tạo hóa đơn");
     }
   };
