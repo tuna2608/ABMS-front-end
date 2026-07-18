@@ -16,7 +16,7 @@ const { Content, Header } = Layout;
 const StaffHome = () => {
   const [collapsed, setCollapsed] = useState(false);
   const [activeMenuItem, setActiveMenuItem] = useState("apartment-list");
-  const [selectedDeposit, setSelectedDeposit] = useState(null);
+  const [selectedDeposit] = useState(null);
   const [isDepositDetailVisible, setIsDepositDetailVisible] = useState(false);
 
   const location = useLocation();

@@ -24,7 +24,7 @@ const PaymentSuccess = () => {
       callPaymentBillSuccess(currentUser);
       localStorage.removeItem("paymentBillRequest");
     }
-  }, [currentUser]);
+  }, [currentUser]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function callDepositeSuccess() {
     setLoading(true);
@@ -35,7 +35,7 @@ const PaymentSuccess = () => {
       } else {
         message.error(res.message);
       }
-    } catch (error) {
+    } catch {
       message.error("Không thể thực hiện thanh toán thành công");
     } finally {
       setLoading(false);
@@ -58,7 +58,7 @@ const PaymentSuccess = () => {
       } else {
         message.error(res.message);
       }
-    } catch (error) {
+    } catch {
       message.error("Không thể thực hiện thanh toán hóa đơn thành công");
     } finally {
       setLoading(false);

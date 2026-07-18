@@ -194,12 +194,11 @@ const ProfileEditPage = () => {
   const userCurrent = useSelector((state) => state.user.currentUser);
 
   const defaultValue = moment();
-  const [user, setUser] = useState({
+  const [user] = useState({
     ...userCurrent,
     birthday: userCurrent.birthday ? dayjs(userCurrent.birthday) : dayjs(defaultValue),
   });
   const [listBank, setListBank] = useState([]);
-  const [bankSelect, setBankSelect] = useState({});
 
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
@@ -232,7 +231,7 @@ const ProfileEditPage = () => {
       } else {
         message.error(res.message);
       }
-    } catch (error) {
+    } catch {
       message.error("Không thể lấy danh sách ngân hàng");
     }
   }
@@ -287,7 +286,7 @@ const ProfileEditPage = () => {
         } else {
           message.error(res.message);
         }
-      } catch (error) {
+      } catch {
         message.error("Không thể tải ảnh lên");
       }
     } else {
@@ -303,7 +302,7 @@ const ProfileEditPage = () => {
       } else {
         message.error(resEdit.message);
       }
-    } catch (error) {
+    } catch {
       message.error("Không thể thay đổi thông tin cá nhân");
     } finally {
       setIsInitialUpload(false);
@@ -353,7 +352,7 @@ const ProfileEditPage = () => {
       } else {
         message.error(res.message);
       }
-    } catch (error) {
+    } catch {
       message.error("Không thể thực hiện tạo yêu cầu rút coin");
     }
   };

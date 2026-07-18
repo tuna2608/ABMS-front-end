@@ -172,7 +172,7 @@ const OTPVerificationPage = () => {
         } else {
           message.error(messageAPI || "Có lỗi xảy ra khi gửi lại mã OTP");
         }
-      } catch (error) {
+      } catch {
         message.error("Có lỗi xảy ra. Vui lòng thử lại.");
       } finally {
         setIsLoading(false);
@@ -213,7 +213,7 @@ const OTPVerificationPage = () => {
       } else {
         message.error(messageAPI || "Xác thực OTP không thành công");
       }
-    } catch (error) {
+    } catch {
       message.error("Có lỗi xảy ra. Vui lòng thử lại.");
     } finally {
       setIsLoading(false);

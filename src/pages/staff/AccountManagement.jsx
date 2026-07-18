@@ -59,7 +59,7 @@ const AccountManagement = () => {
         } else {
           message.error(unrentedResponse.message);
         }
-      } catch (error) {}
+      } catch {}
     };
 
     const fetchNoHouseholderApartments = async () => {
@@ -70,7 +70,7 @@ const AccountManagement = () => {
         } else {
           message.error(noHouseholderResponse.message);
         }
-      } catch (error) {}
+      } catch {}
     };
 
     fetchUnrentedApartments();
@@ -124,7 +124,7 @@ const AccountManagement = () => {
       } else {
         message.warning(result.message || "Không tìm thấy người dùng");
       }
-    } catch (error) {
+    } catch {
       message.error("Có lỗi xảy ra khi tìm kiếm!");
     } finally {
       setSearching(false);

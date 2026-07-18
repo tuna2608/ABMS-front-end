@@ -108,7 +108,7 @@ const PrevArrow = (props) => {
 
 const PostDetail = () => {
   const [post, setPost] = useState(null);
-  const [owner, setOwner] = useState(null);
+  const [, setOwner] = useState(null);
   const [loading, setLoading] = useState(true);
   const [contactModalVisible, setContactModalVisible] = useState(false);
   const [chatDrawerVisible, setChatDrawerVisible] = useState(false);
@@ -141,7 +141,7 @@ const PostDetail = () => {
       setLoading(false);
     }
     getPostDetail();
-  }, [postId]);
+  }, [postId]); // eslint-disable-line react-hooks/exhaustive-deps
 
   const formatPrice = (price) => {
     return new Intl.NumberFormat("vi-VN").format(price) + " VNĐ/tháng";
@@ -151,11 +151,6 @@ const PostDetail = () => {
     message.success("Yêu cầu liên hệ đã được gửi thành công!");
     setContactModalVisible(false);
     form.resetFields();
-  };
-
-  // Mở chat drawer
-  const openChatDrawer = () => {
-    setChatDrawerVisible(true);
   };
 
   // Đóng chat drawer
@@ -197,10 +192,6 @@ const PostDetail = () => {
 
   const goBack = () => {
     window.history.back();
-  };
-
-  const handleButtonDeposite = () => {
-    setIsDepositeOpen(true);
   };
 
   // Xử lý chuyển đến trang ChatPage
@@ -295,6 +286,7 @@ const PostDetail = () => {
   ];
 
   // Render chat drawer
+  // eslint-disable-next-line unused-imports/no-unused-vars -- chat drawer đang chờ nối vào UI
   const renderChatDrawer = () => {
     if (!post) return null;
     return (

@@ -22,7 +22,6 @@ import {
   HistoryOutlined,
   ClockCircleOutlined,
 } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
 import { useSelector } from "react-redux";
 import { acceptReceivedReCoin, getReCoinByUserId } from "../../../redux/apiCalls";
 
@@ -113,9 +112,8 @@ const formatCurrency = (amount) => {
 // ];
 
 const UserCoinRequests = () => {
-  const navigate = useNavigate();
   const userCurrent = useSelector((state) => state.user.currentUser);
-  const [loading, setLoading] = useState(false);
+  const [, setLoading] = useState(false);
   const [reCoins, setReCoins] = useState([
     // {
     //   reCoinId: 1,
@@ -156,7 +154,7 @@ const UserCoinRequests = () => {
       } else {
         message.error(res.message);
       }
-    } catch (error) {
+    } catch {
       message.error("Không thể lấy danh sách yêu cầu của ngừoi dùng");
     } finally {
       setLoading(false);
@@ -216,9 +214,8 @@ const UserCoinRequests = () => {
       } else {
         message.error(res.message);
       }
-    } catch (error) {
+    } catch {
       message.error("Không thể xác nhận rút tiền thành công");
-    } finally {
     }
 
     // Update the request status

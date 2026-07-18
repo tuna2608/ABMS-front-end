@@ -55,7 +55,7 @@ class WebSocketService {
             try {
               // Lấy thông tin người dùng và thêm vào danh sách liên hệ
               await dispatch(getUserInfo(receivedMessage.senderId));
-            } catch (error) {}
+            } catch {}
           }
 
           // Sau đó mới dispatch tin nhắn
@@ -69,7 +69,7 @@ class WebSocketService {
             },
           });
           document.dispatchEvent(newMessageEvent);
-        } catch (error) {}
+        } catch {}
       });
 
       // Đăng ký nhận thông báo cá nhân
@@ -91,7 +91,7 @@ class WebSocketService {
             detail: { notification },
           });
           document.dispatchEvent(newNotificationEvent);
-        } catch (error) {}
+        } catch {}
       });
 
       // Đăng ký nhận thông báo toàn cục
@@ -113,7 +113,7 @@ class WebSocketService {
             detail: { notification },
           });
           document.dispatchEvent(globalNotificationEvent);
-        } catch (error) {}
+        } catch {}
       });
     };
 
@@ -238,7 +238,7 @@ class WebSocketService {
         this.notifications = data.data;
         this.notifyListeners();
       }
-    } catch (error) {}
+    } catch {}
   }
 }
 

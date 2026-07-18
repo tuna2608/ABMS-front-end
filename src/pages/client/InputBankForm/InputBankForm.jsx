@@ -38,7 +38,7 @@ const InputBankForm = () => {
 
       message.success("Đã gửi thông tin ngân hàng thành công!");
       form.resetFields();
-    } catch (error) {
+    } catch {
       message.error("Có lỗi xảy ra. Vui lòng thử lại.");
     } finally {
       setLoading(false);

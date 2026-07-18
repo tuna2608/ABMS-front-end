@@ -62,7 +62,7 @@ const EditPostModal = ({ isModalVisible, onCancel, initialValues, onSuccess, cur
       } else {
         message.error(response.message || "Có lỗi xảy ra khi cập nhật bài viết");
       }
-    } catch (error) {
+    } catch {
       message.error("Có lỗi xảy ra khi cập nhật bài đăng");
     }
   };

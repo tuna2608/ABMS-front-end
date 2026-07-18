@@ -26,7 +26,7 @@ const BillDetailsPage = ({ consumptionId }) => {
 
         setConsumptionData(mockData);
         setLoading(false);
-      } catch (error) {
+      } catch {
         setLoading(false);
       }
     };

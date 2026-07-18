@@ -22,8 +22,6 @@ import {
   QrcodeOutlined,
   CheckCircleOutlined,
 } from "@ant-design/icons";
-import { useNavigate } from "react-router-dom";
-import { useSelector } from "react-redux";
 import { acceptReCoin, getAllReCoin, rejectReCoin } from "../../redux/apiCalls";
 
 const { Text } = Typography;
@@ -47,8 +45,6 @@ const formatCurrency = (amount) => {
 };
 
 const CoinManagement = () => {
-  const navigate = useNavigate();
-  const userCurrent = useSelector((state) => state.user.currentUser);
   const [loading, setLoading] = useState(false);
   const [reCoins, setReCoins] = useState([]);
 
@@ -77,7 +73,7 @@ const CoinManagement = () => {
       } else {
         message.error(res.message);
       }
-    } catch (error) {
+    } catch {
       message.error("Không thể lấy danh sách tất cả yêu cầu rút tiền");
     } finally {
       setLoading(false);
@@ -136,9 +132,8 @@ const CoinManagement = () => {
       } else {
         message.error(res.message);
       }
-    } catch (error) {
+    } catch {
       message.error("Không thể xác nhận chuyển tiền thành công");
-    } finally {
     }
     // Close QR modal
     setQrModalVisible(false);
@@ -162,9 +157,8 @@ const CoinManagement = () => {
       } else {
         message.error(res.message);
       }
-    } catch (error) {
+    } catch {
       message.error("Không thể từ chối yêu cầu rút tiền");
-    } finally {
     }
 
     // Update the request status

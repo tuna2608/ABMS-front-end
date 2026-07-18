@@ -118,7 +118,7 @@ const AdminFormManagement = () => {
       } else {
         message.error(res.message);
       }
-    } catch (error) {
+    } catch {
       message.error("Không thể cập nhật trạng thái đơn");
     } finally {
       setLoadingChange(false);

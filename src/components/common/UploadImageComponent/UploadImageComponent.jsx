@@ -14,7 +14,7 @@ const ImageUploader = () => {
     formData.append("file", file);
 
     try {
-      const response = await axios.post("http://localhost:8080/api/upload", formData, {
+      await axios.post("http://localhost:8080/api/upload", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
@@ -22,7 +22,7 @@ const ImageUploader = () => {
 
       message.success("Tải ảnh lên thành công");
       setFileList([...fileList, file]);
-    } catch (error) {
+    } catch {
       message.error("Tải ảnh lên thất bại");
     }
   };

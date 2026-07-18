@@ -12,7 +12,6 @@ import {
   Carousel,
   Rate,
   Avatar,
-  Tabs,
   Form,
   Input,
   List,
@@ -54,7 +53,6 @@ import {
 import { useParams, useNavigate, Link } from "react-router-dom";
 
 const { Title, Text, Paragraph } = Typography;
-const { TabPane } = Tabs;
 const { TextArea } = Input;
 
 const ServiceDetailPage = () => {

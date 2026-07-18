@@ -51,15 +51,14 @@ const PostList = () => {
   const queryParams = new URLSearchParams(location.search);
   const [posts, setPosts] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [search, setSearch] = useState(queryParams.get("search"));
-  const [area, setArea] = useState(queryParams.get("area"));
-  const [price, setPrice] = useState(queryParams.get("price"));
-  const [type, setType] = useState(queryParams.get("type"));
-  const [rooms, setRooms] = useState(queryParams.get("rooms"));
+  const [area] = useState(queryParams.get("area"));
+  const [price] = useState(queryParams.get("price"));
+  const [type] = useState(queryParams.get("type"));
+  const [rooms] = useState(queryParams.get("rooms"));
 
   const [searchText, setSearchText] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("Tất cả");
-  const [selectedArea, setSelectedArea] = useState("Tất cả");
+  const [selectedArea] = useState("Tất cả");
   const [currentPage, setCurrentPage] = useState(1);
 
   // Thay đổi pageSize từ 8 xuống 6
@@ -68,7 +67,7 @@ const PostList = () => {
   const navigate = useNavigate();
   useEffect(() => {
     getPostList();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function getPostList() {
     setLoading(true);
@@ -96,7 +95,7 @@ const PostList = () => {
       } else {
         message.error(res.message);
       }
-    } catch (error) {
+    } catch {
       message.error("Không thể lấy danh sách bài viết");
     } finally {
       setLoading(false);
@@ -110,11 +109,6 @@ const PostList = () => {
 
   const onCategoryChange = (value) => {
     setSelectedCategory(value);
-    setCurrentPage(1);
-  };
-
-  const onAreaChange = (value) => {
-    setSelectedArea(value);
     setCurrentPage(1);
   };
 

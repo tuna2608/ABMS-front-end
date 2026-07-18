@@ -38,38 +38,20 @@ const { Title, Text, Paragraph } = Typography;
 // Khu vực
 const areas = ["Tất cả", "Ngũ Hành Sơn", "Cẩm Lệ", "Sơn Trà", "Liên Chiểu", "Hòa Vang", "Hải Châu"];
 
-// Data mẫu chưa có api lấy căn hộ đặt cọc Tú call api rồi thế vào đây nhé
-const sampleBookedApartments = [
-  {
-    postId: "1",
-    title: "Căn hộ cao cấp tại Ngũ Hành Sơn",
-    content: "Căn hộ hiện đại, view biển tuyệt đẹp, đầy đủ nội thất",
-    userName: "Nguyễn Văn A",
-    price: 15000000,
-    depositDate: "15/04/2024",
-    postImages: ["/api/placeholder/400/300"],
-    apartment: {
-      apartmentName: "Khu đô thị Sơn Trà",
-      numberOfBedrooms: 2,
-      numberOfBathrooms: 2,
-    },
-  },
-];
-
 const DepositApartments = ({
   onViewDetails, // Prop for handling navigation to details
 }) => {
   const userCurrent = useSelector((state) => state.user.currentUser);
   const [depositPosts, setDepositPosts] = useState(null);
-  const [searchText, setSearchText] = useState("");
-  const [selectedArea, setSelectedArea] = useState("Tất cả");
+  const [, setSearchText] = useState("");
+  const [, setSelectedArea] = useState("Tất cả");
   const [currentPage, setCurrentPage] = useState(1);
   const [loading, setLoading] = useState(false);
   const pageSize = 8;
 
   useEffect(() => {
     callGetPostByUserDepositId();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function callGetPostByUserDepositId() {
     setLoading(true);
@@ -81,7 +63,7 @@ const DepositApartments = ({
       } else {
         message.error(res.message);
       }
-    } catch (error) {
+    } catch {
       message.error("Không thể lấy danh sách");
     } finally {
       setLoading(false);

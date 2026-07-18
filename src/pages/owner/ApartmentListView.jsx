@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Card, Space, Select, Input, Pagination, message, Tag, Table } from "antd";
+import { Card, Space, Input, Pagination, message, Tag, Table } from "antd";
 import { HomeOutlined, SearchOutlined, MailOutlined, PhoneOutlined } from "@ant-design/icons";
 import { useSelector } from "react-redux";
 import { getApartments, getRentorByApartment } from "../../redux/apiCalls";
 
-const { Option } = Select;
 const { Search } = Input;
 
 const ApartmentListView = () => {
@@ -55,7 +54,7 @@ const ApartmentListView = () => {
       } else {
         message.error(response.message);
       }
-    } catch (error) {
+    } catch {
       message.error("Không thể tải danh sách căn hộ");
     } finally {
       setLoading(false);
@@ -70,9 +69,8 @@ const ApartmentListView = () => {
           ...prev,
           [apartmentName]: response.data,
         }));
-      } else {
       }
-    } catch (error) {
+    } catch {
       message.error(`Không thể tải thông tin người thuê cho căn hộ ${apartmentName}`);
     }
   };
@@ -258,13 +256,6 @@ const ApartmentListView = () => {
       },
       width: 300,
     },
-  ];
-
-  // Apartment status and area options
-  const statusOptions = [
-    { value: "available", label: "Sẵn sàng" },
-    { value: "rented", label: "Đã cho thuê" },
-    { value: "maintenance", label: "Đang bảo trì" },
   ];
 
   // Pagination change handler

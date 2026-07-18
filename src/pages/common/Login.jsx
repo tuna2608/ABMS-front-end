@@ -106,9 +106,8 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const { isFetching, error } = useSelector((state) => state.user);
   const location = useLocation();
-  // Get User & Cart
+  // Get User
   const user = useSelector((state) => state.user.currentUser);
-  const cart = useSelector((state) => state.cart.cart);
 
   // Toast
   const succeed = () =>
@@ -160,7 +159,7 @@ const Login = () => {
       getCartByUId(dispatch, user._id);
       navigate("/");
     }
-  }, [user]);
+  }, [user]); // eslint-disable-line react-hooks/exhaustive-deps
 
   useEffect(() => {
     if (location.state === "registered") {

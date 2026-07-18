@@ -17,7 +17,7 @@ const DownloadTemplatePage = () => {
 
       // Optional: Show a success message
       message.success("Đang tải mẫu đơn. Vui lòng kiểm tra trình duyệt của bạn.");
-    } catch (error) {
+    } catch {
       // Handle any potential errors
       message.error("Có lỗi xảy ra khi tải mẫu đơn. Vui lòng thử lại.");
     }

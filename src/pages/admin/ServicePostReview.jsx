@@ -66,7 +66,6 @@ const ServicePostReview = () => {
   // States
   const [servicePosts, setServicePosts] = useState([]);
   const [selectedPost, setSelectedPost] = useState(null);
-  const [drawerVisible, setDrawerVisible] = useState(false);
   const [rejectModalVisible, setRejectModalVisible] = useState(false);
   const [rejectionReason, setRejectionReason] = useState("");
   const [activeTab, setActiveTab] = useState("unverified");
@@ -96,7 +95,7 @@ const ServicePostReview = () => {
         }));
         setServicePosts(transformedData);
       }
-    } catch (error) {
+    } catch {
       message.error("Không thể tải danh sách bài đăng");
     } finally {
       setLoading(false);
@@ -135,7 +134,7 @@ const ServicePostReview = () => {
       } else {
         message.error(response.message || "Không thể duyệt bài đăng");
       }
-    } catch (error) {
+    } catch {
       message.error("Có lỗi xảy ra khi duyệt bài đăng");
     } finally {
       setLoading(false);

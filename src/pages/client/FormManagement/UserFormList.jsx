@@ -89,7 +89,7 @@ const UserFormList = () => {
         } else {
           message.error(res.message);
         }
-      } catch (error) {
+      } catch {
         message.error("Không thể lấy danh sách đơn từ");
       }
       setLoading(false);

@@ -40,7 +40,7 @@ const ForgotPasswordPage = () => {
       } else {
         message.error(messageAPI || "Có lỗi xảy ra khi gửi mã OTP");
       }
-    } catch (error) {
+    } catch {
       message.error("Có lỗi xảy ra. Vui lòng thử lại.");
     } finally {
       setIsLoading(false);

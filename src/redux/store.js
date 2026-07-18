@@ -19,7 +19,11 @@ import {
   PURGE,
   REGISTER,
 } from "redux-persist";
-import storage from "redux-persist/lib/storage";
+import storageLib from "redux-persist/lib/storage";
+
+// redux-persist/lib/storage là CommonJS; dưới Vite/ESM default export có thể
+// nằm ở `.default`, nên lấy fallback để tránh "storage.getItem is not a function".
+const storage = storageLib.default || storageLib;
 
 const persistConfig = {
   key: "root",

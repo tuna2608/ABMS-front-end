@@ -70,7 +70,7 @@ const ApartmentManagement = () => {
       } else {
         message.error(response.message);
       }
-    } catch (errInfo) {
+    } catch {
       message.error("Vui lòng kiểm tra lại thông tin nhập");
     }
   };
@@ -168,7 +168,7 @@ const ApartmentManagement = () => {
       } else {
         message.error(response.message);
       }
-    } catch (error) {
+    } catch {
       message.error("Không thể tải danh sách căn hộ");
     } finally {
       setLoading(false);

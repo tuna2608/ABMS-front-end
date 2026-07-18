@@ -25,7 +25,7 @@ export const CreateServiceModal = ({ visible, onCancel, onSubmit, loading, curre
       }
 
       await onSubmit(values);
-    } catch (error) {
+    } catch {
       message.error("Có lỗi xảy ra khi tạo bài viết");
     }
   };

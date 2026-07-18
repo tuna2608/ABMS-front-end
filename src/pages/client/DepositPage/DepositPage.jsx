@@ -20,7 +20,7 @@ const samplePostDetail = {
 
 const DepositPage = ({ postDetail = samplePostDetail, isOpen, onCancel, onSubmit }) => {
   const [termsAgreed, setTermsAgreed] = useState(true);
-  const [modalVisible, setModalVisible] = useState(isOpen);
+  const [, setModalVisible] = useState(isOpen);
 
   const userCurrent = useSelector((state) => state.user.currentUser);
 
@@ -51,14 +51,12 @@ const DepositPage = ({ postDetail = samplePostDetail, isOpen, onCancel, onSubmit
         localStorage.setItem("depositRequest", JSON.stringify(formData));
         const url = res?.data?.checkoutUrl;
         window.location.href = url;
-      } else {
       }
       const messageAPI = res.data.message;
       if (res.status === 401 || res.status === 400 || res.status === 403) {
         message.error(messageAPI);
-      } else {
       }
-    } catch (error) {}
+    } catch {}
   };
 
   const handleCancel = () => {

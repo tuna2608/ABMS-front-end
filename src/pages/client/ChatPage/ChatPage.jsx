@@ -135,7 +135,7 @@ const ChatPage = () => {
       if (diffMins < 1440) return `${Math.floor(diffMins / 60)}h trước`;
 
       return date.toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" });
-    } catch (e) {
+    } catch {
       return timestamp;
     }
   };

@@ -123,19 +123,6 @@ const ServiceImage = styled.div`
   }
 `;
 
-const ServiceTag = styled.div`
-  position: absolute;
-  left: 10px;
-  top: 10px;
-  background-color: #c2410c;
-  color: white;
-  padding: 4px 8px;
-  border-radius: 4px;
-  font-size: 12px;
-  font-weight: 500;
-  z-index: 2;
-`;
-
 const ServiceInfo = styled.div`
   padding: 16px;
 `;
@@ -288,7 +275,6 @@ const ServiceNavButton = styled.button`
 
 function ServiceSection() {
   const navigate = useNavigate();
-  const [servicePosts, setServicePosts] = useState(null);
   const [currentPage, setCurrentPage] = useState(0);
   const servicesPerPage = 4;
   const [totalPages, setTotalPages] = useState(0);
@@ -299,7 +285,7 @@ function ServiceSection() {
   // Calculate total pages for pagination indicator
   useEffect(() => {
     callGetAllServicePost();
-  }, []);
+  }, []); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function callGetAllServicePost() {
     try {
@@ -314,7 +300,7 @@ function ServiceSection() {
       } else {
         message.error(res.message);
       }
-    } catch (error) {
+    } catch {
       message.error("Không thể lấy danh sách dịch vụ đã duyệt");
     }
   }

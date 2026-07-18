@@ -21,7 +21,7 @@ const PaymentSuccess = () => {
       callPaymentBillCancel(currentUser);
       localStorage.removeItem("paymentBillRequest");
     }
-  }, [currentUser]);
+  }, [currentUser]); // eslint-disable-line react-hooks/exhaustive-deps
 
   async function callDepositeCancel() {
     try {
@@ -31,7 +31,7 @@ const PaymentSuccess = () => {
       } else {
         message.error(res.message);
       }
-    } catch (error) {
+    } catch {
       message.error("Không thể thực hiện thanh toán thất bại");
     }
   }
@@ -51,7 +51,7 @@ const PaymentSuccess = () => {
       } else {
         message.error(res.message);
       }
-    } catch (error) {
+    } catch {
       message.error("Không thể thực hiện thanh toán hóa đơn thất bại");
     }
   }

@@ -36,12 +36,6 @@ const DownloadButton = styled(Button)`
   }
 `;
 
-// Hàm format tiền tệ
-const formatCurrency = (value) => {
-  if (typeof value !== "number") return "0";
-  return new Intl.NumberFormat("vi-VN").format(value) + " VND";
-};
-
 const ContractView = () => {
   const currentUser = useSelector((state) => state.user.currentUser);
   const [loading, setLoading] = useState(false);
@@ -50,7 +44,7 @@ const ContractView = () => {
   const [selectedApartment, setSelectedApartment] = useState(null);
   const [selectedContract, setSelectedContract] = useState(null);
   const [isContractModalVisible, setIsContractModalVisible] = useState(false);
-  const [searchText, setSearchText] = useState("");
+  const [, setSearchText] = useState("");
   const [isRenewModalVisible, setIsRenewModalVisible] = useState(false);
   const [renewingContract, setRenewingContract] = useState(null);
 
@@ -69,7 +63,7 @@ const ContractView = () => {
             fetchContractOwners(ownerApartments[0].apartmentName);
           }
         }
-      } catch (error) {
+      } catch {
         message.error("Không thể tải danh sách căn hộ");
       } finally {
         setLoading(false);
@@ -98,7 +92,7 @@ const ContractView = () => {
         }));
         setContracts(formattedContracts);
       }
-    } catch (error) {
+    } catch {
       message.error("Không thể tải danh sách hợp đồng");
     } finally {
       setLoading(false);
@@ -126,7 +120,7 @@ const ContractView = () => {
 
       // Hiển thị thông báo thành công
       message.success("Đang tải mẫu đơn. Vui lòng kiểm tra trình duyệt của bạn.");
-    } catch (error) {
+    } catch {
       // Xử lý lỗi nếu có
       message.error("Có lỗi xảy ra khi tải mẫu đơn. Vui lòng thử lại.");
     }

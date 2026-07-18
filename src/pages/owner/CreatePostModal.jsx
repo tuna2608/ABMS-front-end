@@ -111,7 +111,7 @@ const CreatePostModal = ({ isModalOpen, setIsModalOpen, apartments, currentUser,
               message.warning("Căn hộ này đã có bài đăng với loại này");
             }
           }
-        } catch (error) {}
+        } catch {}
       }
     }
   };
@@ -130,7 +130,7 @@ const CreatePostModal = ({ isModalOpen, setIsModalOpen, apartments, currentUser,
             message.warning("Căn hộ này đã có bài đăng với loại này");
           }
         }
-      } catch (error) {}
+      } catch {}
     }
   };
 
@@ -174,7 +174,7 @@ const CreatePostModal = ({ isModalOpen, setIsModalOpen, apartments, currentUser,
           } else {
             message.error(response.message || "Có lỗi xảy ra khi tạo bài đăng");
           }
-        } catch (error) {
+        } catch {
           message.error("Có lỗi xảy ra khi tạo bài đăng");
         }
       },

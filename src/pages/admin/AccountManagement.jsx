@@ -226,7 +226,7 @@ const AccountManagement = () => {
 
         message.error(errorMsg);
       }
-    } catch (error) {
+    } catch {
       message.error("Có lỗi xảy ra khi duyệt tài khoản");
     } finally {
       setLoading(false);
@@ -257,7 +257,7 @@ const AccountManagement = () => {
           } else {
             message.error(response.message || "Có lỗi xảy ra khi từ chối tài khoản");
           }
-        } catch (error) {
+        } catch {
           message.error("Có lỗi xảy ra khi từ chối tài khoản");
         }
       },
