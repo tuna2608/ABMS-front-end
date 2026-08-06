@@ -1,7 +1,7 @@
 import React, { useState, useRef, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
-import { WrapperContainer, WrapperContainerLeft, WrapperContainerRight } from "./style";
+import { AuthCard, WrapperContainer, WrapperContainerLeft, WrapperContainerRight } from "./style";
 import { Form, Image, message, Spin } from "antd";
 import imgLogin from "./../../../assets/common/images/logo-login.png";
 import styled from "styled-components";
@@ -244,16 +244,7 @@ const OTPVerificationPage = () => {
           }}
         />
       </div>
-      <div
-        style={{
-          width: "800px",
-          height: "500px",
-          display: "flex",
-          borderRadius: "10px",
-          backgroundColor: "#ffffff",
-          boxShadow: "0 0 300px rgb(0, 0, 0)",
-        }}
-      >
+      <AuthCard $height="500px">
         <WrapperContainerLeft>
           <TitlePage>Xác Thực OTP</TitlePage>
           <TextContent>
@@ -326,7 +317,7 @@ const OTPVerificationPage = () => {
         <WrapperContainerRight>
           <Image src={imgLogin} width="250px" height="250px" preview={false} />
         </WrapperContainerRight>
-      </div>
+      </AuthCard>
     </WrapperContainer>
   );
 };

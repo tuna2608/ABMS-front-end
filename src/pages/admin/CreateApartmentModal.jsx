@@ -32,7 +32,7 @@ const CreateApartmentModal = ({ visible, onCancel, onSuccess }) => {
       <Form form={form} layout="vertical" onFinish={handleSubmit}>
         {/* ...existing form items... */}
         <Row gutter={16}>
-          <Col span={12}>
+          <Col xs={24} sm={12}>
             <Form.Item
               name="apartmentName"
               label="Số Căn Hộ"
@@ -41,7 +41,7 @@ const CreateApartmentModal = ({ visible, onCancel, onSuccess }) => {
               <Input placeholder="Nhập số căn hộ" />
             </Form.Item>
           </Col>
-          <Col span={12}>
+          <Col xs={24} sm={12}>
             <Form.Item
               name="floor"
               label="Tầng"
@@ -53,7 +53,7 @@ const CreateApartmentModal = ({ visible, onCancel, onSuccess }) => {
         </Row>
 
         <Row gutter={16}>
-          <Col span={12}>
+          <Col xs={24} sm={12}>
             <Form.Item
               name="numberOfBedrooms"
               label="Số Phòng Ngủ"
@@ -62,7 +62,7 @@ const CreateApartmentModal = ({ visible, onCancel, onSuccess }) => {
               <InputNumber style={{ width: "100%" }} min={0} placeholder="Nhập số phòng ngủ" />
             </Form.Item>
           </Col>
-          <Col span={12}>
+          <Col xs={24} sm={12}>
             <Form.Item
               name="numberOfBathrooms"
               label="Số Phòng Tắm"
@@ -74,7 +74,7 @@ const CreateApartmentModal = ({ visible, onCancel, onSuccess }) => {
         </Row>
 
         <Row gutter={16}>
-          <Col span={12}>
+          <Col xs={24} sm={12}>
             <Form.Item
               name="area"
               label="Diện Tích (m²)"
@@ -83,7 +83,7 @@ const CreateApartmentModal = ({ visible, onCancel, onSuccess }) => {
               <InputNumber style={{ width: "100%" }} min={0} placeholder="Nhập diện tích" />
             </Form.Item>
           </Col>
-          <Col span={12}>
+          <Col xs={24} sm={12}>
             <Form.Item
               name="direction"
               label="Hướng"

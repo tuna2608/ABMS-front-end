@@ -49,7 +49,6 @@ import { UpdateServiceModal } from "./UpdateServiceModal";
 const { Text, Paragraph } = Typography;
 
 const ServicePage = () => {
-
   const currentUser = useSelector((state) => state.user.currentUser);
 
   const [activeTab, setActiveTab] = useState("partnerServices");
@@ -422,14 +421,14 @@ const ServicePage = () => {
   const ServiceDetailModal = () => (
     <Modal
       title={null}
-      visible={detailModalVisible}
+      open={detailModalVisible}
       onCancel={() => {
         setDetailModalVisible(false);
         setFacilityDetail(null);
       }}
       footer={null}
       width={800}
-      bodyStyle={{ padding: 0 }}
+      styles={{ body: { padding: 0 } }}
     >
       {facilityDetail ? (
         <>
@@ -478,7 +477,7 @@ const ServicePage = () => {
               <Paragraph>{facilityDetail.facilityPostContent}</Paragraph>
 
               <Row gutter={[16, 16]}>
-                <Col span={12}>
+                <Col xs={24} sm={12}>
                   <Card size="small">
                     <Statistic
                       title="Lượt xem"
@@ -487,7 +486,7 @@ const ServicePage = () => {
                     />
                   </Card>
                 </Col>
-                <Col span={12}>
+                <Col xs={24} sm={12}>
                   <Card size="small">
                     <Statistic
                       title="Đánh giá"
@@ -579,6 +578,55 @@ const ServicePage = () => {
     },
   ];
 
+  // antd 5 dùng prop `items`; Tabs.TabPane đã deprecated
+  const tabItems = [
+    {
+      key: "partnerServices",
+      label: (
+        <span>
+          <ShopOutlined /> Dịch vụ liên kết
+        </span>
+      ),
+      children: renderPartnerServices(),
+    },
+  ];
+
+  if (currentUser) {
+    tabItems.push({
+      key: "buildingServices",
+      label: (
+        <span>
+          <BuildOutlined /> Bài viết của bạn
+        </span>
+      ),
+      children: (
+        <>
+          <div style={{ marginBottom: 16 }}>
+            <Button
+              type="primary"
+              icon={<PlusOutlined />}
+              onClick={() => setIsCreateModalVisible(true)}
+            >
+              Tạo bài viết mới
+            </Button>
+          </div>
+          <Table
+            dataSource={facilities}
+            columns={columns}
+            rowKey="id"
+            loading={loading}
+            pagination={{
+              pageSize: 10,
+              showTotal: (total) => `Tổng ${total} bài viết`,
+              current: currentPage,
+              onChange: (page) => setCurrentPage(page),
+            }}
+          />
+        </>
+      ),
+    });
+  }
+
   return (
     <div style={{ padding: "24px" }}>
       <Tabs
@@ -586,61 +634,8 @@ const ServicePage = () => {
         onChange={handleTabChange}
         type="card"
         tabBarStyle={{ marginBottom: 24 }}
-        tabBarExtra={
-          activeTab === "buildingServices" && (
-            <Button
-              type="primary"
-              icon={<PlusOutlined />}
-              onClick={() => setIsCreateModalVisible(true)}
-            >
-              Tạo bài viết
-            </Button>
-          )
-        }
-      >
-        <Tabs.TabPane
-          tab={
-            <span>
-              <ShopOutlined /> Dịch vụ liên kết
-            </span>
-          }
-          key="partnerServices"
-        >
-          {renderPartnerServices()}
-        </Tabs.TabPane>
-        {currentUser && (
-          <Tabs.TabPane
-            tab={
-              <span>
-                <BuildOutlined /> Bài viết của bạn
-              </span>
-            }
-            key="buildingServices"
-          >
-            <div style={{ marginBottom: 16 }}>
-              <Button
-                type="primary"
-                icon={<PlusOutlined />}
-                onClick={() => setIsCreateModalVisible(true)}
-              >
-                Tạo bài viết mới
-              </Button>
-            </div>
-            <Table
-              dataSource={facilities}
-              columns={columns}
-              rowKey="id"
-              loading={loading}
-              pagination={{
-                pageSize: 10,
-                showTotal: (total) => `Tổng ${total} bài viết`,
-                current: currentPage,
-                onChange: (page) => setCurrentPage(page),
-              }}
-            />
-          </Tabs.TabPane>
-        )}
-      </Tabs>
+        items={tabItems}
+      />
 
       <CreateServiceModal
         visible={isCreateModalVisible}

@@ -359,7 +359,7 @@ const BillPage = () => {
         <Form form={form} layout="vertical" onFinish={handleCreateBill}>
           <Divider orientation="left">Thông tin cơ bản</Divider>
           <Row gutter={16}>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item
                 name="billType"
                 label="Loại hóa đơn"
@@ -371,7 +371,7 @@ const BillPage = () => {
                 </Select>
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item
                 name="apartment"
                 label="Căn hộ"
@@ -389,7 +389,7 @@ const BillPage = () => {
             </Col>
           </Row>
           <Row gutter={16}>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item
                 name="amount"
                 label="Số tiền"
@@ -398,7 +398,7 @@ const BillPage = () => {
                 <Input placeholder="Số tiền" />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item
                 name="period"
                 label="Hóa đơn theo kỳ hạn:"
@@ -436,8 +436,8 @@ const BillPage = () => {
         {currentBill && (
           <div>
             <Row gutter={24}>
-              <Col span={12}>
-                <Card title="Thông tin hóa đơn" size="small" bordered={false}>
+              <Col xs={24} sm={12}>
+                <Card title="Thông tin hóa đơn" size="small" variant="borderless">
                   <p>
                     <strong>Mã hóa đơn:</strong> {currentBill.billCode}
                   </p>
@@ -458,8 +458,8 @@ const BillPage = () => {
                   </p>
                 </Card>
               </Col>
-              <Col span={12}>
-                <Card title="Thông tin căn hộ" size="small" bordered={false}>
+              <Col xs={24} sm={12}>
+                <Card title="Thông tin căn hộ" size="small" variant="borderless">
                   <p>
                     <strong>Mã căn hộ:</strong> A1203
                   </p>

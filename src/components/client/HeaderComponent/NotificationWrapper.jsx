@@ -15,8 +15,9 @@ import webSocketService from "../../../services/WebSocketService";
 
 // Styled components
 const NotificationCard = styled(Card)`
-  width: 600px;
-  max-height: 450px;
+  /* Không vượt quá bề ngang màn hình khi mở trên điện thoại */
+  width: min(600px, calc(100vw - 32px));
+  max-height: min(450px, 70vh);
   overflow-y: auto;
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   border-radius: 8px;

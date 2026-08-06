@@ -209,7 +209,7 @@ const AdminFormManagement = () => {
 
       <Modal
         title={<Title level={4}>Chi tiết đơn</Title>}
-        visible={modalVisible}
+        open={modalVisible}
         onCancel={() => setModalVisible(false)}
         footer={null}
         width={800}

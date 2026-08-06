@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { WrapperContainer, WrapperContainerLeft, WrapperContainerRight } from "./style";
+import { AuthCard, WrapperContainer, WrapperContainerLeft, WrapperContainerRight } from "./style";
 import { EyeTwoTone, EyeInvisibleOutlined } from "@ant-design/icons";
 import { Form, Image, message, Spin } from "antd";
 import imgLogin from "./../../../assets/common/images/logo-login.png";
@@ -80,26 +80,11 @@ const RegisterPage = () => {
           }}
         />
       </div>
-      <div
-        style={{
-          width: "800px",
-          // height: "500px",
-          display: "flex",
-          borderRadius: "10px",
-          backgroundColor: "#ffffff",
-          boxShadow: "0 0 300px rgb(0, 0, 0)",
-        }}
-      >
+      <AuthCard>
         <WrapperContainerLeft>
           <TitlePage>Đăng ký tài khoản</TitlePage>
           <TextContent>Hãy tạo tài khoản của bạn</TextContent>
-          <Form
-            name="register"
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 24 }}
-            onFinish={handleRegister}
-            autoComplete="off"
-          >
+          <Form name="register" onFinish={handleRegister} autoComplete="off">
             <Form.Item name="email" rules={[{ required: true, message: "Vui lòng nhập email!" }]}>
               <InputForm
                 placeholder="Email"
@@ -239,7 +224,7 @@ const RegisterPage = () => {
         <WrapperContainerRight>
           <Image src={imgLogin} width="250px" height="250px" preview={false} />
         </WrapperContainerRight>
-      </div>
+      </AuthCard>
     </WrapperContainer>
   );
 };

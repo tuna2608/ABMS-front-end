@@ -3,7 +3,13 @@ import { Form, Image, message, Spin } from "antd";
 import { useNavigate } from "react-router-dom";
 import { useDispatch } from "react-redux";
 import styled from "styled-components";
-import { LinkNav, WrapperContainer, WrapperContainerLeft, WrapperContainerRight } from "./style";
+import {
+  AuthCard,
+  LinkNav,
+  WrapperContainer,
+  WrapperContainerLeft,
+  WrapperContainerRight,
+} from "./style";
 import InputForm from "../../../components/common/InputForm/InputForm";
 import ButtonComponent from "../../../components/common/ButtonComponent/ButtonComponent";
 import imgLogin from "../../../assets/common/images/logo-login.png";
@@ -127,16 +133,7 @@ const NewPasswordPage = () => {
           }}
         />
       </div>
-      <div
-        style={{
-          width: "800px",
-          height: "500px", // Increased height
-          display: "flex",
-          borderRadius: "10px",
-          backgroundColor: "#ffffff",
-          boxShadow: "0 0 300px rgb(0, 0, 0)",
-        }}
-      >
+      <AuthCard $height="500px">
         <WrapperContainerLeft>
           <TitlePage>Đặt Lại Mật Khẩu</TitlePage>
           <TextContent>Vui lòng nhập mật khẩu mới</TextContent>
@@ -227,7 +224,7 @@ const NewPasswordPage = () => {
         <WrapperContainerRight>
           <Image src={imgLogin} width="250px" height="250px" preview={false} />
         </WrapperContainerRight>
-      </div>
+      </AuthCard>
     </WrapperContainer>
   );
 };

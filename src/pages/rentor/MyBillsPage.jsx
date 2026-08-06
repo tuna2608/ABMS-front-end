@@ -258,7 +258,7 @@ const MyBillsPage = () => {
       >
         {selectedBill && (
           <>
-            <Descriptions title="Thông tin hóa đơn" bordered column={2}>
+            <Descriptions title="Thông tin hóa đơn" bordered column={{ xs: 1, sm: 2 }}>
               <Descriptions.Item label="Căn hộ" span={2}>
                 {selectedBill.apartmentName}
               </Descriptions.Item>

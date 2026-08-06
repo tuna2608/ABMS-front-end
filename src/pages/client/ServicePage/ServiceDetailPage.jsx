@@ -48,9 +48,10 @@ import {
   ClearOutlined,
   SafetyOutlined,
   HeartFilled,
-  CommentOutlined,
 } from "@ant-design/icons";
 import { useParams, useNavigate, Link } from "react-router-dom";
+import servicePlaceholder from "../../../assets/images/products/product1.jpg";
+import avatarPlaceholder from "../../../assets/images/utils/noavatar.png";
 
 const { Title, Text, Paragraph } = Typography;
 const { TextArea } = Input;
@@ -82,11 +83,7 @@ const ServiceDetailPage = () => {
           "Thưởng thức cà phê, trà và bánh ngọt cao cấp trong không gian hiện đại. Đặc biệt giảm 10% cho cư dân.",
         provider: "Highland Coffee",
         category: "Ăn uống",
-        images: [
-          "https://via.placeholder.com/800x400",
-          "https://via.placeholder.com/800x400",
-          "https://via.placeholder.com/800x400",
-        ],
+        images: [servicePlaceholder, servicePlaceholder, servicePlaceholder],
         floor: "Tầng 1, Block A",
         hours: "07:00 - 22:00",
         contact: "0912345678",
@@ -113,7 +110,7 @@ const ServiceDetailPage = () => {
         comments: [
           {
             author: "Nguyễn Văn A",
-            avatar: "https://via.placeholder.com/60",
+            avatar: avatarPlaceholder,
             content:
               "Cà phê rất ngon, không gian thoải mái và yên tĩnh. Nhân viên phục vụ rất lịch sự.",
             datetime: "2023-09-15 09:30",
@@ -121,14 +118,14 @@ const ServiceDetailPage = () => {
           },
           {
             author: "Trần Thị B",
-            avatar: "https://via.placeholder.com/60",
+            avatar: avatarPlaceholder,
             content: "Thức uống đa dạng, giá cả hợp lý. Tuy nhiên vào giờ cao điểm hơi đông và ồn.",
             datetime: "2023-09-12 14:20",
             rating: 4,
           },
           {
             author: "Lê Văn C",
-            avatar: "https://via.placeholder.com/60",
+            avatar: avatarPlaceholder,
             content:
               "Bánh ngọt ở đây rất ngon, đặc biệt là bánh chocolate. Sẽ ghé lại thường xuyên.",
             datetime: "2023-09-08 17:45",
@@ -145,11 +142,7 @@ const ServiceDetailPage = () => {
           "Cung cấp dịch vụ vệ sinh căn hộ với đội ngũ nhân viên chuyên nghiệp, sử dụng thiết bị và hóa chất thân thiện với môi trường.",
         provider: "Ban quản lý tòa nhà",
         category: "Vệ sinh",
-        images: [
-          "https://via.placeholder.com/800x400",
-          "https://via.placeholder.com/800x400",
-          "https://via.placeholder.com/800x400",
-        ],
+        images: [servicePlaceholder, servicePlaceholder, servicePlaceholder],
         price: 350000,
         contact: "0912345678",
         email: "services@building.com",
@@ -188,7 +181,7 @@ const ServiceDetailPage = () => {
         comments: [
           {
             author: "Nguyễn Văn A",
-            avatar: "https://via.placeholder.com/60",
+            avatar: avatarPlaceholder,
             content:
               "Dịch vụ rất chuyên nghiệp, nhân viên làm việc cẩn thận và tỉ mỉ. Căn hộ sạch sẽ và thơm tho sau khi hoàn thành.",
             datetime: "2023-09-15 09:30",
@@ -196,7 +189,7 @@ const ServiceDetailPage = () => {
           },
           {
             author: "Trần Thị B",
-            avatar: "https://via.placeholder.com/60",
+            avatar: avatarPlaceholder,
             content: "Giá cả hợp lý, chất lượng tốt. Sẽ tiếp tục sử dụng dịch vụ trong tương lai.",
             datetime: "2023-09-12 14:20",
             rating: 4,
@@ -299,19 +292,26 @@ const ServiceDetailPage = () => {
   return (
     <div style={{ padding: "24px" }}>
       {/* Breadcrumb */}
-      <Breadcrumb style={{ marginBottom: 16 }}>
-        <Breadcrumb.Item>
-          <Link to="/">
-            <HomeOutlined /> Trang chủ
-          </Link>
-        </Breadcrumb.Item>
-        <Breadcrumb.Item>
-          <Link to="/services">
-            {serviceDetail.isPartner ? <ShopOutlined /> : <BuildOutlined />} Dịch vụ
-          </Link>
-        </Breadcrumb.Item>
-        <Breadcrumb.Item>{serviceDetail.title}</Breadcrumb.Item>
-      </Breadcrumb>
+      <Breadcrumb
+        style={{ marginBottom: 16 }}
+        items={[
+          {
+            title: (
+              <Link to="/">
+                <HomeOutlined /> Trang chủ
+              </Link>
+            ),
+          },
+          {
+            title: (
+              <Link to="/services">
+                {serviceDetail.isPartner ? <ShopOutlined /> : <BuildOutlined />} Dịch vụ
+              </Link>
+            ),
+          },
+          { title: serviceDetail.title },
+        ]}
+      />
 
       {/* Back button */}
       <Button
@@ -328,7 +328,7 @@ const ServiceDetailPage = () => {
         <Col xs={24} md={16}>
           {/* Image carousel */}
           <Card
-            bodyStyle={{ padding: 0 }}
+            styles={{ body: { padding: 0 } }}
             style={{ marginBottom: 24, borderRadius: 8, overflow: "hidden" }}
           >
             <Carousel autoplay style={{ backgroundColor: "#f0f0f0" }}>
@@ -392,7 +392,7 @@ const ServiceDetailPage = () => {
             <Divider style={{ margin: "16px 0" }} />
 
             <Row gutter={16}>
-              <Col span={12}>
+              <Col xs={24} sm={12}>
                 <Flex align="center" gap={8}>
                   <StarOutlined style={{ color: "#faad14" }} />
                   <Text>{serviceDetail.rating}/5.0</Text>
@@ -400,7 +400,7 @@ const ServiceDetailPage = () => {
                   <Text>({serviceDetail.comments?.length || 0} đánh giá)</Text>
                 </Flex>
               </Col>
-              <Col span={12} style={{ textAlign: "right" }}>
+              <Col xs={24} sm={12} style={{ textAlign: "right" }}>
                 <Text type="secondary">
                   <InfoCircleOutlined /> {serviceDetail.views} lượt xem
                 </Text>
@@ -409,13 +409,13 @@ const ServiceDetailPage = () => {
 
             {serviceDetail.isPartner ? (
               <Row gutter={16} style={{ marginTop: 16 }}>
-                <Col span={12}>
+                <Col xs={24} sm={12}>
                   <Flex align="center" gap={8}>
                     <EnvironmentOutlined style={{ color: "#4b7bec" }} />
                     <Text strong>{serviceDetail.floor}</Text>
                   </Flex>
                 </Col>
-                <Col span={12}>
+                <Col xs={24} sm={12}>
                   <Flex align="center" gap={8}>
                     <ClockCircleOutlined style={{ color: "#4b7bec" }} />
                     <Text strong>{serviceDetail.hours}</Text>
@@ -557,7 +557,7 @@ const ServiceDetailPage = () => {
             <Title level={4}>Đánh giá dịch vụ</Title>
             <div style={{ marginBottom: 24 }}>
               <Row gutter={24} align="middle">
-                <Col span={8}>
+                <Col xs={24} md={8}>
                   <div style={{ textAlign: "center" }}>
                     <Title level={2} style={{ margin: 0, color: "#faad14" }}>
                       {serviceDetail.rating}
@@ -568,7 +568,7 @@ const ServiceDetailPage = () => {
                     </div>
                   </div>
                 </Col>
-                <Col span={16}>
+                <Col xs={24} md={16}>
                   <div>
                     <Row align="middle" style={{ marginBottom: 8 }}>
                       <Col span={3}>
@@ -740,19 +740,24 @@ const ServiceDetailPage = () => {
               itemLayout="vertical"
               dataSource={serviceDetail.comments}
               renderItem={(item) => (
-                <CommentOutlined
-                  author={<Text strong>{item.author}</Text>}
-                  avatar={<Avatar src={item.avatar} icon={<UserOutlined />} />}
-                  content={item.content}
-                  datetime={
-                    <div>
-                      <Rate disabled defaultValue={item.rating} style={{ fontSize: 12 }} />
-                      <Text type="secondary" style={{ marginLeft: 8 }}>
-                        <CalendarOutlined /> {item.datetime}
-                      </Text>
-                    </div>
-                  }
-                />
+                /* antd 5 đã bỏ component Comment; trước đây chỗ này truyền props của
+                   Comment vào icon CommentOutlined nên đánh giá không hiển thị được.
+                   Dựng lại bằng List.Item.Meta. */
+                <List.Item>
+                  <List.Item.Meta
+                    avatar={<Avatar src={item.avatar} icon={<UserOutlined />} />}
+                    title={<Text strong>{item.author}</Text>}
+                    description={
+                      <div>
+                        <Rate disabled defaultValue={item.rating} style={{ fontSize: 12 }} />
+                        <Text type="secondary" style={{ marginLeft: 8 }}>
+                          <CalendarOutlined /> {item.datetime}
+                        </Text>
+                      </div>
+                    }
+                  />
+                  <div>{item.content}</div>
+                </List.Item>
               )}
             />
           </Card>
@@ -819,7 +824,7 @@ const ServiceDetailPage = () => {
                   title: serviceDetail.isPartner
                     ? "Starbucks Coffee - Tầng 2"
                     : "Dịch vụ sửa chữa điện nước",
-                  image: "https://via.placeholder.com/120x80",
+                  image: servicePlaceholder,
                   rating: 4.3,
                 },
                 {
@@ -827,13 +832,13 @@ const ServiceDetailPage = () => {
                   title: serviceDetail.isPartner
                     ? "Phúc Long Coffee & Tea - Tầng 1"
                     : "Dịch vụ bảo trì điều hòa",
-                  image: "https://via.placeholder.com/120x80",
+                  image: servicePlaceholder,
                   rating: 4.7,
                 },
                 {
                   id: serviceDetail.isPartner ? 4 : 103,
                   title: serviceDetail.isPartner ? "KFC - Tầng G" : "Dịch vụ chuyển nhà nội khu",
-                  image: "https://via.placeholder.com/120x80",
+                  image: servicePlaceholder,
                   rating: 4.2,
                 },
               ]}
@@ -916,7 +921,7 @@ const ServiceDetailPage = () => {
       {/* Booking Modal */}
       <Modal
         title="Đặt dịch vụ"
-        visible={isModalVisible}
+        open={isModalVisible}
         onCancel={handleBookingCancel}
         footer={[
           <Button key="back" onClick={handleBookingCancel}>
@@ -930,24 +935,24 @@ const ServiceDetailPage = () => {
       >
         <Form layout="vertical">
           <Row gutter={16}>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item label="Họ và tên" required>
                 <Input placeholder="Nhập họ và tên" />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item label="Số điện thoại" required>
                 <Input placeholder="Nhập số điện thoại" />
               </Form.Item>
             </Col>
           </Row>
           <Row gutter={16}>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item label="Số căn hộ" required>
                 <Input placeholder="Nhập số căn hộ" />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item label="Ngày thực hiện" required>
                 <Input type="date" />
               </Form.Item>

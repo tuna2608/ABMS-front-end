@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import {
+  AuthCard,
   WrapperContainer,
   WrapperContainerLeft,
   WrapperContainerRight,
@@ -100,23 +101,12 @@ const SignInPage = () => {
           }}
         />
       </div>
-      <div
-        style={{
-          width: "800px",
-          height: "450px",
-          display: "flex",
-          borderRadius: "10px",
-          backgroundColor: "#ffffff",
-          boxShadow: "0 0 300px rgb(0, 0, 0)",
-        }}
-      >
+      <AuthCard $height="450px">
         <WrapperContainerLeft>
           <TitlePage>Xin chào</TitlePage>
           <TextContent>Mời bạn đăng nhập tài khoản</TextContent>
           <Form
             name="basic"
-            labelCol={{ span: 8 }}
-            wrapperCol={{ span: 24 }}
             style={{ maxWidth: 600 }}
             initialValues={{ remember: true }}
             onFinish={handleLogin}
@@ -213,7 +203,7 @@ const SignInPage = () => {
         <WrapperContainerRight>
           <Image src={imgLogin} width="250px" height="250px" preview={false} />
         </WrapperContainerRight>
-      </div>
+      </AuthCard>
     </WrapperContainer>
   );
 };

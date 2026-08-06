@@ -20,7 +20,7 @@ const SystemSettings = () => {
       }
     >
       <Row gutter={16}>
-        <Col span={12}>
+        <Col xs={24} sm={12}>
           <Card
             type="inner"
             title={
@@ -59,7 +59,7 @@ const SystemSettings = () => {
           </Card>
         </Col>
 
-        <Col span={12}>
+        <Col xs={24} sm={12}>
           <Card
             type="inner"
             title={

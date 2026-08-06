@@ -116,7 +116,7 @@ const EditPostModal = ({ isModalVisible, onCancel, initialValues, onSuccess, cur
           </Form.Item>
 
           <Row gutter={16}>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item
                 name="price"
                 label="Giá"
@@ -131,7 +131,7 @@ const EditPostModal = ({ isModalVisible, onCancel, initialValues, onSuccess, cur
                 />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item name="depositPrice" label="Tiền Cọc">
                 <InputNumber
                   min={0}

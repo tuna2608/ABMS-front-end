@@ -1,14 +1,27 @@
 import React, { useState, useRef, useEffect } from "react";
 import { Layout, Input, Button, Avatar, List, Typography, Badge, Spin, message } from "antd";
-import { SendOutlined, SearchOutlined } from "@ant-design/icons";
+import { SendOutlined, SearchOutlined, MenuOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
+import styled from "styled-components";
 import webSocketService from "../../../services/WebSocketService";
 import { fetchContacts, getMessages, markMessagesAsRead } from "../../../redux/apiCalls";
 import { setCurrentUser } from "../../../redux/chatSlice";
+import { lg } from "../../../utilities/responsive";
 
 const { Header, Sider, Content } = Layout;
 const { Text, Title } = Typography;
 const { TextArea } = Input;
+
+/* Chỉ hiện khi danh sách liên hệ đã chuyển sang chế độ overlay */
+const ContactsToggle = styled(Button)`
+  display: none;
+  margin-right: 8px;
+  flex-shrink: 0;
+
+  ${lg`
+    display: inline-flex;
+  `}
+`;
 
 const ChatPage = () => {
   // Redux
@@ -22,6 +35,8 @@ const ChatPage = () => {
   const [messageInput, setMessageInput] = useState("");
   const [searchInput, setSearchInput] = useState("");
   const [loading, setLoading] = useState(true);
+  // Trên mobile danh sách liên hệ phủ lên khung chat nên cần thu gọn được
+  const [contactsCollapsed, setContactsCollapsed] = useState(false);
   const messagesEndRef = useRef(null);
 
   // Lấy danh sách liên hệ khi component mount
@@ -226,6 +241,10 @@ const ChatPage = () => {
     if (contactId === activeChat) return;
 
     setActiveChat(contactId);
+    // Đóng danh sách để lộ khung chat khi đang ở chế độ overlay (mobile)
+    if (window.innerWidth <= 992) {
+      setContactsCollapsed(true);
+    }
 
     // Lập tức đánh dấu là đã đọc khi nhấn vào liên hệ
     if (contactId && userId) {
@@ -241,6 +260,12 @@ const ChatPage = () => {
       <Sider
         width={320}
         theme="light"
+        breakpoint="lg"
+        collapsedWidth={0}
+        collapsed={contactsCollapsed}
+        onCollapse={setContactsCollapsed}
+        onBreakpoint={(broken) => setContactsCollapsed(broken)}
+        trigger={null}
         style={{
           borderRight: "1px solid #f0f0f0",
           overflow: "auto",
@@ -275,7 +300,8 @@ const ChatPage = () => {
         {/* Danh sách liên hệ */}
         {loading || isFetching ? (
           <div style={{ textAlign: "center", padding: "20px" }}>
-            <Spin tip="Đang tải..." />
+            <Spin />
+            <div style={{ marginTop: 8, color: "#8c8c8c" }}>Đang tải...</div>
           </div>
         ) : (
           <List
@@ -346,7 +372,13 @@ const ChatPage = () => {
                 zIndex: 1,
               }}
             >
-              <div style={{ display: "flex", alignItems: "center" }}>
+              <ContactsToggle
+                type="text"
+                icon={<MenuOutlined />}
+                onClick={() => setContactsCollapsed((prev) => !prev)}
+                aria-label="Danh sách liên hệ"
+              />
+              <div style={{ display: "flex", alignItems: "center", minWidth: 0 }}>
                 <Avatar src={activeContact.userImgUrl} size={40} style={{ marginRight: 10 }}>
                   {(activeContact.fullName || activeContact.userName)?.charAt(0)}
                 </Avatar>
@@ -369,7 +401,8 @@ const ChatPage = () => {
             >
               {isFetching ? (
                 <div style={{ textAlign: "center", marginTop: "50px" }}>
-                  <Spin tip="Đang tải tin nhắn..." />
+                  <Spin />
+                  <div style={{ marginTop: 8, color: "#8c8c8c" }}>Đang tải tin nhắn...</div>
                 </div>
               ) : (
                 <>
@@ -428,7 +461,15 @@ const ChatPage = () => {
               background: "#fff",
             }}
           >
-            <div style={{ textAlign: "center" }}>
+            <div style={{ textAlign: "center", padding: "0 16px" }}>
+              <ContactsToggle
+                type="default"
+                icon={<MenuOutlined />}
+                onClick={() => setContactsCollapsed(false)}
+                style={{ marginBottom: 12 }}
+              >
+                Danh sách liên hệ
+              </ContactsToggle>
               <Title level={4}>Chọn một liên hệ để bắt đầu trò chuyện</Title>
               <Text type="secondary">Hãy bắt đầu cuộc trò chuyện với một liên hệ từ danh sách</Text>
             </div>

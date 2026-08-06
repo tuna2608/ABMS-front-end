@@ -109,9 +109,14 @@ const FormManagement = () => {
   const [loading, setLoading] = useState(false);
   const [loadingSend, setLoadingSend] = useState(false);
 
+  // Trang gửi đơn bắt buộc đăng nhập; vào thẳng khi chưa đăng nhập thì đưa về /login
   useEffect(() => {
+    if (!currentUser) {
+      navigate("/login", { replace: true });
+      return;
+    }
     fetchApartments(currentUser);
-  }, [currentUser]);
+  }, [currentUser, navigate]);
 
   const fetchApartments = async (currentUser) => {
     setLoading(true);
@@ -197,6 +202,10 @@ const FormManagement = () => {
     fileList: file ? [file] : [],
   };
 
+  // Chưa đăng nhập: useEffect ở trên đang điều hướng về /login,
+  // không render form vì bên dưới truy cập thẳng currentUser.fullName
+  if (!currentUser) return null;
+
   return (
     <LoadingComponent isPending={loading}>
       <StyledCard>
@@ -267,7 +276,7 @@ const FormManagement = () => {
                           {apartment.apartmentName}
                         </Option>
                       ))}
-                    {currentUser.role === "Owner" &&
+                    {currentUser?.role === "Owner" &&
                       ownerApartments &&
                       ownerApartments.map((apartment) => (
                         <Option key={apartment.apartmentId} value={apartment.apartmentName}>

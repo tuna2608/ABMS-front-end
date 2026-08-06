@@ -123,7 +123,7 @@ c) Thanh toán đầy đủ các khoản phí trước khi kết thúc hợp đ�
             disabled
           />
         </Col>
-        <Col span={12}>
+        <Col xs={24} sm={12}>
           <h3>Giá Thuê</h3>
           <InputNumber
             style={{ width: "100%" }}
@@ -135,7 +135,7 @@ c) Thanh toán đầy đủ các khoản phí trước khi kết thúc hợp đ�
           />
         </Col>
 
-        <Col span={12}>
+        <Col xs={24} sm={12}>
           <h3>Số Tiền Đặt Cọc</h3>
           <InputNumber
             style={{ width: "100%" }}

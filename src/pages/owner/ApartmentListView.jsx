@@ -167,7 +167,7 @@ const ApartmentListView = () => {
                   boxShadow: "0 2px 4px rgba(0,0,0,0.1)",
                   border: "1px solid #e8e8e8",
                 }}
-                bodyStyle={{ padding: "12px" }}
+                styles={{ body: { padding: "12px" } }}
               >
                 <Space align="start">
                   <div

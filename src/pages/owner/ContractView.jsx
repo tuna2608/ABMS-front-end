@@ -20,7 +20,6 @@ import { getContractOwners, getApartments } from "../../redux/apiCalls";
 import { RenewalModal } from "./RenewContractModal";
 
 const { Search } = Input;
-const { TabPane } = Tabs;
 
 // Styled Download Button
 const DownloadButton = styled(Button)`
@@ -212,43 +211,56 @@ const ContractView = () => {
           </Button>,
         ]}
       >
-        <Tabs defaultActiveKey="info">
-          <TabPane tab="Thông tin hợp đồng" key="info">
-            <Descriptions bordered column={1}>
-              <Descriptions.Item label="Người thuê">
-                {selectedContract.residentName}
-              </Descriptions.Item>
-              <Descriptions.Item label="Email">{selectedContract.email}</Descriptions.Item>
-              <Descriptions.Item label="Số điện thoại">
-                {selectedContract.phoneNumber}
-              </Descriptions.Item>
-              <Descriptions.Item label="Căn hộ">{selectedContract.apartmentName}</Descriptions.Item>
-              <Descriptions.Item label="Ngày bắt đầu">
-                {moment(selectedContract.startDate).format("DD/MM/YYYY")}
-              </Descriptions.Item>
-              <Descriptions.Item label="Ngày kết thúc">
-                {moment(selectedContract.endDate).format("DD/MM/YYYY")}
-              </Descriptions.Item>
-              <Descriptions.Item label="Trạng thái">
-                <Tag color={selectedContract.status === "active" ? "green" : "red"}>
-                  {selectedContract.status === "active" ? "Đang hiệu lực" : "Đã hết hạn"}
-                </Tag>
-              </Descriptions.Item>
-            </Descriptions>
-          </TabPane>
-          <TabPane tab="Hình ảnh hợp đồng" key="images">
-            <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
-              {selectedContract.imageFiles?.map((url, index) => (
-                <img
-                  key={index}
-                  src={url}
-                  alt={`Hợp đồng ${index + 1}`}
-                  style={{ maxWidth: "200px", maxHeight: "200px", objectFit: "contain" }}
-                />
-              ))}
-            </div>
-          </TabPane>
-        </Tabs>
+        <Tabs
+          defaultActiveKey="info"
+          items={[
+            {
+              key: "info",
+              label: "Thông tin hợp đồng",
+              children: (
+                <Descriptions bordered column={1}>
+                  <Descriptions.Item label="Người thuê">
+                    {selectedContract.residentName}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Email">{selectedContract.email}</Descriptions.Item>
+                  <Descriptions.Item label="Số điện thoại">
+                    {selectedContract.phoneNumber}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Căn hộ">
+                    {selectedContract.apartmentName}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Ngày bắt đầu">
+                    {moment(selectedContract.startDate).format("DD/MM/YYYY")}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Ngày kết thúc">
+                    {moment(selectedContract.endDate).format("DD/MM/YYYY")}
+                  </Descriptions.Item>
+                  <Descriptions.Item label="Trạng thái">
+                    <Tag color={selectedContract.status === "active" ? "green" : "red"}>
+                      {selectedContract.status === "active" ? "Đang hiệu lực" : "Đã hết hạn"}
+                    </Tag>
+                  </Descriptions.Item>
+                </Descriptions>
+              ),
+            },
+            {
+              key: "images",
+              label: "Hình ảnh hợp đồng",
+              children: (
+                <div style={{ display: "flex", gap: "16px", flexWrap: "wrap" }}>
+                  {selectedContract.imageFiles?.map((url, index) => (
+                    <img
+                      key={index}
+                      src={url}
+                      alt={`Hợp đồng ${index + 1}`}
+                      style={{ maxWidth: "200px", maxHeight: "200px", objectFit: "contain" }}
+                    />
+                  ))}
+                </div>
+              ),
+            },
+          ]}
+        />
       </Modal>
     );
   };

@@ -68,6 +68,11 @@ const UserFormList = () => {
   const [modalVisible, setModalVisible] = useState(false);
   const [forms, setForms] = useState([]);
   useEffect(() => {
+    // Danh sách đơn bắt buộc đăng nhập
+    if (!userCurrent) {
+      navigate("/login", { replace: true });
+      return;
+    }
     async function fetchForms() {
       setLoading(true);
       try {
@@ -95,7 +100,7 @@ const UserFormList = () => {
       setLoading(false);
     }
     fetchForms();
-  }, [userCurrent]);
+  }, [userCurrent, navigate]);
 
   // Bản đồ loại đơn
   const formTypeMap = {

@@ -284,7 +284,7 @@ const VerifyContract = () => {
           <Card title="Nhập thông tin xác thực hợp đồng">
             <Form form={verificationForm} layout="vertical" onFinish={handleVerificationSubmit}>
               <Row gutter={16}>
-                <Col span={12}>
+                <Col xs={24} sm={12}>
                   <Form.Item
                     name="fullName"
                     label="Tên hợp đồng"
@@ -298,7 +298,7 @@ const VerifyContract = () => {
                     />
                   </Form.Item>
                 </Col>
-                <Col span={12}>
+                <Col xs={24} sm={12}>
                   <Form.Item
                     name="email"
                     label="Email"
@@ -318,7 +318,7 @@ const VerifyContract = () => {
               </Row>
 
               <Row gutter={16}>
-                <Col span={12}>
+                <Col xs={24} sm={12}>
                   <Form.Item
                     name="phone"
                     label="Số điện thoại"
@@ -332,7 +332,7 @@ const VerifyContract = () => {
                     />
                   </Form.Item>
                 </Col>
-                <Col span={12}>
+                <Col xs={24} sm={12}>
                   <Form.Item
                     name="apartment"
                     label="Tên căn hộ"
@@ -364,7 +364,7 @@ const VerifyContract = () => {
               </Row>
 
               <Row gutter={16}>
-                <Col span={12}>
+                <Col xs={24} sm={12}>
                   <Form.Item
                     name="verificationType"
                     label="Loại xác thực"
@@ -379,9 +379,9 @@ const VerifyContract = () => {
                     </Select>
                   </Form.Item>
                 </Col>
-                <Col span={12}>
+                <Col xs={24} sm={12}>
                   <Row gutter={8}>
-                    <Col span={verificationType === 2 ? 24 : 12}>
+                    <Col xs={24} sm={verificationType === 2 ? 24 : 12}>
                       <Form.Item
                         name="contractStartDate"
                         label="Ngày bắt đầu hợp đồng"
@@ -395,7 +395,7 @@ const VerifyContract = () => {
                       </Form.Item>
                     </Col>
                     {verificationType !== 2 && (
-                      <Col span={12}>
+                      <Col xs={24} sm={12}>
                         <Form.Item
                           name="contractEndDate"
                           label="Ngày kết thúc hợp đồng"
