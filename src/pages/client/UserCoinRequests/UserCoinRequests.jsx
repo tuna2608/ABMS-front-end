@@ -23,6 +23,7 @@ import {
   ClockCircleOutlined,
 } from "@ant-design/icons";
 import { useSelector } from "react-redux";
+import { useNavigate } from "react-router-dom";
 import { acceptReceivedReCoin, getReCoinByUserId } from "../../../redux/apiCalls";
 
 const { Text } = Typography;
@@ -113,6 +114,7 @@ const formatCurrency = (amount) => {
 
 const UserCoinRequests = () => {
   const userCurrent = useSelector((state) => state.user.currentUser);
+  const navigate = useNavigate();
   const [, setLoading] = useState(false);
   const [reCoins, setReCoins] = useState([
     // {
@@ -138,9 +140,14 @@ const UserCoinRequests = () => {
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [proofImageVisible, setProofImageVisible] = useState(false);
   const [confirmReceiptVisible, setConfirmReceiptVisible] = useState(false);
+  // Trang này bắt buộc đăng nhập; vào thẳng khi chưa đăng nhập thì đưa về /login
   useEffect(() => {
+    if (!userCurrent) {
+      navigate("/login", { replace: true });
+      return;
+    }
     callGetReCoinByUserId(userCurrent.userId);
-  }, [userCurrent]);
+  }, [userCurrent, navigate]);
 
   async function callGetReCoinByUserId(userId) {
     setLoading(true);
@@ -313,7 +320,7 @@ const UserCoinRequests = () => {
             Yêu Cầu Chuyển Coin Của Tôi{" "}
             <span style={{ color: "blue" }}>
               Số coins khả dụng:{" "}
-              <span style={{ color: "orange" }}>{userCurrent.accountBallance} VND</span>
+              <span style={{ color: "orange" }}>{userCurrent?.accountBallance ?? 0} VND</span>
             </span>{" "}
           </span>
         </Space>

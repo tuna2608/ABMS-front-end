@@ -21,21 +21,258 @@
   --cmain: #fffffe;
   --chightlight: #3da9fc;
   --csecondary: #90b4ce;
+
+  /* Padding ngang của các vùng full-width (header, footer, hero...).
+     Co giãn theo viewport thay vì cố định 120px. */
+  --page-gutter: clamp(16px, 6vw, 120px);
+  /* Chiều cao header cố định — dùng chung cho spacer và offset scroll */
+  --header-height: 70px;
 }
 
 * {
   font-family: "Montserrat", sans-serif;
 }
 
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
 html,
 body {
   width: 100%;
-  box-sizing: border-box;
   padding: 0;
   margin: 0;
   font-size: 20px;
+  /* Chặn tràn ngang do các phần tử định vị âm (nút điều hướng carousel...) */
+  overflow-x: hidden;
+}
+
+/* `clip` cắt tràn mà không tạo scroll container, nhờ đó không phá
+   position: sticky ở các phần tử con (header chat, thanh nhập tin nhắn). */
+@supports (overflow: clip) {
+  html,
+  body {
+    overflow-x: clip;
+  }
+}
+
+body {
+  -webkit-text-size-adjust: 100%;
 }
 
 a {
   text-decoration: none;
+}
+
+/* Media không bao giờ vượt quá khung chứa */
+img,
+video,
+canvas,
+svg {
+  max-width: 100%;
+}
+
+img,
+video {
+  height: auto;
+}
+
+/* Không cho chuỗi dài (email, URL, mã hợp đồng) đẩy vỡ layout */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+p,
+span,
+li,
+td {
+  overflow-wrap: break-word;
+}
+
+/* ==========================================================================
+   Responsive — tablet trở xuống (<= 992px)
+   ========================================================================== */
+
+@media (max-width: 992px) {
+  html,
+  body {
+    font-size: 18px;
+  }
+
+  /* Sidebar dashboard chuyển thành lớp phủ thay vì đẩy nội dung.
+     Đi kèm breakpoint="lg" + collapsedWidth={0} ở các trang *Home. */
+  .ant-layout-sider {
+    position: fixed !important;
+    top: 0;
+    left: 0;
+    height: 100vh;
+    z-index: 999;
+    overflow-y: auto;
+    box-shadow: 2px 0 12px rgba(0, 0, 0, 0.18);
+  }
+
+  /* Khi thu gọn (width 0) thì ẩn hẳn, tránh chặn thao tác chạm */
+  .ant-layout-sider-collapsed {
+    box-shadow: none;
+    overflow: hidden;
+  }
+}
+
+/* ==========================================================================
+   Responsive — tablet dọc / mobile (<= 768px)
+   ========================================================================== */
+
+@media (max-width: 768px) {
+  html,
+  body {
+    font-size: 16px;
+  }
+
+  /* --- Table: cho cuộn ngang thay vì bóp méo cột --- */
+  .ant-table-wrapper .ant-table-content,
+  .ant-table-wrapper .ant-table-body {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .ant-table-wrapper .ant-table-content > table,
+  .ant-table-wrapper .ant-table-body > table {
+    min-width: 640px;
+  }
+
+  .ant-table-wrapper .ant-table-thead > tr > th,
+  .ant-table-wrapper .ant-table-tbody > tr > td {
+    padding: 10px 8px !important;
+    font-size: 13px;
+    white-space: nowrap;
+  }
+
+  /* Phân trang gọn lại, không tràn dòng */
+  .ant-pagination {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    row-gap: 8px;
+  }
+
+  .ant-pagination .ant-pagination-options {
+    display: none;
+  }
+
+  /* --- Modal / Drawer: dùng gần trọn màn hình --- */
+  .ant-modal {
+    max-width: calc(100vw - 24px) !important;
+    margin: 12px auto !important;
+    top: 12px !important;
+    padding-bottom: 12px;
+  }
+
+  .ant-modal-body {
+    max-height: calc(100vh - 180px);
+    overflow-y: auto;
+  }
+
+  .ant-drawer-content-wrapper {
+    max-width: 100vw;
+  }
+
+  /* --- Form: label xuống dòng trên input --- */
+  .ant-form-horizontal .ant-form-item-row {
+    flex-direction: column;
+  }
+
+  .ant-form-horizontal .ant-form-item-label {
+    flex: 0 0 auto !important;
+    max-width: 100% !important;
+    width: 100% !important;
+    text-align: left !important;
+    padding-bottom: 4px !important;
+  }
+
+  .ant-form-horizontal .ant-form-item-control {
+    flex: 1 1 auto !important;
+    max-width: 100% !important;
+    width: 100% !important;
+  }
+
+  /* --- Input controls chiếm trọn chiều ngang ---
+     Ghi đè cả width cố định đặt inline (style={{ width: 300 }}) trong các trang. */
+  .ant-picker,
+  .ant-select,
+  .ant-input-number,
+  .ant-input-affix-wrapper,
+  .ant-input-group-wrapper,
+  .ant-input-search,
+  .ant-cascader-picker {
+    width: 100% !important;
+  }
+
+  /* Nhóm nút thao tác tự xuống dòng */
+  .ant-space-horizontal {
+    flex-wrap: wrap;
+  }
+
+  /* --- Card / Statistic gọn lại --- */
+  .ant-card-body {
+    padding: 16px !important;
+  }
+
+  .ant-card-head {
+    padding: 0 16px !important;
+  }
+
+  .ant-statistic-content {
+    font-size: 20px !important;
+  }
+
+  /* --- Tabs cuộn ngang thay vì gãy --- */
+  .ant-tabs-nav-wrap {
+    overflow-x: auto !important;
+  }
+
+  /* --- Layout dashboard: bỏ margin thừa hai bên --- */
+  .ant-layout-content {
+    margin: 12px 8px !important;
+    padding: 16px !important;
+  }
+}
+
+/* ==========================================================================
+   Responsive — điện thoại nhỏ (<= 480px)
+   ========================================================================== */
+
+@media (max-width: 480px) {
+  html,
+  body {
+    font-size: 15px;
+  }
+
+  .ant-modal {
+    max-width: calc(100vw - 12px) !important;
+    margin: 6px auto !important;
+    top: 6px !important;
+  }
+
+  .ant-layout-content {
+    margin: 8px 6px !important;
+    padding: 12px !important;
+  }
+
+  .ant-card-body {
+    padding: 12px !important;
+  }
+
+  /* Nút full-width dễ bấm hơn trên màn hình hẹp */
+  .ant-modal-footer .ant-btn {
+    flex: 1;
+  }
+
+  .ant-modal-footer {
+    display: flex;
+    gap: 8px;
+  }
 }

@@ -244,7 +244,7 @@ const CreatePostModal = ({ isModalOpen, setIsModalOpen, apartments, currentUser,
         />
 
         <Row gutter={16}>
-          <Col span={12}>
+          <Col xs={24} sm={12}>
             <Form.Item
               name="postType"
               label="Loại Bài Viết"
@@ -257,7 +257,7 @@ const CreatePostModal = ({ isModalOpen, setIsModalOpen, apartments, currentUser,
               />
             </Form.Item>
           </Col>
-          <Col span={12}>
+          <Col xs={24} sm={12}>
             <Form.Item
               name="apartmentId"
               label="Căn Hộ Liên Quan"
@@ -328,17 +328,17 @@ const CreatePostModal = ({ isModalOpen, setIsModalOpen, apartments, currentUser,
         </Form.Item>
 
         <Row gutter={16}>
-          <Col span={8}>
+          <Col xs={24} sm={12} md={8}>
             <Form.Item name="floor" label="Tầng">
               <InputNumber min={1} style={{ width: "100%" }} placeholder="Nhập tầng" disabled />
             </Form.Item>
           </Col>
-          <Col span={8}>
+          <Col xs={24} sm={12} md={8}>
             <Form.Item name="numberOfBedrooms" label="Phòng Ngủ">
               <InputNumber min={0} style={{ width: "100%" }} placeholder="Số phòng ngủ" disabled />
             </Form.Item>
           </Col>
-          <Col span={8}>
+          <Col xs={24} sm={12} md={8}>
             <Form.Item name="numberOfBathrooms" label="Phòng Tắm">
               <InputNumber min={0} style={{ width: "100%" }} placeholder="Số phòng tắm" disabled />
             </Form.Item>
@@ -346,12 +346,12 @@ const CreatePostModal = ({ isModalOpen, setIsModalOpen, apartments, currentUser,
         </Row>
 
         <Row gutter={16}>
-          <Col span={12}>
+          <Col xs={24} sm={12}>
             <Form.Item name="area" label="Diện tích">
               <Input placeholder="Nhập diện tích" disabled />
             </Form.Item>
           </Col>
-          <Col span={12}>
+          <Col xs={24} sm={12}>
             <Form.Item name="direction" label="Hướng">
               <Input placeholder="Nhập hướng" disabled />
             </Form.Item>
@@ -359,7 +359,7 @@ const CreatePostModal = ({ isModalOpen, setIsModalOpen, apartments, currentUser,
         </Row>
 
         <Row gutter={16}>
-          <Col span={12}>
+          <Col xs={24} sm={12}>
             <Form.Item
               name="price"
               label="Giá"
@@ -390,7 +390,7 @@ const CreatePostModal = ({ isModalOpen, setIsModalOpen, apartments, currentUser,
               />
             </Form.Item>
           </Col>
-          <Col span={12}>
+          <Col xs={24} sm={12}>
             <Form.Item
               name="depositPrice"
               label="Tiền Cọc"

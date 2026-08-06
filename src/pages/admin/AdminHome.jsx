@@ -64,6 +64,7 @@ const AdminHome = () => {
     <Layout style={{ minHeight: "100vh" }}>
       <AdminSidebar
         collapsed={collapsed}
+        setCollapsed={setCollapsed}
         activeTab={activeTab}
         setActiveTab={setActiveTab}
         toggleCollapsed={toggleCollapsed}

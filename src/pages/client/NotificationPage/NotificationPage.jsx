@@ -9,7 +9,6 @@ import {
   Space,
   Button,
   Divider,
-  Menu,
   Dropdown,
   Tabs,
   Tag,
@@ -44,7 +43,6 @@ import {
 
 const { Header, Content } = Layout;
 const { Title, Text, Paragraph } = Typography;
-const { TabPane } = Tabs;
 // Dữ liệu mẫu thông báo
 const sampleNotifications = [
   {
@@ -299,32 +297,34 @@ const NotificationsPage = () => {
     }
   };
 
-  // Menu dropdown cho các tùy chọn lọc
-  const filterMenu = (
-    <Menu>
-      <Menu.Item key="all" onClick={() => setSelectedType("all")}>
-        Tất cả thông báo
-      </Menu.Item>
-      <Menu.Divider />
-      <Menu.Item key="unread" onClick={() => setSelectedType("all")}>
-        <Badge status="processing" text="Chưa đọc" />
-      </Menu.Item>
-      <Menu.Item key="read" onClick={() => setSelectedType("all")}>
-        <Badge status="default" text="Đã đọc" />
-      </Menu.Item>
-      <Menu.Divider />
-      <Menu.ItemGroup title="Loại thông báo">
-        {Object.entries(notificationTypes).map(
-          ([key, { label, color }]) =>
-            key !== "all" && (
-              <Menu.Item key={key} onClick={() => setSelectedType(key)}>
-                <Badge color={color} text={label} />
-              </Menu.Item>
-            )
-        )}
-      </Menu.ItemGroup>
-    </Menu>
-  );
+  // Menu dropdown cho các tùy chọn lọc (antd 5 dùng `items` thay cho children)
+  const filterMenuItems = [
+    { key: "all", label: "Tất cả thông báo", onClick: () => setSelectedType("all") },
+    { type: "divider" },
+    {
+      key: "unread",
+      label: <Badge status="processing" text="Chưa đọc" />,
+      onClick: () => setSelectedType("all"),
+    },
+    {
+      key: "read",
+      label: <Badge status="default" text="Đã đọc" />,
+      onClick: () => setSelectedType("all"),
+    },
+    { type: "divider" },
+    {
+      key: "types",
+      type: "group",
+      label: "Loại thông báo",
+      children: Object.entries(notificationTypes)
+        .filter(([key]) => key !== "all")
+        .map(([key, { label, color }]) => ({
+          key,
+          label: <Badge color={color} text={label} />,
+          onClick: () => setSelectedType(key),
+        })),
+    },
+  ];
 
   // Render icon thông báo theo loại
   const renderNotificationIcon = (type) => {
@@ -378,7 +378,7 @@ const NotificationsPage = () => {
             >
               Đánh dấu tất cả đã đọc
             </Button>
-            <Dropdown overlay={filterMenu} placement="bottomRight">
+            <Dropdown menu={{ items: filterMenuItems }} placement="bottomRight">
               <Button icon={<FilterOutlined />}>Lọc</Button>
             </Dropdown>
           </Space>
@@ -386,7 +386,7 @@ const NotificationsPage = () => {
       </Header>
 
       <Content style={{ padding: "24px", maxWidth: 1000, margin: "0 auto" }}>
-        <Card style={{ marginBottom: 24 }} bodyStyle={{ padding: "12px 24px" }}>
+        <Card style={{ marginBottom: 24 }} styles={{ body: { padding: "12px 24px" } }}>
           <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
             <Space>
               <Checkbox
@@ -453,37 +453,35 @@ const NotificationsPage = () => {
             padding: "8px 16px",
             borderRadius: 2,
           }}
-        >
-          <TabPane
-            tab={
-              <Badge
-                count={notifications.filter((n) => !n.isRead).length}
-                overflowCount={99}
-                size="small"
-              >
-                <span style={{ paddingRight: 8 }}>Tất cả</span>
-              </Badge>
-            }
-            key="all"
-          />
-          {Object.entries(notificationTypes).map(
-            ([key, { label, color }]) =>
-              key !== "all" && (
-                <TabPane
-                  tab={
-                    <Badge
-                      count={notifications.filter((n) => !n.isRead && n.type === key).length}
-                      size="small"
-                      overflowCount={99}
-                    >
-                      <span style={{ paddingRight: 8 }}>{label}</span>
-                    </Badge>
-                  }
-                  key={key}
-                />
-              )
-          )}
-        </Tabs>
+          items={[
+            {
+              key: "all",
+              label: (
+                <Badge
+                  count={notifications.filter((n) => !n.isRead).length}
+                  overflowCount={99}
+                  size="small"
+                >
+                  <span style={{ paddingRight: 8 }}>Tất cả</span>
+                </Badge>
+              ),
+            },
+            ...Object.entries(notificationTypes)
+              .filter(([key]) => key !== "all")
+              .map(([key, { label }]) => ({
+                key,
+                label: (
+                  <Badge
+                    count={notifications.filter((n) => !n.isRead && n.type === key).length}
+                    size="small"
+                    overflowCount={99}
+                  >
+                    <span style={{ paddingRight: 8 }}>{label}</span>
+                  </Badge>
+                ),
+              })),
+          ]}
+        />
 
         {loading ? (
           <Card>
@@ -508,7 +506,7 @@ const NotificationsPage = () => {
             />
           </Card>
         ) : (
-          <Card bodyStyle={{ padding: 0 }}>
+          <Card styles={{ body: { padding: 0 } }}>
             <List
               itemLayout="horizontal"
               dataSource={paginatedNotifications}
@@ -536,11 +534,20 @@ const NotificationsPage = () => {
                       />
                     </Tooltip>,
                     <Dropdown
-                      overlay={
-                        <Menu>
-                          <Menu.Item
-                            key="read"
-                            onClick={(e) => {
+                      menu={{
+                        items: [
+                          {
+                            key: "read",
+                            label: notification.isRead ? (
+                              <span>
+                                <EyeInvisibleOutlined /> Đánh dấu chưa đọc
+                              </span>
+                            ) : (
+                              <span>
+                                <EyeOutlined /> Đánh dấu đã đọc
+                              </span>
+                            ),
+                            onClick: (e) => {
                               e.domEvent.stopPropagation();
                               setNotifications((prevNotifications) =>
                                 prevNotifications.map((item) =>
@@ -549,30 +556,23 @@ const NotificationsPage = () => {
                                     : item
                                 )
                               );
-                            }}
-                          >
-                            {notification.isRead ? (
+                            },
+                          },
+                          {
+                            key: "delete",
+                            danger: true,
+                            label: (
                               <span>
-                                <EyeInvisibleOutlined /> Đánh dấu chưa đọc
+                                <DeleteOutlined /> Xóa thông báo
                               </span>
-                            ) : (
-                              <span>
-                                <EyeOutlined /> Đánh dấu đã đọc
-                              </span>
-                            )}
-                          </Menu.Item>
-                          <Menu.Item
-                            key="delete"
-                            danger
-                            onClick={(e) => {
+                            ),
+                            onClick: (e) => {
                               e.domEvent.stopPropagation();
                               deleteNotification(notification.id);
-                            }}
-                          >
-                            <DeleteOutlined /> Xóa thông báo
-                          </Menu.Item>
-                        </Menu>
-                      }
+                            },
+                          },
+                        ],
+                      }}
                       trigger={["click"]}
                     >
                       <Button

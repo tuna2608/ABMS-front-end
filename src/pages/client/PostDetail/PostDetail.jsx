@@ -246,7 +246,7 @@ const PostDetail = () => {
           <Divider orientation="left">Tiện ích</Divider>
           {/* <Row gutter={[16, 16]}>
             {apartment?.utilities.map((utility, index) => (
-              <Col span={8} key={index}>
+              <Col xs={24} sm={12} md={8} key={index}>
                 <Space>
                   <CheckCircleOutlined style={{ color: 'green' }} />
                   <Text>{utility}</Text>

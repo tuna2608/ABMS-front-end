@@ -2,17 +2,36 @@ import React from "react";
 import styled from "styled-components";
 import { Carousel } from "antd";
 import { LeftOutlined, RightOutlined } from "@ant-design/icons";
+import { lg, md, sm } from "../../../utilities/responsive";
+
+/* Chiều cao slide dùng chung cho wrapper, Carousel và Slide để 3 nơi luôn khớp nhau */
+const SLIDE_HEIGHT = {
+  desktop: 400,
+  tablet: 620,
+  mobile: 560,
+};
 
 const HeroSectionWrapper = styled.div`
   position: relative;
   width: 100%;
-  height: 400px;
+  height: ${SLIDE_HEIGHT.desktop}px;
   overflow: visible;
   background-color: #ffffff;
   display: flex;
   align-items: center;
   justify-content: center;
   padding: 0 20px;
+
+  ${md`
+    height: auto;
+    min-height: ${SLIDE_HEIGHT.tablet}px;
+    padding: 24px 16px;
+  `}
+
+  ${sm`
+    min-height: ${SLIDE_HEIGHT.mobile}px;
+    padding: 16px 12px;
+  `}
 `;
 
 const CarouselWrapper = styled.div`
@@ -24,6 +43,27 @@ const CarouselWrapper = styled.div`
   .ant-carousel {
     position: static !important;
   }
+
+  .ant-carousel .slick-slide > div {
+    height: 100%;
+  }
+`;
+
+/* Slide: 2 cột trên desktop, xếp dọc (ảnh trên - chữ dưới) từ tablet dọc trở xuống */
+const Slide = styled.div`
+  display: flex;
+  flex-direction: row;
+  height: ${SLIDE_HEIGHT.desktop}px;
+  width: 100%;
+  max-width: 1200px;
+  margin: 0 auto;
+  position: relative;
+
+  ${md`
+    flex-direction: column-reverse;
+    height: auto;
+    gap: 16px;
+  `}
 `;
 
 const ImageControlsContainer = styled.div`
@@ -42,6 +82,19 @@ const ImageControlsContainer = styled.div`
   button {
     pointer-events: auto;
   }
+
+  /* Xuống 1 cột thì ảnh nằm trên cùng — giới hạn vùng nút theo đúng chiều cao
+     ảnh, nếu không nút sẽ canh giữa cả slide và đè lên tiêu đề. */
+  ${md`
+    left: 0;
+    width: 100%;
+    height: 260px;
+    padding: 0 8px;
+  `}
+
+  ${sm`
+    height: 200px;
+  `}
 `;
 
 const CarouselNavButton = styled.button`
@@ -72,6 +125,12 @@ const CarouselNavButton = styled.button`
   &.next {
     margin-right: -10px;
   }
+
+  /* Bỏ margin âm khi hẹp, nếu không nút bị tràn ra ngoài viewport */
+  ${md`
+    &.prev { margin-left: 0; }
+    &.next { margin-right: 0; }
+  `}
 `;
 
 const ContentContainer = styled.div`
@@ -85,6 +144,13 @@ const ContentContainer = styled.div`
   background-color: transparent;
   margin: 20px 0;
   padding-right: 30px;
+
+  ${md`
+    width: 100%;
+    height: auto;
+    margin: 0;
+    padding-right: 0;
+  `}
 `;
 
 const ImageContainer = styled.div`
@@ -106,6 +172,16 @@ const ImageContainer = styled.div`
     display: block;
     max-width: 100%;
   }
+
+  ${md`
+    width: 100%;
+    height: 260px;
+    margin: 0;
+  `}
+
+  ${sm`
+    height: 200px;
+  `}
 `;
 
 const Content = styled.div`
@@ -120,11 +196,15 @@ const Content = styled.div`
 `;
 
 const Title = styled.h1`
-  font-size: 30px;
+  font-size: clamp(20px, 2.4vw, 30px);
   color: #1e3a8a;
   margin-bottom: 16px;
   font-weight: 700;
   text-align: left;
+
+  ${md`
+margin-bottom: 12px;
+  `}
 `;
 
 const Description = styled.p`
@@ -134,6 +214,24 @@ const Description = styled.p`
   margin-bottom: 24px;
   max-width: 500px;
   text-align: left;
+
+  ${lg`
+    font-size: 15px;
+  `}
+
+  ${md`
+    max-width: 100%;
+    margin-bottom: 16px;
+  `}
+
+  /* Rút gọn mô tả trên màn hình rất hẹp để nút CTA không bị đẩy quá xa */
+  ${sm`
+    font-size: 14px;
+    display: -webkit-box;
+    -webkit-line-clamp: 5;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+  `}
 `;
 
 const RegisterButton = styled.button`
@@ -187,23 +285,13 @@ function HeroSection({ carouselRef, handlePrev, handleNext }) {
           dots={false}
           autoplay
           autoplaySpeed={5000}
-          style={{ width: "100%", height: "400px" }}
+          style={{ width: "100%" }}
           easing="linear"
           effect="fade"
         >
           {heroData.map((item, index) => (
             <div key={index}>
-              <div
-                style={{
-                  display: "flex",
-                  flexDirection: "row",
-                  height: "400px",
-                  width: "100%",
-                  maxWidth: "1200px",
-                  margin: "0 auto",
-                  position: "relative",
-                }}
-              >
+              <Slide>
                 <ContentContainer>
                   <Content>
                     <Title>{item.title}</Title>
@@ -214,7 +302,7 @@ function HeroSection({ carouselRef, handlePrev, handleNext }) {
                 <ImageContainer>
                   <img src={item.image} alt={item.altText} />
                 </ImageContainer>
-              </div>
+              </Slide>
             </div>
           ))}
         </Carousel>

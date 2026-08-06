@@ -1,5 +1,8 @@
 import { lazy } from "react";
 
+// Import tĩnh: ErrorBoundary phải render được ngay cả khi việc tải chunk thất bại
+import ErrorPage from "../pages/common/ErrorPage/ErrorPage";
+
 const HomePage = lazy(() => import("../pages/client/HomePage/HomePage"));
 const NotFoundPage = lazy(() => import("../pages/common/NotFoundPage/NotFoundPage"));
 const LoginPage = lazy(() => import("../pages/common/LoginPage/LoginPage"));
@@ -182,6 +185,11 @@ export const routes = [
     path: "/coin-request",
     page: UserCoinRequests,
     isShowHeader: true,
+  },
+  {
+    path: "/error",
+    page: ErrorPage,
+    isShowHeader: false,
   },
   {
     path: "*",

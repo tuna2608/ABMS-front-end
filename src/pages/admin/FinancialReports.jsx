@@ -53,13 +53,13 @@ const FinancialReports = () => {
       }
     >
       <Row gutter={16} style={{ marginBottom: 24 }}>
-        <Col span={8}>
+        <Col xs={24} sm={12} md={8}>
           <Statistic title="Tổng Doanh Thu" value={1234567} prefix="₫" precision={0} />
         </Col>
-        <Col span={8}>
+        <Col xs={24} sm={12} md={8}>
           <Statistic title="Tổng Chi Phí" value={876543} prefix="₫" precision={0} />
         </Col>
-        <Col span={8}>
+        <Col xs={24} sm={12} md={8}>
           <Statistic
             title="Lợi Nhuận Ròng"
             value={358024}

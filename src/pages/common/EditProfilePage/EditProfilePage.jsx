@@ -194,9 +194,10 @@ const ProfileEditPage = () => {
   const userCurrent = useSelector((state) => state.user.currentUser);
 
   const defaultValue = moment();
+  // Chưa đăng nhập thì userCurrent là null — không được truy cập thẳng thuộc tính
   const [user] = useState({
     ...userCurrent,
-    birthday: userCurrent.birthday ? dayjs(userCurrent.birthday) : dayjs(defaultValue),
+    birthday: userCurrent?.birthday ? dayjs(userCurrent.birthday) : dayjs(defaultValue),
   });
   const [listBank, setListBank] = useState([]);
 
@@ -218,6 +219,13 @@ const ProfileEditPage = () => {
   });
 
   const dispatch = useDispatch();
+
+  // Trang cá nhân bắt buộc đăng nhập; vào thẳng khi chưa đăng nhập thì đưa về /login
+  useEffect(() => {
+    if (!userCurrent) {
+      navigate("/login", { replace: true });
+    }
+  }, [userCurrent, navigate]);
 
   useEffect(() => {
     callGetListBanks();

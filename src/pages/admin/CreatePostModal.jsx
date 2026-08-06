@@ -26,7 +26,6 @@ const CreatePostModal = ({ isModalVisible, onCancel, apartments, onSuccess, curr
   const [aiLoading, setAiLoading] = useState(false);
   const [postExists, setPostExists] = useState(false);
 
-
   const getBase64 = (file) =>
     new Promise((resolve, reject) => {
       const reader = new FileReader();
@@ -151,7 +150,7 @@ const CreatePostModal = ({ isModalVisible, onCancel, apartments, onSuccess, curr
     >
       <Form form={form} layout="vertical" onFinish={handleSubmit}>
         <Row gutter={16}>
-          <Col span={12}>
+          <Col xs={24} sm={12}>
             <Form.Item
               name="apartmentId"
               label="Căn Hộ"
@@ -191,17 +190,17 @@ const CreatePostModal = ({ isModalVisible, onCancel, apartments, onSuccess, curr
         </Form.Item>
 
         <Row gutter={16}>
-          <Col span={8}>
+          <Col xs={24} sm={12} md={8}>
             <Form.Item name="floor" label="Tầng">
               <InputNumber disabled style={{ width: "100%" }} placeholder="Tầng" />
             </Form.Item>
           </Col>
-          <Col span={8}>
+          <Col xs={24} sm={12} md={8}>
             <Form.Item name="numberOfBedrooms" label="Phòng Ngủ">
               <InputNumber disabled style={{ width: "100%" }} placeholder="Số phòng ngủ" />
             </Form.Item>
           </Col>
-          <Col span={8}>
+          <Col xs={24} sm={12} md={8}>
             <Form.Item name="numberOfBathrooms" label="Phòng Tắm">
               <InputNumber disabled style={{ width: "100%" }} placeholder="Số phòng tắm" />
             </Form.Item>
@@ -209,12 +208,12 @@ const CreatePostModal = ({ isModalVisible, onCancel, apartments, onSuccess, curr
         </Row>
 
         <Row gutter={16}>
-          <Col span={12}>
+          <Col xs={24} sm={12}>
             <Form.Item name="area" label="Diện tích">
               <Input disabled placeholder="Diện tích" addonAfter="m²" />
             </Form.Item>
           </Col>
-          <Col span={12}>
+          <Col xs={24} sm={12}>
             <Form.Item name="direction" label="Hướng">
               <Input disabled placeholder="Hướng" />
             </Form.Item>
@@ -245,7 +244,7 @@ const CreatePostModal = ({ isModalVisible, onCancel, apartments, onSuccess, curr
         </Form.Item>
 
         <Row gutter={16}>
-          <Col span={12}>
+          <Col xs={24} sm={12}>
             <Form.Item
               name="price"
               label="Giá"
@@ -260,7 +259,7 @@ const CreatePostModal = ({ isModalVisible, onCancel, apartments, onSuccess, curr
               />
             </Form.Item>
           </Col>
-          <Col span={12}>
+          <Col xs={24} sm={12}>
             <Form.Item name="depositPrice" label="Tiền Cọc">
               <InputNumber
                 min={0}

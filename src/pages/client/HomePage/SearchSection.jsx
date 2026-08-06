@@ -1,6 +1,7 @@
 import React from "react";
 import styled from "styled-components";
 import { SearchOutlined } from "@ant-design/icons";
+import { md, sm } from "../../../utilities/responsive";
 
 const SearchSectionWrapper = styled.div`
   background-color: #1e3a8a;
@@ -8,12 +9,21 @@ const SearchSectionWrapper = styled.div`
   position: relative;
   border-radius: 0 0 30px 30px;
   margin-bottom: 20px;
+
+  ${sm`
+    padding: 20px 0;
+    border-radius: 0 0 20px 20px;
+  `}
 `;
 
 const SearchContainer = styled.div`
   max-width: 1200px;
   margin: 0 auto;
   padding: 0 20px;
+
+  ${sm`
+    padding: 0 12px;
+  `}
 `;
 
 const SearchBox = styled.div`
@@ -24,6 +34,11 @@ const SearchBox = styled.div`
   padding: 10px 20px;
   margin-bottom: 16px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+
+  ${sm`
+    padding: 8px 8px 8px 14px;
+    gap: 8px;
+  `}
 `;
 
 const SearchIcon = styled.span`
@@ -32,14 +47,26 @@ const SearchIcon = styled.span`
   font-size: 22px;
   display: flex;
   align-items: center;
+  flex-shrink: 0;
+
+  ${sm`
+    margin-right: 0;
+    font-size: 18px;
+  `}
 `;
 
 const SearchInput = styled.input`
   flex: 1;
+  min-width: 0;
   border: none;
   outline: none;
   padding: 8px 0;
   font-size: 16px;
+
+  ${sm`
+    font-size: 14px;
+    padding: 6px 0;
+  `}
 `;
 
 const SearchButton = styled.button`
@@ -50,21 +77,38 @@ const SearchButton = styled.button`
   padding: 8px 20px;
   font-weight: 500;
   cursor: pointer;
+  white-space: nowrap;
+  flex-shrink: 0;
 
   &:hover {
     background-color: #b45309;
   }
+
+  ${sm`
+    padding: 8px 14px;
+    font-size: 14px;
+  `}
 `;
 
+/* 4 filter: 1 hàng trên desktop → 2x2 trên tablet → 1 cột trên mobile */
 const FilterSection = styled.div`
-  display: flex;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
   gap: 12px;
-  justify-content: space-between;
+
+  ${md`
+grid-template-columns: repeat(2, 1fr);
+  `}
+
+  ${sm`
+    grid-template-columns: 1fr;
+    gap: 8px;
+  `}
 `;
 
 const FilterSelect = styled.div`
   position: relative;
-  flex: 1;
+  min-width: 0;
 `;
 
 const Select = styled.select`

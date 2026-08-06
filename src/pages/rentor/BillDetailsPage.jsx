@@ -64,7 +64,7 @@ const BillDetailsPage = ({ consumptionId }) => {
         </Space>
       }
     >
-      <Descriptions bordered column={2} size="small">
+      <Descriptions bordered column={{ xs: 1, sm: 2 }} size="small">
         <Descriptions.Item label="Mã Tiêu Thụ">{consumptionData.consumption_id}</Descriptions.Item>
         <Descriptions.Item label="Ngày Ghi Nhận">
           {consumptionData.consumption_date}
@@ -77,7 +77,7 @@ const BillDetailsPage = ({ consumptionId }) => {
 
       <Divider orientation="left">Chi Tiết Tiêu Thụ Nước</Divider>
 
-      <Descriptions bordered column={2} size="small">
+      <Descriptions bordered column={{ xs: 1, sm: 2 }} size="small">
         <Descriptions.Item label="Chỉ Số Tháng Trước">
           {consumptionData.last_month_water_consumption} m³
         </Descriptions.Item>

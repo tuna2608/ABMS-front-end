@@ -2,7 +2,13 @@ import React, { useState } from "react";
 import { useDispatch } from "react-redux";
 import { Form, Image, message, Spin } from "antd";
 import styled from "styled-components";
-import { LinkNav, WrapperContainer, WrapperContainerLeft, WrapperContainerRight } from "./style";
+import {
+  AuthCard,
+  LinkNav,
+  WrapperContainer,
+  WrapperContainerLeft,
+  WrapperContainerRight,
+} from "./style";
 import InputForm from "../../../components/common/InputForm/InputForm";
 import ButtonComponent from "../../../components/common/ButtonComponent/ButtonComponent";
 import imgLogin from "../../../assets/common/images/logo-login.png";
@@ -79,16 +85,7 @@ const ForgotPasswordPage = () => {
           }}
         />
       </div>
-      <div
-        style={{
-          width: "800px",
-          height: "350px",
-          display: "flex",
-          borderRadius: "10px",
-          backgroundColor: "#ffffff",
-          boxShadow: "0 0 300px rgb(0, 0, 0)",
-        }}
-      >
+      <AuthCard $height="350px">
         <WrapperContainerLeft>
           <TitlePage>Quên mật khẩu</TitlePage>
           <TextContent>Nhập email để nhận OTP đặt lại mật khẩu</TextContent>
@@ -148,7 +145,7 @@ const ForgotPasswordPage = () => {
         <WrapperContainerRight>
           <Image src={imgLogin} width="250px" height="250px" preview={false} />
         </WrapperContainerRight>
-      </div>
+      </AuthCard>
     </WrapperContainer>
   );
 };

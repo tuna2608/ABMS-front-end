@@ -29,7 +29,6 @@ import { useSelector } from "react-redux";
 
 const { Text } = Typography;
 const { TextArea } = Input;
-const { TabPane } = Tabs;
 
 // Update RejectModal implementation and move it outside ServicePostReview
 const RejectModal = ({ visible, onCancel, onOk, loading, rejectionReason, setRejectionReason }) => (
@@ -252,32 +251,36 @@ const ServicePostReview = () => {
       </Space>
 
       {/* Tabs */}
-      <Tabs activeKey={activeTab} onChange={setActiveTab}>
-        <TabPane
-          tab={
-            <span>
-              <ExclamationCircleOutlined /> Chờ duyệt
-            </span>
-          }
-          key="unverified"
-        />
-        <TabPane
-          tab={
-            <span>
-              <CheckCircleOutlined /> Đã duyệt
-            </span>
-          }
-          key="verified"
-        />
-        <TabPane
-          tab={
-            <span>
-              <CloseCircleOutlined /> Đã từ chối
-            </span>
-          }
-          key="rejected"
-        />
-      </Tabs>
+      <Tabs
+        activeKey={activeTab}
+        onChange={setActiveTab}
+        items={[
+          {
+            key: "unverified",
+            label: (
+              <span>
+                <ExclamationCircleOutlined /> Chờ duyệt
+              </span>
+            ),
+          },
+          {
+            key: "verified",
+            label: (
+              <span>
+                <CheckCircleOutlined /> Đã duyệt
+              </span>
+            ),
+          },
+          {
+            key: "rejected",
+            label: (
+              <span>
+                <CloseCircleOutlined /> Đã từ chối
+              </span>
+            ),
+          },
+        ]}
+      />
 
       {/* Posts Table */}
       <Table dataSource={getFilteredPosts()} columns={columns} rowKey="id" loading={loading} />

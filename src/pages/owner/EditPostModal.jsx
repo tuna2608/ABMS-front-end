@@ -118,7 +118,7 @@ const EditPostModal = ({
       {currentEditPost && (
         <Form form={editForm} layout="vertical" onFinish={handleEditSubmit}>
           <Row gutter={16}>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item
                 name="postType"
                 label="Loại Bài Viết"
@@ -127,7 +127,7 @@ const EditPostModal = ({
                 <Select placeholder="Chọn loại bài viết" options={postTypes} />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item label="Căn Hộ">
                 <Input
                   value={currentEditPost.apartment ? currentEditPost.apartment.apartmentName : ""}
@@ -160,7 +160,7 @@ const EditPostModal = ({
           </Form.Item>
 
           <Row gutter={16}>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item
                 name="price"
                 label="Giá"
@@ -191,7 +191,7 @@ const EditPostModal = ({
                 />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item
                 name="depositPrice"
                 label="Tiền Cọc"

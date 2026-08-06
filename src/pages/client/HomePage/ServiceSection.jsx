@@ -11,6 +11,7 @@ import {
 import { useNavigate } from "react-router-dom";
 import { getVerifiedFacilities } from "../../../redux/apiCalls";
 import { message } from "antd";
+import { lg, sm } from "../../../utilities/responsive";
 
 const ServiceSectionWrapper = styled.section`
   max-width: 1200px;
@@ -36,17 +37,34 @@ const ServiceSectionWrapper = styled.section`
     z-index: -1;
     border-radius: 20px;
   }
+
+  ${lg`
+    margin: 24px 16px;
+  `}
+
+  ${sm`
+    margin: 20px 12px;
+    padding: 0 8px;
+    border-radius: 14px;
+  `}
 `;
 
 const SectionTitleContainer = styled.div`
   display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
   justify-content: space-between;
   align-items: center;
   margin: 20px 0 24px 16px;
+
+  ${sm`
+    margin: 16px 0 20px 8px;
+    padding-right: 8px;
+  `}
 `;
 
 const SectionTitle = styled.h2`
-  font-size: 24px;
+  font-size: clamp(18px, 2vw, 24px);
   color: #c2410c;
   font-weight: 600;
   position: relative;
@@ -81,10 +99,16 @@ const ViewMoreButton = styled.button`
 
 const ServiceGrid = styled.div`
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+  /* min(250px, 100%) tránh tràn khi khung chứa hẹp hơn 250px */
+  grid-template-columns: repeat(auto-fill, minmax(min(250px, 100%), 1fr));
   gap: 20px;
   padding: 0 16px 24px;
   position: relative;
+
+  ${sm`
+    gap: 14px;
+    padding: 0 8px 16px;
+  `}
 `;
 
 const ServiceCard = styled.div`
@@ -221,6 +245,24 @@ const ServiceNavigation = styled.div`
   justify-content: space-between;
   z-index: 10;
   pointer-events: none;
+
+  /* Không còn chỗ để nút nằm ngoài khung — kéo vào trong, sát hai mép */
+  ${lg`
+    width: 100%;
+    left: 0;
+    padding: 0 4px;
+  `}
+
+  /* Trên mobile nút overlay sẽ đè lên card, nên cho chạy theo luồng
+     và đặt xuống dưới cùng cạnh chấm phân trang. */
+  ${sm`
+    position: static;
+    transform: none;
+    width: 100%;
+    justify-content: center;
+    gap: 16px;
+    padding: 0 0 16px;
+  `}
 `;
 
 const ServiceNavButton = styled.button`
@@ -271,6 +313,13 @@ const ServiceNavButton = styled.button`
   &:hover::after {
     opacity: 1;
   }
+
+  ${sm`
+    width: 36px;
+    height: 36px;
+    font-size: 14px;
+    opacity: 0.9;
+  `}
 `;
 
 function ServiceSection() {

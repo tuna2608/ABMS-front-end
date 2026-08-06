@@ -502,7 +502,7 @@ const UpdateContract = () => {
       {/* Modal xem chi tiết hợp đồng */}
       <Modal
         title="Chi tiết hợp đồng"
-        visible={viewModalVisible}
+        open={viewModalVisible}
         onCancel={() => setViewModalVisible(false)}
         footer={[
           <Button key="back" onClick={() => setViewModalVisible(false)}>
@@ -514,7 +514,7 @@ const UpdateContract = () => {
         {selectedContract && (
           <Card>
             <Row gutter={[16, 16]}>
-              <Col span={12}>
+              <Col xs={24} sm={12}>
                 <Space direction="vertical" size="middle" style={{ width: "100%" }}>
                   <div>
                     <Text strong>
@@ -542,7 +542,7 @@ const UpdateContract = () => {
                   </div>
                 </Space>
               </Col>
-              <Col span={12}>
+              <Col xs={24} sm={12}>
                 <Space direction="vertical" size="middle" style={{ width: "100%" }}>
                   <div>
                     <Text strong>
@@ -610,7 +610,7 @@ const UpdateContract = () => {
       {/* Modal phê duyệt hợp đồng */}
       <Modal
         title="Phê duyệt hợp đồng"
-        visible={approveModalVisible}
+        open={approveModalVisible}
         onCancel={() => setApproveModalVisible(false)}
         footer={[
           <Button key="back" onClick={() => setApproveModalVisible(false)}>
@@ -624,7 +624,7 @@ const UpdateContract = () => {
       >
         <Form form={approveForm} layout="vertical">
           <Row gutter={16}>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item
                 name="full_name"
                 label="Họ và tên"
@@ -633,7 +633,7 @@ const UpdateContract = () => {
                 <Input prefix={<UserOutlined />} placeholder="Nhập họ và tên" />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item
                 name="email"
                 label="Email"
@@ -647,7 +647,7 @@ const UpdateContract = () => {
             </Col>
           </Row>
           <Row gutter={16}>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item
                 name="phone_number"
                 label="Số điện thoại"
@@ -656,7 +656,7 @@ const UpdateContract = () => {
                 <Input prefix={<PhoneOutlined />} placeholder="Nhập số điện thoại" />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item
                 name="apartment_name"
                 label="Tên căn hộ"
@@ -667,7 +667,7 @@ const UpdateContract = () => {
             </Col>
           </Row>
           <Row gutter={16}>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item
                 name="verification_type"
                 label="Loại hợp đồng"
@@ -679,9 +679,9 @@ const UpdateContract = () => {
                 </Select>
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Row gutter={8}>
-                <Col span={selectedContract?.verification_type === 2 ? 24 : 12}>
+                <Col xs={24} sm={selectedContract?.verification_type === 2 ? 24 : 12}>
                   <Form.Item
                     name="contract_start_date"
                     label="Ngày bắt đầu"
@@ -691,7 +691,7 @@ const UpdateContract = () => {
                   </Form.Item>
                 </Col>
                 {selectedContract?.verification_type !== 2 && (
-                  <Col span={12}>
+                  <Col xs={24} sm={12}>
                     <Form.Item
                       name="contract_end_date"
                       label="Ngày kết thúc"
@@ -721,7 +721,7 @@ const UpdateContract = () => {
       {/* Modal từ chối hợp đồng */}
       <Modal
         title="Từ chối hợp đồng"
-        visible={rejectModalVisible}
+        open={rejectModalVisible}
         onCancel={() => setRejectModalVisible(false)}
         footer={[
           <Button key="back" onClick={() => setRejectModalVisible(false)}>
@@ -753,7 +753,7 @@ const UpdateContract = () => {
 
       {/* Modal xem trước tài liệu */}
       <Modal
-        visible={previewVisible}
+        open={previewVisible}
         title="Xem tài liệu"
         footer={null}
         onCancel={() => setPreviewVisible(false)}

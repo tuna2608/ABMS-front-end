@@ -48,6 +48,9 @@ const SidebarMenu = ({ collapsed, setCollapsed, activeMenuItem, setActiveMenuIte
       onCollapse={setCollapsed}
       trigger={null}
       theme="light"
+      breakpoint="lg"
+      collapsedWidth={0}
+      onBreakpoint={(broken) => setCollapsed(broken)}
     >
       <div style={{ height: 64, padding: 16, textAlign: "center" }}></div>
       <Menu

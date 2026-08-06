@@ -2,10 +2,38 @@ import React, { useState, useEffect, useRef } from "react";
 import { Input, Button, Avatar, Typography, Space } from "antd";
 import { SendOutlined, CloseOutlined } from "@ant-design/icons";
 import { useDispatch, useSelector } from "react-redux";
+import styled from "styled-components";
 import { getMessages } from "../../../redux/apiCalls";
 import webSocketService from "../../../services/WebSocketService";
+import { sm } from "../../../utilities/responsive";
 
 const { Text } = Typography;
+
+/* Khung chat nổi: cố định 350x500 trên desktop, bám sát mép màn hình trên mobile */
+const ChatWindow = styled.div`
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 350px;
+  height: 500px;
+  max-height: calc(100vh - 40px);
+  background: #fff;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.15);
+  display: flex;
+  flex-direction: column;
+  z-index: 1000;
+
+  ${sm`
+    bottom: 0;
+    right: 0;
+    left: 0;
+    width: 100%;
+    height: 70vh;
+    max-height: 70vh;
+    border-radius: 10px 10px 0 0;
+  `}
+`;
 
 const ChatBox = ({ receiverId, receiverName, onClose, hideFloatingButton = false }) => {
   const dispatch = useDispatch();
@@ -65,21 +93,7 @@ const ChatBox = ({ receiverId, receiverName, onClose, hideFloatingButton = false
   };
 
   return (
-    <div
-      style={{
-        position: "fixed",
-        bottom: "20px",
-        right: "20px",
-        width: "350px",
-        height: "500px",
-        background: "#fff",
-        borderRadius: "10px",
-        boxShadow: "0 4px 20px rgba(0,0,0,0.15)",
-        display: "flex",
-        flexDirection: "column",
-        zIndex: 1000,
-      }}
-    >
+    <ChatWindow>
       {/* Header */}
       <div
         style={{
@@ -168,7 +182,7 @@ const ChatBox = ({ receiverId, receiverName, onClose, hideFloatingButton = false
           }
         />
       </div>
-    </div>
+    </ChatWindow>
   );
 };
 

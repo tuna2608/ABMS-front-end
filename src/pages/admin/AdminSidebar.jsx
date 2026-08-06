@@ -14,7 +14,7 @@ import {
 
 const { Sider } = Layout;
 
-const AdminSidebar = ({ collapsed, activeTab, setActiveTab, toggleCollapsed }) => {
+const AdminSidebar = ({ collapsed, setCollapsed, activeTab, setActiveTab, toggleCollapsed }) => {
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -125,7 +125,16 @@ const AdminSidebar = ({ collapsed, activeTab, setActiveTab, toggleCollapsed }) =
   ];
 
   return (
-    <Sider trigger={null} collapsible collapsed={collapsed} theme="light" width={250}>
+    <Sider
+      trigger={null}
+      collapsible
+      collapsed={collapsed}
+      theme="light"
+      width={250}
+      breakpoint="lg"
+      collapsedWidth={0}
+      onBreakpoint={(broken) => setCollapsed?.(broken)}
+    >
       <div style={{ height: 64, padding: 16, textAlign: "center" }}></div>
       <Menu
         mode="inline"

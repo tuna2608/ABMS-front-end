@@ -4,6 +4,7 @@ import { FaSearch, FaBed, FaBath, FaCar } from "react-icons/fa";
 import { BsHouseDoor } from "react-icons/bs";
 /* Import Link từ react-router-dom */
 import { Link } from "react-router-dom";
+import { sm } from "../../../utilities/responsive";
 
 const Container = styled.div`
   background: #f3f4f6;
@@ -13,7 +14,11 @@ const Container = styled.div`
 const Wrapper = styled.div`
   // max-width: 1200px;
   margin: 0 auto;
-  // padding: 16px;
+  padding: 0 16px;
+
+  ${sm`
+    padding: 0 12px;
+  `}
 `;
 
 const SearchContainer = styled.div`
@@ -31,6 +36,7 @@ const SearchRow = styled.div`
 
 const SearchInput = styled.input`
   flex: 1;
+  min-width: 0;
   padding: 8px 12px;
   border: none;
   outline: none;
@@ -58,6 +64,12 @@ const Select = styled.select`
   padding: 8px;
   border: 1px solid #d1d5db;
   border-radius: 4px;
+
+  /* Trên mobile mỗi filter chiếm nửa dòng thay vì tràn ngang */
+  ${sm`
+    flex: 1 1 calc(50% - 4px);
+    min-width: 0;
+  `}
 `;
 
 const MainContent = styled.div`
@@ -99,20 +111,34 @@ const ListingCard = styled.div`
   border-radius: 8px;
   box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
   gap: 16px;
+
+  /* Ảnh 120px + nội dung không đủ chỗ trên điện thoại → xếp dọc */
+  ${sm`
+    flex-direction: column;
+    padding: 12px;
+    gap: 12px;
+  `}
 `;
 
 const ListingImage = styled.div`
   width: 120px;
   height: 120px;
+  flex-shrink: 0;
   background: #e5e7eb;
   border-radius: 4px;
   display: flex;
   align-items: center;
   justify-content: center;
+
+  ${sm`
+    width: 100%;
+    height: 160px;
+  `}
 `;
 
 const ListingInfo = styled.div`
   flex: 1;
+  min-width: 0;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
@@ -138,6 +164,7 @@ const PriceText = styled.span`
 
 const MetaRow = styled.div`
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   gap: 12px;
   margin: 8px 0;

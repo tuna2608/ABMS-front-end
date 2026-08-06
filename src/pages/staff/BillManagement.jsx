@@ -265,7 +265,7 @@ const BillManagement = () => {
         <Form form={form} layout="vertical" onFinish={handleCreateBill}>
           <Divider orientation="left">Thông tin cơ bản</Divider>
           <Row gutter={16}>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item
                 name="billType"
                 label="Loại hóa đơn"
@@ -277,7 +277,7 @@ const BillManagement = () => {
                 </Select>
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item
                 name="apartment"
                 label="Căn hộ"
@@ -295,7 +295,7 @@ const BillManagement = () => {
             </Col>
           </Row>
           <Row gutter={16}>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item
                 name="amount"
                 label="Số tiền"
@@ -304,7 +304,7 @@ const BillManagement = () => {
                 <Input placeholder="Số tiền" />
               </Form.Item>
             </Col>
-            <Col span={12}>
+            <Col xs={24} sm={12}>
               <Form.Item
                 name="period"
                 label="Hóa đơn theo kỳ hạn:"

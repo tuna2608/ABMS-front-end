@@ -3,37 +3,48 @@ import { Image } from "antd";
 import styled from "styled-components";
 import { FacebookOutlined, InstagramOutlined, TwitterOutlined } from "@ant-design/icons";
 import logoMenu from "../../../assets/common/images/logo-menu.png";
+import { md, sm } from "../../../utilities/responsive";
 
 const WrapperFooter = styled.div`
   background-color: var(--cheadline);
   color: white;
-  padding: 40px 120px 20px;
+  padding: 40px var(--page-gutter) 20px;
+
+  ${sm`
+    padding: 28px 16px 16px;
+  `}
 `;
 
+/* Desktop: 4 cột — tablet: 2 cột — mobile: 1 cột */
 const FooterContent = styled.div`
-  display: flex;
-  justify-content: space-between;
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 24px;
   margin-bottom: 30px;
+
+  ${md`
+    grid-template-columns: repeat(2, 1fr);
+    gap: 24px 16px;
+  `}
+
+  ${sm`
+    grid-template-columns: 1fr;
+    gap: 24px;
+    margin-bottom: 20px;
+  `}
 `;
 
 const FooterCol = styled.div`
-  flex: 1;
-  padding: 0 15px;
-
-  &:first-child {
-    padding-left: 0;
-  }
-
-  &:last-child {
-    padding-right: 0;
-  }
+  min-width: 0;
 
   h3 {
     color: white;
     font-size: 18px;
     font-weight: 600;
     margin-bottom: 20px;
-    height: 27px; /* Consistent height for all headings */
+    /* Cùng chiều cao heading để 4 cột thẳng hàng trên desktop;
+       bỏ khi đã xuống 1 cột vì không còn cần canh hàng */
+    height: 27px;
   }
 
   p {
@@ -41,16 +52,35 @@ const FooterCol = styled.div`
     font-size: 14px;
     line-height: 1.5;
   }
+
+  ${sm`
+    h3 {
+      height: auto;
+      margin-bottom: 12px;
+      font-size: 17px;
+    }
+  `}
 `;
 
 const LogoColumn = styled(FooterCol)`
-  img {
+  .ant-image {
+    width: 180px;
+    max-width: 100%;
     margin-bottom: 20px;
+  }
+
+  .ant-image img {
+    width: 100%;
+    height: auto;
   }
 
   p {
     margin-bottom: 8px;
   }
+
+  ${sm`
+    .ant-image { width: 140px; margin-bottom: 12px; }
+  `}
 `;
 
 const ContentColumn = styled(FooterCol)`
@@ -61,10 +91,18 @@ const ContentColumn = styled(FooterCol)`
 
 const BottomSection = styled.div`
   display: flex;
+  flex-wrap: wrap;
+  gap: 16px;
   justify-content: space-between;
   align-items: center;
   padding-top: 20px;
   border-top: 1px solid rgba(255, 255, 255, 0.2);
+
+  ${sm`
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 20px;
+  `}
 `;
 
 const SocialSection = styled.div`
@@ -94,6 +132,11 @@ const SocialIcons = styled.div`
 const PolicyLinks = styled.div`
   font-size: 14px;
 
+  ${sm`
+    font-size: 13px;
+    line-height: 1.8;
+  `}
+
   a {
     color: white;
     text-decoration: none;
@@ -119,7 +162,7 @@ function FooterComponent() {
     <WrapperFooter>
       <FooterContent>
         <LogoColumn>
-          <Image src={logoMenu} width={180} preview={false} />
+          <Image src={logoMenu} preview={false} />
           <p>Bản quyền © 2025 ABMS</p>
           <p>Thiết kế bởi ABMS Team</p>
         </LogoColumn>
