@@ -16,8 +16,4 @@ export default defineConfig({
   preview: {
     port: 3000,
   },
-  build: {
-    // Giữ thư mục output là `build` để khớp cấu hình deploy hiện tại (CRA cũ).
-    outDir: "build",
-  },
 });
