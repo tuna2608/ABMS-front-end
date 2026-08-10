@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Upload, message } from "antd";
 import { InboxOutlined } from "@ant-design/icons";
-import axios from "axios";
+import { publicRequest } from "../../../utilities/requestMethod";
 
 const { Dragger } = Upload;
 
@@ -14,7 +14,7 @@ const ImageUploader = () => {
     formData.append("file", file);
 
     try {
-      await axios.post("http://localhost:8080/api/upload", formData, {
+      await publicRequest.post("/api/upload", formData, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

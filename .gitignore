@@ -2,9 +2,8 @@
 /node_modules
 /.pnp
 .pnp.js
-.nvmrc
 
-# build output (vite.config.js dat outDir = "build")
+# build output (vercel.json dat outputDirectory = "dist")
 /build
 /dist
 *.local
