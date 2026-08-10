@@ -8,12 +8,19 @@ export const CLIENT_URL = import.meta.env.VITE_CLIENT_URL || window.location.ori
 export const PAYMENT_RETURN_URL = `${CLIENT_URL}/payment/success`;
 export const PAYMENT_CANCEL_URL = `${CLIENT_URL}/payment/cancel`;
 
+// Không set timeout thì axios chờ vô hạn: backend treo bao lâu, spinner quay bấy lâu.
+// Để 90s vì backend đang ở Render gói Free — service ngủ sau 15 phút không có traffic,
+// request đầu tiên đánh thức dậy mất tới ~60s. Hạ xuống 30s là cold start nào cũng hỏng.
+const REQUEST_TIMEOUT = Number(import.meta.env.VITE_API_TIMEOUT) || 90000;
+
 export const publicRequest = axios.create({
   baseURL: BASE_URL,
+  timeout: REQUEST_TIMEOUT,
 });
 
 export const userRequest = axios.create({
   baseURL: BASE_URL,
+  timeout: REQUEST_TIMEOUT,
 });
 
 userRequest.interceptors.request.use(
