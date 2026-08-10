@@ -1,0 +1,52 @@
+# Chạy trên mọi Pull Request vào main. Job này phải xanh thì mới merge được
+# (bật ở GitHub: Settings > Branches > Rule cho `main` > Require status checks).
+#
+# Bước `npm ci` là bước quan trọng nhất: nó bắt đúng loại lỗi mà Dependabot từng
+# gây ra (react bump lên 19 nhưng react-dom vẫn 18 -> Conflicting peer dependency).
+# Trước đây lỗi đó chỉ lộ ra khi Vercel deploy; giờ chặn ngay ở PR.
+
+name: CI
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# PR push liên tục thì huỷ lần chạy cũ, khỏi tốn runner.
+concurrency:
+  group: ci-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Build & Lint
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node
+        uses: actions/setup-node@v4
+        with:
+          # Lấy version từ .nvmrc để CI, local và Vercel luôn dùng chung một Node.
+          node-version-file: ".nvmrc"
+          cache: "npm"
+
+      # Cố tình dùng `npm ci` chứ không phải `npm install`:
+      # `npm ci` fail nếu package.json và package-lock.json lệch nhau,
+      # đúng như cách Vercel cài dependency.
+      - name: Install dependencies
+        run: npm ci
+
+      - name: Lint
+        run: npm run lint
+
+      - name: Build
+        run: npm run build
