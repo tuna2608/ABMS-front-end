@@ -1,11 +1,75 @@
-# To get started with Dependabot version updates, you'll need to specify which
-# package ecosystems to update and where the package manifests are located.
-# Please see the documentation for all configuration options:
-# https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+# Cấu hình Dependabot cho FE (Vite + React).
+# Tài liệu: https://docs.github.com/code-security/dependabot/dependabot-version-updates/configuration-options-for-the-dependabot.yml-file
+#
+# Mục tiêu: vẫn nhận được bản vá bảo mật, nhưng KHÔNG để Dependabot làm gãy build Vercel.
+# Hai quy tắc quan trọng nhất:
+#   1. `groups` — gom react/react-dom vào cùng một PR. Trước đây chúng bị tách thành
+#      hai PR riêng nên branch nào chỉ nâng react sẽ lỗi peer dependency với react-dom.
+#   2. `ignore` — chặn toàn bộ major update. Nâng major (react 19, antd 6...) phải làm
+#      tay, có chủ đích, không để tự động.
 
 version: 2
 updates:
-  - package-ecosystem: "npm" # See documentation for possible values
-    directory: "/" # Location of package manifests
+  - package-ecosystem: "npm"
+    directory: "/"
     schedule:
-      interval: "daily"
+      interval: "weekly"
+      day: "monday"
+      time: "09:00"
+      timezone: "Asia/Ho_Chi_Minh"
+    open-pull-requests-limit: 3
+    labels:
+      - "dependencies"
+
+    groups:
+      # react và react-dom BẮT BUỘC đi chung một PR, nếu không sẽ lỗi:
+      # "Conflicting peer dependency: react@18.x ... peer react from react-dom".
+      react:
+        patterns:
+          - "react"
+          - "react-dom"
+          - "react-redux"
+          - "react-router-dom"
+          - "@reduxjs/toolkit"
+          - "redux-persist"
+        update-types:
+          - "minor"
+          - "patch"
+
+      ui:
+        patterns:
+          - "antd"
+          - "@ant-design/*"
+          - "recharts"
+          - "styled-components"
+          - "react-icons"
+          - "react-toastify"
+        update-types:
+          - "minor"
+          - "patch"
+
+      build:
+        patterns:
+          - "vite"
+          - "@vitejs/*"
+          - "eslint"
+          - "@eslint/*"
+          - "eslint-plugin-*"
+          - "prettier"
+          - "sass"
+          - "globals"
+        update-types:
+          - "minor"
+          - "patch"
+
+      others:
+        patterns:
+          - "*"
+        update-types:
+          - "minor"
+          - "patch"
+
+    ignore:
+      - dependency-name: "*"
+        update-types:
+          - "version-update:semver-major"

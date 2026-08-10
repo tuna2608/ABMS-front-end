@@ -21,7 +21,12 @@ import {
   changePasswordSuccess,
   changePasswordFailure,
 } from "./authSlice";
-import { publicRequest, userRequest } from "../utilities/requestMethod";
+import {
+  publicRequest,
+  userRequest,
+  PAYMENT_RETURN_URL,
+  PAYMENT_CANCEL_URL,
+} from "../utilities/requestMethod";
 import {
   addUserStart,
   addUserSuccess,
@@ -280,8 +285,8 @@ export const getAllDeposits = async () => {
 export const depositCreate = async (formData) => {
   const form = {
     ...formData,
-    successUrl: `https://abms-front-end.vercel.app/payment/success`,
-    cancelUrl: `https://abms-front-end.vercel.app/payment/cancel`,
+    successUrl: PAYMENT_RETURN_URL,
+    cancelUrl: PAYMENT_CANCEL_URL,
   };
   return apiCall(
     () => publicRequest.post(`/deposit/create`, form),

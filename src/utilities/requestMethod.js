@@ -1,8 +1,12 @@
 import axios from "axios";
 
-const BASE_URL = import.meta.env.VITE_API_URL;
+export const BASE_URL = import.meta.env.VITE_API_URL;
 
-export const CLIENT_URL = import.meta.env.VITE_CLIENT_URL;
+// Không set VITE_CLIENT_URL thì tự lấy origin đang chạy, khỏi phải sửa code mỗi lần đổi domain.
+export const CLIENT_URL = import.meta.env.VITE_CLIENT_URL || window.location.origin;
+
+export const PAYMENT_RETURN_URL = `${CLIENT_URL}/payment/success`;
+export const PAYMENT_CANCEL_URL = `${CLIENT_URL}/payment/cancel`;
 
 export const publicRequest = axios.create({
   baseURL: BASE_URL,

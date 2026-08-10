@@ -3,6 +3,7 @@ import { Client } from "@stomp/stompjs";
 import { receiveMessage } from "../redux/chatSlice";
 import { store } from "../redux/store";
 import { getUserInfo } from "../redux/apiCalls";
+import { BASE_URL } from "../utilities/requestMethod";
 
 class WebSocketService {
   constructor() {
@@ -27,7 +28,7 @@ class WebSocketService {
 
     // Tạo STOMP client đúng cách
     this.stompClient = new Client({
-      webSocketFactory: () => new SockJS("https://abms-be.onrender.com/ws"),
+      webSocketFactory: () => new SockJS(`${BASE_URL}/ws`),
       debug: function (str) {},
       reconnectDelay: 5000,
       heartbeatIncoming: 4000,

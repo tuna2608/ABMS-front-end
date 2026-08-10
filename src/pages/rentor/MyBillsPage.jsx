@@ -16,6 +16,7 @@ import { DollarOutlined, FileOutlined, EyeOutlined, CheckOutlined } from "@ant-d
 import moment from "moment";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllBillRentor, paymentBill } from "../../redux/apiCalls";
+import { PAYMENT_RETURN_URL, PAYMENT_CANCEL_URL } from "../../utilities/requestMethod";
 
 const MyBillsPage = () => {
   const [currentUser] = useState(useSelector((state) => state.user.currentUser));
@@ -89,8 +90,8 @@ const MyBillsPage = () => {
       billId: record.billId,
       productName: record.billContent,
       description: record.billType === "monthPaid" ? "Bill thue nha" : record.billContent,
-      returnUrl: "https://abms-front-end.vercel.app/payment/success",
-      cancelUrl: "https://abms-front-end.vercel.app/payment/cancel",
+      returnUrl: PAYMENT_RETURN_URL,
+      cancelUrl: PAYMENT_CANCEL_URL,
       price: record.amount,
     };
     setLoadingPayment(true);

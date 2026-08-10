@@ -38,6 +38,7 @@ import {
   getOwnApartmentRented,
   paymentBill,
 } from "../../redux/apiCalls";
+import { PAYMENT_RETURN_URL, PAYMENT_CANCEL_URL } from "../../utilities/requestMethod";
 
 const { Option } = Select;
 
@@ -227,8 +228,8 @@ const BillPage = () => {
       billId: record.billId,
       productName: record.billContent,
       description: record.billType === "managementFee" ? "Bill quan ly" : record.billContent,
-      returnUrl: "https://abms-front-end.vercel.app/payment/success",
-      cancelUrl: "https://abms-front-end.vercel.app/payment/cancel",
+      returnUrl: PAYMENT_RETURN_URL,
+      cancelUrl: PAYMENT_CANCEL_URL,
       price: record.amount,
     };
     setLoadingPayment(true);
