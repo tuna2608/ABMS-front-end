@@ -71,12 +71,11 @@ const ChatBox = ({ receiverId, receiverName, onClose, hideFloatingButton = false
       content: inputValue,
     };
 
-    // dispatch(sendMessage(messageData));
     webSocketService.sendMessage(messageData);
     setInputValue("");
   };
 
-  // Hàm format timestamp đã sửa để xử lý chuỗi
+  // Hàm format timestamp, nhận vào chuỗi
   const formatTime = (timestamp) => {
     if (!timestamp) return "";
     try {

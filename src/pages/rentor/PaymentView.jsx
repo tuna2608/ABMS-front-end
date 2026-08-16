@@ -93,43 +93,6 @@ const PaymentView = () => {
       key: "paymentDate",
       render: (date) => (date ? moment(date).format("DD/MM/YYYY") : "Chưa thanh toán"),
     },
-    // {
-    //   title: "Phương thức",
-    //   dataIndex: "paymentMethod",
-    //   key: "paymentMethod",
-    //   render: (method) => {
-    //     const methodMap = {
-    //       bank: { icon: <BankOutlined />, text: "Chuyển khoản ngân hàng" },
-    //       credit: { icon: <CreditCardOutlined />, text: "Thẻ tín dụng" },
-    //       qr: { icon: <QrcodeOutlined />, text: "Mã QR" },
-    //     };
-    //     const methodInfo = methodMap[method] || {
-    //       icon: null,
-    //       text: "Chưa chọn",
-    //     };
-    //     return method ? (
-    //       <Space>
-    //         {methodInfo.icon}
-    //         {methodInfo.text}
-    //       </Space>
-    //     ) : (
-    //       "Chưa chọn"
-    //     );
-    //   },
-    // },
-    // {
-    //   title: "Hành động",
-    //   key: "actions",
-    //   render: (_, record) => (
-    //     <Button
-    //       type="primary"
-    //       disabled={record.status !== "pending" && record.status !== "overdue"}
-    //       onClick={() => handlePayBill(record)}
-    //     >
-    //       Thanh toán
-    //     </Button>
-    //   ),
-    // },
   ];
 
   // Handle payment method change

@@ -74,27 +74,6 @@ const DepositApartments = ({
     return new Intl.NumberFormat("vi-VN").format(price) + " VNĐ/tháng";
   };
 
-  // if (deletePost !== null) {
-  //   const filteredApartments = depositPosts.filter((apartment) => {
-  //     const matchSearch =
-  //       apartment.title.toLowerCase().includes(searchText.toLowerCase()) ||
-  //       apartment.apartment.apartmentName
-  //         .toLowerCase()
-  //         .includes(searchText.toLowerCase());
-  //     const matchArea =
-  //       selectedArea === "Tất cả" ||
-  //       apartment.apartment.apartmentName === selectedArea;
-  //     return matchSearch && matchArea;
-  //   });
-  // }
-  // Lọc danh sách căn hộ
-
-  // Phân trang
-  // const paginatedApartments = depositPosts.slice(
-  //   (currentPage - 1) * pageSize,
-  //   currentPage * pageSize
-  // );
-
   return (
     <Spin spinning={loading}>
       <div

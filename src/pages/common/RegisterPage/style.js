@@ -1,6 +1,5 @@
 import styled from "styled-components";
 import { md, sm } from "../../../utilities/responsive";
-// import imageLogin from '../../../assets/common/images/bg-login.jpeg'
 
 export const WrapperContainer = styled.div`
   position: relative;
