@@ -578,7 +578,7 @@ const ServicePage = () => {
     },
   ];
 
-  // antd 5 dùng prop `items`; Tabs.TabPane đã deprecated
+  // antd 5: Tabs nhận danh sách tab qua prop `items`
   const tabItems = [
     {
       key: "partnerServices",

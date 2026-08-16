@@ -1,7 +1,6 @@
 import React, { useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "./latestTransactions.scss";
-// import { userRequest } from "../../../utilities/requestMethod";
 import { format } from "timeago.js";
 import { getAllOrders, updateOrderStatus } from "../../../redux/apiCalls";
 import { formatCurrency } from "../../../utilities/formatCurrency";

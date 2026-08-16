@@ -26,7 +26,7 @@ import { acceptReCoin, getAllReCoin, rejectReCoin } from "../../redux/apiCalls";
 
 const { Text } = Typography;
 
-// Hàm định dạng số tiền mới thay thế cho toLocaleString()
+// Định dạng số tiền: chèn dấu phẩy ngăn cách hàng nghìn
 const formatCurrency = (amount) => {
   // Chuyển số thành string
   const numStr = String(amount);
@@ -160,17 +160,6 @@ const CoinManagement = () => {
     } catch {
       message.error("Không thể từ chối yêu cầu rút tiền");
     }
-
-    // Update the request status
-    // const updatedRequests = transferRequests.map((req) =>
-    //   req.id === selectedRequest.id ? { ...req, status: "rejected" } : req
-    // );
-    // setTransferRequests(updatedRequests);
-
-    // // Show success message
-    // message.success(
-    //   `Đã từ chối yêu cầu chuyển coin của ${selectedRequest.fullName}`
-    // );
 
     // Close reject modal
     setRejectModalVisible(false);

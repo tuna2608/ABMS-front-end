@@ -34,15 +34,6 @@ const SideMenu = ({ setCurrentView }) => {
         navigate("/rentorHome/contract");
       },
     },
-    // {
-    //   key: "payment",
-    //   icon: <DollarOutlined />,
-    //   label: "Thanh toán",
-    //   onClick: () => {
-    //     setCurrentView("payment");
-    //     navigate("/rentorHome/payment");
-    //   },
-    // },
   ];
 
   return <Menu theme="light" mode="inline" defaultSelectedKeys={["list"]} items={menuItems} />;

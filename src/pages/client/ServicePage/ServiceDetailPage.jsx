@@ -740,9 +740,7 @@ const ServiceDetailPage = () => {
               itemLayout="vertical"
               dataSource={serviceDetail.comments}
               renderItem={(item) => (
-                /* antd 5 đã bỏ component Comment; trước đây chỗ này truyền props của
-                   Comment vào icon CommentOutlined nên đánh giá không hiển thị được.
-                   Dựng lại bằng List.Item.Meta. */
+                /* antd 5 không có component Comment, dựng đánh giá bằng List.Item.Meta. */
                 <List.Item>
                   <List.Item.Meta
                     avatar={<Avatar src={item.avatar} icon={<UserOutlined />} />}

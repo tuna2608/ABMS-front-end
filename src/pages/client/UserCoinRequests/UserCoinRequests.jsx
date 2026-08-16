@@ -28,7 +28,7 @@ import { acceptReceivedReCoin, getReCoinByUserId } from "../../../redux/apiCalls
 
 const { Text } = Typography;
 
-// Hàm định dạng số tiền mới thay thế cho toLocaleString()
+// Định dạng số tiền: chèn dấu phẩy ngăn cách hàng nghìn
 const formatCurrency = (amount) => {
   // Chuyển số thành string
   const numStr = String(amount);
@@ -47,95 +47,12 @@ const formatCurrency = (amount) => {
   return result;
 };
 
-// Sample data for user's transfer requests
-// const sampleUserRequests = [
-//   {
-//     id: 1,
-//     amount: 500000,
-//     status: "pending",
-//     bankInfo: {
-//       bankName: "Vietcombank",
-//       accountNumber: "1234567890",
-//       accountName: "NGUYEN VAN A",
-//     },
-//     requestDate: "2024-04-10",
-//     transferProof: null,
-//   },
-//   {
-//     id: 2,
-//     amount: 1000000,
-//     status: "processing",
-//     bankInfo: {
-//       bankName: "Vietcombank",
-//       accountNumber: "1234567890",
-//       accountName: "NGUYEN VAN A",
-//     },
-//     requestDate: "2024-04-09",
-//     transferProof: "/api/placeholder/600/400",
-//   },
-//   {
-//     id: 3,
-//     amount: 750000,
-//     status: "completed",
-//     bankInfo: {
-//       bankName: "Vietcombank",
-//       accountNumber: "1234567890",
-//       accountName: "NGUYEN VAN A",
-//     },
-//     requestDate: "2024-04-05",
-//     transferProof: "/api/placeholder/600/400",
-//     completedDate: "2024-04-06",
-//   },
-//   {
-//     id: 4,
-//     amount: 300000,
-//     status: "rejected",
-//     bankInfo: {
-//       bankName: "Vietcombank",
-//       accountNumber: "1234567890",
-//       accountName: "NGUYEN VAN A",
-//     },
-//     requestDate: "2024-04-01",
-//     rejectedDate: "2024-04-02",
-//   },
-//   {
-//     id: 4,
-//     amount: 300000,
-//     status: "accepted",
-//     bankInfo: {
-//       bankName: "Vietcombank",
-//       accountNumber: "1234567890",
-//       accountName: "NGUYEN VAN A",
-//     },
-//     requestDate: "2024-04-01",
-//     rejectedDate: "2024-04-02",
-//   },
-// ];
-
 const UserCoinRequests = () => {
   const userCurrent = useSelector((state) => state.user.currentUser);
   const navigate = useNavigate();
   const [, setLoading] = useState(false);
-  const [reCoins, setReCoins] = useState([
-    // {
-    //   reCoinId: 1,
-    //   bankNumber: "53110009169999",
-    //   bankName: "Ngân hàng TMCP Đầu tư và Phát triển Việt Nam",
-    //   bankPin: "970418",
-    //   accountName: "NGUYEN ANH TU",
-    //   amount: 5000.0,
-    //   imgQR:
-    //     "https://img.vietqr.io/image/970418-53110009169999-compact2.jpg?amount=5000.0&addInfo=Rut+coin&accountName=NGUYEN+ANH+TU",
-    //   imgBill: null,
-    //   status: "processing",
-    //   userRequestId: 4,
-    //   content: null,
-    //   dateTime: null,
-    //   fullName: "Chủ căn hộ Tú1",
-    // },
-  ]);
+  const [reCoins, setReCoins] = useState([]);
 
-  // const [userRequests, setUserRequests] = useState(sampleUserRequests);
   const [selectedRequest, setSelectedRequest] = useState(null);
   const [drawerVisible, setDrawerVisible] = useState(false);
   const [proofImageVisible, setProofImageVisible] = useState(false);
@@ -174,7 +91,6 @@ const UserCoinRequests = () => {
       pending: { color: "orange", text: "Chờ Xử Lý" },
       processing: { color: "blue", text: "Đang Xử Lý" },
       completed: { color: "green", text: "Đã Hoàn Thành" },
-      // accepted: { color: "purple", text: "Đã Chuyển" },
       rejected: { color: "red", text: "Đã Từ Chối" },
     };
 
@@ -224,25 +140,6 @@ const UserCoinRequests = () => {
     } catch {
       message.error("Không thể xác nhận rút tiền thành công");
     }
-
-    // Update the request status
-    // const updatedRequests = userRequests.map((req) =>
-    //   req.id === selectedRequest.id
-    //     ? {
-    //         ...req,
-    //         status: "completed",
-    //         completedDate: new Date().toISOString().split("T")[0],
-    //       }
-    //     : req
-    // );
-    // setUserRequests(updatedRequests);
-
-    // Show success message
-    // message.success(
-    //   `Đã xác nhận nhận được ${formatCurrency(selectedRequest.amount)} VND`
-    // );
-
-    // Close confirmation modal
     setConfirmReceiptVisible(false);
   };
 

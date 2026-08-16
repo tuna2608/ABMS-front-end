@@ -116,12 +116,6 @@ const AdminSidebar = ({ collapsed, setCollapsed, activeTab, setActiveTab, toggle
       label: "Quản lý đơn từ",
       onClick: () => handleMenuClick("form-management", "form-management"),
     },
-    // {
-    //   key: "reports",
-    //   icon: <DollarOutlined />,
-    //   label: "Báo cáo tài chính",
-    //   onClick: () => handleMenuClick("reports", "reports")
-    // }
   ];
 
   return (

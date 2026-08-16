@@ -47,10 +47,10 @@ export const xl = maxWidth(breakpoints.xl);
 export const upMd = minWidth(breakpoints.md);
 export const upLg = minWidth(breakpoints.lg);
 
-/* --- Alias giữ tương thích với code cũ --- */
+/* --- Alias tên cũ, dùng ở nhiều màn hình --- */
 
-/** Alias của `sm` (<= 576px). Trước đây là 430px. */
+/** Alias của `sm` (<= 576px). */
 export const mobile = sm;
 
-/** Alias của `lg` (<= 992px). Trước đây là 1050px. */
+/** Alias của `lg` (<= 992px). */
 export const tablet = lg;
