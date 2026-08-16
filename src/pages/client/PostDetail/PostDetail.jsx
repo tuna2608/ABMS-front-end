@@ -387,6 +387,7 @@ const PostDetail = () => {
     arrows: true,
     nextArrow: <NextArrow />,
     prevArrow: <PrevArrow />,
+    autoplaySpeed: 4000,
   };
 
   return (

@@ -1,10 +1,7 @@
 import { configureStore, combineReducers } from "@reduxjs/toolkit";
-import cartReducer from "./cartSlice";
 import userReducer from "./authSlice";
-import productReducer from "./productSlice";
 import usersReducer from "./userSlice";
 import orderReducer from "./orderSlice";
-import counterReducer from "./slices/counterSlices";
 import postReducer from "./postSlice";
 import chatReducer from "./chatSlice";
 import apartmentReducer from "./apartmentSlice";
@@ -34,11 +31,8 @@ const persistConfig = {
 const rootReducer = combineReducers({
   user: userReducer,
   post: postReducer,
-  cart: cartReducer,
-  product: productReducer,
   users: usersReducer,
   order: orderReducer,
-  counter: counterReducer,
   chat: chatReducer,
   apartment: apartmentReducer,
 });
